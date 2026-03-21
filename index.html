@@ -1463,7 +1463,7 @@
       /* fixed-header-clone 모바일에서 숨김 (sticky-sel이 대신 처리) */
       #fixed-header-clone { display: none !important; }
 
-      /* sticky-sel: 모바일에서 화면 상단 완전 고정 (overflow:hidden 무시) */
+      /* sticky-sel: 모바일에서 화면 상단 완전 고정 */
       .sticky-sel {
         position: fixed !important;
         top: 44px !important;
@@ -1476,13 +1476,22 @@
         border-bottom: 1px solid rgba(0,0,0,0.07);
         box-shadow: 0 1px 8px rgba(0,0,0,0.06);
       }
-      /* sticky-sel가 fixed라 flow에서 빠짐 → 비교 콘텐츠 최상단에 보상 패딩 */
-      #comparison-body {
-        padding-top: 96px !important;
+
+      /* 비교뷰 검색 필터폼 모바일에서 숨김 (수직스택 깨짐 방지) */
+      #compare-view .sb-wrap { display: none !important; }
+
+      /* 배너 모바일 컴팩트 */
+      #compare-view .top-banner {
+        font-size: 11px !important;
+        padding: 8px 16px !important;
+        line-height: 1.4 !important;
       }
 
-      /* 취향 설정 버튼 모바일에서 숨김 — 제거 (버튼은 보여야 함) */
-      /* #wiz-launcher { display: none !important; } */
+      /* comparison-body: fixed sticky-sel 높이만큼 보상 패딩
+         nav(44px) + sticky-sel(약 100px) = 144px; 배너 사라진 대신 여백 */
+      #comparison-body {
+        padding-top: 120px !important;
+      }
 
       /* sticky-sel: 2열 그리드 */
       .sel-grid {
