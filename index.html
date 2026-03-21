@@ -5567,6 +5567,28 @@
             const d = matching[i];
             const destIdx = v1_0_9_DEST_DATA.indexOf(d);
             updateColumn(i, destIdx, budgetNum, duration);
+            // TP Worker 가격이 있으면 updateColumn 결과 위에 오버라이드
+            setTimeout(function(col, dest) {
+              if (dest && dest.airfare && dest._tpLink) {
+                var airEl = document.getElementById('air-' + col);
+                if (!airEl) return;
+                var mEl = airEl.querySelector('.main');
+                var sEl = airEl.querySelector('.sub');
+                var kEl = airEl.querySelector('.kicker');
+                if (mEl) mEl.textContent = dest.airfare;
+                if (sEl) sEl.textContent = '실시간 최저가 (왕복)';
+                if (kEl) kEl.textContent = '이코노미 · 인천 출발';
+                if (!airEl.querySelector('.tp-book-btn')) {
+                  var btn = document.createElement('a');
+                  btn.href = dest._tpLink; btn.target = '_blank';
+                  btn.rel = 'noopener noreferrer';
+                  btn.className = 'tp-book-btn';
+                  btn.style.cssText = 'display:inline-block;margin-top:8px;padding:5px 14px;font-size:12px;font-weight:600;color:#0071e3;background:#e8f4ff;border-radius:20px;text-decoration:none;';
+                  btn.textContent = '🔖 항공 예약하기 →';
+                  airEl.appendChild(btn);
+                }
+              }
+            }, 200, i, d);
 
             // Sync both selectors immediately and after short delay (for safety)
             const syncId = (id) => {
@@ -7403,16 +7425,16 @@
         var TP_MARKER = '510036';
         var ORIGIN = 'ICN';
 
-        // 목적지별 IATA 코드
+        // 목적지별 IATA 코드 (Travelpayouts 도시코드 기준)
         var DEST_IATA = {
           lisbon: 'LIS', danang: 'DAD', jeju: 'CJU', taipei: 'TPE',
-          osaka: 'KIX', tokyo: 'TYO', bangkok: 'BKK', bali: 'DPS',
+          osaka: 'OSA', tokyo: 'TYO', bangkok: 'BKK', bali: 'DPS',
           chiangmai: 'CNX', singapore: 'SIN', cebu: 'CEB', nhatrang: 'CXR',
-          fukuoka: 'FUK', sapporo: 'CTS', okinawa: 'OKA', kyoto: 'KIX',
+          fukuoka: 'FUK', sapporo: 'SPK', okinawa: 'OKA', kyoto: 'OSA',
           phuquoc: 'PQC', hochiminh: 'SGN', hanoi: 'HAN', boracay: 'MPH',
           phuket: 'HKT', hongkong: 'HKG', guam: 'GUM', hawaii: 'HNL',
-          paris: 'CDG', kualalumpur: 'KUL', maldives: 'MLE',
-          sydney: 'SYD', shanghai: 'PVG', barcelona: 'BCN'
+          paris: 'PAR', kualalumpur: 'KUL', maldives: 'MLE',
+          sydney: 'SYD', shanghai: 'SHA', barcelona: 'BCN'
         };
 
         // 제휴 예약 링크 생성 (Jetradar)
@@ -7421,34 +7443,27 @@
           if (!iata) return null;
           var now = new Date();
           var yr = now.getFullYear();
-          var mo = String(now.getMonth() + 2).padStart(2, '0'); // 다음달
+          var mo = String(now.getMonth() + 2).padStart(2, '0');
           return 'https://www.jetradar.com/flights/' + ORIGIN + '--' + iata +
                  '/?marker=' + TP_MARKER + '&origin_iata=' + ORIGIN +
                  '&destination_iata=' + iata + '&depart_date=' + yr + '-' + mo;
         };
 
-        // 최저가 API 호출 (목적지별)
+        // 최저가 API 호출 (Worker 프록시)
         fetch('https://travel.le2jy.workers.dev/api/flights/all')
           .then(function(r) { return r.json(); })
           .then(function(data) {
             if (!data || !data.data) return;
-            // API 응답 구조: data.data[IATA] = { price, airline, ... }
+            // Worker 응답 구조: data.data[IATA] = { priceLabel, airline, bookingLink }
             v1_0_9_DEST_DATA.forEach(function(dest) {
               var iata = DEST_IATA[dest.id];
               if (!iata || !data.data[iata]) return;
-              var prices = data.data[iata];
-              // 여러 항공사 중 최저가 선택
-              var minPrice = Infinity;
-              Object.keys(prices).forEach(function(k) {
-                if (prices[k].price && prices[k].price < minPrice) {
-                  minPrice = prices[k].price;
-                }
-              });
-              if (minPrice === Infinity || minPrice <= 0) return;
-              var priceKrw = Math.round(minPrice / 10000);
-              dest.airfare = priceKrw + '만원~';
-              dest.airfareSub = '실시간 최저가 (Travelpayouts)';
-              dest._tpLink = window.getTpFlightLink(dest.id);
+              var entry = data.data[iata];
+              if (!entry.priceLabel) return;
+              dest.airfare = entry.priceLabel;
+              dest.airfareSub = '실시간 최저가 (왕복)';
+              // Worker에서 제공한 예약 링크 사용
+              dest._tpLink = entry.bookingLink;
             });
             // 현재 보이는 카드 업데이트
             if (document.getElementById('compare-view') &&
