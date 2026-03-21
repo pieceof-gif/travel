@@ -801,6 +801,17 @@
 
     .hotel-card-link:hover { text-decoration: underline; }
 
+    /* 항공 예약 버튼 — '더 알아보기'와 동일 스타일 */
+    .tp-book-btn {
+      display: inline-block;
+      font-size: 13px;
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 500;
+      margin-top: 6px;
+    }
+    .tp-book-btn:hover { text-decoration: underline; }
+
     /* ── FLIGHT CARD ── */
     .flight-card {
       width: 100%;
@@ -5569,23 +5580,44 @@
             updateColumn(i, destIdx, budgetNum, duration);
             // TP Worker 가격이 있으면 updateColumn 결과 위에 오버라이드
             setTimeout(function(col, dest) {
+              // 항공 오버라이드
               if (dest && dest.airfare && dest._tpLink) {
                 var airEl = document.getElementById('air-' + col);
-                if (!airEl) return;
-                var mEl = airEl.querySelector('.main');
-                var sEl = airEl.querySelector('.sub');
-                var kEl = airEl.querySelector('.kicker');
-                if (mEl) mEl.textContent = dest.airfare;
-                if (sEl) sEl.textContent = '실시간 최저가 (왕복)';
-                if (kEl) kEl.textContent = '이코노미 · 인천 출발';
-                if (!airEl.querySelector('.tp-book-btn')) {
-                  var btn = document.createElement('a');
-                  btn.href = dest._tpLink; btn.target = '_blank';
-                  btn.rel = 'noopener noreferrer';
-                  btn.className = 'tp-book-btn';
-                  btn.style.cssText = 'display:inline-block;margin-top:8px;padding:5px 14px;font-size:12px;font-weight:600;color:#0071e3;background:#e8f4ff;border-radius:20px;text-decoration:none;';
-                  btn.textContent = '🔖 항공 예약하기 →';
-                  airEl.appendChild(btn);
+                if (airEl) {
+                  var mEl = airEl.querySelector('.main');
+                  var sEl = airEl.querySelector('.sub');
+                  var kEl = airEl.querySelector('.kicker');
+                  if (mEl) mEl.textContent = dest.airfare;
+                  if (sEl) sEl.textContent = '실시간 최저가 (왕복)';
+                  if (kEl) kEl.textContent = '이코노미 · 인천 출발';
+                  if (!airEl.querySelector('.tp-book-btn')) {
+                    var btn = document.createElement('a');
+                    btn.href = dest._tpLink; btn.target = '_blank';
+                    btn.rel = 'noopener noreferrer';
+                    btn.className = 'tp-book-btn';
+                    btn.textContent = '항공 예약하기 ›';
+                    airEl.appendChild(btn);
+                  }
+                }
+              }
+              // 숙박 오버라이드
+              if (dest && dest._hotelPrice && dest._hotelLink) {
+                var hotelEl = document.getElementById('hotel-' + col);
+                if (hotelEl) {
+                  var hmEl = hotelEl.querySelector('.main');
+                  var hsEl = hotelEl.querySelector('.sub');
+                  var hkEl = hotelEl.querySelector('.kicker');
+                  if (hmEl) hmEl.textContent = dest._hotelPrice;
+                  if (hsEl) hsEl.textContent = '실시간 최저가 (1박)';
+                  if (hkEl) hkEl.textContent = 'Hotellook 기준';
+                  if (!hotelEl.querySelector('.tp-hotel-btn')) {
+                    var hBtn = document.createElement('a');
+                    hBtn.href = dest._hotelLink; hBtn.target = '_blank';
+                    hBtn.rel = 'noopener noreferrer';
+                    hBtn.className = 'tp-book-btn tp-hotel-btn';
+                    hBtn.textContent = '숙소 예약하기 ›';
+                    hotelEl.appendChild(hBtn);
+                  }
                 }
               }
             }, 200, i, d);
@@ -6313,8 +6345,7 @@
             btnEl.target = '_blank';
             btnEl.rel = 'noopener noreferrer';
             btnEl.className = 'tp-book-btn';
-            btnEl.style.cssText = 'display:inline-block;margin-top:8px;padding:5px 14px;font-size:12px;font-weight:600;color:#0071e3;background:#e8f4ff;border-radius:20px;text-decoration:none;';
-            btnEl.textContent = '🔖 항공 예약하기 →';
+            btnEl.textContent = '항공 예약하기 ›';
             airEl.appendChild(btnEl);
           }
         }
@@ -7419,17 +7450,14 @@
       }
       fetchWeather();
 
-      // ── Travelpayouts 실시간 항공 가격 연동 ──
-      (function fetchTpFlightPrices() {
-        var TP_TOKEN = '6a6084c8f32d44f563ba4baa66f11975';
+      // ── Travelpayouts 실시간 숙박 가격 연동 ──
+      (function fetchTpHotelPrices() {
         var TP_MARKER = '510036';
-        var ORIGIN = 'ICN';
-
-        // 목적지별 IATA 코드 (Travelpayouts 도시코드 기준)
-        var DEST_IATA = {
-          lisbon: 'LIS', danang: 'DAD', jeju: 'CJU', taipei: 'TPE',
+        // 항공 DEST_IATA와 동일한 매핑 (제주·나트랑 제외)
+        var HOTEL_IATA = {
+          lisbon: 'LIS', danang: 'DAD', taipei: 'TPE',
           osaka: 'OSA', tokyo: 'TYO', bangkok: 'BKK', bali: 'DPS',
-          chiangmai: 'CNX', singapore: 'SIN', cebu: 'CEB', nhatrang: 'CXR',
+          chiangmai: 'CNX', singapore: 'SIN', cebu: 'CEB',
           fukuoka: 'FUK', sapporo: 'SPK', okinawa: 'OKA', kyoto: 'OSA',
           phuquoc: 'PQC', hochiminh: 'SGN', hanoi: 'HAN', boracay: 'MPH',
           phuket: 'HKT', hongkong: 'HKG', guam: 'GUM', hawaii: 'HNL',
@@ -7437,16 +7465,80 @@
           sydney: 'SYD', shanghai: 'SHA', barcelona: 'BCN'
         };
 
-        // 제휴 예약 링크 생성 (Jetradar)
-        window.getTpFlightLink = function(destId) {
-          var iata = DEST_IATA[destId];
-          if (!iata) return null;
-          var now = new Date();
-          var yr = now.getFullYear();
-          var mo = String(now.getMonth() + 2).padStart(2, '0');
-          return 'https://www.jetradar.com/flights/' + ORIGIN + '--' + iata +
-                 '/?marker=' + TP_MARKER + '&origin_iata=' + ORIGIN +
-                 '&destination_iata=' + iata + '&depart_date=' + yr + '-' + mo;
+        fetch('https://travel.le2jy.workers.dev/api/hotels/all')
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (!data || !data.data) return;
+            v1_0_9_DEST_DATA.forEach(function(dest) {
+              var iata = HOTEL_IATA[dest.id];
+              if (!iata || !data.data[iata]) return;
+              var entry = data.data[iata];
+              if (!entry.priceLabel) return;
+              dest._hotelPrice = entry.priceLabel;
+              dest._hotelLink = entry.bookingLink ||
+                ('https://tp.media/r?marker=' + TP_MARKER + '&trs=1&p=4114&u=' +
+                  encodeURIComponent('https://hotellook.com/'));
+            });
+            // 비교화면이 이미 열려있으면 즉시 업데이트
+            if (document.getElementById('compare-view') &&
+                document.getElementById('compare-view').style.display === 'block') {
+              for (var i = 0; i < 3; i++) {
+                var sel = document.getElementById('sel' + i);
+                if (!sel) continue;
+                var idx = parseInt(sel.value);
+                var d = v1_0_9_DEST_DATA[idx];
+                if (!d || !d._hotelPrice) continue;
+                var hotelEl = document.getElementById('hotel-' + i);
+                if (!hotelEl) continue;
+                var hmEl = hotelEl.querySelector('.main');
+                var hsEl = hotelEl.querySelector('.sub');
+                var hkEl = hotelEl.querySelector('.kicker');
+                if (hmEl) hmEl.textContent = d._hotelPrice;
+                if (hsEl) hsEl.textContent = '실시간 최저가 (1박)';
+                if (hkEl) hkEl.textContent = 'Hotellook 기준';
+                if (d._hotelLink && !hotelEl.querySelector('.tp-hotel-btn')) {
+                  var hBtn = document.createElement('a');
+                  hBtn.href = d._hotelLink; hBtn.target = '_blank';
+                  hBtn.rel = 'noopener noreferrer';
+                  hBtn.className = 'tp-book-btn tp-hotel-btn';
+                  hBtn.textContent = '숙소 예약하기 ›';
+                  hotelEl.appendChild(hBtn);
+                }
+              }
+            }
+          })
+          .catch(function() { /* Hotellook API 실패 시 하드코딩 데이터 유지 */ });
+      })();
+
+      // ── Travelpayouts 실시간 항공 가격 연동 ──
+      (function fetchTpFlightPrices() {
+        var TP_TOKEN = '6a6084c8f32d44f563ba4baa66f11975';
+        var TP_MARKER = '510036';
+        var ORIGIN = 'ICN';
+
+        // 목적지별 IATA 코드 (Travelpayouts 도시코드 기준)
+        // ※ 제주(CJU)·나트랑(CXR) 제외 — 국내선/API 데이터 없음 → 하드코딩 유지
+        var DEST_IATA = {
+          lisbon: 'LIS', danang: 'DAD', taipei: 'TPE',
+          osaka: 'OSA', tokyo: 'TYO', bangkok: 'BKK', bali: 'DPS',
+          chiangmai: 'CNX', singapore: 'SIN', cebu: 'CEB',
+          fukuoka: 'FUK', sapporo: 'SPK', okinawa: 'OKA', kyoto: 'OSA',
+          phuquoc: 'PQC', hochiminh: 'SGN', hanoi: 'HAN', boracay: 'MPH',
+          phuket: 'HKT', hongkong: 'HKG', guam: 'GUM', hawaii: 'HNL',
+          paris: 'PAR', kualalumpur: 'KUL', maldives: 'MLE',
+          sydney: 'SYD', shanghai: 'SHA', barcelona: 'BCN'
+        };
+
+        // 제휴 예약 링크 생성 — Aviasales search (확실한 IATA 인식)
+        var makeBookingLink = function(iata) {
+          // ICN + 날짜코드(0=아무날) + IATA + 성인1명 형식
+          var today = new Date();
+          var mo = String(today.getMonth() + 2).padStart(2, '0');
+          var day = String(today.getDate()).padStart(2, '0');
+          var dateCode = mo + day;
+          // Aviasales 검색 URL (Travelpayouts 제휴 파트너 마커 포함)
+          return 'https://tp.media/r?marker=' + TP_MARKER + '&trs=1&p=4122&u=' +
+            encodeURIComponent('https://www.aviasales.com/search/' + ORIGIN + dateCode + iata + '1');
         };
 
         // 최저가 API 호출 (Worker 프록시)
@@ -7462,8 +7554,8 @@
               if (!entry.priceLabel) return;
               dest.airfare = entry.priceLabel;
               dest.airfareSub = '실시간 최저가 (왕복)';
-              // Worker에서 제공한 예약 링크 사용
-              dest._tpLink = entry.bookingLink;
+              // Aviasales 검색 URL 사용 (도시코드 인식 확실)
+              dest._tpLink = makeBookingLink(iata);
             });
             // 현재 보이는 카드 업데이트
             if (document.getElementById('compare-view') &&
@@ -7491,8 +7583,7 @@
                     btnEl.target = '_blank';
                     btnEl.rel = 'noopener noreferrer';
                     btnEl.className = 'tp-book-btn';
-                    btnEl.style.cssText = 'display:inline-block;margin-top:8px;padding:5px 14px;font-size:12px;font-weight:600;color:#0071e3;background:#e8f4ff;border-radius:20px;text-decoration:none;';
-                    btnEl.textContent = '🔖 항공 예약하기 →';
+                    btnEl.textContent = '항공 예약하기 ›';
                     airEl.appendChild(btnEl);
                   }
                 }
