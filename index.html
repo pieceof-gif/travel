@@ -1438,13 +1438,16 @@
 
     /* ── RESPONSIVE: Mobile only (2-col layout) ── */
     @media (max-width: 768px) {
+      /* fixed-header-clone 모바일에서 숨김 (sticky-sel이 대신 처리) */
+      #fixed-header-clone { display: none !important; }
+
       /* sticky-sel: 2열 그리드 */
       .sel-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
         overflow-x: unset !important;
-        gap: 12px;
-        padding: 0 16px;
+        gap: 8px;
+        padding: 0 12px;
       }
       .sel-grid .sel-card:nth-child(3) { display: none !important; }
 
@@ -1457,7 +1460,7 @@
         display: flex !important;
         width: 100vw !important;
         max-width: none !important;
-        padding: 20px 0 0;
+        padding: 16px 0 0;
         gap: 0;
         transform: none !important;
         transition: none !important;
@@ -1466,8 +1469,9 @@
         flex: 0 0 50vw;
         width: 50vw;
         min-width: 0;
-        padding: 0 16px;
+        padding: 0 12px;
         box-sizing: border-box;
+        overflow: hidden;
       }
 
       /* data-row: 2열, 3번째 dc 숨김 */
@@ -1486,18 +1490,34 @@
       .data-row .dc:nth-child(3) { display: none !important; }
       .data-row .dc {
         min-width: 0;
-        padding: 8px 16px 0;
+        padding: 8px 12px 0;
         box-sizing: border-box;
+        overflow: hidden;
+      }
+
+      /* 한국어 텍스트 단어 중간 잘림 방지 */
+      .dest-name,
+      .dest-sub,
+      .dest-narrative,
+      .data-row .dc .main,
+      .data-row .dc .sub,
+      .data-row .dc .label {
+        word-break: keep-all;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
       }
 
       /* scroll-dots 제거 */
       .scroll-dots, .scroll-dot, .mobile-swipe-hint { display: none !important; }
 
       /* Typography 축소 */
-      .dest-name { font-size: 17px; margin-bottom: 4px; }
+      .dest-name { font-size: 16px; margin-bottom: 3px; }
       .dest-sub { font-size: 11px; min-height: auto; margin-bottom: 6px; }
-      .dest-narrative { font-size: 13px; line-height: 1.5; margin: 4px 0 10px; }
-      .dest-photo-wrap { height: 100px; border-radius: 10px; margin-bottom: 8px; }
+      .dest-narrative { font-size: 12px; line-height: 1.5; margin: 4px 0 10px; }
+      .dest-photo-wrap { height: 90px; border-radius: 10px; margin-bottom: 8px; }
+
+      /* sel-card 내부 패딩 축소 */
+      .sel-card { padding: 8px 10px; }
     }
 
 
