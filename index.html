@@ -7428,8 +7428,7 @@
         };
 
         // 최저가 API 호출 (목적지별)
-        fetch('https://api.travelpayouts.com/v1/prices/cheap?origin=' + ORIGIN +
-              '&token=' + TP_TOKEN + '&currency=KRW&page=1&limit=1000')
+        fetch('https://travel.le2jy.workers.dev/api/flights/all')
           .then(function(r) { return r.json(); })
           .then(function(data) {
             if (!data || !data.data) return;
