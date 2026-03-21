@@ -192,13 +192,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.15s ease, transform 0.1s ease;
+      transition: background 0.18s ease, box-shadow 0.18s ease;
       margin-right: 9px;
     }
 
     .sb-btn:hover:not(.disabled) {
-      background: var(--blue-hover);
-      transform: scale(1.05);
+      background: #0058b0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.18);
     }
 
     .sb-btn.disabled {
@@ -1463,10 +1463,12 @@
       /* fixed-header-clone 모바일에서 숨김 (sticky-sel이 대신 처리) */
       #fixed-header-clone { display: none !important; }
 
-      /* sticky-sel: 모바일에서 상단 고정 (nav 바로 아래) */
+      /* sticky-sel: 모바일에서 화면 상단 완전 고정 (overflow:hidden 무시) */
       .sticky-sel {
-        position: sticky !important;
+        position: fixed !important;
         top: 44px !important;
+        left: 0 !important;
+        right: 0 !important;
         z-index: 90 !important;
         background: rgba(255,255,255,0.97) !important;
         backdrop-filter: blur(12px) !important;
@@ -1474,9 +1476,13 @@
         border-bottom: 1px solid rgba(0,0,0,0.07);
         box-shadow: 0 1px 8px rgba(0,0,0,0.06);
       }
+      /* sticky-sel가 fixed라 flow에서 빠짐 → 비교 콘텐츠 최상단에 보상 패딩 */
+      #comparison-body {
+        padding-top: 96px !important;
+      }
 
-      /* 취향 설정 버튼 모바일에서 숨김 */
-      #wiz-launcher { display: none !important; }
+      /* 취향 설정 버튼 모바일에서 숨김 — 제거 (버튼은 보여야 함) */
+      /* #wiz-launcher { display: none !important; } */
 
       /* sticky-sel: 2열 그리드 */
       .sel-grid {
@@ -6443,7 +6449,10 @@
         }
         updateResultsByFilters();
         window.scrollTo(0, 0);
-        _initWizardScrollTrigger();
+        // 태블릿·모바일에서는 스크롤 자동 팝업 비활성화
+        if (window.innerWidth > 1068) {
+          _initWizardScrollTrigger();
+        }
       }
 
       // ── MOBILE: Apple-style compare column shift (CSS transform) ──
