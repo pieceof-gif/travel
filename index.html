@@ -6273,6 +6273,29 @@
             }
           }, 150);
         }
+
+        // ── Travelpayouts 예약 링크 갱신 (드롭다운 변경 시) ──
+        const d = v1_0_9_DEST_DATA[parseInt(idx)];
+        if (d && d._tpLink) {
+          const airEl = document.getElementById('air-' + col);
+          if (airEl) {
+            const mEl = airEl.querySelector('.main');
+            const sEl = airEl.querySelector('.sub');
+            if (mEl && d.airfare) mEl.textContent = d.airfare;
+            if (sEl && d.airfare) sEl.textContent = '실시간 최저가 (왕복)';
+            // 기존 버튼 제거 후 새 링크 삽입
+            const oldBtn = airEl.querySelector('.tp-book-btn');
+            if (oldBtn) oldBtn.remove();
+            const btnEl = document.createElement('a');
+            btnEl.href = d._tpLink;
+            btnEl.target = '_blank';
+            btnEl.rel = 'noopener noreferrer';
+            btnEl.className = 'tp-book-btn';
+            btnEl.style.cssText = 'display:inline-block;margin-top:8px;padding:5px 14px;font-size:12px;font-weight:600;color:#0071e3;background:#e8f4ff;border-radius:20px;text-decoration:none;';
+            btnEl.textContent = '🔖 항공 예약하기 →';
+            airEl.appendChild(btnEl);
+          }
+        }
       }
 
       function goHome() {
@@ -7373,6 +7396,97 @@
         });
       }
       fetchWeather();
+
+      // ── Travelpayouts 실시간 항공 가격 연동 ──
+      (function fetchTpFlightPrices() {
+        var TP_TOKEN = '6a6084c8f32d44f563ba4baa66f11975';
+        var TP_MARKER = '510036';
+        var ORIGIN = 'ICN';
+
+        // 목적지별 IATA 코드
+        var DEST_IATA = {
+          lisbon: 'LIS', danang: 'DAD', jeju: 'CJU', taipei: 'TPE',
+          osaka: 'KIX', tokyo: 'TYO', bangkok: 'BKK', bali: 'DPS',
+          chiangmai: 'CNX', singapore: 'SIN', cebu: 'CEB', nhatrang: 'CXR',
+          fukuoka: 'FUK', sapporo: 'CTS', okinawa: 'OKA', kyoto: 'KIX',
+          phuquoc: 'PQC', hochiminh: 'SGN', hanoi: 'HAN', boracay: 'MPH',
+          phuket: 'HKT', hongkong: 'HKG', guam: 'GUM', hawaii: 'HNL',
+          paris: 'CDG', kualalumpur: 'KUL', maldives: 'MLE',
+          sydney: 'SYD', shanghai: 'PVG', barcelona: 'BCN'
+        };
+
+        // 제휴 예약 링크 생성 (Jetradar)
+        window.getTpFlightLink = function(destId) {
+          var iata = DEST_IATA[destId];
+          if (!iata) return null;
+          var now = new Date();
+          var yr = now.getFullYear();
+          var mo = String(now.getMonth() + 2).padStart(2, '0'); // 다음달
+          return 'https://www.jetradar.com/flights/' + ORIGIN + '--' + iata +
+                 '/?marker=' + TP_MARKER + '&origin_iata=' + ORIGIN +
+                 '&destination_iata=' + iata + '&depart_date=' + yr + '-' + mo;
+        };
+
+        // 최저가 API 호출 (목적지별)
+        fetch('https://api.travelpayouts.com/v1/prices/cheap?origin=' + ORIGIN +
+              '&token=' + TP_TOKEN + '&currency=KRW&page=1&limit=1000')
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (!data || !data.data) return;
+            // API 응답 구조: data.data[IATA] = { price, airline, ... }
+            v1_0_9_DEST_DATA.forEach(function(dest) {
+              var iata = DEST_IATA[dest.id];
+              if (!iata || !data.data[iata]) return;
+              var prices = data.data[iata];
+              // 여러 항공사 중 최저가 선택
+              var minPrice = Infinity;
+              Object.keys(prices).forEach(function(k) {
+                if (prices[k].price && prices[k].price < minPrice) {
+                  minPrice = prices[k].price;
+                }
+              });
+              if (minPrice === Infinity || minPrice <= 0) return;
+              var priceKrw = Math.round(minPrice / 10000);
+              dest.airfare = priceKrw + '만원~';
+              dest.airfareSub = '실시간 최저가 (Travelpayouts)';
+              dest._tpLink = window.getTpFlightLink(dest.id);
+            });
+            // 현재 보이는 카드 업데이트
+            if (document.getElementById('compare-view') &&
+                document.getElementById('compare-view').style.display === 'block') {
+              for (var i = 0; i < 3; i++) {
+                var sel = document.getElementById('sel' + i);
+                if (!sel) continue;
+                var dIdx = parseInt(sel.value);
+                if (isNaN(dIdx)) continue;
+                var d = v1_0_9_DEST_DATA[dIdx];
+                if (!d || !d.airfare) continue;
+                // air-i 셀 업데이트
+                var airEl = document.getElementById('air-' + i);
+                if (airEl) {
+                  var mEl = airEl.querySelector('.main');
+                  var sEl = airEl.querySelector('.sub');
+                  var kEl = airEl.querySelector('.kicker');
+                  if (mEl) { mEl.textContent = d.airfare; }
+                  if (sEl) { sEl.textContent = '실시간 최저가 (왕복)'; }
+                  if (kEl) { kEl.textContent = '이코노미 · 인천 출발'; }
+                  // 예약 링크 버튼 추가 (중복 방지)
+                  if (d._tpLink && !airEl.querySelector('.tp-book-btn')) {
+                    var btnEl = document.createElement('a');
+                    btnEl.href = d._tpLink;
+                    btnEl.target = '_blank';
+                    btnEl.rel = 'noopener noreferrer';
+                    btnEl.className = 'tp-book-btn';
+                    btnEl.style.cssText = 'display:inline-block;margin-top:8px;padding:5px 14px;font-size:12px;font-weight:600;color:#0071e3;background:#e8f4ff;border-radius:20px;text-decoration:none;';
+                    btnEl.textContent = '🔖 항공 예약하기 →';
+                    airEl.appendChild(btnEl);
+                  }
+                }
+              }
+            }
+          })
+          .catch(function(e) { console.log('TP flight API error:', e); });
+      })();
 
       // ── 위자드 스크롤 트리거 ──
       var _wizScrollObserver = null;
