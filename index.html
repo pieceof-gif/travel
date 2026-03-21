@@ -1453,12 +1453,30 @@
       .sel-grid, .sec-hd { max-width: 100% !important; }
       .sec-hd { margin: 60px 0 16px; padding: 0 20px; }
 
+      /* 취향 설정 버튼 태블릿에서 숨김 */
+      #wiz-launcher { display: none !important; }
+
     }
 
     /* ── RESPONSIVE: Mobile only (2-col layout) ── */
     @media (max-width: 768px) {
       /* fixed-header-clone 모바일에서 숨김 (sticky-sel이 대신 처리) */
       #fixed-header-clone { display: none !important; }
+
+      /* sticky-sel: 모바일에서 상단 고정 (nav 바로 아래) */
+      .sticky-sel {
+        position: sticky !important;
+        top: 44px !important;
+        z-index: 90 !important;
+        background: rgba(255,255,255,0.97) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        border-bottom: 1px solid rgba(0,0,0,0.07);
+        box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+      }
+
+      /* 취향 설정 버튼 모바일에서 숨김 */
+      #wiz-launcher { display: none !important; }
 
       /* sticky-sel: 2열 그리드 */
       .sel-grid {
@@ -1472,6 +1490,7 @@
 
       /* 3번째 비교 컬럼 완전 숨김 */
       #col-2, .dest-col:nth-child(3) { display: none !important; }
+
 
       /* dest-images: 2열 flex */
       #comparison-body { overflow-x: hidden; }
