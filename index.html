@@ -13,7 +13,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>여행지 비교하기 — 최고의 여행</title>
-
   <!-- Flatpickr (Calendar) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -98,7 +97,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding-top: calc(14vh + 100px);
+      padding-top: calc(12vh + 120px);
     }
 
     .home-title {
@@ -243,11 +242,18 @@
       width: min(740px, calc(100vw - 32px));
     }
 
-    /* Traveler panel: right side */
+    /* Traveler panel: right side (mobile will override) */
     #traveler-panel, #traveler-panel-c {
-      right: 76px;
+      right: 0;
       padding: 8px 20px 16px;
       min-width: 340px;
+    }
+
+    /* Budget panel */
+    #budget-panel, #budget-panel-c {
+      right: 0;
+      padding: 24px;
+      min-width: 320px;
     }
 
     /* Budget panel: right side */
@@ -1445,7 +1451,8 @@
     /* ── RESPONSIVE: Tablet + Mobile (Apple compare style — 2-col scroll) ── */
     @media (max-width: 1068px) {
       /* NAV */
-      .nav { padding: 0 16px; }
+      .nav { padding: 0 16px; position: sticky; top: 0; z-index: 1000; }
+      .nav-brand { font-size: 16px; }
       .nav-actions .nav-link { display: none; }
       .nav-actions .btn-nav { font-size: 11px; padding: 5px 12px; }
 
@@ -1453,32 +1460,124 @@
       .sel-grid, .sec-hd { max-width: 100% !important; }
       .sec-hd { margin: 60px 0 16px; padding: 0 20px; }
 
-      /* 취향 설정 버튼 태블릿에서 숨김 */
-      #wiz-launcher { display: none !important; }
-
+      /* 취향 설정 버튼 위치 조정 (검색바 공간 확보) */
+      #wiz-launcher { 
+        bottom: 20px !important; 
+        left: 20px !important;
+        z-index: 2100 !important;
+      }
     }
 
     /* ── RESPONSIVE: Mobile only (2-col layout) ── */
     @media (max-width: 768px) {
-      /* fixed-header-clone 모바일에서 숨김 (sticky-sel이 대신 처리) */
-      #fixed-header-clone { display: none !important; }
-
-      /* sticky-sel: 모바일에서 화면 상단 완전 고정 */
-      .sticky-sel {
-        position: fixed !important;
-        top: 44px !important;
-        left: 0 !important;
-        right: 0 !important;
-        z-index: 90 !important;
-        background: rgba(255,255,255,0.97) !important;
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
-        border-bottom: 1px solid rgba(0,0,0,0.07);
-        box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+      /* 띠배너: 스크롤 시 함께 올라가도록(Static/Relative) 수정 */
+      .top-banner { 
+        position: relative !important; 
+        top: 0 !important; 
+        z-index: 5 !important;
+        margin-bottom: 0 !important;
       }
 
-      /* 비교뷰 검색 필터폼 모바일에서 숨김 (수직스택 깨짐 방지) */
-      #compare-view .sb-wrap { display: none !important; }
+      /* sticky-sel: 모바일에서 GNB(44px) 바로 아래 실시간 고정 */
+      .sticky-sel {
+        position: sticky !important;
+        top: 44px !important; 
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 800 !important;
+        background: rgba(255,255,255,0.98) !important;
+        backdrop-filter: saturate(180%) blur(20px) !important;
+        -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+        border-bottom: 1px solid rgba(0,0,0,0.06);
+        padding: 10px 0 14px !important;
+      }
+
+      /* 비교뷰 검색 필터: 상단 배치 및 '알약(Pill)' 디자인 적용 */
+      #compare-view .sb-wrap {
+        position: relative !important;
+        bottom: auto !important;
+        left: auto !important;
+        right: auto !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 12px 20px 12px !important;
+        background: transparent !important;
+        z-index: 10 !important;
+        display: block !important;
+      }
+      #compare-view .sb {
+        position: relative !important;
+        height: 54px !important;
+        padding: 4px !important;
+        border-radius: 980px !important;
+        flex-direction: row !important;
+        gap: 0 !important;
+        background: #fff !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05) !important;
+        border: 0.5px solid rgba(0,0,0,0.04) !important;
+        display: flex !important;
+        align-items: center !important;
+        padding-right: 56px !important; /* Space for the absolute button */
+      }
+      #compare-view .sb-seg {
+        flex: 1 !important;
+        padding: 0 2px !important;
+        height: 100% !important;
+        justify-content: center !important;
+        min-width: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+      }
+      #compare-view .sb-label { display: none !important; }
+      #compare-view .sb-val { 
+        font-size: 11px !important; 
+        text-align: center; 
+        color: #1d1d1f !important; 
+        font-weight: 400 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        width: 100%;
+      }
+      #compare-view .sb-div { height: 16px !important; align-self: center; background: #eee !important; display: block !important; flex-shrink: 0; }
+      #compare-view .sb-btn { 
+        position: absolute !important;
+        right: 5px !important;
+        top: 5px !important;
+        width: 44px !important; 
+        height: 44px !important; 
+        border-radius: 50% !important; 
+        margin: 0 !important; 
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+      }
+      #compare-view .sb-btn-text { display: none !important; }
+
+      /* 모바일 패널 최적화 */
+      .sb-panel {
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+        width: calc(100vw - 20px) !important;
+        max-width: 360px !important;
+        min-width: 0 !important;
+      }
+      #date-panel, #date-panel-c {
+        padding: 8px !important;
+      }
+      /* 달력 강제 1개월 너비 고정 */
+      .flatpickr-calendar {
+        width: 300px !important;
+        min-width: 300px !important;
+      }
+      .flatpickr-innerContainer { width: 300px !important; }
+      .flatpickr-rContainer { width: 300px !important; min-width: 300px !important; }
+      .dayContainer { width: 300px !important; min-width: 300px !important; max-width: 300px !important; }
+      .flatpickr-month { width: 300px !important; }
 
       /* 배너 모바일 컴팩트 */
       #compare-view .top-banner {
@@ -1574,77 +1673,51 @@
     }
 
 
-    /* ── RESPONSIVE: Mobile only ── */
+    /* ── RESPONSIVE: Home Search Bar Optimization ── */
     @media (max-width: 780px) {
       /* HOME search bar wraps */
-      .home-content { padding-top: calc(10vh + 100px); }
-      .home-title { font-size: 34px; letter-spacing: -1px; }
+      .home-content { padding-top: calc(8vh + 60px); }
+      .home-title { font-size: 32px; letter-spacing: -0.8px; margin-bottom: 12px; }
+      .sb-wrap { width: calc(100% - 32px) !important; margin: 16px auto 0 !important; }
       .sb {
         flex-direction: column;
         height: auto;
-        border-radius: 20px;
+        border-radius: 24px;
         padding: 8px;
         gap: 2px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
       }
       .sb-seg {
-        height: 54px;
-        border-radius: 14px;
+        height: 52px;
+        border-radius: 16px;
         width: 100%;
+        padding: 0 16px;
       }
       .sb-div { display: none; }
       .sb-btn {
         width: 100%;
-        border-radius: 14px;
-        height: 48px;
+        border-radius: 16px;
+        height: 50px;
         margin-right: 0;
-        margin-top: 4px;
+        margin-top: 6px;
         gap: 8px;
       }
-      .sb-btn-text { display: inline !important; }
-      /* Panel positioning */
-      #region-panel, #region-panel-c { left: 0; right: 0; min-width: unset; }
-      #date-panel, #date-panel-c { left: 0; right: 0; transform: none; width: auto; min-width: unset; padding: 12px 8px; }
-      #traveler-panel, #traveler-panel-c { right: 0; left: 0; min-width: unset; }
-      #budget-panel, #budget-panel-c { right: 0; left: 0; min-width: unset; }
-      .search-bar {
-        width: calc(100% - 32px);
-        flex-wrap: wrap;
-        border-radius: 18px;
-        padding: 8px;
-        gap: 0;
-      }
-      .search-field + .search-field::before { display: none; }
-      .search-btn-pill {
-        width: 100%;
-        justify-content: center;
-        margin: 6px 0 0;
-        border-radius: 12px;
-        height: 46px;
-      }
-
-      /* Compare search bar also wraps */
-      #compare-view > div > .search-bar {
-        width: calc(100% - 32px);
-        flex-wrap: wrap;
-        border-radius: 18px;
-        padding: 8px;
-      }
-
+      .sb-btn-text { display: inline !important; font-size: 15px; }
+      
+      /* Results specific optimization */
+      #compare-view > div > .top-banner { display: block !important; margin-bottom: 0; }
+      
       /* Typography scale-down */
       .v-xl { font-size: 26px; }
       .v-lg { font-size: 20px; }
       .v-md { font-size: 15px; }
-      .dest-name { font-size: 19px; }
-      .dest-narrative { font-size: 15px; margin: 16px 0; }
-      .dest-sub { font-size: 12px; min-height: auto; }
-      .sec-title { font-size: 21px; margin-bottom: 16px; padding-bottom: 14px; }
+      .dest-name { font-size: 18px; }
+      .dest-narrative { font-size: 14px; margin: 12px 0; }
+      .dest-sub { font-size: 11px; min-height: auto; }
+      .sec-title { font-size: 20px; margin-bottom: 12px; padding-bottom: 10px; }
 
-      #compare-sb-wrap { margin: 20px auto 20px !important; padding: 0 16px; }
-      #compare-sb { border-radius: 20px; }
-      /* sb segment 여백 개선 */
-      .sb { padding: 10px; gap: 4px; }
-      .sb-seg { height: 60px; padding: 0 16px; }
-      footer { padding: 40px 16px; margin-top: 60px; }
+      #compare-sb-wrap { transform: scale(0.95); margin: 0 !important; }
+      footer { padding: 40px 16px; margin-top: 40px; }
     }
 
     /* ── WIZARD ── */
@@ -2016,6 +2089,9 @@
     <nav class="home-nav">
       <span class="nav-brand">최고의 여행</span>
     </nav>
+    <div class="top-banner" style="position: relative; z-index: 99;">
+      4월 1일부터 유류세 인상 예정. 현재 항공권이 평균 8–15% 저렴합니다. 이번 주 예약을 권장합니다.
+    </div>
 
     <div class="home-content">
       <h1 class="home-title">어디로 떠나시나요?</h1>
@@ -2166,7 +2242,7 @@
       </div>
     </nav>
 
-    <div class="top-banner">
+    <div class="top-banner" id="compare-top-banner" style="position: relative; z-index: 99;">
       4월 1일부터 유류세 인상 예정. 현재 항공권이 평균 8–15% 저렴합니다. 이번 주 예약을 권장합니다.
     </div>
 
@@ -7638,6 +7714,12 @@
         if (!sentinel) return;
         _wizScrollObserver = new IntersectionObserver(function(entries) {
           if (entries[0].isIntersecting) {
+            // 태블릿/모바일에서는 자동 팝업 비활성화 (사용자 명시적 요청)
+            if (window.innerWidth <= 1068) {
+              _wizScrollObserver.disconnect();
+              _wizScrollObserver = null;
+              return;
+            }
             _wizScrollObserver.disconnect();
             _wizScrollObserver = null;
             var panel = document.getElementById('wiz-panel');
