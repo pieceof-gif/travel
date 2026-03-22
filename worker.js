@@ -139,8 +139,129 @@ export default {
       }
     }
 
+    // ── /api/news — 실시간 여행 뉴스 헤드라인 ──────────────
+    if (url.pathname === '/api/news') {
+      // Google News RSS: 한국 여행 뉴스 (항공권, 해외여행 관련)
+      const queries = [
+        '해외여행 항공권',
+        '여행 트렌드',
+      ];
+      const q = encodeURIComponent(queries[Math.floor(Math.random() * queries.length)]);
+      const rssUrl = `https://news.google.com/rss/search?q=${q}&hl=ko&gl=KR&ceid=KR:ko`;
+
+      try {
+        const res = await fetch(rssUrl, {
+          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TravelBot/1.0)' }
+        });
+        if (!res.ok) throw new Error('RSS fetch failed: ' + res.status);
+        const xml = await res.text();
+
+        // XML에서 <item> 블록 파싱 (정규표현식으로 간단 처리)
+        const items = [];
+        const itemRegex = /<item>([\s\S]*?)<\/item>/g;
+        let match;
+        while ((match = itemRegex.exec(xml)) !== null && items.length < 6) {
+          const block = match[1];
+          const titleM = /<title>([\s\S]*?)<\/title>/.exec(block);
+          const linkM  = /<link>([\s\S]*?)<\/link>/.exec(block) ||
+                         /<link\s+href="([^"]+)"/.exec(block);
+          const pubM   = /<pubDate>([\s\S]*?)<\/pubDate>/.exec(block);
+          if (!titleM) continue;
+
+          // HTML 엔티티 및 사이트명 제거 (제목 끝 " - 매체명" 패턴 삭제)
+          let title = titleM[1]
+            .replace(/<!\[CDATA\[|\]\]>/g, '')
+            .replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&')
+            .replace(/&quot;/g,'"').replace(/&#39;/g,"'")
+            .replace(/\s*-\s*[^-]+$/, '')  // " - 매체명" 제거
+            .trim();
+
+          if (!title || title.length < 8) continue;
+
+          items.push({
+            title,
+            link: linkM ? linkM[1].trim() : '',
+            pubDate: pubM ? pubM[1].trim() : '',
+          });
+        }
+
+        return new Response(JSON.stringify({ news: items }), { headers: CORS_HEADERS });
+      } catch (e) {
+        // 폴백: 기본 문구 반환
+        return new Response(JSON.stringify({
+          news: [
+            { title: '실시간 여행 정보를 불러오는 중입니다.', link: '' }
+          ]
+        }), { headers: CORS_HEADERS });
+      }
+    }
+
+    // ── /api/visa — 한국 여권 비자 요건 (GitHub passport-index-dataset) ──
+    if (url.pathname === '/api/visa') {
+      // GitHub ilyankou/passport-index-dataset (MIT License) - 한국여권(KR) 기준
+      const csvUrl = 'https://raw.githubusercontent.com/ilyankou/passport-index-dataset/master/passport-index-tidy-iso2.csv';
+      try {
+        const res = await fetch(csvUrl);
+        if (!res.ok) throw new Error('CSV fetch failed: ' + res.status);
+        const text = await res.text();
+
+        // KR 행만 필터링
+        const lines = text.split('\n');
+        const krData = {};
+        for (const line of lines) {
+          const parts = line.trim().split(',');
+          if (parts.length < 3) continue;
+          const [passport, destination, requirement] = parts;
+          if (passport !== 'KR') continue;
+          krData[destination] = requirement;
+        }
+
+        // 목적지 IATA → ISO2 매핑 (우리 사이트 목적지 기준)
+        const iataToIso2 = {
+          LIS: 'PT', DAD: 'VN', TPE: 'TW',
+          OSA: 'JP', TYO: 'JP', BKK: 'TH', DPS: 'ID',
+          CNX: 'TH', SIN: 'SG', CEB: 'PH',
+          FUK: 'JP', SPK: 'JP', OKA: 'JP',
+          PQC: 'VN', SGN: 'VN', HAN: 'VN', MPH: 'PH',
+          HKT: 'TH', HKG: 'HK', GUM: 'US', HNL: 'US',
+          PAR: 'FR', KUL: 'MY', MLE: 'MV',
+          SYD: 'AU', SHA: 'CN', BCN: 'ES',
+        };
+
+        // 우리 목적지별 비자 요건 정리
+        const result = {};
+        for (const [iata, iso2] of Object.entries(iataToIso2)) {
+          const req = krData[iso2];
+          if (!req) continue;
+
+          // 요건 한국어 변환
+          let label, badge;
+          const days = parseInt(req);
+          if (!isNaN(days)) {
+            label = `무비자 ${days}일`; badge = 'visa-free';
+          } else if (req === 'visa free') {
+            label = '무비자'; badge = 'visa-free';
+          } else if (req === 'visa on arrival') {
+            label = '도착비자'; badge = 'on-arrival';
+          } else if (req === 'e-visa') {
+            label = '전자비자(e-Visa)'; badge = 'e-visa';
+          } else if (req === 'eta') {
+            label = '전자여행허가(ETA)'; badge = 'eta';
+          } else {
+            label = '비자 필요'; badge = 'required';
+          }
+          result[iata] = { req, label, badge };
+        }
+
+        return new Response(JSON.stringify({ data: result, updated: new Date().toISOString() }), { headers: CORS_HEADERS });
+      } catch (e) {
+        return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: CORS_HEADERS });
+      }
+    }
+
     return new Response(JSON.stringify({ status: 'ok', service: '최고의 여행 API Proxy' }), {
       headers: CORS_HEADERS
     });
+
   }
 };
