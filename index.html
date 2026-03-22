@@ -144,7 +144,8 @@
       min-width: 0;
     }
 
-    .sb-seg--wide { flex: 0.8; }
+    /* 날짜 세그먼트도 동일하게 flex:1 (이전에 0.8로 불균등했던 문제 수정) */
+    .sb-seg--wide { flex: 1; }
 
     .sb-seg:hover, .sb-seg.sb-active {
       background: rgba(0,0,0,0.05);
@@ -230,8 +231,8 @@
     /* Region panel: left-aligned */
     #region-panel, #region-panel-c {
       left: 0;
-      padding: 8px;
-      min-width: 230px;
+      padding: 8px 16px;
+      min-width: 300px;
     }
 
     /* Date panel: centered */
@@ -242,9 +243,139 @@
       width: min(740px, calc(100vw - 32px));
     }
 
-    /* Traveler panel: right side (mobile will override) */
+    /* ── 데스크톱 2개월 달력 (에어비앤비 스타일) ── */
+    .dc-wrap {
+      position: relative;
+      user-select: none;
+      -webkit-user-select: none;
+      padding-top: 4px;
+    }
+    .dc-months {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 48px;
+    }
+    .dc-month-header {
+      text-align: center;
+      font-size: 15px;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 20px;
+      letter-spacing: -0.1px;
+      line-height: 1;
+      padding: 6px 0;
+    }
+    .dc-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .dc-weekdays span {
+      font-size: 12px;
+      color: #717171;
+      font-weight: 400;
+      padding: 6px 0;
+    }
+    .dc-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+    /* 날짜 셀: 전체 높이가 범위 배경 영역 */
+    .dc-day {
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: transparent;
+      position: relative;
+    }
+    .dc-day.empty { pointer-events: none; }
+    .dc-day.disabled { pointer-events: none; }
+    .dc-day.disabled .dc-num { color: #d0d0d0; text-decoration: line-through; }
+    /* 날짜 숫자 원형 배지 */
+    .dc-num {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      font-weight: 400;
+      color: #222;
+      position: relative;
+      z-index: 1;
+      transition: background 0.12s;
+    }
+    .dc-day.today .dc-num {
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    /* 선택된 날짜: 진한 원 */
+    .dc-day.sel-start .dc-num,
+    .dc-day.sel-end .dc-num {
+      background: #222 !important;
+      color: #fff !important;
+      font-weight: 600;
+    }
+    /* 범위 배경: 셀 전체 높이 이용. before로 세로 중간 영역에 배경 */
+    .dc-day.in-range::before,
+    .dc-day.sel-start.has-range::before,
+    .dc-day.sel-end.has-range::before {
+      content: '';
+      position: absolute;
+      top: 6px; bottom: 6px;
+      left: 0; right: 0;
+      background: #f2f2f2;
+      z-index: 0;
+    }
+    /* in-range 기본 (전체 width) */
+    .dc-day.in-range::before { left: 0; right: 0; border-radius: 0; }
+    /* row 시작(일요일/달 첫날): 왼쪽 끝까지 채우고 왼쪽만 둥글게 */
+    .dc-day.in-range.row-start::before,
+    .dc-day.month-start-range::before {
+      left: 0; right: 0;
+      border-radius: 20px 0 0 20px;
+    }
+    /* row 끝(토요일/달 마지막날): 오른쪽 끝까지 채우고 오른쪽만 둥글게 */
+    .dc-day.in-range.row-end::before,
+    .dc-day.month-end-range::before {
+      left: 0; right: 0;
+      border-radius: 0 20px 20px 0;
+    }
+    /* sel-start: 오른쪽 절반만 범위 배경, 끊김은 검은 원이 담당 */
+    .dc-day.sel-start.has-range::before { left: 50%; right: 0; border-radius: 0; }
+    /* sel-end: 왼쪽 절반만 범위 배경, 끊김은 검은 원이 담당 */
+    .dc-day.sel-end.has-range::before   { left: 0; right: 50%; border-radius: 0; }
+    /* hover: range에 없는 선택 가능 날만, 원 hover */
+    .dc-day:not(.disabled):not(.empty):not(.sel-start):not(.sel-end):not(.in-range):hover .dc-num {
+      background: #f0f0f0;
+    }
+    .dc-day:not(.disabled):not(.empty):not(.sel-start):not(.sel-end).in-range:hover .dc-num {
+      background: rgba(0,0,0,0.08);
+    }
+    /* 네비게이션 화살표: 에어비앤비 스타일 — 테두리 없이 hover 시 회색 원 */
+    .dc-nav {
+      position: absolute;
+      top: 2px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #222;
+      transition: background 0.12s;
+      z-index: 2;
+    }
+    .dc-nav:hover { background: #f0f0f0; }
+    .dc-prev { left: 0; }
+    .dc-next { right: 0; }
+
+    /* Traveler panel: centered under traveler segment (3rd of 4 segments) */
     #traveler-panel, #traveler-panel-c {
-      right: 0;
+      left: 62%;
+      transform: translateX(-50%);
       padding: 8px 20px 16px;
       min-width: 340px;
     }
@@ -263,21 +394,56 @@
       min-width: 300px;
     }
 
-    /* Region options */
+    /* Region options — 모바일 cv-row 스타일 통일 */
     .sb-region-opt {
-      padding: 10px 16px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 400;
-      color: #1d1d1f;
-      transition: background 0.12s;
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
+      padding: 14px 4px;
+      cursor: pointer;
+      border-radius: 10px;
+      margin: 0 -4px;
+      transition: background 0.1s;
     }
-    .sb-region-opt:hover { background: #f5f5f7; }
-    .sb-region-opt.active { background: #f0f0f5; font-weight: 600; }
+    .sb-region-opt:active { background: #f0f0f0; }
+    .sb-region-title { font-size: 15px; font-weight: 500; color: #1d1d1f; }
+    .sb-region-sub { font-size: 12px; color: #86868b; margin-top: 3px; }
+    .sb-region-hr { height: 1px; background: #f0f0f0; }
+    .sb-region-check {
+      width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+      color: #1d1d1f;
+      flex-shrink: 0;
+    }
+    .sb-region-opt.active .sb-region-title { font-weight: 600; }
+    /* Budget options — 동일 스타일 */
+    .sb-budget-header {
+      font-size: 13px;
+      font-weight: 600;
+      color: #86868b;
+      margin-bottom: 4px;
+      padding: 0 4px;
+    }
+    .sb-budget-opt {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 4px;
+      cursor: pointer;
+      border-radius: 10px;
+      margin: 0 -4px;
+      transition: background 0.1s;
+    }
+    .sb-budget-opt:active { background: #f0f0f0; }
+    .sb-budget-title { font-size: 15px; font-weight: 500; color: #1d1d1f; }
+    .sb-budget-sub { font-size: 12px; color: #86868b; margin-top: 3px; }
+    .sb-budget-check {
+      width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+      color: #1d1d1f;
+      flex-shrink: 0;
+    }
+    .sb-budget-opt.active .sb-budget-title { font-weight: 600; }
 
     /* Date panel tabs */
     .sb-date-tabs {
@@ -2114,8 +2280,19 @@
     .cv-flex-msg { padding-bottom: 20px; }
 
 
-    /* ── RESPONSIVE: Home Search Bar Optimization ── */
-    @media (max-width: 780px) {
+    /* ── RESPONSIVE: 태블릿 (521px ~ 900px) — 가로형 pill 유지 ── */
+    @media (min-width: 521px) and (max-width: 900px) {
+      .home-content { padding-top: calc(4vh + 40px); }
+      .home-title { font-size: 36px; margin-bottom: 20px; }
+      .sb-wrap { width: calc(100% - 48px) !important; }
+      .sb { height: 58px; }
+      .sb-seg { padding: 0 14px; }
+      .sb-label { font-size: 10px; }
+      .sb-val { font-size: 12px; }
+    }
+
+    /* ── RESPONSIVE: 모바일 (≤520px) — 세로 리스트형 ── */
+    @media (max-width: 520px) {
       /* HOME: 배너 텍스트 반응형 — 모바일에서 짧은 문구 */
       .banner-full { display: none !important; }
       .banner-short { display: inline !important; }
@@ -2700,12 +2877,35 @@
 
         <!-- PANEL 1: 여행 지역 -->
         <div class="sb-panel" id="region-panel">
-          <div class="sb-region-opt active" data-val="" onclick="selectRegion(event,'')">🌏 어디든지 (전체)</div>
-          <div class="sb-region-opt" data-val="japan" onclick="selectRegion(event,'japan')">🇯🇵 일본</div>
-          <div class="sb-region-opt" data-val="sea" onclick="selectRegion(event,'sea')">🌴 동남아시아</div>
-          <div class="sb-region-opt" data-val="europe" onclick="selectRegion(event,'europe')">🇪🇺 유럽</div>
-          <div class="sb-region-opt" data-val="east_asia" onclick="selectRegion(event,'east_asia')">🏙️ 동아시아</div>
-          <div class="sb-region-opt" data-val="pacific" onclick="selectRegion(event,'pacific')">🌺 괌·하와이·호주</div>
+          <div class="sb-region-opt active" data-val="" onclick="selectRegion(event,'')">
+            <div><div class="sb-region-title">🌏 어디든지</div><div class="sb-region-sub">전체 지역 비교</div></div>
+            <span class="sb-region-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-region-opt" data-val="japan" onclick="selectRegion(event,'japan')">
+            <div><div class="sb-region-title">🇯🇵 일본</div><div class="sb-region-sub">도쿄 · 오사카 · 후쿠오카 등</div></div>
+            <span class="sb-region-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-region-opt" data-val="sea" onclick="selectRegion(event,'sea')">
+            <div><div class="sb-region-title">🌴 동남아시아</div><div class="sb-region-sub">발리 · 방콕 · 세부 등</div></div>
+            <span class="sb-region-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-region-opt" data-val="europe" onclick="selectRegion(event,'europe')">
+            <div><div class="sb-region-title">🇪🇺 유럽</div><div class="sb-region-sub">파리 · 로마 · 바르셀로나 등</div></div>
+            <span class="sb-region-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-region-opt" data-val="east_asia" onclick="selectRegion(event,'east_asia')">
+            <div><div class="sb-region-title">🏙️ 동아시아</div><div class="sb-region-sub">홍콩 · 마카오 · 싱가포르 등</div></div>
+            <span class="sb-region-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-region-opt" data-val="pacific" onclick="selectRegion(event,'pacific')">
+            <div><div class="sb-region-title">🌺 괌·하와이·호주</div><div class="sb-region-sub">리조트 · 자연경관</div></div>
+            <span class="sb-region-check"></span>
+          </div>
         </div>
 
         <!-- PANEL 2: 날짜 (flatpickr inline) -->
@@ -2715,7 +2915,9 @@
             <button class="sb-date-tab" id="date-tab-flexible" onclick="switchDateTab('flexible',event)" type="button">언제든지</button>
           </div>
           <div id="date-panel-specific">
-            <div id="fp-home-container"></div>
+            <div id="dc-home-wrap">
+              <!-- JS가 2개월 달력을 렌더링 -->
+            </div>
           </div>
           <div id="date-panel-flexible" style="display:none">
             <div class="sb-date-flexible">
@@ -2779,15 +2981,40 @@
 
         <!-- PANEL 4: 예산 -->
         <div class="sb-panel" id="budget-panel">
-          <div class="budget-panel-title">1인당 예산 (항공+숙박 기준)</div>
-          <div class="budget-pills">
-            <button class="budget-pill" data-val="50" onclick="selectBudget('50',event)" type="button">50만원 이내</button>
-            <button class="budget-pill" data-val="80" onclick="selectBudget('80',event)" type="button">80만원 이내</button>
-            <button class="budget-pill" data-val="100" onclick="selectBudget('100',event)" type="button">100만원 이내</button>
-            <button class="budget-pill" data-val="150" onclick="selectBudget('150',event)" type="button">150만원 이내</button>
-            <button class="budget-pill" data-val="200" onclick="selectBudget('200',event)" type="button">200만원 이내</button>
-            <button class="budget-pill" data-val="300" onclick="selectBudget('300',event)" type="button">300만원 이내</button>
-            <button class="budget-pill" data-val="unlimited" onclick="selectBudget('unlimited',event)" type="button" style="grid-column:1/-1">상관없음</button>
+          <div class="sb-budget-header">1인당 예산 (항공+숙박 기준)</div>
+          <div class="sb-budget-opt active" data-val="unlimited" onclick="selectBudget('unlimited',event)">
+            <div><div class="sb-budget-title">상관없음</div><div class="sb-budget-sub">예산 제한 없이 비교</div></div>
+            <span class="sb-budget-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="50" onclick="selectBudget('50',event)">
+            <div><div class="sb-budget-title">50만원 이내</div><div class="sb-budget-sub">가성비 여행</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="80" onclick="selectBudget('80',event)">
+            <div><div class="sb-budget-title">80만원 이내</div><div class="sb-budget-sub">알뜰 여행</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="100" onclick="selectBudget('100',event)">
+            <div><div class="sb-budget-title">100만원 이내</div><div class="sb-budget-sub">합리적 여행</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="150" onclick="selectBudget('150',event)">
+            <div><div class="sb-budget-title">150만원 이내</div><div class="sb-budget-sub">여유 있는 여행</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="200" onclick="selectBudget('200',event)">
+            <div><div class="sb-budget-title">200만원 이내</div><div class="sb-budget-sub">프리미엄 여행</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="300" onclick="selectBudget('300',event)">
+            <div><div class="sb-budget-title">300만원 이내</div><div class="sb-budget-sub">럭셔리 여행</div></div>
+            <span class="sb-budget-check"></span>
           </div>
         </div>
       </div>
@@ -8088,6 +8315,116 @@
         el.innerHTML = rows.join('');
       }
 
+      // ── 데스크톱 2개월 달력 ──
+      var dcSel = { start: null, end: null };
+      var dcBaseYear, dcBaseMonth; // 현재 보이는 왼쪽 달
+      var dcInitialized = false;
+
+      function initDesktopCal(containerId, displayId) {
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        if (!dcBaseYear) {
+          var today = new Date();
+          dcBaseYear = today.getFullYear();
+          dcBaseMonth = today.getMonth();
+        }
+        dcRenderMonths(container, displayId);
+      }
+
+      function dcRenderMonths(container, displayId) {
+        var today = new Date(); today.setHours(0,0,0,0);
+        var left  = new Date(dcBaseYear, dcBaseMonth, 1);
+        var right = new Date(dcBaseYear, dcBaseMonth + 1, 1);
+
+        var html = '<div class="dc-wrap">';
+        // 이전 화살표 (SVG chevron)
+        html += '<button class="dc-nav dc-prev" onclick="dcNav(-1,\''+container.id+'\',\''+displayId+'\')" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>';
+        // 다음 화살표 (SVG chevron)
+        html += '<button class="dc-nav dc-next" onclick="dcNav(1,\''+container.id+'\',\''+displayId+'\')" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>';
+        html += '<div class="dc-months">';
+        html += dcBuildMonth(left, today);
+        html += dcBuildMonth(right, today);
+        html += '</div></div>';
+        container.innerHTML = html;
+        dcRefresh(container);
+      }
+
+      function dcBuildMonth(base, today) {
+        var year = base.getFullYear(), month = base.getMonth();
+        var label = year + '년 ' + (month + 1) + '월';
+        var html = '<div class="dc-month" data-year="'+year+'" data-month="'+month+'">';
+        html += '<div class="dc-month-header">'+label+'</div>';
+        html += '<div class="dc-weekdays"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>';
+        html += '<div class="dc-grid">';
+        var firstDay = new Date(year, month, 1).getDay();
+        for (var e = 0; e < firstDay; e++) html += '<div class="dc-day empty"></div>';
+        var daysInMonth = new Date(year, month + 1, 0).getDate();
+        for (var d = 1; d <= daysInMonth; d++) {
+          var dt = new Date(year, month, d);
+          var iso = year + '-' + String(month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+          var cls = 'dc-day';
+          if (dt < today) cls += ' disabled';
+          else if (dt.getTime() === today.getTime()) cls += ' today';
+          html += '<div class="'+cls+'" data-iso="'+iso+'" onclick="dcClickDay(\''+iso+'\')"><span class="dc-num">'+d+'</span></div>';
+        }
+        html += '</div></div>';
+        return html;
+      }
+
+      function dcNav(dir, containerId, displayId) {
+        dcBaseMonth += dir;
+        if (dcBaseMonth > 11) { dcBaseMonth = 0; dcBaseYear++; }
+        if (dcBaseMonth < 0)  { dcBaseMonth = 11; dcBaseYear--; }
+        var container = document.getElementById(containerId);
+        dcRenderMonths(container, displayId);
+      }
+
+      function dcClickDay(iso) {
+        if (!dcSel.start || (dcSel.start && dcSel.end)) {
+          dcSel = { start: iso, end: null };
+        } else {
+          if (iso < dcSel.start) { dcSel = { start: iso, end: dcSel.start }; }
+          else { dcSel.end = iso; }
+        }
+        // Re-render to apply updated classes
+        ['dc-home-wrap','dc-compare-wrap'].forEach(function(cid) {
+          var c = document.getElementById(cid);
+          if (c && c.querySelector('.dc-wrap')) dcRefresh(c);
+        });
+        // 날짜 표시 동기화
+        if (dcSel.start && dcSel.end) {
+          var fmt = function(s) { var p=s.split('-'); return parseInt(p[1])+'월 '+parseInt(p[2])+'일'; };
+          var txt = dcSel.start === dcSel.end ? fmt(dcSel.start) : fmt(dcSel.start)+' - '+fmt(dcSel.end);
+          ['sb-date-display','sb-date-display-c'].forEach(function(id) {
+            var el = document.getElementById(id); if(el){ el.textContent = txt; el.classList.add('filled'); }
+          });
+          window.selectedDates = [new Date(dcSel.start), new Date(dcSel.end)];
+        }
+      }
+
+      function dcRefresh(container) {
+        var hasRange = dcSel.start && dcSel.end && dcSel.start !== dcSel.end;
+        var s = dcSel.start, e = dcSel.end;
+        container.querySelectorAll('.dc-day:not(.empty)').forEach(function(el) {
+          el.classList.remove('sel-start','sel-end','in-range','has-range','row-start','row-end','month-start-range','month-end-range');
+          var iso = el.dataset.iso; if (!iso) return;
+          if (s && iso === s) { el.classList.add('sel-start'); if(hasRange) el.classList.add('has-range'); }
+          if (e && iso === e) { el.classList.add('sel-end');   if(hasRange) el.classList.add('has-range'); }
+          if (hasRange && iso > s && iso < e) {
+            el.classList.add('in-range');
+            var siblings = Array.from(el.parentNode.children);
+            var col = siblings.indexOf(el) % 7;
+            if (col === 0) el.classList.add('row-start');
+            if (col === 6) el.classList.add('row-end');
+            // 달 첫날(index === firstEmptyLen) 과 달 마지막날 처리
+            var grid = el.parentNode;
+            var allDays = grid.querySelectorAll('.dc-day:not(.empty)');
+            if (el === allDays[0]) el.classList.add('month-start-range');
+            if (el === allDays[allDays.length-1]) el.classList.add('month-end-range');
+          }
+        });
+      }
+
       // ── SEARCH BAR PANEL SYSTEM ──
 
       function toggleSbPanel(panelId, e, segEl) {
@@ -8107,20 +8444,16 @@
           panel.classList.add('open');
           if (segEl) segEl.classList.add('sb-active');
 
-          // Init flatpickr lazily
-          if (panelId === 'date-panel' && typeof flatpickr !== 'undefined') {
-            if (!fpHome) initFlatpickr('home');
-            _activeFp = fpHome;
-          } else if (panelId === 'date-panel-c' && typeof flatpickr !== 'undefined') {
-            if (!fpCompare) initFlatpickr('compare');
-            _activeFp = fpCompare;
+          // 날짜 패널: 커스텀 2개월 달력 초기화
+          if (panelId === 'date-panel') {
+            if (!document.querySelector('#dc-home-wrap .dc-wrap')) {
+              initDesktopCal('dc-home-wrap', 'sb-date-display');
+            }
           }
 
-          // 취향설정 버튼: 패널 열릴 때 숨김
-          if (wizBtn) wizBtn.style.display = 'none';
+          // 취향설정 버튼은 패널 열려도 계속 표시 유지
         } else {
-          // 취향설정 버튼: 패널 닫힐 때 복원
-          if (wizBtn) wizBtn.style.display = '';
+          // wasOpen 상태 - nothing extra needed
         }
       }
 
@@ -8128,8 +8461,6 @@
       function closeAllHomePanels() {
         document.querySelectorAll('.sb-panel.open').forEach(function(p) { p.classList.remove('open'); });
         document.querySelectorAll('.sb-seg.sb-active').forEach(function(s) { s.classList.remove('sb-active'); });
-        var wizBtn = document.getElementById('wiz-launcher');
-        if (wizBtn) wizBtn.style.display = '';
       }
 
       // Legacy alias
@@ -8142,11 +8473,16 @@
         // Close all panels
         document.querySelectorAll('.sb-panel.open').forEach(function(p) { p.classList.remove('open'); });
         document.querySelectorAll('.sb-seg.sb-active').forEach(function(s) { s.classList.remove('sb-active'); });
-        // Update all region opts
-        document.querySelectorAll('.sb-region-opt').forEach(function(o) { o.classList.toggle('active', o.dataset.val === val); });
+        // Update all region opts + checkmarks
+        var checkSVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        document.querySelectorAll('.sb-region-opt').forEach(function(o) {
+          var isActive = o.dataset.val === val;
+          o.classList.toggle('active', isActive);
+          var chk = o.querySelector('.sb-region-check');
+          if (chk) chk.innerHTML = isActive ? checkSVG : '';
+        });
         var labels = {'':'어디든지','japan':'일본','sea':'동남아','europe':'유럽','east_asia':'동아시아','pacific':'괌·하와이·호주','domestic':'국내'};
         var labelText = labels[val] || '어디든지';
-                // (display update done via disp/dispC below)
         var disp = document.getElementById('region-display');
         var dispC = document.getElementById('region-display-c');
         if (disp) { disp.textContent = labelText; disp.classList.add('filled'); }
@@ -8218,12 +8554,18 @@
         if (hiddenComp) hiddenComp.value = val;
         var labels = {'50':'50만원 이내','80':'80만원 이내','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음'};
         var labelText = labels[val] || '예산 선택';
-        // (display update done via bdisp/bdispc below)
         var bdisp = document.getElementById('sb-budget-display');
         var bdispc = document.getElementById('sb-budget-display-c');
         if (bdisp) { bdisp.textContent = labelText; bdisp.classList.add('filled'); }
         if (bdispc) { bdispc.textContent = labelText; bdispc.classList.add('filled'); }
-        document.querySelectorAll('.budget-pill').forEach(function(p) { p.classList.toggle('active', p.dataset.val === val); });
+        // Update checkmarks
+        var checkSVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        document.querySelectorAll('.sb-budget-opt').forEach(function(p) {
+          var isActive = p.dataset.val === val;
+          p.classList.toggle('active', isActive);
+          var chk = p.querySelector('.sb-budget-check');
+          if (chk) chk.innerHTML = isActive ? checkSVG : '';
+        });
         var hv = document.getElementById('home-budget-value');
         var cv = document.getElementById('compare-budget-value');
         if (hv) hv.textContent = labelText;
@@ -8992,8 +9334,6 @@
         syncCvTabValues();
         var sheet = document.getElementById('cv-search-sheet');
         if (sheet) sheet.classList.add('open');
-        var wiz = document.getElementById('wiz-launcher');
-        if (wiz) wiz.style.display = 'none';
         if (!cvCalInitialized) initCvCal();
         switchCvTab('region');
       }
@@ -9001,8 +9341,6 @@
       function closeCvSearchSheet() {
         var sheet = document.getElementById('cv-search-sheet');
         if (sheet) sheet.classList.remove('open');
-        var wiz = document.getElementById('wiz-launcher');
-        if (wiz) wiz.style.display = '';
       }
 
       function switchCvTab(tab) {
