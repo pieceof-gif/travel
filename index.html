@@ -8447,6 +8447,10 @@
             var el = document.getElementById(id); if(el){ el.textContent = txt; el.classList.add('filled'); }
           });
           window.selectedDates = [new Date(dcSel.start), new Date(dcSel.end)];
+          // 모바일: 날짜 범위 선택 완료 시 패널 자동 닫기
+          if (window.innerWidth < 768) {
+            setTimeout(function() { closeAllHomePanels(); }, 200);
+          }
         }
       }
 
