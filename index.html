@@ -1251,18 +1251,7 @@
     .banner-news-text:hover { text-decoration: underline; }
 
     /* 뉴스 페이지네이션 점 */
-    .banner-dots {
-      display: flex;
-      gap: 4px;
-      flex-shrink: 0;
-    }
-    .banner-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: #c7c7cc;
-      transition: background 0.3s;
-    }
-    .banner-dot.active { background: #1d1d1f; }
+    /* banner-dots 제거됨 */
 
 
 
@@ -1928,28 +1917,8 @@
     #cv-search-icon { display: none !important; }
     @media (max-width: 743px) {
       #cv-search-icon { display: flex !important; }
-
-      /* 모바일: data-row 1열로 변환 (빈 컬럼 방지) */
-      .data-row {
-        grid-template-columns: 1fr !important;
-      }
-      /* 모바일: 숨겼던 3번째 dc 복구 (1열이므로 표시 필요없음) */
-      .data-row .dc:nth-child(3) { display: none !important; }
-      /* 비어있는 dc 숨김 */
-      .data-row .dc:empty { display: none !important; }
-
-      /* 모바일: dest-images 1열 */
-      .dest-images {
-        flex-direction: column !important;
-        width: 100% !important;
-      }
-      .dest-col {
-        flex: none !important;
-        width: 100% !important;
-        min-width: 0 !important;
-      }
-      #col-2 { display: none !important; }
     }
+
 
 
     /* ── cv-search-sheet: 조건 요약 바텀시트 ── */
@@ -2941,9 +2910,7 @@
     </nav>
     <div class="top-banner" id="home-top-banner" style="position: relative; z-index: 99;">
       <div class="banner-news-wrap" id="home-banner-wrap">
-
         <span class="banner-news-text">여행 뉴스를 불러오는 중...</span>
-        <div class="banner-dots" id="home-banner-dots"></div>
       </div>
     </div>
 
@@ -3152,9 +3119,7 @@
 
     <div class="top-banner" id="compare-top-banner" style="position: relative; z-index: 99;">
       <div class="banner-news-wrap" id="compare-banner-wrap">
-
         <span class="banner-news-text">여행 뉴스를 불러오는 중...</span>
-        <div class="banner-dots" id="compare-banner-dots"></div>
       </div>
     </div>
 
@@ -9346,7 +9311,6 @@
           .then(function(data) {
             if (!data || !data.news || !data.news.length) return;
             newsItems = data.news.slice(0, 5);
-            buildDots(newsItems.length);
             renderBanner(0);
             startRotation();
           })
