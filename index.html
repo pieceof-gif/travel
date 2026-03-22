@@ -1469,7 +1469,7 @@
     }
 
     /* ── RESPONSIVE: Mobile only (2-col layout) ── */
-    @media (max-width: 768px) {
+    @media (max-width: 767px) {
       /* 띠배너: 스크롤 시 함께 올라가도록(Static/Relative) 수정 */
       .top-banner { 
         position: relative !important; 
@@ -1517,21 +1517,24 @@
         border: 0.5px solid rgba(0,0,0,0.04) !important;
         display: flex !important;
         align-items: center !important;
-        padding-right: 56px !important; /* Space for the absolute button */
+        padding-right: 48px !important;
+        max-width: 100%;
+        box-sizing: border-box !important;
       }
       #compare-view .sb-seg {
         flex: 1 !important;
-        padding: 0 2px !important;
+        padding: 0 4px !important;
         height: 100% !important;
         justify-content: center !important;
-        min-width: 0 !important;
+        min-width: 50px !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
+        cursor: pointer;
       }
-      #compare-view .sb-label { display: none !important; }
       #compare-view .sb-val { 
         font-size: 11px !important; 
+        line-height: 1.2;
         text-align: center; 
         color: #1d1d1f !important; 
         font-weight: 400 !important;
@@ -1540,6 +1543,11 @@
         text-overflow: ellipsis !important;
         width: 100%;
       }
+      @media (max-width: 380px) {
+        #compare-view .sb-val { font-size: 10px !important; }
+        #compare-view .sb-div { margin: 0 2px !important; }
+      }
+
       #compare-view .sb-div { height: 16px !important; align-self: center; background: #eee !important; display: block !important; flex-shrink: 0; }
       #compare-view .sb-btn { 
         position: absolute !important;
@@ -1579,6 +1587,40 @@
       .dayContainer { width: 300px !important; min-width: 300px !important; max-width: 300px !important; }
       .flatpickr-month { width: 300px !important; }
 
+      /* sticky-sel: 2열 그리드 */
+      .sel-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        overflow-x: hidden !important;
+        gap: 8px;
+        padding: 0 12px !important;
+        box-sizing: border-box !important;
+      }
+      /* sel-card: 데스크탑과 동일한 스타일 유지 */
+      .sel-card { padding: 12px 16px; }
+
+      /* Toast notification */
+      #toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: rgba(0,0,0,0.8);
+        color: #fff;
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-size: 14px;
+        z-index: 2000;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s;
+        opacity: 0;
+        pointer-events: none;
+        white-space: nowrap;
+      }
+      #toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+
       /* 배너 모바일 컴팩트 */
       #compare-view .top-banner {
         font-size: 11px !important;
@@ -1586,8 +1628,23 @@
         line-height: 1.4 !important;
       }
 
-      /* comparison-body: fixed sticky-sel 높이만큼 보상 패딩
-         nav(44px) + sticky-sel(약 100px) = 144px; 배너 사라진 대신 여백 */
+      .dest-col.over-budget {
+        border: 2px solid #ff3b30 !important;
+        background-color: #fff9f9 !important;
+      }
+      .dest-col.over-budget::after {
+        content: "⚠️ 예산 초과";
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #ff3b30;
+        color: #fff;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 700;
+        z-index: 5;
+      }
       #comparison-body {
         padding-top: 120px !important;
       }
@@ -1668,45 +1725,558 @@
       .dest-narrative { font-size: 12px; line-height: 1.5; margin: 4px 0 10px; }
       .dest-photo-wrap { height: 90px; border-radius: 10px; margin-bottom: 8px; }
 
-      /* sel-card 내부 패딩 축소 */
-      .sel-card { padding: 8px 10px; }
+      /* sel-card: 데스크탑과 동일한 스타일 유지 */
+      .sel-card { padding: 12px 16px; }
+
+      /* 비교뷰: 모바일에서 pill 검색바 숨김, 검색 아이콘 표시 */
+      #compare-view .sb-wrap { display: none !important; }
+      #cv-search-icon {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 36px !important;
+        height: 36px !important;
+        flex-shrink: 0;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        color: #1d1d1f;
+        border-radius: 50%;
+        transition: background 0.15s;
+      }
+      #cv-search-icon:hover { background: rgba(0,0,0,0.06); }
     }
+
+    /* 검색 아이콘: pc/태블릿에서 숨김, 모바일에서 미디어쿼리로 표시 */
+    #cv-search-icon { display: none !important; }
+    @media (max-width: 767px) {
+      #cv-search-icon { display: flex !important; }
+    }
+
+    /* ── cv-search-sheet: 조건 요약 바텀시트 ── */
+    #cv-search-sheet {
+      display: none;
+      position: fixed;
+      left: 0; right: 0; bottom: 0; top: auto;
+      background: #ffffff;
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.14), 0 0 0 100vmax rgba(0,0,0,0.45);
+      z-index: 9999;
+      animation: slideUp 0.22s ease;
+      padding-bottom: env(safe-area-inset-bottom, 16px);
+    }
+    #cv-search-sheet.open { display: block; }
+
+    .cv-sheet-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 20px 12px;
+      position: relative;
+    }
+    .cv-sheet-header::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 36px; height: 4px;
+      background: #d2d2d7;
+      border-radius: 2px;
+    }
+    .cv-sheet-close {
+      position: absolute;
+      left: 16px;
+      background: none; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      color: #1d1d1f;
+      transition: background 0.15s;
+    }
+    .cv-sheet-close:hover { background: rgba(0,0,0,0.06); }
+    .cv-sheet-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1d1d1f;
+    }
+    /* 헤더 영역: 타이틀 + X버튼 */
+    .cv-sheet-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 20px 8px;
+    }
+    .cv-sheet-top-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1d1d1f;
+      letter-spacing: -0.3px;
+    }
+    .cv-sheet-top-close {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #1d1d1f;
+      transition: background 0.12s;
+    }
+    .cv-sheet-top-close:hover { background: #f0f0f0; }
+    .cv-sheet-row {
+      display: flex;
+      align-items: center;
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .cv-sheet-row:active { background: rgba(0,0,0,0.04); }
+    .cv-sheet-label {
+      font-size: 15px;
+      font-weight: 400;
+      color: #1d1d1f;
+      flex: 1;
+    }
+    .cv-sheet-val {
+      font-size: 15px;
+      color: #86868b;
+      font-weight: 400;
+      margin-right: 8px;
+    }
+    .cv-sheet-chevron { color: #86868b; flex-shrink: 0; }
+    .cv-sheet-divider {
+      height: 1px;
+      background: #f2f2f7;
+      margin: 0 20px;
+    }
+    .cv-sheet-footer {
+      padding: 16px 20px 20px;
+    }
+    .cv-sheet-search-btn {
+      width: 100%;
+      height: 52px;
+      background: #0071e3;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.18s;
+    }
+    .cv-sheet-search-btn:hover { background: #0058b0; }
+
+    /* ── cv-search-sheet: 탭 스타일 ── */
+    .cv-tabs {
+      display: flex;
+      border-bottom: 1.5px solid #f0f0f0;
+      padding: 0 20px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .cv-tabs::-webkit-scrollbar { display: none; }
+    .cv-tab {
+      background: none;
+      border: none;
+      border-bottom: 2.5px solid transparent;
+      cursor: pointer;
+      padding: 12px 14px 13px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #86868b;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+      margin-bottom: -1.5px;
+    }
+    .cv-tab.active {
+      border-bottom-color: #1d1d1f;
+      color: #1d1d1f;
+      font-weight: 700;
+    }
+
+    /* 탭 콘텐츠 공통 */
+    .cv-tab-content {
+      padding: 16px 20px;
+      overflow-y: auto;
+      height: 54vh;
+    }
+
+    /* 공통 row (지역/예산) */
+    .cv-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 4px;
+      cursor: pointer;
+      border-radius: 10px;
+      margin: 0 -4px;
+      transition: background 0.1s;
+    }
+    .cv-row:active { background: #f0f0f0; }
+    .cv-row-title { font-size: 15px; font-weight: 500; color: #1d1d1f; }
+    .cv-row-sub { font-size: 12px; color: #86868b; margin-top: 3px; }
+    .cv-row-hr { height: 1px; background: #f0f0f0; }
+    .cv-row-check {
+      width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+      color: #1d1d1f;
+      flex-shrink: 0;
+    }
+    .cv-row.active .cv-row-title { color: #1d1d1f; font-weight: 600; }
+
+    /* 날짜 서브탭 */
+    .cv-date-tabs {
+      display: flex;
+      background: #f5f5f7;
+      border-radius: 10px;
+      padding: 3px;
+      margin-bottom: 16px;
+    }
+    .cv-date-tab {
+      flex: 1;
+      background: none;
+      border: none;
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #86868b;
+      transition: all 0.15s;
+    }
+    .cv-date-tab.active {
+      background: #fff;
+      color: #1d1d1f;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .cv-flex-msg {
+      text-align: center;
+      padding: 20px 0 16px;
+      font-size: 15px;
+      color: #3a3a3c;
+      line-height: 1.6;
+    }
+    .cv-flex-btn {
+      display: inline-block;
+      padding: 10px 24px;
+      background: #fff;
+      color: #1d1d1f;
+      border: 1.5px solid #d2d2d7;
+      border-radius: 980px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cv-flex-btn:hover { border-color: #1d1d1f; background: #f5f5f7; }
+
+    /* 여행자 카운터 */
+    .cv-guest-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+    }
+    .cv-guest-title { font-size: 15px; font-weight: 500; color: #1d1d1f; }
+    .cv-guest-sub { font-size: 12px; color: #86868b; margin-top: 2px; }
+    .cv-guest-hr { height: 1px; background: #f2f2f7; }
+    .cv-counter { display: flex; align-items: center; gap: 14px; }
+    .cv-counter-btn {
+      width: 32px; height: 32px;
+      border: 1.5px solid #d2d2d7;
+      border-radius: 50%;
+      background: none;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #1d1d1f;
+    }
+    .cv-counter-btn:disabled { opacity: 0.3; cursor: default; }
+    .cv-counter-num { font-size: 16px; font-weight: 500; min-width: 20px; text-align: center; }
+
+    /* 예산 pills */
+    .cv-budget-title { font-size: 13px; color: #86868b; margin-bottom: 12px; }
+    .cv-budget-pills {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .cv-budget-pill {
+      padding: 12px;
+      border: 1.5px solid #d2d2d7;
+      border-radius: 10px;
+      background: none;
+      font-size: 14px;
+      cursor: pointer;
+      color: #1d1d1f;
+      transition: all 0.12s;
+    }
+    .cv-budget-pill.active {
+      border-color: #1d1d1f;
+      background: #1d1d1f;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* ── 커스텀 에어비앤비 스타일 캘린더 ── */
+    #cv-cal {
+      overflow-y: auto;
+      max-height: 54vh;
+      padding: 0 2px;
+    }
+    .cv-cal-month { margin-bottom: 24px; }
+    .cv-cal-month-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1d1d1f;
+      padding: 2px 0 12px;
+    }
+    .cv-cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      margin-bottom: 2px;
+    }
+    .cv-cal-weekdays span {
+      font-size: 12px;
+      color: #86868b;
+      font-weight: 500;
+      padding: 4px 0;
+    }
+    .cv-cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+    /* 날짜 셀 - border-radius 없음, 풀 너비로 범위 배경 수용 */
+    .cv-cal-day {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      background: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .cv-cal-day.empty { cursor: default; pointer-events: none; }
+    .cv-cal-day.disabled { pointer-events: none; }
+    .cv-cal-day.disabled .cv-cal-num { color: #c7c7cc; }
+    /* 날짜 숫자 원형 레이어 */
+    .cv-cal-num {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      color: #1d1d1f;
+      position: relative;
+      z-index: 1;
+      transition: background 0.1s;
+    }
+    .cv-cal-day.today .cv-cal-num { font-weight: 700; }
+    /* 선택 날짜: 진한 원 */
+    .cv-cal-day.sel-start .cv-cal-num,
+    .cv-cal-day.sel-end .cv-cal-num {
+      background: #1d1d1f !important;
+      color: #fff !important;
+    }
+    /* 범위 배경: 풀 너비 셀 배경 */
+    .cv-cal-day.in-range { background: #f0f0f0; }
+    /* 시작/끝 셀: 절반 범위색 + 절반 흰색(그라디언트) */
+    .cv-cal-day.sel-start.has-range {
+      background: linear-gradient(to right, transparent 50%, #f0f0f0 50%);
+    }
+    .cv-cal-day.sel-end.has-range {
+      background: linear-gradient(to left, transparent 50%, #f0f0f0 50%);
+    }
+    /* 범위 첫 셀(일요일/월 첫날): 오른쪽만 범위색 */
+    .cv-cal-day.in-range.row-start { background: linear-gradient(to right, transparent 50%, #f0f0f0 50%); }
+    /* 범위 마지막 셀(토요일/월 마지막날): 왼쪽만 범위색 */
+    .cv-cal-day.in-range.row-end   { background: linear-gradient(to left, transparent 50%, #f0f0f0 50%); }
+    .cv-cal-day:not(.disabled):not(.empty):not(.sel-start):not(.sel-end):hover .cv-cal-num {
+      background: #f0f0f0;
+    }
+    /* 언제든지 컨테이너 중앙 정렬 */
+    #cv-date-flexible {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding-top: 8px;
+    }
+    .cv-flex-msg { padding-bottom: 20px; }
 
 
     /* ── RESPONSIVE: Home Search Bar Optimization ── */
     @media (max-width: 780px) {
+      /* HOME: 배너 텍스트 반응형 — 모바일에서 짧은 문구 */
+      .banner-full { display: none !important; }
+      .banner-short { display: inline !important; }
+
       /* HOME search bar wraps */
-      .home-content { padding-top: calc(8vh + 60px); }
-      .home-title { font-size: 32px; letter-spacing: -0.8px; margin-bottom: 12px; }
-      .sb-wrap { width: calc(100% - 32px) !important; margin: 16px auto 0 !important; }
+      .home-content { padding-top: calc(6vh + 40px); }
+      .home-title { font-size: 32px; letter-spacing: -0.8px; margin-bottom: 16px; }
+      .sb-wrap { width: calc(100% - 32px) !important; margin: 20px auto 0 !important; }
       .sb {
         flex-direction: column;
         height: auto;
-        border-radius: 24px;
-        padding: 8px;
-        gap: 2px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-      }
-      .sb-seg {
-        height: 52px;
         border-radius: 16px;
+        padding: 0;
+        gap: 0;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        border: 1px solid #e8e8e8;
+        background: #fff;
+      }
+      /* 각 세그먼트를 가로 배치 (라벨 왼쪽, 값 오른쪽) */
+      .sb-seg {
+        height: auto;
+        border-radius: 0;
         width: 100%;
-        padding: 0 16px;
+        padding: 16px 20px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+      /* 모바일 라벨: 일반 두께, 살짝 어두운 회색 */
+      .sb-label {
+        font-size: 14px;
+        font-weight: 400;
+        color: #1d1d1f;
+        margin-bottom: 0;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+      /* 모바일 값: 오른쪽 정렬, 회색 톤 */
+      .sb-val {
+        font-size: 14px;
+        color: #86868b;
+        font-weight: 400;
+        text-align: right;
+      }
+      .sb-val.filled {
+        color: #1d1d1f;
       }
       .sb-div { display: none; }
       .sb-btn {
-        width: 100%;
-        border-radius: 16px;
+        width: calc(100% - 24px);
+        border-radius: 12px;
         height: 50px;
-        margin-right: 0;
-        margin-top: 6px;
+        margin: 12px 12px;
         gap: 8px;
       }
       .sb-btn-text { display: inline !important; font-size: 15px; }
-      
+
+      /* 홈뷰 세그먼트 hover 배경 효과 제거 (TOBE: 라인 없는 깔끔한 폼) */
+      #home-view .sb-seg:hover,
+      #home-view .sb-seg.sb-active {
+        background: transparent;
+      }
+
+      /* ── 홈뷰 패널: 바텀시트 스타일 ── */
+      #home-view .sb-panel {
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        top: auto !important;
+        transform: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        border-radius: 20px 20px 0 0 !important;
+        padding: 20px 20px 32px !important;
+        background: #ffffff !important;
+        box-shadow: 0 -4px 24px rgba(0,0,0,0.14) !important;
+        z-index: 9999 !important;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: slideUp 0.22s ease !important;
+      }
+      @keyframes slideUp {
+        from { transform: translateY(40px); opacity: 0; }
+        to   { transform: translateY(0);   opacity: 1; }
+      }
+      /* 바텀시트 핸들 */
+      #home-view .sb-panel::before {
+        content: '';
+        display: block;
+        width: 36px;
+        height: 4px;
+        background: #d2d2d7;
+        border-radius: 2px;
+        margin: 0 auto 16px;
+      }
+      /* 달력 패널: 여백 조정 + 불투명 배경 강제 */
+      #home-view #date-panel {
+        padding: 16px 16px 40px !important;
+        max-height: none !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+      }
+      /* 홈뷰 달력: 전체폭으로 재조정 + 불투명 흰색 배경 */
+      #home-view .flatpickr-calendar {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+        background: #ffffff !important;
+        box-shadow: none !important;
+      }
+      #home-view .flatpickr-weekdays {
+        width: 100% !important;
+      }
+      #home-view .flatpickr-weekdaycontainer {
+        width: 100% !important;
+        display: flex !important;
+      }
+      #home-view .flatpickr-weekday {
+        flex: 1 !important;
+        text-align: center !important;
+      }
+      #home-view .flatpickr-innerContainer {
+        width: 100% !important;
+      }
+      #home-view .flatpickr-rContainer {
+        width: 100% !important;
+        min-width: 0 !important;
+      }
+      #home-view .flatpickr-days {
+        width: 100% !important;
+      }
+      #home-view .dayContainer {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+      }
+      #home-view .flatpickr-day {
+        flex: 1 0 14.2857% !important;
+        max-width: 14.2857% !important;
+        width: 14.2857% !important;
+        height: 44px !important;
+        line-height: 44px !important;
+      }
+      #home-view .flatpickr-month {
+        width: 100% !important;
+      }
+
+      /* open 패널 box-shadow로 배경 어둠 처리 */
+      #home-view .sb-panel.open {
+        box-shadow: 0 -4px 24px rgba(0,0,0,0.14), 0 0 0 100vmax rgba(0,0,0,0.45) !important;
+      }
+
+
       /* Results specific optimization */
       #compare-view > div > .top-banner { display: block !important; margin-bottom: 0; }
-      
+
       /* Typography scale-down */
       .v-xl { font-size: 26px; }
       .v-lg { font-size: 20px; }
@@ -2084,13 +2654,14 @@
 
 <body>
 
+
   <!-- HOME VIEW -->
   <div id="home-view">
     <nav class="home-nav">
       <span class="nav-brand">최고의 여행</span>
     </nav>
     <div class="top-banner" style="position: relative; z-index: 99;">
-      4월 1일부터 유류세 인상 예정. 현재 항공권이 평균 8–15% 저렴합니다. 이번 주 예약을 권장합니다.
+      <span class="banner-full">4월 1일부터 유류세 인상 예정. 현재 항공권이 평균 8–15% 저렴합니다. 이번 주 예약을 권장합니다.</span><span class="banner-short">항공권 8–15% 저렴 · 이번 주 예약 권장</span>
     </div>
 
     <div class="home-content">
@@ -2235,6 +2806,10 @@
     <!-- NAV -->
     <nav class="nav">
       <span class="nav-brand">최고의 여행</span>
+      <!-- 모바일 전용 검색 아이콘: nav-actions 밖에 배치 -->
+      <button id="cv-search-icon" onclick="openCvSearchSheet()" type="button" aria-label="검색 조건 수정">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
       <div class="nav-actions">
         <a class="nav-link" href="#">개요</a>
         <a class="nav-link" href="#" onclick="goHome(); return false;">내 조건 수정</a>
@@ -2244,6 +2819,186 @@
 
     <div class="top-banner" id="compare-top-banner" style="position: relative; z-index: 99;">
       4월 1일부터 유류세 인상 예정. 현재 항공권이 평균 8–15% 저렴합니다. 이번 주 예약을 권장합니다.
+    </div>
+
+    <!-- 모바일 검색 조건 탭 시트 -->
+    <div id="cv-search-sheet">
+      <!-- 헤더: 타이틀 + X 버튼 -->
+      <div class="cv-sheet-top">
+        <span class="cv-sheet-top-title">여행 검색</span>
+        <button class="cv-sheet-top-close" onclick="closeCvSearchSheet()" type="button" aria-label="닫기">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- 탭 바 (라벨만) -->
+      <div class="cv-tabs">
+        <button class="cv-tab active" id="cv-tab-region" onclick="switchCvTab('region')" type="button">지역</button>
+        <button class="cv-tab" id="cv-tab-date"     onclick="switchCvTab('date')"     type="button">날짜</button>
+        <button class="cv-tab" id="cv-tab-traveler"  onclick="switchCvTab('traveler')" type="button">여행자</button>
+        <button class="cv-tab" id="cv-tab-budget"    onclick="switchCvTab('budget')"   type="button">예산</button>
+      </div>
+
+      <!-- 지역 콘텐츠 -->
+      <div class="cv-tab-content" id="cv-content-region">
+        <div class="cv-row active" data-val="" onclick="cvSelectRegion('')">
+          <div>
+            <div class="cv-row-title">🌏 어디든지</div>
+            <div class="cv-row-sub">전체 지역 비교</div>
+          </div>
+          <span class="cv-row-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="japan" onclick="cvSelectRegion('japan')">
+          <div>
+            <div class="cv-row-title">🇯🇵 일본</div>
+            <div class="cv-row-sub">도쿄 · 오사카 · 후쿠오카 등</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="sea" onclick="cvSelectRegion('sea')">
+          <div>
+            <div class="cv-row-title">🌴 동남아시아</div>
+            <div class="cv-row-sub">발리 · 방콕 · 세부 등</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="europe" onclick="cvSelectRegion('europe')">
+          <div>
+            <div class="cv-row-title">🇪🇺 유럽</div>
+            <div class="cv-row-sub">파리 · 로마 · 바르셀로나 등</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="east_asia" onclick="cvSelectRegion('east_asia')">
+          <div>
+            <div class="cv-row-title">🏙️ 동아시아</div>
+            <div class="cv-row-sub">홍콩 · 마카오 · 싱가포르 등</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="pacific" onclick="cvSelectRegion('pacific')">
+          <div>
+            <div class="cv-row-title">🌺 괌·하와이·호주</div>
+            <div class="cv-row-sub">리조트 · 자연경관</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+      </div>
+
+      <!-- 날짜 콘텐츠 -->
+      <div class="cv-tab-content" id="cv-content-date" style="display:none">
+        <div class="cv-date-tabs">
+          <button class="cv-date-tab active" id="cvdt-specific" onclick="switchCvDateTab('specific')" type="button">날짜 지정</button>
+          <button class="cv-date-tab" id="cvdt-flexible" onclick="switchCvDateTab('flexible')" type="button">언제든지</button>
+        </div>
+        <div id="cv-date-specific"><div id="cv-cal"></div></div>
+        <div id="cv-date-flexible" style="display:none">
+          <div class="cv-flex-msg">날짜에 상관없이<br>최적의 여행지를 추천해드립니다.<br><span style="font-size:13px;color:#999">기본 5박 6일로 계산됩니다</span></div>
+          <button class="cv-flex-btn" onclick="cvConfirmFlexibleDate()" type="button">언제든지</button>
+        </div>
+      </div>
+
+      <!-- 여행자 콘텐츠 -->
+      <div class="cv-tab-content" id="cv-content-traveler" style="display:none">
+        <div class="cv-guest-row">
+          <div><div class="cv-guest-title">성인</div><div class="cv-guest-sub">13세 이상</div></div>
+          <div class="cv-counter">
+            <button class="cv-counter-btn" id="cv-adults-minus" onclick="cvUpdateTravelers('adults',-1)" type="button">－</button>
+            <span class="cv-counter-num" id="cv-count-adults">1</span>
+            <button class="cv-counter-btn" onclick="cvUpdateTravelers('adults',1)" type="button">＋</button>
+          </div>
+        </div>
+        <div class="cv-guest-hr"></div>
+        <div class="cv-guest-row">
+          <div><div class="cv-guest-title">어린이</div><div class="cv-guest-sub">2~12세</div></div>
+          <div class="cv-counter">
+            <button class="cv-counter-btn" id="cv-children-minus" onclick="cvUpdateTravelers('children',-1)" type="button">－</button>
+            <span class="cv-counter-num" id="cv-count-children">0</span>
+            <button class="cv-counter-btn" onclick="cvUpdateTravelers('children',1)" type="button">＋</button>
+          </div>
+        </div>
+        <div class="cv-guest-hr"></div>
+        <div class="cv-guest-row">
+          <div><div class="cv-guest-title">유아</div><div class="cv-guest-sub">2세 미만</div></div>
+          <div class="cv-counter">
+            <button class="cv-counter-btn" id="cv-infants-minus" onclick="cvUpdateTravelers('infants',-1)" type="button">－</button>
+            <span class="cv-counter-num" id="cv-count-infants">0</span>
+            <button class="cv-counter-btn" onclick="cvUpdateTravelers('infants',1)" type="button">＋</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 예산 콘텐츠 -->
+      <div class="cv-tab-content" id="cv-content-budget" style="display:none">
+        <div class="cv-row" data-val="50" onclick="cvSelectBudget('50')">
+          <div>
+            <div class="cv-row-title">50만원 이내</div>
+            <div class="cv-row-sub">당일치기 · 짧은 여행에 적합</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="80" onclick="cvSelectBudget('80')">
+          <div>
+            <div class="cv-row-title">80만원 이내</div>
+            <div class="cv-row-sub">2~3박 가성비 여행</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="100" onclick="cvSelectBudget('100')">
+          <div>
+            <div class="cv-row-title">100만원 이내</div>
+            <div class="cv-row-sub">3~4박 여유 있는 여행</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="150" onclick="cvSelectBudget('150')">
+          <div>
+            <div class="cv-row-title">150만원 이내</div>
+            <div class="cv-row-sub">4~5박 편안한 여행</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="200" onclick="cvSelectBudget('200')">
+          <div>
+            <div class="cv-row-title">200만원 이내</div>
+            <div class="cv-row-sub">장거리 · 프리미엄 여행</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="300" onclick="cvSelectBudget('300')">
+          <div>
+            <div class="cv-row-title">300만원 이내</div>
+            <div class="cv-row-sub">럭셔리 · 유럽 장기 여행</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row active" data-val="unlimited" onclick="cvSelectBudget('unlimited')">
+          <div>
+            <div class="cv-row-title">상관없음</div>
+            <div class="cv-row-sub">예산 제한 없이 최적 추천</div>
+          </div>
+          <span class="cv-row-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+      </div>
+
+      <!-- 하단 검색 버튼 -->
+      <div class="cv-sheet-footer">
+        <button class="cv-sheet-search-btn" onclick="startSearch(); closeCvSearchSheet();" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          여행지 비교하기
+        </button>
+      </div>
     </div>
 
     <!-- FIXED CLONED HEADER -->
@@ -5493,7 +6248,7 @@
           dateFormat: 'm월 d일',
           locale: _fpLocale,
           monthSelectorType: 'static',
-          showMonths: 2,
+          showMonths: window.innerWidth <= 1068 ? 1 : 2,
           minDate: 'today',
           onChange: function(selectedDates) {
             if (selectedDates.length === 2) {
@@ -5581,13 +6336,13 @@
         const dateVal = document.getElementById('home-date-value').textContent;
         const b1 = document.getElementById('budget-input-home');
         const b2 = document.getElementById('budget-input-compare');
-        // Fix: offsetParent is null when parent has display:none — just read value directly
-        const budget = (b2 && b2.value) ? b2.value : b1.value;
+        const budgetRaw = (b2 && b2.value) ? b2.value : b1.value;
+        const budgetNum = budgetRaw === 'unlimited' ? 9999 : (parseInt(budgetRaw) || 150);
 
         const noResults = document.getElementById('no-results-cnt');
         const body = document.getElementById('comparison-body');
 
-        if (!budget) {
+        if (!budgetRaw) {
           body.style.display = 'none';
           if (noResults) noResults.style.display = 'none';
           return;
@@ -5607,7 +6362,8 @@
           } catch (e) { duration = 5; }
         }
 
-        const budgetNum = budget === 'unlimited' ? 9999 : parseInt(budget);
+        // Update select options based on new budget/duration
+        refreshSelectOptions(budgetNum, duration);
 
         const _wb = window.wizardBonus || {};
         const _erb = window.exchangeRateBonus || {};
@@ -5626,6 +6382,7 @@
           (b.score + (_wb[b.id] || 0) + (_erb[b.id] || 0)) -
           (a.score + (_wb[a.id] || 0) + (_erb[a.id] || 0))
         );
+
 
         // Country diversity: max 1 per country (unless region filter forces same country)
         const matching = [];
@@ -6353,17 +7110,74 @@
         const btn = document.getElementById('compare-search-btn');
         if (!btn) { updateResultsByFilters(); return; }
         btn.classList.add('disabled');
+        
+        // Check if any results will be found
+        const b1 = document.getElementById('budget-input-home');
+        const b2 = document.getElementById('budget-input-compare');
+        const budgetRaw = (b2 && b2.value) ? b2.value : b1.value;
+        const budgetNum = budgetRaw === 'unlimited' ? 9999 : (parseInt(budgetRaw) || 150);
+        
         setTimeout(() => {
           updateResultsByFilters();
           btn.classList.remove('disabled');
+          
+          const body = document.getElementById('comparison-body');
+          const noResults = document.getElementById('no-results-cnt');
+          if (body.style.display === 'none' && noResults && noResults.style.display !== 'none') {
+            showToast('현재 예산으로 갈 수 있는 여행지가 없습니다.');
+          } else {
+            showToast('검색 결과가 업데이트되었습니다.');
+          }
         }, 600);
       }
 
+      function showToast(msg) {
+        let t = document.getElementById('toast');
+        if (!t) {
+          t = document.createElement('div');
+          t.id = 'toast';
+          document.body.appendChild(t);
+        }
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(window._toastTimer);
+        window._toastTimer = setTimeout(() => {
+          t.classList.remove('show');
+        }, 2500);
+      }
+
+      function refreshSelectOptions(budget, duration) {
+        const sels = ['sel0', 'sel1', 'sel2', 'sel0-fixed', 'sel1-fixed', 'sel2-fixed'];
+        sels.forEach(sid => {
+          const el = document.getElementById(sid);
+          if (!el) return;
+          Array.from(el.options).forEach(opt => {
+            const did = parseInt(opt.value);
+            const d = v1_0_9_DEST_DATA[did];
+            if (!d) return;
+            const adjMin = (d.minBudget || 40) + (duration > 5 ? (duration - 5) * 6 : 0);
+            const nameBase = d.name.includes(' · ') ? d.name : (d.country ? (d.country + ' · ' + d.name) : d.name);
+            
+            if (adjMin > budget) {
+              opt.classList.add('restricted');
+              opt.textContent = '🚫 ' + nameBase + ' (예산 초과)';
+            } else {
+              opt.classList.remove('restricted');
+              opt.textContent = nameBase;
+            }
+          });
+        });
+      }
+
       function changeDest(col, idx) {
+        const idxInt = parseInt(idx);
+        const d = v1_0_9_DEST_DATA[idxInt];
+        
         const b1 = document.getElementById('budget-input-home');
         const b2 = document.getElementById('budget-input-compare');
         const budgetRaw = (b2 && b2.value) ? b2.value : b1.value;
         const budget = budgetRaw === 'unlimited' ? 9999 : (parseInt(budgetRaw) || 150);
+        
         const dateVal = document.getElementById('home-date-value').textContent;
         let duration = 5;
         if (dateVal.includes(' – ')) {
@@ -6378,7 +7192,12 @@
             duration = Math.ceil((date2 - date1) / (1000 * 60 * 60 * 24)) + 1;
           } catch (e) { }
         }
-        const idxInt = parseInt(idx);
+
+        const adjMin = (d.minBudget || 40) + (duration > 5 ? (duration - 5) * 6 : 0);
+        if (adjMin > budget) {
+          showToast(`⚠️ ${d.name}은(는) 현재 예산(${budget}만원)을 초과합니다.`);
+        }
+
         updateColumn(col, idxInt, budget, duration);
         // Sync both selectors (main + fixed header) to stay in agreement
         const mainSel = document.getElementById('sel' + col);
@@ -6439,8 +7258,9 @@
         }
 
         // ── Travelpayouts 예약 링크 갱신 (드롭다운 변경 시) ──
-        const d = v1_0_9_DEST_DATA[parseInt(idx)];
+        // d is already defined at the top of changeDest
         if (d && d._tpLink) {
+
           const airEl = document.getElementById('air-' + col);
           if (airEl) {
             const mEl = airEl.querySelector('.main');
@@ -7276,15 +8096,18 @@
         if (!panel) return;
         var wasOpen = panel.classList.contains('open');
 
-        // Close all panels across all wrappers
+        // Close all panels
         document.querySelectorAll('.sb-panel.open').forEach(function(p) { p.classList.remove('open'); });
         document.querySelectorAll('.sb-seg.sb-active').forEach(function(s) { s.classList.remove('sb-active'); });
 
         var wizBtn = document.getElementById('wiz-launcher');
+        var isCompareView = document.getElementById('compare-view') && document.getElementById('compare-view').style.display !== 'none';
+
         if (!wasOpen) {
           panel.classList.add('open');
           if (segEl) segEl.classList.add('sb-active');
-          // Init flatpickr lazily AFTER panel is visible
+
+          // Init flatpickr lazily
           if (panelId === 'date-panel' && typeof flatpickr !== 'undefined') {
             if (!fpHome) initFlatpickr('home');
             _activeFp = fpHome;
@@ -7292,12 +8115,21 @@
             if (!fpCompare) initFlatpickr('compare');
             _activeFp = fpCompare;
           }
-          // Hide wiz-launcher when any panel is open (prevents overlap on mobile)
+
+          // 취향설정 버튼: 패널 열릴 때 숨김
           if (wizBtn) wizBtn.style.display = 'none';
         } else {
-          // Panel was open and now closed: restore wiz-launcher
+          // 취향설정 버튼: 패널 닫힐 때 복원
           if (wizBtn) wizBtn.style.display = '';
         }
+      }
+
+      // 홈뷰 패널 전체 닫기
+      function closeAllHomePanels() {
+        document.querySelectorAll('.sb-panel.open').forEach(function(p) { p.classList.remove('open'); });
+        document.querySelectorAll('.sb-seg.sb-active').forEach(function(s) { s.classList.remove('sb-active'); });
+        var wizBtn = document.getElementById('wiz-launcher');
+        if (wizBtn) wizBtn.style.display = '';
       }
 
       // Legacy alias
@@ -7364,13 +8196,15 @@
 
       // Close all panels on outside click
       document.addEventListener('click', function(e) {
-        if (!e.target.closest('.sb-wrap') && !e.target.closest('.flatpickr-calendar')) {
+        if (!e.target.closest('.sb-wrap') && !e.target.closest('.flatpickr-calendar') && !e.target.closest('.sb-panel')) {
           var anyOpen = document.querySelector('.sb-panel.open');
           document.querySelectorAll('.sb-panel.open').forEach(function(p) { p.classList.remove('open'); });
           document.querySelectorAll('.sb-seg.sb-active').forEach(function(s) { s.classList.remove('sb-active'); });
           if (anyOpen) {
             var wizBtn = document.getElementById('wiz-launcher');
             if (wizBtn) wizBtn.style.display = '';
+            var dim = document.getElementById('home-sb-dim');
+            if (dim) dim.classList.remove('show');
           }
         }
       });
@@ -8024,6 +8858,241 @@
           }
         }, { threshold: [0] });
         obs.observe(stickyTrigger);
+      }
+
+      // ── 비교뷰 모바일 탭 검색 시트 ──
+      var cvCalInitialized = false;
+      var cvCalSel = { start: null, end: null }; // ISO date strings
+      var cvTravelers = { adults: 1, children: 0, infants: 0 };
+      var cvRegion = '';
+      var cvBudget = 'unlimited';
+
+      /* ── 커스텀 달력 렌더러 ── */
+      function initCvCal() {
+        var container = document.getElementById('cv-cal');
+        if (!container) return;
+        container.innerHTML = '';
+        var today = new Date(); today.setHours(0,0,0,0);
+        var MONTHS = 7;
+        for (var mi = 0; mi < MONTHS; mi++) {
+          var base = new Date(today.getFullYear(), today.getMonth() + mi, 1);
+          container.appendChild(cvRenderMonth(base, today));
+        }
+        cvCalInitialized = true;
+      }
+
+      function cvRenderMonth(base, today) {
+        var year = base.getFullYear(), month = base.getMonth();
+        var wrap = document.createElement('div');
+        wrap.className = 'cv-cal-month';
+        var label = document.createElement('div');
+        label.className = 'cv-cal-month-label';
+        label.textContent = year + '년 ' + (month + 1) + '월';
+        wrap.appendChild(label);
+        var weekdays = document.createElement('div');
+        weekdays.className = 'cv-cal-weekdays';
+        ['일','월','화','수','목','금','토'].forEach(function(d) {
+          var s = document.createElement('span'); s.textContent = d; weekdays.appendChild(s);
+        });
+        wrap.appendChild(weekdays);
+        var grid = document.createElement('div');
+        grid.className = 'cv-cal-grid';
+        var firstDay = new Date(year, month, 1).getDay();
+        for (var e = 0; e < firstDay; e++) {
+          var em = document.createElement('span'); em.className = 'cv-cal-day empty'; grid.appendChild(em);
+        }
+        var daysInMonth = new Date(year, month + 1, 0).getDate();
+        for (var d = 1; d <= daysInMonth; d++) {
+          var dt = new Date(year, month, d);
+          var iso = dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+          var el = document.createElement('span');
+          el.className = 'cv-cal-day';
+          el.dataset.iso = iso;
+          // inner span for the circle
+          var num = document.createElement('span');
+          num.className = 'cv-cal-num';
+          num.textContent = d;
+          el.appendChild(num);
+          if (dt < today) { el.classList.add('disabled'); }
+          else {
+            if (dt.getTime() === today.getTime()) el.classList.add('today');
+            el.addEventListener('click', function() { cvCalClickDay(this.dataset.iso); });
+          }
+          grid.appendChild(el);
+        }
+        wrap.appendChild(grid);
+        return wrap;
+      }
+
+      function cvCalClickDay(iso) {
+        if (!cvCalSel.start || (cvCalSel.start && cvCalSel.end)) {
+          cvCalSel = { start: iso, end: null };
+        } else {
+          if (iso < cvCalSel.start) { cvCalSel = { start: iso, end: cvCalSel.start }; }
+          else if (iso === cvCalSel.start) { cvCalSel.end = iso; }
+          else { cvCalSel.end = iso; }
+        }
+        cvCalRefresh();
+        if (cvCalSel.start && cvCalSel.end) {
+          var fmt = function(s) { var p = s.split('-'); return parseInt(p[1]) + '월 ' + parseInt(p[2]) + '일'; };
+          var txt = cvCalSel.start === cvCalSel.end
+            ? fmt(cvCalSel.start)
+            : fmt(cvCalSel.start) + ' - ' + fmt(cvCalSel.end);
+          var ev = document.getElementById('cvt-date-val'); if(ev) ev.textContent = txt;
+          var src = document.getElementById('sb-date-display'); if(src) src.textContent = txt;
+          window.selectedDates = [new Date(cvCalSel.start), new Date(cvCalSel.end)];
+        }
+      }
+
+      function cvCalRefresh() {
+        var hasRange = cvCalSel.start && cvCalSel.end && cvCalSel.start !== cvCalSel.end;
+        var s = cvCalSel.start, e = cvCalSel.end;
+        var allDays = document.querySelectorAll('#cv-cal .cv-cal-day:not(.empty)');
+        allDays.forEach(function(el) {
+          el.classList.remove('sel-start','sel-end','in-range','has-range','row-start','row-end');
+          var iso = el.dataset.iso; if (!iso) return;
+          if (s && iso === s) { el.classList.add('sel-start'); if (hasRange) el.classList.add('has-range'); }
+          if (e && iso === e) { el.classList.add('sel-end'); if (hasRange) el.classList.add('has-range'); }
+          if (hasRange && iso > s && iso < e) {
+            el.classList.add('in-range');
+            // 각 셀의 grid 위치(0~6) 판별
+            var siblings = Array.from(el.parentNode.children);
+            var idx = siblings.indexOf(el);
+            var col = idx % 7;
+            if (col === 0) el.classList.add('row-start');
+            if (col === 6) el.classList.add('row-end');
+          }
+        });
+      }
+
+      function syncCvTabValues() {
+        var regionSrc = document.getElementById('region-display');
+        var el = document.getElementById('cvt-region-val');
+        if (el) el.textContent = (regionSrc ? regionSrc.textContent.trim() : '') || '어디든지';
+        var dateSrc = document.getElementById('sb-date-display');
+        el = document.getElementById('cvt-date-val');
+        if (el) el.textContent = (dateSrc ? dateSrc.textContent.trim() : '') || '언제든지';
+        var travSrc = document.getElementById('sb-traveler-display');
+        el = document.getElementById('cvt-traveler-val');
+        if (el) el.textContent = (travSrc ? travSrc.textContent.trim() : '') || '1명';
+        var adults = parseInt((document.getElementById('count-adults')||{}).textContent)||1;
+        var children = parseInt((document.getElementById('count-children')||{}).textContent)||0;
+        var infants = parseInt((document.getElementById('count-infants')||{}).textContent)||0;
+        cvTravelers = { adults: adults, children: children, infants: infants };
+        var an = document.getElementById('cv-count-adults'); if(an) an.textContent = adults;
+        var cn = document.getElementById('cv-count-children'); if(cn) cn.textContent = children;
+        var inf = document.getElementById('cv-count-infants'); if(inf) inf.textContent = infants;
+        var budgetSrc = document.getElementById('sb-budget-display');
+        el = document.getElementById('cvt-budget-val');
+        if (el) el.textContent = (budgetSrc ? budgetSrc.textContent.trim() : '') || '상관없음';
+        cvUpdateCounterBtns();
+      }
+
+      function openCvSearchSheet() {
+        syncCvTabValues();
+        var sheet = document.getElementById('cv-search-sheet');
+        if (sheet) sheet.classList.add('open');
+        var wiz = document.getElementById('wiz-launcher');
+        if (wiz) wiz.style.display = 'none';
+        if (!cvCalInitialized) initCvCal();
+        switchCvTab('region');
+      }
+
+      function closeCvSearchSheet() {
+        var sheet = document.getElementById('cv-search-sheet');
+        if (sheet) sheet.classList.remove('open');
+        var wiz = document.getElementById('wiz-launcher');
+        if (wiz) wiz.style.display = '';
+      }
+
+      function switchCvTab(tab) {
+        ['region','date','traveler','budget'].forEach(function(t) {
+          var btn = document.getElementById('cv-tab-' + t);
+          var content = document.getElementById('cv-content-' + t);
+          if (btn) btn.classList.toggle('active', t === tab);
+          if (content) content.style.display = (t === tab) ? '' : 'none';
+        });
+      }
+
+      function cvSelectRegion(val) {
+        cvRegion = val;
+        var checkSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        document.querySelectorAll('#cv-content-region .cv-row').forEach(function(el) {
+          var isActive = el.getAttribute('data-val') === val;
+          el.classList.toggle('active', isActive);
+          var check = el.querySelector('.cv-row-check');
+          if (check) check.innerHTML = isActive ? checkSvg : '';
+        });
+        var labels = { '': '어디든지', 'japan': '일본', 'sea': '동남아시아', 'europe': '유럽', 'east_asia': '동아시아', 'pacific': '괌·하와이·호주' };
+        var txt = labels[val] || '어디든지';
+        var el = document.getElementById('cvt-region-val'); if(el) el.textContent = txt;
+        var src = document.getElementById('region-display'); if(src) src.textContent = txt;
+        window.selectedRegion = val;
+        document.querySelectorAll('.sb-region-opt').forEach(function(o) {
+          o.classList.toggle('active', o.getAttribute('data-val') === val);
+        });
+      }
+
+      function cvUpdateTravelers(type, delta) {
+        var min = type === 'adults' ? 1 : 0;
+        cvTravelers[type] = Math.max(min, (cvTravelers[type] || 0) + delta);
+        var el = document.getElementById('cv-count-' + type); if(el) el.textContent = cvTravelers[type];
+        cvUpdateCounterBtns();
+        var total = cvTravelers.adults + cvTravelers.children + cvTravelers.infants;
+        var txt = total + '명';
+        var tvEl = document.getElementById('cvt-traveler-val'); if(tvEl) tvEl.textContent = txt;
+        // 홈뷰도 동기화
+        var srcEl = document.getElementById('sb-traveler-display'); if(srcEl) srcEl.textContent = txt;
+        var an = document.getElementById('count-adults'); if(an) an.textContent = cvTravelers.adults;
+        var cn = document.getElementById('count-children'); if(cn) cn.textContent = cvTravelers.children;
+        var inf = document.getElementById('count-infants'); if(inf) inf.textContent = cvTravelers.infants;
+        window.tAdults = cvTravelers.adults;
+        window.tChildren = cvTravelers.children;
+        window.tInfants = cvTravelers.infants;
+      }
+
+      function cvUpdateCounterBtns() {
+        var m = document.getElementById('cv-adults-minus'); if(m) m.disabled = (cvTravelers.adults <= 1);
+        var mc = document.getElementById('cv-children-minus'); if(mc) mc.disabled = (cvTravelers.children <= 0);
+        var mi = document.getElementById('cv-infants-minus'); if(mi) mi.disabled = (cvTravelers.infants <= 0);
+      }
+
+      function cvSelectBudget(val) {
+        cvBudget = val;
+        var checkSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        document.querySelectorAll('#cv-content-budget .cv-row').forEach(function(el) {
+          var isActive = el.getAttribute('data-val') === val;
+          el.classList.toggle('active', isActive);
+          var check = el.querySelector('.cv-row-check');
+          if (check) check.innerHTML = isActive ? checkSvg : '';
+        });
+        var labels = { '50':'50만원 이내','80':'80만원 이내','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음' };
+        var txt = labels[val] || '상관없음';
+        var el = document.getElementById('cvt-budget-val'); if(el) el.textContent = txt;
+        var srcEl = document.getElementById('sb-budget-display'); if(srcEl) srcEl.textContent = txt;
+        window.selectedBudget = val === 'unlimited' ? null : val;
+        document.querySelectorAll('.budget-pill').forEach(function(o) {
+          o.classList.toggle('active', o.getAttribute('data-val') === val);
+        });
+      }
+
+      function switchCvDateTab(tab) {
+        var s = document.getElementById('cv-date-specific');
+        var f = document.getElementById('cv-date-flexible');
+        var ts = document.getElementById('cvdt-specific');
+        var tf = document.getElementById('cvdt-flexible');
+        if(s) s.style.display = tab === 'specific' ? '' : 'none';
+        if(f) f.style.display = tab === 'flexible' ? '' : 'none';
+        if(ts) ts.classList.toggle('active', tab === 'specific');
+        if(tf) tf.classList.toggle('active', tab === 'flexible');
+      }
+
+      function cvConfirmFlexibleDate() {
+        var txt = '언제든지';
+        var el = document.getElementById('cvt-date-val'); if(el) el.textContent = txt;
+        var src = document.getElementById('sb-date-display'); if(src) src.textContent = txt;
+        window.selectedDates = null;
+        switchCvTab('traveler');
       }
     </script>
 
