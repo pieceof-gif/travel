@@ -2376,6 +2376,10 @@
         overflow-y: auto;
         animation: slideUp 0.22s ease !important;
       }
+      /* 하프팝업 열렸을 때 취향설정 버튼 숨김 */
+      #home-view:has(.sb-panel.open) #wiz-launcher {
+        display: none !important;
+      }
       @keyframes slideUp {
         from { transform: translateY(40px); opacity: 0; }
         to   { transform: translateY(0);   opacity: 1; }
@@ -2392,9 +2396,9 @@
       }
       /* 달력 패널: 여백 조정 + 불투명 배경 강제 */
       #home-view #date-panel {
-        padding: 16px 16px 40px !important;
-        max-height: none !important;
-        overflow: hidden !important;
+        padding: 20px 20px 40px !important;
+        max-height: 85vh !important;
+        overflow-y: auto !important;
         background: #ffffff !important;
       }
       /* 홈뷰 달력: 전체폭으로 재조정 + 불투명 흰색 배경 */
@@ -2465,6 +2469,50 @@
 
       #compare-sb-wrap { transform: scale(0.95); margin: 0 !important; }
       footer { padding: 40px 16px; margin-top: 40px; }
+      /* ── 모바일 홈 날짜탭: 검색시트(cv) 스타일과 통일 ── */
+      #home-view .sb-date-tabs {
+        width: 100% !important;
+        margin: 0 0 16px 0 !important;
+        background: #f5f5f7 !important;
+        border-radius: 10px !important;
+        padding: 3px !important;
+        gap: 0 !important;
+        box-sizing: border-box;
+      }
+      #home-view .sb-date-tab {
+        flex: 1 !important;
+        background: none !important;
+        border-radius: 8px !important;
+        padding: 8px !important;
+        font-size: 14px !important;
+        color: #86868b !important;
+        box-shadow: none !important;
+      }
+      #home-view .sb-date-tab.active {
+        background: #fff !important;
+        color: #1d1d1f !important;
+        font-weight: 600 !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+      }
+      /* 홈 2열 달력 → 1열 세로 스크롤로 전환 */
+      #home-view .dc-months {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+      }
+      /* 두 번째 달 상단 여백 */
+      #home-view .dc-months > div:last-child {
+        margin-top: 32px;
+      }
+      /* 달력 월 제목: 왼쪽 정렬 */
+      #home-view .dc-month-header {
+        text-align: left !important;
+        padding-left: 4px !important;
+        font-size: 16px !important;
+      }
+      /* 화살표 버튼 숨김 */
+      #home-view .dc-nav {
+        display: none !important;
+      }
     }
 
     /* ── WIZARD ── */
@@ -8451,7 +8499,11 @@
             }
           }
 
-          // 취향설정 버튼은 패널 열려도 계속 표시 유지
+          // 모바일: 취향설정 버튼 하프팝업 아래로
+          if (window.innerWidth < 768) {
+            var wizBtn = document.getElementById('wiz-launcher');
+            if (wizBtn) wizBtn.style.display = 'none';
+          }
         } else {
           // wasOpen 상태 - nothing extra needed
         }
@@ -8461,6 +8513,9 @@
       function closeAllHomePanels() {
         document.querySelectorAll('.sb-panel.open').forEach(function(p) { p.classList.remove('open'); });
         document.querySelectorAll('.sb-seg.sb-active').forEach(function(s) { s.classList.remove('sb-active'); });
+        // 취향설정 버튼 복원
+        var wizBtn = document.getElementById('wiz-launcher');
+        if (wizBtn) wizBtn.style.display = '';
       }
 
       // Legacy alias
