@@ -3100,7 +3100,7 @@
       </div>
 
       <!-- Hidden compat values for JS -->
-      <input type="hidden" id="budget-input-home" value="cheapest">
+      <input type="hidden" id="budget-input-home" value="">
       <div id="home-date-value" style="display:none">날짜선택</div>
       <div id="home-depart-value" style="display:none"></div>
       <div id="home-return-value" style="display:none"></div>
@@ -6777,8 +6777,7 @@
         const b1 = document.getElementById('budget-input-home');
         const b2 = document.getElementById('budget-input-compare');
         const budgetRaw = (b2 && b2.value) ? b2.value : b1.value;
-        const isCheapestBudget = budgetRaw === 'cheapest';
-        const budgetNum = budgetRaw === 'unlimited' ? 9999 : isCheapestBudget ? 0 : (parseInt(budgetRaw) || 150);
+        const budgetNum = budgetRaw === 'unlimited' ? 9999 : (parseInt(budgetRaw) || 150);
 
         const noResults = document.getElementById('no-results-cnt');
         const body = document.getElementById('comparison-body');
@@ -6815,7 +6814,7 @@
           const adjustedMin = (budgetNum >= 9000)
             ? baseMin
             : baseMin + (duration > 5 ? (duration - 5) * 6 : 0);
-          if (!isCheapestBudget && adjustedMin > budgetNum) return false;
+          if (adjustedMin > budgetNum) return false;
           // Region filter
           if (_selRegion && typeof DEST_REGION !== 'undefined') {
             const dRegion = DEST_REGION[d.id] || '';
@@ -6892,7 +6891,7 @@
 
             const d = matching[i];
             const destIdx = v1_0_9_DEST_DATA.indexOf(d);
-            updateColumn(i, destIdx, isCheapestBudget ? 'cheapest' : budgetNum, duration);
+            updateColumn(i, destIdx, budgetNum, duration);
             // TP Worker 가격이 있으면 updateColumn 결과 위에 오버라이드
             setTimeout(function(col, dest) {
               // 항공 오버라이드
@@ -7007,8 +7006,7 @@
         const d = v1_0_9_DEST_DATA[destIdx];
         if (!d) return;
         const colEl = document.getElementById('col-' + col); // Fix: colEl must be defined here, not from outer scope
-        const isCheapest = budgetLimit === 'cheapest';
-        const budget = isCheapest ? 0 : (parseInt(budgetLimit) || 150);
+        const budget = budgetLimit || 150;
         const days = duration || 5;
 
         // 1. DYNAMIC PRICING ENGINE (budget-tiered)
@@ -7028,13 +7026,7 @@
 
         const isUnlimited = budget >= 9000; // 상관없음(unlimited) 판별
 
-        if (isCheapest) {
-          tier = 'low';
-          airType = 'LCC 이코노미'; hotelType = '게스트하우스·호스텔';
-          airPrice = d.baseAir;
-          hotelPrice = Math.round(baseHL * (days - 1));
-          dailyMultiplier = 0.5;
-        } else if (!isUnlimited && budget >= 200 && totalHigh <= budget) {
+        if (!isUnlimited && budget >= 200 && totalHigh <= budget) {
           tier = 'high';
           airType = '이코노미 직항'; hotelType = '5성급·리조트';
           airPrice = Math.round(d.baseAir * 1.3);
@@ -7825,7 +7817,7 @@
         // Sync compare budget display
         var cBudgetDisplay = document.getElementById('sb-budget-display-c');
         if (cBudgetDisplay) {
-          var labels = {'cheapest':'최저가','50':'50만원 이내','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음'};
+          var labels = {'50':'50만원 이내','80':'최저가','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음'};
           var bLabel = labels[budgetVal] || '상관없음';
           cBudgetDisplay.textContent = bLabel;
           cBudgetDisplay.classList.add('filled');
@@ -8934,7 +8926,7 @@
         var hiddenComp = document.getElementById('budget-input-compare');
         if (hiddenHome) hiddenHome.value = val;
         if (hiddenComp) hiddenComp.value = val;
-        var labels = {'cheapest':'최저가','50':'50만원 이내','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음'};
+        var labels = {'50':'50만원 이내','80':'최저가','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음'};
         var labelText = labels[val] || '예산 선택';
         var bdisp = document.getElementById('sb-budget-display');
         var bdispc = document.getElementById('sb-budget-display-c');
@@ -10007,11 +9999,11 @@
           var check = el.querySelector('.cv-row-check');
           if (check) check.innerHTML = isActive ? checkSvg : '';
         });
-        var labels = { 'cheapest':'최저가','50':'50만원 이내','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음' };
+        var labels = { '50':'50만원 이내','80':'최저가','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음' };
         var txt = labels[val] || '상관없음';
         var el = document.getElementById('cvt-budget-val'); if(el) el.textContent = txt;
         var srcEl = document.getElementById('sb-budget-display'); if(srcEl) srcEl.textContent = txt;
-        window.selectedBudget = (val === 'unlimited') ? null : (val === 'cheapest') ? 'cheapest' : val;
+        window.selectedBudget = val === 'unlimited' ? null : val;
         document.querySelectorAll('.budget-pill').forEach(function(o) {
           o.classList.toggle('active', o.getAttribute('data-val') === val);
         });
