@@ -8863,19 +8863,31 @@
           var compareView = document.getElementById('compare-view');
           if (homeView) homeView.style.display = 'none';
           if (compareView) compareView.style.display = 'block';
-          // 기본 여행지 2개 먼저 렌더 (팝업 뒤 배경에 보이도록)
+          // 기본 예산·날짜 세팅 후 updateResultsByFilters로 배경 렌더
           setTimeout(function() {
-            var compBody = document.getElementById('comparison-body');
-            if (compBody) compBody.style.display = 'block';
-            updateColumn(0, 3, 150, 5); // 타이베이
-            updateColumn(1, 4, 150, 5); // 오사카
+            var bInput = document.getElementById('budget-input-home');
+            if (bInput && !bInput.value) bInput.value = '150';
+            var bInputC = document.getElementById('budget-input-compare');
+            if (bInputC && !bInputC.value) bInputC.value = '150';
+            // 기본 날짜: 내일~5일 후
+            var now = new Date();
+            var dep = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+            var ret = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 6);
+            var d1 = (dep.getMonth()+1) + '월 ' + dep.getDate() + '일';
+            var d2 = (ret.getMonth()+1) + '월 ' + ret.getDate() + '일';
+            var dateEl = document.getElementById('home-date-value');
+            if (dateEl && (!dateEl.textContent || dateEl.textContent === '날짜선택')) {
+              dateEl.textContent = d1 + ' – ' + d2;
+            }
+            // sel0=타이베이(3), sel1=오사카(4) 기본 설정
             var s0 = document.getElementById('sel0'), s1 = document.getElementById('sel1');
             var sf0 = document.getElementById('sel0-fixed'), sf1 = document.getElementById('sel1-fixed');
             if (s0) s0.value = '3'; if (sf0) sf0.value = '3';
             if (s1) s1.value = '4'; if (sf1) sf1.value = '4';
+            updateResultsByFilters();
             _cvSheetOpenedOnce = true;
           }, 0);
-          // 검색 시트 자동 오픈 (약간의 딜레이로 렌더링 완료 후)
+          // 검색 시트 자동 오픈
           setTimeout(function() {
             openCvSearchSheet();
           }, 150);
@@ -9760,6 +9772,23 @@
         document.body.style.overflow = '';
         document.body.style.position = '';
         document.body.style.width = '';
+
+        // 모바일: 닫혔을 때 비교뷰가 비어있으면 기본 여행지 렌더
+        if (window.innerWidth < 768) {
+          var body = document.getElementById('comparison-body');
+          if (body && body.style.display === 'none') {
+            var bInput = document.getElementById('budget-input-home');
+            if (bInput) bInput.value = '150';
+            var bInputC = document.getElementById('budget-input-compare');
+            if (bInputC) bInputC.value = '150';
+            var now = new Date();
+            var dep = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+            var ret = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 6);
+            var dateEl = document.getElementById('home-date-value');
+            if (dateEl) dateEl.textContent = (dep.getMonth()+1)+'월 '+dep.getDate()+'일 – '+(ret.getMonth()+1)+'월 '+ret.getDate()+'일';
+            updateResultsByFilters();
+          }
+        }
       }
 
       function switchCvTab(tab) {
