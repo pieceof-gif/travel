@@ -1804,7 +1804,7 @@
         z-index: 5;
       }
       #comparison-body {
-        padding-top: 120px !important;
+        padding-top: 16px !important;
       }
 
       /* sticky-sel: 2열 그리드 */
@@ -8863,10 +8863,22 @@
           var compareView = document.getElementById('compare-view');
           if (homeView) homeView.style.display = 'none';
           if (compareView) compareView.style.display = 'block';
+          // 기본 여행지 2개 먼저 렌더 (팝업 뒤 배경에 보이도록)
+          setTimeout(function() {
+            var compBody = document.getElementById('comparison-body');
+            if (compBody) compBody.style.display = 'block';
+            updateColumn(0, 3, 150, 5); // 타이베이
+            updateColumn(1, 4, 150, 5); // 오사카
+            var s0 = document.getElementById('sel0'), s1 = document.getElementById('sel1');
+            var sf0 = document.getElementById('sel0-fixed'), sf1 = document.getElementById('sel1-fixed');
+            if (s0) s0.value = '3'; if (sf0) sf0.value = '3';
+            if (s1) s1.value = '4'; if (sf1) sf1.value = '4';
+            _cvSheetOpenedOnce = true;
+          }, 0);
           // 검색 시트 자동 오픈 (약간의 딜레이로 렌더링 완료 후)
           setTimeout(function() {
             openCvSearchSheet();
-          }, 100);
+          }, 150);
         }
       });
 
@@ -9709,6 +9721,7 @@
         cvUpdateCounterBtns();
       }
 
+      var _cvSheetOpenedOnce = false;
       function openCvSearchSheet() {
         syncCvTabValues();
         var sheet = document.getElementById('cv-search-sheet');
@@ -9719,6 +9732,25 @@
         document.body.style.overflow = 'hidden';
         document.body.style.position = 'fixed';
         document.body.style.width = '100%';
+
+        // 모바일 첫 오픈 시 — 팝업 뒤 배경에 기본 여행지 2개 미리 렌더
+        if (!_cvSheetOpenedOnce && window.innerWidth < 768) {
+          _cvSheetOpenedOnce = true;
+          var cv = document.getElementById('compare-view');
+          var hv = document.getElementById('home-view');
+          if (cv && hv) {
+            hv.style.display = 'none';
+            cv.style.display = 'block';
+            // 기본 여행지: 타이베이(3), 오사카(4) — v1_0_9_DEST_DATA 인덱스
+            var defaultBudget = 150, defaultDays = 5;
+            updateColumn(0, 3, defaultBudget, defaultDays);
+            updateColumn(1, 4, defaultBudget, defaultDays);
+            var s0 = document.getElementById('sel0'), s1 = document.getElementById('sel1');
+            var sf0 = document.getElementById('sel0-fixed'), sf1 = document.getElementById('sel1-fixed');
+            if (s0) s0.value = '3'; if (sf0) sf0.value = '3';
+            if (s1) s1.value = '4'; if (sf1) sf1.value = '4';
+          }
+        }
       }
 
       function closeCvSearchSheet() {
