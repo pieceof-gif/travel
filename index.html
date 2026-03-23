@@ -409,7 +409,7 @@
     .sb-region-opt:active { background: #f0f0f0; }
     .sb-region-title { font-size: 15px; font-weight: 500; color: #1d1d1f; }
     .sb-region-sub { font-size: 12px; color: #86868b; margin-top: 3px; }
-    .sb-region-hr { height: 1px; background: #f0f0f0; }
+    .sb-region-hr { display: none; }
     .sb-region-check {
       width: 24px; height: 24px;
       display: flex; align-items: center; justify-content: center;
@@ -419,11 +419,18 @@
     .sb-region-opt.active .sb-region-title { font-weight: 600; }
     /* Budget options — 동일 스타일 */
     .sb-budget-header {
-      font-size: 13px;
-      font-weight: 600;
-      color: #86868b;
+      font-size: 12px;
+      font-weight: 400;
+      color: #aeaeb2;
       margin-bottom: 4px;
       padding: 0 4px;
+    }
+    .cv-budget-header {
+      font-size: 12px;
+      font-weight: 400;
+      color: #aeaeb2;
+      margin-bottom: 4px;
+      padding: 4px 0 8px;
     }
     .sb-budget-opt {
       display: flex;
@@ -437,7 +444,7 @@
     }
     .sb-budget-opt:active { background: #f0f0f0; }
     .sb-budget-title { font-size: 15px; font-weight: 500; color: #1d1d1f; }
-    .sb-budget-sub { font-size: 12px; color: #86868b; margin-top: 3px; }
+    .sb-budget-sub { display: none; }
     .sb-budget-check {
       width: 24px; height: 24px;
       display: flex; align-items: center; justify-content: center;
@@ -2940,7 +2947,7 @@
           <!-- 4. 예산 -->
           <div class="sb-seg" id="budget-seg" onclick="toggleSbPanel('budget-panel',event,this)">
             <div class="sb-label">예산</div>
-            <div class="sb-val" id="sb-budget-display">상관없음</div>
+            <div class="sb-val" id="sb-budget-display">최저가</div>
           </div>
           <button class="sb-btn" id="search-btn" onclick="startSearch()" type="button" aria-label="여행지 검색">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -3055,18 +3062,13 @@
         <!-- PANEL 4: 예산 -->
         <div class="sb-panel" id="budget-panel">
           <div class="sb-budget-header">1인당 예산 (항공+숙박 기준)</div>
-          <div class="sb-budget-opt active" data-val="unlimited" onclick="selectBudget('unlimited',event)">
-            <div><div class="sb-budget-title">상관없음</div><div class="sb-budget-sub">예산 제한 없이 비교</div></div>
+          <div class="sb-budget-opt active" data-val="80" onclick="selectBudget('80',event)">
+            <div><div class="sb-budget-title">최저가</div><div class="sb-budget-sub">LCC·게스트하우스</div></div>
             <span class="sb-budget-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
           </div>
           <div class="sb-region-hr"></div>
           <div class="sb-budget-opt" data-val="50" onclick="selectBudget('50',event)">
             <div><div class="sb-budget-title">50만원 이내</div><div class="sb-budget-sub">가성비 여행</div></div>
-            <span class="sb-budget-check"></span>
-          </div>
-          <div class="sb-region-hr"></div>
-          <div class="sb-budget-opt" data-val="80" onclick="selectBudget('80',event)">
-            <div><div class="sb-budget-title">80만원 이내</div><div class="sb-budget-sub">알뜰 여행</div></div>
             <span class="sb-budget-check"></span>
           </div>
           <div class="sb-region-hr"></div>
@@ -3087,6 +3089,11 @@
           <div class="sb-region-hr"></div>
           <div class="sb-budget-opt" data-val="300" onclick="selectBudget('300',event)">
             <div><div class="sb-budget-title">300만원 이내</div><div class="sb-budget-sub">럭셔리 여행</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="unlimited" onclick="selectBudget('unlimited',event)">
+            <div><div class="sb-budget-title">상관없음</div><div class="sb-budget-sub">예산 제한 없이 비교</div></div>
             <span class="sb-budget-check"></span>
           </div>
         </div>
@@ -3247,10 +3254,10 @@
       <!-- 예산 콘텐츠 -->
       <div class="cv-tab-content" id="cv-content-budget" style="display:none">
         <div class="cv-budget-header">1인당 예산 (항공+숙박 기준)</div>
-        <div class="cv-row active" data-val="unlimited" onclick="cvSelectBudget('unlimited')">
+        <div class="cv-row active" data-val="80" onclick="cvSelectBudget('80')">
           <div>
-            <div class="cv-row-title">상관없음</div>
-            <div class="cv-row-sub">예산 제한 없이 비교</div>
+            <div class="cv-row-title">최저가</div>
+            <div class="cv-row-sub">LCC·게스트하우스</div>
           </div>
           <span class="cv-row-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
         </div>
@@ -3259,14 +3266,6 @@
           <div>
             <div class="cv-row-title">50만원 이내</div>
             <div class="cv-row-sub">가성비 여행</div>
-          </div>
-          <span class="cv-row-check"></span>
-        </div>
-        <div class="cv-row-hr"></div>
-        <div class="cv-row" data-val="80" onclick="cvSelectBudget('80')">
-          <div>
-            <div class="cv-row-title">80만원 이내</div>
-            <div class="cv-row-sub">알뜰 여행</div>
           </div>
           <span class="cv-row-check"></span>
         </div>
@@ -3299,6 +3298,14 @@
           <div>
             <div class="cv-row-title">300만원 이내</div>
             <div class="cv-row-sub">럭셔리 여행</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="unlimited" onclick="cvSelectBudget('unlimited')">
+          <div>
+            <div class="cv-row-title">상관없음</div>
+            <div class="cv-row-sub">예산 제한 없이 비교</div>
           </div>
           <span class="cv-row-check"></span>
         </div>
@@ -3446,7 +3453,7 @@
           <!-- 4. 예산 -->
           <div class="sb-seg" id="budget-seg-c" onclick="toggleSbPanel('budget-panel-c',event,this)">
             <div class="sb-label">예산</div>
-            <div class="sb-val" id="sb-budget-display-c">상관없음</div>
+            <div class="sb-val" id="sb-budget-display-c">최저가</div>
           </div>
           <button class="sb-btn" id="compare-search-btn" onclick="updateResultsByFilters()" type="button" aria-label="여행지 검색">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -3561,18 +3568,13 @@
         <!-- PANEL 4: 예산 -->
         <div class="sb-panel" id="budget-panel-c">
           <div class="sb-budget-header">1인당 예산 (항공+숙박 기준)</div>
-          <div class="sb-budget-opt active" data-val="unlimited" onclick="selectBudget('unlimited',event)">
-            <div><div class="sb-budget-title">상관없음</div><div class="sb-budget-sub">예산 제한 없이 비교</div></div>
+          <div class="sb-budget-opt active" data-val="80" onclick="selectBudget('80',event)">
+            <div><div class="sb-budget-title">최저가</div><div class="sb-budget-sub">LCC·게스트하우스</div></div>
             <span class="sb-budget-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
           </div>
           <div class="sb-region-hr"></div>
           <div class="sb-budget-opt" data-val="50" onclick="selectBudget('50',event)">
             <div><div class="sb-budget-title">50만원 이내</div><div class="sb-budget-sub">가성비 여행</div></div>
-            <span class="sb-budget-check"></span>
-          </div>
-          <div class="sb-region-hr"></div>
-          <div class="sb-budget-opt" data-val="80" onclick="selectBudget('80',event)">
-            <div><div class="sb-budget-title">80만원 이내</div><div class="sb-budget-sub">알뜰 여행</div></div>
             <span class="sb-budget-check"></span>
           </div>
           <div class="sb-region-hr"></div>
@@ -3593,6 +3595,11 @@
           <div class="sb-region-hr"></div>
           <div class="sb-budget-opt" data-val="300" onclick="selectBudget('300',event)">
             <div><div class="sb-budget-title">300만원 이내</div><div class="sb-budget-sub">럭셔리 여행</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="unlimited" onclick="selectBudget('unlimited',event)">
+            <div><div class="sb-budget-title">상관없음</div><div class="sb-budget-sub">예산 제한 없이 비교</div></div>
             <span class="sb-budget-check"></span>
           </div>
         </div>
@@ -6717,7 +6724,10 @@
         const _selRegion = window.selectedRegion || '';
         const allCandidates = [...v1_0_9_DEST_DATA].filter(d => {
           const baseMin = d.minBudget || 40;
-          const adjustedMin = baseMin + (duration > 5 ? (duration - 5) * 6 : 0);
+          // unlimited 예산(상관없음)일 때는 duration 페널티 없이 모든 여행지 노출
+          const adjustedMin = (budgetNum >= 9000)
+            ? baseMin
+            : baseMin + (duration > 5 ? (duration - 5) * 6 : 0);
           if (adjustedMin > budgetNum) return false;
           // Region filter
           if (_selRegion && typeof DEST_REGION !== 'undefined') {
@@ -6788,6 +6798,10 @@
             if (colEl) colEl.style.display = 'block';
             if (fixedCard) { fixedCard.style.visibility = 'visible'; fixedCard.style.display = ''; }
             if (regularCard) { regularCard.style.visibility = 'visible'; regularCard.style.display = ''; }
+            // 이전에 숨겼던 dc 셀 복원
+            document.querySelectorAll('[id$="-' + i + '"]').forEach(function(el) {
+              if (el.classList.contains('dc')) el.style.display = '';
+            });
 
             const d = matching[i];
             const destIdx = v1_0_9_DEST_DATA.indexOf(d);
@@ -6845,6 +6859,10 @@
             if (colEl) colEl.style.display = 'none';
             if (fixedCard) { fixedCard.style.visibility = 'hidden'; fixedCard.style.display = 'none'; }
             if (regularCard) { regularCard.style.visibility = 'hidden'; regularCard.style.display = 'none'; }
+            // data-row 안의 dc 셀도 숨겨서 stale 데이터 안 보이게
+            document.querySelectorAll('[id$="-' + i + '"]').forEach(function(el) {
+              if (el.classList.contains('dc')) el.style.display = 'none';
+            });
           }
         }
 
@@ -6940,6 +6958,23 @@
           airPrice = d.baseAir;
           hotelPrice = Math.round(baseHL * (days - 1));
           dailyMultiplier = 0.5;
+        }
+
+        // 취향설정 tierOverride 반영 — 가격 계산에도 적용
+        const _tierOvr = window.wizardTierOverride;
+        if (_tierOvr && _tierOvr !== tier) {
+          tier = _tierOvr;
+          if (_tierOvr === 'low') {
+            airType = 'LCC 이코노미'; hotelType = '게스트하우스·호스텔';
+            airPrice = d.baseAir;
+            hotelPrice = Math.round(baseHL * (days - 1));
+            dailyMultiplier = 0.5; scoreBonus = 0;
+          } else if (_tierOvr === 'high') {
+            airType = '이코노미 직항'; hotelType = '5성급·리조트';
+            airPrice = Math.round(d.baseAir * 1.3);
+            hotelPrice = Math.round(baseHH * (days - 1));
+            dailyMultiplier = 1.8; scoreBonus = 10;
+          }
         }
 
         const dailySpend = Math.round(daily * dailyMultiplier * 10) / 10;
@@ -7691,7 +7726,7 @@
         // Sync compare budget display
         var cBudgetDisplay = document.getElementById('sb-budget-display-c');
         if (cBudgetDisplay) {
-          var labels = {'50':'50만원 이내','80':'80만원 이내','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음'};
+          var labels = {'50':'50만원 이내','80':'최저가','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음'};
           var bLabel = labels[budgetVal] || '상관없음';
           cBudgetDisplay.textContent = bLabel;
           cBudgetDisplay.classList.add('filled');
@@ -8782,7 +8817,7 @@
         var hiddenComp = document.getElementById('budget-input-compare');
         if (hiddenHome) hiddenHome.value = val;
         if (hiddenComp) hiddenComp.value = val;
-        var labels = {'50':'50만원 이내','80':'80만원 이내','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음'};
+        var labels = {'50':'50만원 이내','80':'최저가','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음'};
         var labelText = labels[val] || '예산 선택';
         var bdisp = document.getElementById('sb-budget-display');
         var bdispc = document.getElementById('sb-budget-display-c');
@@ -9855,7 +9890,7 @@
           var check = el.querySelector('.cv-row-check');
           if (check) check.innerHTML = isActive ? checkSvg : '';
         });
-        var labels = { '50':'50만원 이내','80':'80만원 이내','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음' };
+        var labels = { '50':'50만원 이내','80':'최저가','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음' };
         var txt = labels[val] || '상관없음';
         var el = document.getElementById('cvt-budget-val'); if(el) el.textContent = txt;
         var srcEl = document.getElementById('sb-budget-display'); if(srcEl) srcEl.textContent = txt;
