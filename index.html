@@ -1348,6 +1348,7 @@
       pointer-events: none;
     }
 
+
     .col-badges {
       display: flex;
       justify-content: center;
@@ -1404,6 +1405,60 @@
       width: 100%;
       text-align: left;
     }
+
+    /* ── CUSTOM DESTINATION DROPDOWN ── */
+    .dest-dd { position: relative; width: 100%; }
+    .dest-dd-trigger {
+      display: flex; align-items: center; gap: 5px;
+      cursor: pointer; user-select: none; padding: 2px 0;
+    }
+    .dest-dd-val {
+      font-size: 17px; font-weight: 600; color: #1d1d1f;
+      flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      text-align: left;
+    }
+    .dest-dd-chevron {
+      display: none;
+    }
+    .dest-dd.open .dest-dd-chevron { transform: rotate(180deg); }
+    .dest-dd-menu {
+      display: none; position: absolute;
+      top: calc(100% + 8px); left: -12px;
+      min-width: 210px; background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 6px 36px rgba(0,0,0,0.13);
+      padding: 6px 0; z-index: 9999;
+      max-height: 400px; overflow-y: auto;
+    }
+    .dest-dd.open .dest-dd-menu {
+      display: block;
+      animation: ddFadeIn 0.14s ease;
+    }
+    @keyframes ddFadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .dest-dd-group-label {
+      padding: 10px 14px 4px;
+      font-size: 11px; font-weight: 600;
+      color: #aeaeb2; letter-spacing: 0.5px;
+      text-transform: uppercase;
+      text-align: left;
+    }
+    .dest-dd-group-label:not(:first-child) {
+      border-top: 1px solid #f2f2f7; margin-top: 4px; padding-top: 12px;
+    }
+    .dest-dd-option {
+      padding: 8px 16px; font-size: 15px; color: #1d1d1f;
+      cursor: pointer; transition: background 0.1s; white-space: nowrap;
+      text-align: left;
+    }
+    .dest-dd-option:hover { background: #f5f5f7; }
+    .dest-dd-option.selected { color: #0071e3; font-weight: 500; }
+    .dest-dd-option.restricted {
+      color: #c7c7cc; cursor: default; font-size: 13.5px;
+    }
+    .dest-dd-option.restricted:hover { background: none; }
 
     .sel-price {
       display: none;
@@ -1703,6 +1758,8 @@
         left: 20px !important;
         z-index: 2100 !important;
       }
+
+
     }
 
     /* ── RESPONSIVE: Mobile only (2-col layout) ── */
@@ -1715,19 +1772,7 @@
         margin-bottom: 0 !important;
       }
 
-      /* sticky-sel: 모바일에서 GNB(44px) 바로 아래 실시간 고정 */
-      .sticky-sel {
-        position: sticky !important;
-        top: 44px !important; 
-        left: 0 !important;
-        right: 0 !important;
-        z-index: 800 !important;
-        background: rgba(255,255,255,0.98) !important;
-        backdrop-filter: saturate(180%) blur(20px) !important;
-        -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
-        border-bottom: 1px solid rgba(0,0,0,0.06);
-        padding: 10px 0 14px !important;
-      }
+
 
 
       /* 모바일 패널 최적화 */
@@ -2947,7 +2992,7 @@
           <!-- 4. 예산 -->
           <div class="sb-seg" id="budget-seg" onclick="toggleSbPanel('budget-panel',event,this)">
             <div class="sb-label">예산</div>
-            <div class="sb-val" id="sb-budget-display">최저가</div>
+            <div class="sb-val" id="sb-budget-display">상관없음</div>
           </div>
           <button class="sb-btn" id="search-btn" onclick="startSearch()" type="button" aria-label="여행지 검색">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -3062,9 +3107,9 @@
         <!-- PANEL 4: 예산 -->
         <div class="sb-panel" id="budget-panel">
           <div class="sb-budget-header">1인당 예산 (항공+숙박 기준)</div>
-          <div class="sb-budget-opt active" data-val="cheapest" onclick="selectBudget('cheapest',event)">
+          <div class="sb-budget-opt" data-val="cheapest" onclick="selectBudget('cheapest',event)">
             <div><div class="sb-budget-title">최저가</div><div class="sb-budget-sub">LCC·게스트하우스</div></div>
-            <span class="sb-budget-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <span class="sb-budget-check"></span>
           </div>
           <div class="sb-region-hr"></div>
           <div class="sb-budget-opt" data-val="50" onclick="selectBudget('50',event)">
@@ -3092,15 +3137,15 @@
             <span class="sb-budget-check"></span>
           </div>
           <div class="sb-region-hr"></div>
-          <div class="sb-budget-opt" data-val="unlimited" onclick="selectBudget('unlimited',event)">
+          <div class="sb-budget-opt active" data-val="unlimited" onclick="selectBudget('unlimited',event)">
             <div><div class="sb-budget-title">상관없음</div><div class="sb-budget-sub">예산 제한 없이 비교</div></div>
-            <span class="sb-budget-check"></span>
+            <span class="sb-budget-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
           </div>
         </div>
       </div>
 
       <!-- Hidden compat values for JS -->
-      <input type="hidden" id="budget-input-home" value="">
+      <input type="hidden" id="budget-input-home" value="unlimited">
       <div id="home-date-value" style="display:none">날짜선택</div>
       <div id="home-depart-value" style="display:none"></div>
       <div id="home-return-value" style="display:none"></div>
@@ -3254,12 +3299,12 @@
       <!-- 예산 콘텐츠 -->
       <div class="cv-tab-content" id="cv-content-budget" style="display:none">
         <div class="cv-budget-header">1인당 예산 (항공+숙박 기준)</div>
-        <div class="cv-row active" data-val="cheapest" onclick="cvSelectBudget('cheapest')">
+        <div class="cv-row" data-val="cheapest" onclick="cvSelectBudget('cheapest')">
           <div>
             <div class="cv-row-title">최저가</div>
             <div class="cv-row-sub">LCC·게스트하우스</div>
           </div>
-          <span class="cv-row-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="cv-row-check"></span>
         </div>
         <div class="cv-row-hr"></div>
         <div class="cv-row" data-val="50" onclick="cvSelectBudget('50')">
@@ -3302,12 +3347,12 @@
           <span class="cv-row-check"></span>
         </div>
         <div class="cv-row-hr"></div>
-        <div class="cv-row" data-val="unlimited" onclick="cvSelectBudget('unlimited')">
+        <div class="cv-row active" data-val="unlimited" onclick="cvSelectBudget('unlimited')">
           <div>
             <div class="cv-row-title">상관없음</div>
             <div class="cv-row-sub">예산 제한 없이 비교</div>
           </div>
-          <span class="cv-row-check"></span>
+          <span class="cv-row-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
         </div>
       </div>
 
@@ -3324,7 +3369,14 @@
     <div id="fixed-header-clone" class="fixed-header">
       <div class="sel-grid">
         <div class="sel-card">
-          <select id="sel0-fixed" class="dest-select" onchange="changeDest(0, this.value)">
+          <div class="dest-dd" id="dd0-fixed">
+            <div class="dest-dd-trigger" onclick="toggleDestDd(0)">
+              <span class="dest-dd-val">여행지 선택</span>
+              <svg class="dest-dd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="dest-dd-menu" id="dd0-fixed-menu"></div>
+          </div>
+          <select id="sel0-fixed" class="dest-select" style="display:none" onchange="changeDest(0, this.value)">
             <option value="0">포르투갈 · 리스본</option>
             <option value="1">베트남 · 다낭</option>
             <option value="2">제주도 (국내)</option>
@@ -3359,7 +3411,14 @@
           </select>
         </div>
         <div class="sel-card">
-          <select id="sel1-fixed" class="dest-select" onchange="changeDest(1, this.value)">
+          <div class="dest-dd" id="dd1-fixed">
+            <div class="dest-dd-trigger" onclick="toggleDestDd(1)">
+              <span class="dest-dd-val">여행지 선택</span>
+              <svg class="dest-dd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="dest-dd-menu" id="dd1-fixed-menu"></div>
+          </div>
+          <select id="sel1-fixed" class="dest-select" style="display:none" onchange="changeDest(1, this.value)">
             <option value="0">포르투갈 · 리스본</option>
             <option value="1">베트남 · 다낭</option>
             <option value="2">제주도 (국내)</option>
@@ -3394,7 +3453,14 @@
           </select>
         </div>
         <div class="sel-card">
-          <select id="sel2-fixed" class="dest-select" onchange="changeDest(2, this.value)">
+          <div class="dest-dd" id="dd2-fixed">
+            <div class="dest-dd-trigger" onclick="toggleDestDd(2)">
+              <span class="dest-dd-val">여행지 선택</span>
+              <svg class="dest-dd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="dest-dd-menu" id="dd2-fixed-menu"></div>
+          </div>
+          <select id="sel2-fixed" class="dest-select" style="display:none" onchange="changeDest(2, this.value)">
             <option value="0">포르투갈 · 리스본</option>
             <option value="1">베트남 · 다낭</option>
             <option value="2">제주도 (국내)</option>
@@ -3456,7 +3522,7 @@
           <!-- 4. 예산 -->
           <div class="sb-seg" id="budget-seg-c" onclick="toggleSbPanel('budget-panel-c',event,this)">
             <div class="sb-label">예산</div>
-            <div class="sb-val" id="sb-budget-display-c">최저가</div>
+            <div class="sb-val" id="sb-budget-display-c">상관없음</div>
           </div>
           <button class="sb-btn" id="compare-search-btn" onclick="updateResultsByFilters()" type="button" aria-label="여행지 검색">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -3571,9 +3637,9 @@
         <!-- PANEL 4: 예산 -->
         <div class="sb-panel" id="budget-panel-c">
           <div class="sb-budget-header">1인당 예산 (항공+숙박 기준)</div>
-          <div class="sb-budget-opt active" data-val="cheapest" onclick="selectBudget('cheapest',event)">
+          <div class="sb-budget-opt" data-val="cheapest" onclick="selectBudget('cheapest',event)">
             <div><div class="sb-budget-title">최저가</div><div class="sb-budget-sub">LCC·게스트하우스</div></div>
-            <span class="sb-budget-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <span class="sb-budget-check"></span>
           </div>
           <div class="sb-region-hr"></div>
           <div class="sb-budget-opt" data-val="50" onclick="selectBudget('50',event)">
@@ -3601,21 +3667,28 @@
             <span class="sb-budget-check"></span>
           </div>
           <div class="sb-region-hr"></div>
-          <div class="sb-budget-opt" data-val="unlimited" onclick="selectBudget('unlimited',event)">
+          <div class="sb-budget-opt active" data-val="unlimited" onclick="selectBudget('unlimited',event)">
             <div><div class="sb-budget-title">상관없음</div><div class="sb-budget-sub">예산 제한 없이 비교</div></div>
-            <span class="sb-budget-check"></span>
+            <span class="sb-budget-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
           </div>
         </div>
 
         <!-- Hidden compat values -->
-        <input type="hidden" id="budget-input-compare" value="">
+        <input type="hidden" id="budget-input-compare" value="unlimited">
         <div id="compare-budget-value" style="display:none"></div>
       </div>
 
       <div class="sticky-sel">
         <div class="sel-grid">
           <div class="sel-card">
-            <select id="sel0" class="dest-select" onchange="changeDest(0, this.value)">
+            <div class="dest-dd" id="dd0">
+              <div class="dest-dd-trigger" onclick="toggleDestDd(0)">
+                <span class="dest-dd-val">여행지 선택</span>
+                <svg class="dest-dd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="dest-dd-menu" id="dd0-menu"></div>
+            </div>
+            <select id="sel0" class="dest-select" style="display:none" onchange="changeDest(0, this.value)">
               <option value="0">포르투갈 · 리스본</option>
               <option value="1">베트남 · 다낭</option>
               <option value="2">제주도 (국내)</option>
@@ -3650,7 +3723,14 @@
             </select>
           </div>
           <div class="sel-card">
-            <select id="sel1" class="dest-select" onchange="changeDest(1, this.value)">
+            <div class="dest-dd" id="dd1">
+              <div class="dest-dd-trigger" onclick="toggleDestDd(1)">
+                <span class="dest-dd-val">여행지 선택</span>
+                <svg class="dest-dd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="dest-dd-menu" id="dd1-menu"></div>
+            </div>
+            <select id="sel1" class="dest-select" style="display:none" onchange="changeDest(1, this.value)">
               <option value="0">포르투갈 · 리스본</option>
               <option value="1">베트남 · 다낭</option>
               <option value="2">제주도 (국내)</option>
@@ -3685,7 +3765,14 @@
             </select>
           </div>
           <div class="sel-card">
-            <select id="sel2" class="dest-select" onchange="changeDest(2, this.value)">
+            <div class="dest-dd" id="dd2">
+              <div class="dest-dd-trigger" onclick="toggleDestDd(2)">
+                <span class="dest-dd-val">여행지 선택</span>
+                <svg class="dest-dd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="dest-dd-menu" id="dd2-menu"></div>
+            </div>
+            <select id="sel2" class="dest-select" style="display:none" onchange="changeDest(2, this.value)">
               <option value="0">포르투갈 · 리스본</option>
               <option value="1">베트남 · 다낭</option>
               <option value="2">제주도 (국내)</option>
@@ -6777,7 +6864,9 @@
         const b1 = document.getElementById('budget-input-home');
         const b2 = document.getElementById('budget-input-compare');
         const budgetRaw = (b2 && b2.value) ? b2.value : b1.value;
-        const budgetNum = budgetRaw === 'unlimited' ? 9999 : (parseInt(budgetRaw) || 150);
+        const isCheapest = budgetRaw === 'cheapest';
+        const budgetNum = budgetRaw === 'unlimited' ? 9999 : isCheapest ? 40 : (parseInt(budgetRaw) || 150);
+        const filterBudget = isCheapest ? 9999 : budgetNum;
 
         const noResults = document.getElementById('no-results-cnt');
         const body = document.getElementById('comparison-body');
@@ -6799,31 +6888,33 @@
             const date1 = new Date(year, m1, parseInt(d1[1].replace('일', '')));
             const date2 = new Date(m2 < m1 ? year + 1 : year, m2, parseInt(d2[1].replace('일', '')));
             duration = Math.ceil((date2 - date1) / (1000 * 60 * 60 * 24)) + 1;
+            if (duration <= 0) duration = 5;
           } catch (e) { duration = 5; }
         }
 
         // Update select options based on new budget/duration
-        refreshSelectOptions(budgetNum, duration);
+        refreshSelectOptions(filterBudget, duration);
 
         const _wb = window.wizardBonus || {};
         const _erb = window.exchangeRateBonus || {};
         const _selRegion = window.selectedRegion || '';
         const allCandidates = [...v1_0_9_DEST_DATA].filter(d => {
           const baseMin = d.minBudget || 40;
-          // unlimited 예산(상관없음)일 때는 duration 페널티 없이 모든 여행지 노출
-          const adjustedMin = (budgetNum >= 9000)
+          // unlimited/cheapest 예산일 때는 duration 페널티 없이 모든 여행지 노출
+          const adjustedMin = (filterBudget >= 9000)
             ? baseMin
             : baseMin + (duration > 5 ? (duration - 5) * 6 : 0);
-          if (adjustedMin > budgetNum) return false;
+          if (adjustedMin > filterBudget) return false;
           // Region filter
           if (_selRegion && typeof DEST_REGION !== 'undefined') {
             const dRegion = DEST_REGION[d.id] || '';
             if (dRegion !== _selRegion) return false;
           }
           return true;
-        }).sort((a, b) =>
-          (b.score + (_wb[b.id] || 0) + (_erb[b.id] || 0)) -
-          (a.score + (_wb[a.id] || 0) + (_erb[a.id] || 0))
+        }).sort((a, b) => isCheapest
+          ? (a.minBudget || 40) - (b.minBudget || 40)
+          : (b.score + (_wb[b.id] || 0) + (_erb[b.id] || 0)) -
+            (a.score + (_wb[a.id] || 0) + (_erb[a.id] || 0))
         );
 
 
@@ -6935,7 +7026,7 @@
             };
             syncId('sel' + i);
             syncId('sel' + i + '-fixed');
-            setTimeout(() => { syncId('sel' + i); syncId('sel' + i + '-fixed'); }, 100);
+            setTimeout(() => { syncId('sel' + i); syncId('sel' + i + '-fixed'); syncAllDestDdLabels(); }, 100);
             // entry 섹션에 비자 정보 업데이트 (데이터가 로드된 경우)
             if (d && d._visaLabel && typeof _applyVisaToEntry === 'function') {
               setTimeout(function(col, dest) { _applyVisaToEntry(col, dest); }, 350, i, d);
@@ -6951,6 +7042,8 @@
             });
           }
         }
+
+        syncAllDestDdLabels(); // 루프 완료 후 한 번만 동기화
 
         [grid, selGrid, ...dataGrids].forEach(el => {
           if (el) el.style.justifyContent = (count < 3) ? 'center' : 'space-between';
@@ -7587,7 +7680,7 @@
         const b1 = document.getElementById('budget-input-home');
         const b2 = document.getElementById('budget-input-compare');
         const budgetRaw = (b2 && b2.value) ? b2.value : b1.value;
-        const budgetNum = budgetRaw === 'unlimited' ? 9999 : (parseInt(budgetRaw) || 150);
+        const budgetNum = budgetRaw === 'unlimited' ? 9999 : budgetRaw === 'cheapest' ? 80 : (parseInt(budgetRaw) || 150);
         
         setTimeout(() => {
           updateResultsByFilters();
@@ -7618,28 +7711,196 @@
         }, 2500);
       }
 
+      // ── DESTINATION DROPDOWN SHARED CONSTANTS ──
+      const DEST_COUNTRY_KR = {
+        japan:'일본', vietnam:'베트남', korea:'국내', taiwan:'대만',
+        thailand:'태국', indonesia:'인도네시아', singapore:'싱가포르',
+        philippines:'필리핀', hongkong:'홍콩', usa:'하와이',
+        usa_territory:'괌', portugal:'포르투갈', france:'프랑스',
+        spain:'스페인', malaysia:'말레이시아', maldives:'몰디브',
+        australia:'호주', china:'중국'
+      };
+      const DEST_REGION_LABELS = {
+        domestic:'국내', japan:'일본', east_asia:'동아시아',
+        sea:'동남아시아', pacific:'태평양·오세아니아', europe:'유럽'
+      };
+      const DEST_REGION_ORDER = ['domestic','japan','east_asia','sea','pacific','europe'];
+      const DEST_REGION_MULTI = new Set(['east_asia','sea','pacific','europe']);
+
+      // 순수 도시명 추출
+      function _getDestCity(d) {
+        return d.name.includes(' · ')
+          ? d.name.split(' · ')[1].trim()
+          : d.name.replace(/\s*\([^)]+\)\s*$/, '').trim();
+      }
+      // 표시용 라벨 (지역 필터 여부에 따라 국가 prefix 결정)
+      function _getDestLabel(d, activeRegion) {
+        const city = _getDestCity(d);
+        const rk = (typeof DEST_REGION !== 'undefined' && DEST_REGION[d.id]) || '';
+        const needCountry = !activeRegion || DEST_REGION_MULTI.has(rk);
+        if (!needCountry) return city;
+        const cc = (typeof DEST_COUNTRY !== 'undefined' && DEST_COUNTRY[d.id]) || '';
+        const country = DEST_COUNTRY_KR[cc] || '';
+        return country ? country + ' · ' + city : city;
+      }
+      // 트리거 라벨 (항상 풀 표시)
+      function _getDestTriggerLabel(idx) {
+        const d = v1_0_9_DEST_DATA && v1_0_9_DEST_DATA[idx];
+        if (!d) return '여행지 선택';
+        return _getDestLabel(d, null);
+      }
+
       function refreshSelectOptions(budget, duration) {
-        const sels = ['sel0', 'sel1', 'sel2', 'sel0-fixed', 'sel1-fixed', 'sel2-fixed'];
-        sels.forEach(sid => {
+        const _selRegion = window.selectedRegion || '';
+
+        // ── 1. hidden <select> 재빌드 (기존 JS 참조 보존) ──
+        ['sel0','sel1','sel2','sel0-fixed','sel1-fixed','sel2-fixed'].forEach(sid => {
           const el = document.getElementById(sid);
           if (!el) return;
-          Array.from(el.options).forEach(opt => {
-            const did = parseInt(opt.value);
-            const d = v1_0_9_DEST_DATA[did];
-            if (!d) return;
-            const adjMin = (d.minBudget || 40) + (duration > 5 ? (duration - 5) * 6 : 0);
-            const nameBase = d.name.includes(' · ') ? d.name : (d.country ? (d.country + ' · ' + d.name) : d.name);
-            
-            if (adjMin > budget) {
-              opt.classList.add('restricted');
-              opt.textContent = '🚫 ' + nameBase + ' (예산 초과)';
-            } else {
-              opt.classList.remove('restricted');
-              opt.textContent = nameBase;
+          const cur = el.value;
+          el.innerHTML = '';
+          if (_selRegion) {
+            v1_0_9_DEST_DATA.forEach((d, did) => {
+              if ((typeof DEST_REGION !== 'undefined' ? DEST_REGION[d.id] : '') !== _selRegion) return;
+              const opt = document.createElement('option');
+              opt.value = String(did);
+              opt.textContent = _getDestLabel(d, _selRegion);
+              el.appendChild(opt);
+            });
+          } else {
+            DEST_REGION_ORDER.forEach(rk => {
+              const items = v1_0_9_DEST_DATA.map((d,i)=>({d,i})).filter(({d})=>(typeof DEST_REGION!=='undefined'?DEST_REGION[d.id]:'')===rk);
+              if (!items.length) return;
+              const grp = document.createElement('optgroup');
+              grp.label = DEST_REGION_LABELS[rk] || rk;
+              items.forEach(({d,i}) => {
+                const opt = document.createElement('option');
+                opt.value = String(i);
+                const adjMin = (d.minBudget||40) + (duration>5?(duration-5)*6:0);
+                if (adjMin > budget) { opt.classList.add('restricted'); opt.textContent = '🚫 ' + _getDestLabel(d,null) + ' (예산 초과)'; }
+                else { opt.textContent = _getDestLabel(d, null); }
+                grp.appendChild(opt);
+              });
+              el.appendChild(grp);
+            });
+          }
+          if (cur) el.value = cur;
+        });
+
+        // ── 2. 커스텀 드롭다운 메뉴 재빌드 ──
+        [[0,'dd0','sel0'],[1,'dd1','sel1'],[2,'dd2','sel2'],
+         [0,'dd0-fixed','sel0-fixed'],[1,'dd1-fixed','sel1-fixed'],[2,'dd2-fixed','sel2-fixed']
+        ].forEach(([col, ddId, selId]) => {
+          const menuEl = document.getElementById(ddId + '-menu');
+          if (!menuEl) return;
+          const curIdx = parseInt((document.getElementById(selId)||{}).value) || 0;
+          menuEl.innerHTML = '';
+
+          const addOpt = (d, did, label) => {
+            const adjMin = (d.minBudget||40) + (duration>5?(duration-5)*6:0);
+            const isR = adjMin > budget;
+            const el2 = document.createElement('div');
+            el2.className = 'dest-dd-option' + (isR?' restricted':'') + (did===curIdx?' selected':'');
+            el2.dataset.idx = String(did);
+            el2.textContent = isR ? '🚫 ' + label + ' (예산 초과)' : label;
+            if (!isR) { const c=col,i=did; el2.onclick = () => selectDestDd(c, i); }
+            menuEl.appendChild(el2);
+          };
+
+          if (_selRegion) {
+            v1_0_9_DEST_DATA.forEach((d,did) => {
+              if ((typeof DEST_REGION!=='undefined'?DEST_REGION[d.id]:'') !== _selRegion) return;
+              addOpt(d, did, _getDestLabel(d, _selRegion));
+            });
+          } else {
+            DEST_REGION_ORDER.forEach(rk => {
+              const items = v1_0_9_DEST_DATA.map((d,i)=>({d,i})).filter(({d})=>(typeof DEST_REGION!=='undefined'?DEST_REGION[d.id]:'')===rk);
+              if (!items.length) return;
+              const grpEl = document.createElement('div');
+              grpEl.className = 'dest-dd-group-label';
+              grpEl.textContent = DEST_REGION_LABELS[rk] || rk;
+              menuEl.appendChild(grpEl);
+              items.forEach(({d,i}) => addOpt(d, i, _getDestLabel(d, null)));
+            });
+            // 매핑 안 된 여행지 폴백 (향후 확장 대비)
+            const knownRegions = new Set(DEST_REGION_ORDER);
+            const others = v1_0_9_DEST_DATA.map((d,i)=>({d,i})).filter(({d})=>{
+              const rk = (typeof DEST_REGION!=='undefined'?DEST_REGION[d.id]:'') || '';
+              return !knownRegions.has(rk);
+            });
+            if (others.length) {
+              const grpEl = document.createElement('div');
+              grpEl.className = 'dest-dd-group-label';
+              grpEl.textContent = '기타';
+              menuEl.appendChild(grpEl);
+              others.forEach(({d,i}) => addOpt(d, i, _getDestLabel(d, null)));
             }
+          }
+        });
+
+        syncAllDestDdLabels();
+      }
+
+      // ── 커스텀 드롭다운 헬퍼 함수 ──
+      function syncAllDestDdLabels() {
+        for (var c = 0; c < 3; c++) {
+          var sel = document.getElementById('sel' + c);
+          if (!sel) continue;
+          var idx = parseInt(sel.value);
+          if (isNaN(idx)) continue;
+          var label = _getDestTriggerLabel(idx);
+          ['dd'+c,'dd'+c+'-fixed'].forEach(function(ddId) {
+            var dd = document.getElementById(ddId);
+            if (!dd) return;
+            var v = dd.querySelector('.dest-dd-val');
+            if (v) v.textContent = label;
+          });
+        }
+      }
+
+      function toggleDestDd(col) {
+        var dd = document.getElementById('dd'+col);
+        var ddF = document.getElementById('dd'+col+'-fixed');
+        var isOpen = (dd && dd.classList.contains('open')) || (ddF && ddF.classList.contains('open'));
+        closeAllDestDds();
+        if (!isOpen) {
+          if (dd) dd.classList.add('open');
+          if (ddF) ddF.classList.add('open');
+        }
+      }
+
+      function closeAllDestDds() {
+        [0,1,2].forEach(function(c) {
+          ['dd'+c,'dd'+c+'-fixed'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) el.classList.remove('open');
           });
         });
       }
+
+      function selectDestDd(col, idx) {
+        // hidden select 동기화
+        ['sel'+col,'sel'+col+'-fixed'].forEach(function(id) {
+          var el = document.getElementById(id);
+          if (el) el.value = String(idx);
+        });
+        // 선택 상태 업데이트
+        ['dd'+col,'dd'+col+'-fixed'].forEach(function(ddId) {
+          var menu = document.getElementById(ddId+'-menu');
+          if (!menu) return;
+          menu.querySelectorAll('.dest-dd-option').forEach(function(opt) {
+            opt.classList.toggle('selected', parseInt(opt.dataset.idx) === idx);
+          });
+        });
+        closeAllDestDds();
+        syncAllDestDdLabels();
+        changeDest(col, idx);
+      }
+
+      // 외부 클릭 시 드롭다운 닫기
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest || !e.target.closest('.dest-dd')) closeAllDestDds();
+      });
 
       function changeDest(col, idx) {
         const idxInt = parseInt(idx);
@@ -7648,7 +7909,8 @@
         const b1 = document.getElementById('budget-input-home');
         const b2 = document.getElementById('budget-input-compare');
         const budgetRaw = (b2 && b2.value) ? b2.value : b1.value;
-        const budget = budgetRaw === 'unlimited' ? 9999 : (parseInt(budgetRaw) || 150);
+        const isCheapestMode = budgetRaw === 'cheapest';
+        const budget = budgetRaw === 'unlimited' ? 9999 : isCheapestMode ? 40 : (parseInt(budgetRaw) || 150);
         
         const dateVal = document.getElementById('home-date-value').textContent;
         let duration = 5;
@@ -7662,11 +7924,12 @@
             const date1 = new Date(year, m1, parseInt(d1[1].replace('일', '')));
             const date2 = new Date(m2 < m1 ? year + 1 : year, m2, parseInt(d2[1].replace('일', '')));
             duration = Math.ceil((date2 - date1) / (1000 * 60 * 60 * 24)) + 1;
+            if (duration <= 0) duration = 5;
           } catch (e) { }
         }
 
         const adjMin = (d.minBudget || 40) + (duration > 5 ? (duration - 5) * 6 : 0);
-        if (adjMin > budget) {
+        if (adjMin > budget && !isCheapestMode) {
           showToast(`⚠️ ${d.name}은(는) 현재 예산(${budget}만원)을 초과합니다.`);
         }
 
@@ -7676,6 +7939,7 @@
         const fixedSel = document.getElementById('sel' + col + '-fixed');
         if (mainSel) mainSel.value = String(idxInt);
         if (fixedSel) fixedSel.value = String(idxInt);
+        syncAllDestDdLabels();
 
         // ── 드롭다운 변경 후 추천/최저가 뱃지 실시간 갱신 ──
         // 현재 표시 중인 컬럼 수 파악
@@ -7759,7 +8023,7 @@
 
       function startSearch() {
         var budgetVal = document.getElementById('budget-input-home').value;
-        // Default to unlimited if no budget selected
+        // Default to cheapest if no budget selected
         if (!budgetVal) {
           budgetVal = 'unlimited';
           var budgetInput = document.getElementById('budget-input-home');
@@ -7817,7 +8081,7 @@
         // Sync compare budget display
         var cBudgetDisplay = document.getElementById('sb-budget-display-c');
         if (cBudgetDisplay) {
-          var labels = {'50':'50만원 이내','80':'최저가','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음'};
+          var labels = {'cheapest':'최저가','50':'50만원 이내','80':'최저가','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음'};
           var bLabel = labels[budgetVal] || '상관없음';
           cBudgetDisplay.textContent = bLabel;
           cBudgetDisplay.classList.add('filled');
@@ -8926,7 +9190,7 @@
         var hiddenComp = document.getElementById('budget-input-compare');
         if (hiddenHome) hiddenHome.value = val;
         if (hiddenComp) hiddenComp.value = val;
-        var labels = {'50':'50만원 이내','80':'최저가','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음'};
+        var labels = {'cheapest':'최저가','50':'50만원 이내','80':'최저가','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음'};
         var labelText = labels[val] || '예산 선택';
         var bdisp = document.getElementById('sb-budget-display');
         var bdispc = document.getElementById('sb-budget-display-c');
@@ -9580,43 +9844,96 @@
         waves:   _wi('<path d="M1 19H2.5C3.3 19 4 18.7 4.5 18.2L5.1 17.6C5.8 16.8 7.2 16.8 7.9 17.6C8.6 18.3 9.9 18.3 10.6 17.6C11.3 16.8 12.7 16.8 13.4 17.6C14.1 18.3 15.4 18.3 16.1 17.6C16.8 16.8 18.2 16.8 18.9 17.6L19.5 18.2C20 18.7 20.7 19 21.5 19H23"/><path d="M19.4 5.6C20.2 6.4 20.2 7.6 19.4 8.4C18.6 9.2 17.4 9.2 16.6 8.4C15.8 7.6 15.8 6.4 16.6 5.6C17.4 4.8 18.6 4.8 19.4 5.6Z"/><path d="M4 7H10L17.5 13.5"/><path d="M13 10L9.5 13.5"/>'),
         coffee:  _wi('<path d="M2 9H18V19C18 20.7 16.7 22 15 22H5C3.3 22 2 20.7 2 19V9Z"/><path d="M18 11H18.9C20.6 11 22 12.4 22 14.1C22 15.3 21.3 16.3 20.3 16.9L18 18"/><path d="M6 2V5"/><path d="M10 2V5"/><path d="M14 2V5"/>'),
         wallet:  _wi('<path d="M20 9.7V6.3C20 5 19.1 4 18 4H4C2.9 4 2 5 2 6.3V17.7C2 19 2.9 20 4 20H18C19.1 20 20 19 20 17.7V14.3M22 9.7H16C14.9 9.7 14 10.7 14 12C14 13.3 14.9 14.3 16 14.3H22V9.7Z"/>'),
-        shield:  _wi('<path d="M3 13V4.2L4.9 4.1C6.6 3.9 8.3 3.5 9.9 2.9L12 2L14.1 2.9C15.7 3.5 17.4 3.9 19.1 4.1L21 4.2V13C21 18 17 22 12 22C7 22 3 18 3 13Z"/><path d="M8 12L10.5 14.5L16 9"/>'),
+        shield:     _wi('<path d="M3 13V4.2L4.9 4.1C6.6 3.9 8.3 3.5 9.9 2.9L12 2L14.1 2.9C15.7 3.5 17.4 3.9 19.1 4.1L21 4.2V13C21 18 17 22 12 22C7 22 3 18 3 13Z"/><path d="M8 12L10.5 14.5L16 9"/>'),
+        umbrella:   _wi('<path d="M23 12A11 11 0 0 0 1 12H23Z"/><path d="M12 12V19C12 20.1 12.9 21 14 21C15.1 21 16 20.1 16 19"/>'),
+        thermo:     _wi('<path d="M14 14.76V3.5A2.5 2.5 0 0 0 9 3.5V14.76A4.5 4.5 0 1 0 14 14.76Z"/>'),
+        wind:       _wi('<path d="M17.7 7.7A2.5 2.5 0 1 1 19.5 12H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/>'),
       };
+
+      // ── 여행지별 시즌 리스크 데이터 (월 = 1~12) ──
+      // 우기(rainy), 폭염(heat), 태풍·자연재해(disaster)
+      const DEST_SEASONAL_RISKS = {
+        danang:      { rainy:[10,11,12,1], heat:[6,7,8],      disaster:[9,10] },
+        bangkok:     { rainy:[5,6,7,8,9,10], heat:[3,4,5],   disaster:[] },
+        bali:        { rainy:[11,12,1,2,3],  heat:[],          disaster:[] },
+        osaka:       { rainy:[6,7],          heat:[7,8],       disaster:[8,9] },
+        tokyo:       { rainy:[6,7],          heat:[7,8],       disaster:[8,9] },
+        fukuoka:     { rainy:[6,7],          heat:[7,8],       disaster:[8,9] },
+        sapporo:     { rainy:[],             heat:[],          disaster:[8,9] },
+        okinawa:     { rainy:[5,6],          heat:[7,8,9],     disaster:[7,8,9,10] },
+        kyoto:       { rainy:[6,7],          heat:[7,8],       disaster:[8,9] },
+        miyakojima:  { rainy:[5,6],          heat:[7,8,9],     disaster:[7,8,9,10] },
+        jeju:        { rainy:[6,7],          heat:[7,8],       disaster:[7,8,9] },
+        taipei:      { rainy:[3,4,5,9,10],   heat:[6,7,8],     disaster:[7,8,9,10] },
+        hongkong:    { rainy:[5,6,7,8,9],    heat:[6,7,8,9],   disaster:[7,8,9,10] },
+        shanghai:    { rainy:[6,7],          heat:[7,8],       disaster:[7,8,9] },
+        nhatrang:    { rainy:[10,11,12],     heat:[6,7,8],     disaster:[10,11] },
+        hochiminh:   { rainy:[5,6,7,8,9,10],heat:[3,4,5],     disaster:[] },
+        hanoi:       { rainy:[5,6,7,8,9],   heat:[6,7,8],     disaster:[8,9] },
+        phuquoc:     { rainy:[5,6,7,8,9,10],heat:[3,4],       disaster:[] },
+        chiangmai:   { rainy:[5,6,7,8,9,10],heat:[3,4,5],     disaster:[] },
+        phuket:      { rainy:[5,6,7,8,9,10],heat:[3,4,5],     disaster:[] },
+        singapore:   { rainy:[11,12,1],     heat:[],          disaster:[] },
+        kualalumpur: { rainy:[10,11,3,4],   heat:[],          disaster:[] },
+        cebu:        { rainy:[11,12,1,2],   heat:[],          disaster:[11,12] },
+        boracay:     { rainy:[6,7,8,9],     heat:[],          disaster:[10,11] },
+        guam:        { rainy:[7,8,9,10],    heat:[6,7,8,9],   disaster:[7,8,9,10] },
+        hawaii:      { rainy:[11,12,1,2],   heat:[],          disaster:[] },
+        lisbon:      { rainy:[11,12,1,2],   heat:[7,8],       disaster:[] },
+        paris:       { rainy:[11,12,1,2],   heat:[7,8],       disaster:[] },
+        barcelona:   { rainy:[10,11,12],    heat:[7,8],       disaster:[] },
+        maldives:    { rainy:[5,6,7,8,9],   heat:[],          disaster:[] },
+        sydney:      { rainy:[6,7,8],       heat:[12,1,2],    disaster:[] },
+      };
+
+      function getTravelMonth() {
+        var dateVal = (document.getElementById('home-date-value') || {}).textContent || '';
+        if (dateVal && dateVal.includes('월')) {
+          var parts = dateVal.trim().split(' ');
+          for (var i = 0; i < parts.length; i++) {
+            if (parts[i].endsWith('월')) {
+              var m = parseInt(parts[i]);
+              if (!isNaN(m) && m >= 1 && m <= 12) return m;
+            }
+          }
+        }
+        return new Date().getMonth() + 1; // 날짜 미선택 시 현재 월
+      }
 
       const WIZ_Q = [
         {
           q: '어떤 여행을 꿈꾸세요?', e: WIZ_ICONS.globe,
           opts: [
-            { e: WIZ_ICONS.waves,  label: '해변·휴양', bonus: { danang: 55, jeju: 50, lisbon: 5, osaka: -55, taipei: -55, bali: 60, nhatrang: 50, cebu: 55, bangkok: -10, chiangmai: -15, singapore: -25, tokyo: -50, fukuoka: -30, sapporo: -40, okinawa: 60, kyoto: -35, phuquoc: 60, hochiminh: -20, hanoi: -20, boracay: 65, phuket: 55, hongkong: -30, guam: 55, hawaii: 55, paris: -40, kualalumpur: -20, maldives: 70, sydney: 10, shanghai: -40, barcelona: 20 } },
-            { e: WIZ_ICONS.pin,    label: '도시 탐험', bonus: { osaka: 40, taipei: 40, lisbon: 30, danang: -30, jeju: -40, tokyo: 45, singapore: 35, bangkok: 25, chiangmai: 10, bali: -40, cebu: -40, nhatrang: -30, fukuoka: 40, sapporo: 15, okinawa: -30, kyoto: 45, phuquoc: -35, hochiminh: 30, hanoi: 30, boracay: -45, phuket: -30, hongkong: 45, guam: -30, hawaii: -20, paris: 50, kualalumpur: 30, maldives: -50, sydney: 35, shanghai: 40, barcelona: 45 } },
-            { e: WIZ_ICONS.cloud,  label: '자연·액티비티', bonus: { jeju: 50, danang: 20, lisbon: 20, osaka: -20, taipei: -20, chiangmai: 45, bali: 35, cebu: 20, nhatrang: 15, bangkok: -10, singapore: -30, tokyo: -15, fukuoka: 10, sapporo: 40, okinawa: 35, kyoto: -20, phuquoc: 20, hochiminh: -10, hanoi: -10, boracay: 25, phuket: 15, hongkong: -25, guam: 20, hawaii: 35, paris: -30, kualalumpur: 0, maldives: 25, sydney: 25, shanghai: -30, barcelona: -10 } },
-            { e: WIZ_ICONS.coffee, label: '미식 여행', bonus: { osaka: 45, taipei: 40, danang: 20, lisbon: 15, jeju: -10, tokyo: 50, singapore: 40, bangkok: 35, chiangmai: 20, nhatrang: 15, bali: 5, cebu: 5, fukuoka: 55, sapporo: 30, okinawa: 15, kyoto: 50, phuquoc: 5, hochiminh: 35, hanoi: 35, boracay: 5, phuket: 20, hongkong: 45, guam: 5, hawaii: 15, paris: 55, kualalumpur: 30, maldives: 5, sydney: 25, shanghai: 40, barcelona: 50 } },
+            { e: WIZ_ICONS.waves,  label: '해변·휴양', bonus: { danang: 55, jeju: 50, lisbon: 5, osaka: -55, taipei: -55, bali: 60, nhatrang: 50, cebu: 55, bangkok: -10, chiangmai: -15, singapore: -25, tokyo: -50, fukuoka: -30, sapporo: -40, okinawa: 60, kyoto: -35, miyakojima: 65, phuquoc: 60, hochiminh: -20, hanoi: -20, boracay: 65, phuket: 55, hongkong: -30, guam: 55, hawaii: 55, paris: -40, kualalumpur: -20, maldives: 70, sydney: 10, shanghai: -40, barcelona: 20 } },
+            { e: WIZ_ICONS.pin,    label: '도시 탐험', bonus: { osaka: 40, taipei: 40, lisbon: 30, danang: -30, jeju: -40, tokyo: 45, singapore: 35, bangkok: 25, chiangmai: 10, bali: -40, cebu: -40, nhatrang: -30, fukuoka: 40, sapporo: 15, okinawa: -30, kyoto: 45, miyakojima: -40, phuquoc: -35, hochiminh: 30, hanoi: 30, boracay: -45, phuket: -30, hongkong: 45, guam: -30, hawaii: -20, paris: 50, kualalumpur: 30, maldives: -50, sydney: 35, shanghai: 40, barcelona: 45 } },
+            { e: WIZ_ICONS.cloud,  label: '자연·액티비티', bonus: { jeju: 50, danang: 20, lisbon: 20, osaka: -20, taipei: -20, chiangmai: 45, bali: 35, cebu: 20, nhatrang: 15, bangkok: -10, singapore: -30, tokyo: -15, fukuoka: 10, sapporo: 40, okinawa: 35, kyoto: -20, miyakojima: 40, phuquoc: 20, hochiminh: -10, hanoi: -10, boracay: 25, phuket: 15, hongkong: -25, guam: 20, hawaii: 35, paris: -30, kualalumpur: 0, maldives: 25, sydney: 25, shanghai: -30, barcelona: -10 } },
+            { e: WIZ_ICONS.coffee, label: '미식 여행', bonus: { osaka: 45, taipei: 40, danang: 20, lisbon: 15, jeju: -10, tokyo: 50, singapore: 40, bangkok: 35, chiangmai: 20, nhatrang: 15, bali: 5, cebu: 5, fukuoka: 55, sapporo: 30, okinawa: 15, kyoto: 50, miyakojima: 5, phuquoc: 5, hochiminh: 35, hanoi: 35, boracay: 5, phuket: 20, hongkong: 45, guam: 5, hawaii: 15, paris: 55, kualalumpur: 30, maldives: 5, sydney: 25, shanghai: 40, barcelona: 50 } },
           ]
         },
         {
-          q: '어떤 날씨를 좋아하세요?', e: WIZ_ICONS.sun,
+          q: '피하고 싶은 여행 환경이 있나요?', e: WIZ_ICONS.cloud,
           opts: [
-            { e: WIZ_ICONS.sun,     label: '따뜻하고 맑음', bonus: { danang: 35, lisbon: 25, taipei: 10, jeju: -15, osaka: -15, bali: 35, nhatrang: 35, cebu: 35, bangkok: 25, chiangmai: 20, singapore: 20, tokyo: -20, fukuoka: -10, sapporo: -30, okinawa: 40, kyoto: -15, phuquoc: 40, hochiminh: 25, hanoi: 20, boracay: 40, phuket: 35, hongkong: 20, guam: 35, hawaii: 35, paris: -35, kualalumpur: 20, maldives: 45, sydney: 5, shanghai: -10, barcelona: -5 } },
-            { e: WIZ_ICONS.sparkle, label: '선선한 봄 날씨', bonus: { osaka: 30, taipei: 25, lisbon: 20, danang: -20, jeju: 10, tokyo: 35, singapore: -5, chiangmai: 0, bangkok: -25, bali: -20, cebu: -20, nhatrang: -20, fukuoka: 30, sapporo: 25, okinawa: -10, kyoto: 35, phuquoc: -20, hochiminh: -10, hanoi: -5, boracay: -25, phuket: -25, hongkong: 15, guam: -25, hawaii: -15, paris: 25, kualalumpur: -20, maldives: -30, sydney: 20, shanghai: 15, barcelona: 25 } },
-            { e: WIZ_ICONS.cloud,   label: '시원한 편이 좋아요', bonus: { jeju: 40, taipei: 20, lisbon: 10, danang: -25, osaka: -10, tokyo: 25, singapore: -15, chiangmai: -5, bangkok: -30, bali: -25, cebu: -25, nhatrang: -25, fukuoka: 15, sapporo: 50, okinawa: -20, kyoto: 10, phuquoc: -30, hochiminh: -25, hanoi: -20, boracay: -35, phuket: -30, hongkong: 5, guam: -30, hawaii: -25, paris: 15, kualalumpur: -25, maldives: -40, sydney: 15, shanghai: 5, barcelona: 10 } },
-            { e: WIZ_ICONS.globe,   label: '날씨 상관없어요', bonus: {} },
+            { e: WIZ_ICONS.umbrella, label: '우기·장마는 피할게요',    riskType: 'rainy',    bonus: {} },
+            { e: WIZ_ICONS.thermo,   label: '폭염·무더위는 힘들어요',  riskType: 'heat',     bonus: {} },
+            { e: WIZ_ICONS.wind,     label: '태풍·자연재해 걱정돼요',  riskType: 'disaster', bonus: {} },
+            { e: WIZ_ICONS.globe,    label: '날씨는 상관없어요',        riskType: null,       bonus: {} },
           ]
         },
         {
           q: '허용 가능한 비행 시간은?', e: WIZ_ICONS.rocket,
           opts: [
-            { e: WIZ_ICONS.clock,  label: '1–2시간 (국내·근거리)', bonus: { jeju: 70, danang: -40, osaka: -30, taipei: -30, lisbon: -60, tokyo: -20, singapore: -40, bangkok: -40, bali: -55, chiangmai: -40, cebu: -45, nhatrang: -40, fukuoka: 65, sapporo: -10, okinawa: 10, kyoto: -20, phuquoc: -40, hochiminh: -40, hanoi: -40, boracay: -45, phuket: -45, hongkong: -20, guam: -35, hawaii: -60, paris: -70, kualalumpur: -45, maldives: -65, sydney: -65, shanghai: 20, barcelona: -70 } },
-            { e: WIZ_ICONS.rocket, label: '3–5시간 (아시아권)', bonus: { taipei: 30, osaka: 30, danang: 30, jeju: -20, lisbon: -50, tokyo: 25, singapore: 25, bangkok: 30, cebu: 25, nhatrang: 30, chiangmai: 25, bali: 15, fukuoka: 15, sapporo: 15, okinawa: 30, kyoto: 20, phuquoc: 20, hochiminh: 25, hanoi: 25, boracay: 20, phuket: 20, hongkong: 30, guam: 15, hawaii: -30, paris: -55, kualalumpur: 15, maldives: -30, sydney: -45, shanghai: 30, barcelona: -55 } },
-            { e: WIZ_ICONS.globe,  label: '6시간 이상도 OK', bonus: { lisbon: 60, danang: 5, osaka: 5, taipei: 5, jeju: -10, bali: 15, cebu: 10, bangkok: 5, chiangmai: 5, singapore: 10, nhatrang: 5, tokyo: 5, fukuoka: -10, sapporo: 5, okinawa: 5, kyoto: 5, phuquoc: 15, hochiminh: 10, hanoi: 10, boracay: 15, phuket: 15, hongkong: 5, guam: 20, hawaii: 30, paris: 40, kualalumpur: 10, maldives: 35, sydney: 30, shanghai: -5, barcelona: 40 } },
+            { e: WIZ_ICONS.clock,  label: '1–2시간 (국내·근거리)', bonus: { jeju: 70, danang: -40, osaka: -30, taipei: -30, lisbon: -60, tokyo: -20, singapore: -40, bangkok: -40, bali: -55, chiangmai: -40, cebu: -45, nhatrang: -40, fukuoka: 65, sapporo: -10, okinawa: 10, kyoto: -20, miyakojima: -40, phuquoc: -40, hochiminh: -40, hanoi: -40, boracay: -45, phuket: -45, hongkong: -20, guam: -35, hawaii: -60, paris: -70, kualalumpur: -45, maldives: -65, sydney: -65, shanghai: 20, barcelona: -70 } },
+            { e: WIZ_ICONS.rocket, label: '3–5시간 (아시아권)', bonus: { taipei: 30, osaka: 30, danang: 30, jeju: -20, lisbon: -50, tokyo: 25, singapore: 25, bangkok: 30, cebu: 25, nhatrang: 30, chiangmai: 25, bali: 15, fukuoka: 15, sapporo: 15, okinawa: 30, kyoto: 20, miyakojima: 35, phuquoc: 20, hochiminh: 25, hanoi: 25, boracay: 20, phuket: 20, hongkong: 30, guam: 15, hawaii: -30, paris: -55, kualalumpur: 15, maldives: -30, sydney: -45, shanghai: 30, barcelona: -55 } },
+            { e: WIZ_ICONS.globe,  label: '멀리도 좋아요', bonus: { lisbon: 60, danang: 5, osaka: 5, taipei: 5, jeju: -10, bali: 15, cebu: 10, bangkok: 5, chiangmai: 5, singapore: 10, nhatrang: 5, tokyo: 5, fukuoka: -10, sapporo: 5, okinawa: 5, kyoto: 5, miyakojima: 10, phuquoc: 15, hochiminh: 10, hanoi: 10, boracay: 15, phuket: 15, hongkong: 5, guam: 20, hawaii: 30, paris: 40, kualalumpur: 10, maldives: 35, sydney: 30, shanghai: -5, barcelona: 40 } },
           ]
         },
         {
           q: '여행에서 가장 중요한 건?', e: WIZ_ICONS.star,
           opts: [
-            { e: WIZ_ICONS.wallet,  label: '최대한 저렴하게', bonus: { danang: 40, jeju: 25, taipei: 25, osaka: 10, lisbon: -30, nhatrang: 50, chiangmai: 45, bangkok: 35, cebu: 35, bali: 20, singapore: -50, tokyo: -10, fukuoka: 30, sapporo: 5, okinawa: 10, kyoto: 5, phuquoc: 40, hochiminh: 50, hanoi: 50, boracay: 25, phuket: 20, hongkong: -20, guam: -15, hawaii: -60, paris: -70, kualalumpur: 35, maldives: -75, sydney: -50, shanghai: 35, barcelona: -65 }, tierOverride: 'low' },
-            { e: WIZ_ICONS.shield,  label: '안전·치안이 최우선', bonus: { jeju: 45, osaka: 30, taipei: 25, lisbon: 10, danang: -10, singapore: 45, tokyo: 35, chiangmai: 5, bali: -5, bangkok: -15, cebu: -20, nhatrang: -20, fukuoka: 30, sapporo: 25, okinawa: 25, kyoto: 30, phuquoc: -5, hochiminh: -10, hanoi: -5, boracay: -5, phuket: 0, hongkong: 15, guam: 20, hawaii: 25, paris: 5, kualalumpur: 5, maldives: 20, sydney: 20, shanghai: 5, barcelona: 5 } },
-            { e: WIZ_ICONS.sun,     label: '완벽한 날씨와 분위기', bonus: { lisbon: 30, danang: 30, osaka: 20, jeju: 15, taipei: 10, bali: 40, nhatrang: 30, cebu: 25, chiangmai: 20, bangkok: 15, singapore: 10, tokyo: 10, fukuoka: 15, sapporo: 20, okinawa: 30, kyoto: 20, phuquoc: 30, hochiminh: 10, hanoi: 10, boracay: 35, phuket: 25, hongkong: 15, guam: 25, hawaii: 35, paris: 30, kualalumpur: 5, maldives: 45, sydney: 20, shanghai: 5, barcelona: 30 } },
-            { e: WIZ_ICONS.sparkle, label: '잊지 못할 특별한 체험', bonus: { lisbon: 35, osaka: 25, taipei: 20, danang: 15, jeju: 10, tokyo: 30, singapore: 25, bali: 25, chiangmai: 20, bangkok: 20, cebu: 20, nhatrang: 10, fukuoka: 20, sapporo: 30, okinawa: 25, kyoto: 30, phuquoc: 15, hochiminh: 15, hanoi: 15, boracay: 25, phuket: 20, hongkong: 20, guam: 25, hawaii: 40, paris: 45, kualalumpur: 10, maldives: 50, sydney: 25, shanghai: 10, barcelona: 35 } },
+            { e: WIZ_ICONS.wallet,  label: '최대한 저렴하게', bonus: { danang: 40, jeju: 25, taipei: 25, osaka: 10, lisbon: -30, nhatrang: 50, chiangmai: 45, bangkok: 35, cebu: 35, bali: 20, singapore: -50, tokyo: -10, fukuoka: 30, sapporo: 5, okinawa: 10, kyoto: 5, miyakojima: -20, phuquoc: 40, hochiminh: 50, hanoi: 50, boracay: 25, phuket: 20, hongkong: -20, guam: -15, hawaii: -60, paris: -70, kualalumpur: 35, maldives: -75, sydney: -50, shanghai: 35, barcelona: -65 }, tierOverride: 'low' },
+            { e: WIZ_ICONS.shield,  label: '안전·치안이 최우선', bonus: { jeju: 45, osaka: 30, taipei: 25, lisbon: 10, danang: -10, singapore: 45, tokyo: 35, chiangmai: 5, bali: -5, bangkok: -15, cebu: -20, nhatrang: -20, fukuoka: 30, sapporo: 25, okinawa: 25, kyoto: 30, miyakojima: 30, phuquoc: -5, hochiminh: -10, hanoi: -5, boracay: -5, phuket: 0, hongkong: 15, guam: 20, hawaii: 25, paris: 5, kualalumpur: 5, maldives: 20, sydney: 20, shanghai: 5, barcelona: 5 } },
+            { e: WIZ_ICONS.sun,     label: '완벽한 날씨와 분위기', bonus: { lisbon: 30, danang: 30, osaka: 20, jeju: 15, taipei: 10, bali: 40, nhatrang: 30, cebu: 25, chiangmai: 20, bangkok: 15, singapore: 10, tokyo: 10, fukuoka: 15, sapporo: 20, okinawa: 30, kyoto: 20, miyakojima: 55, phuquoc: 30, hochiminh: 10, hanoi: 10, boracay: 35, phuket: 25, hongkong: 15, guam: 25, hawaii: 35, paris: 30, kualalumpur: 5, maldives: 45, sydney: 20, shanghai: 5, barcelona: 30 } },
+            { e: WIZ_ICONS.sparkle, label: '잊지 못할 특별한 체험', bonus: { lisbon: 35, osaka: 25, taipei: 20, danang: 15, jeju: 10, tokyo: 30, singapore: 25, bali: 25, chiangmai: 20, bangkok: 20, cebu: 20, nhatrang: 10, fukuoka: 20, sapporo: 30, okinawa: 25, kyoto: 30, miyakojima: 40, phuquoc: 15, hochiminh: 15, hanoi: 15, boracay: 25, phuket: 20, hongkong: 20, guam: 25, hawaii: 40, paris: 45, kualalumpur: 10, maldives: 50, sydney: 25, shanghai: 10, barcelona: 35 } },
           ]
         },
       ];
@@ -9691,7 +10008,7 @@
 
         wizState.answers[qi] = optIdx;
         wizState.openRow = null;
-        const bonus = { lisbon: 0, danang: 0, jeju: 0, taipei: 0, osaka: 0, tokyo: 0, bangkok: 0, bali: 0, chiangmai: 0, singapore: 0, cebu: 0, nhatrang: 0, fukuoka: 0, sapporo: 0, okinawa: 0, kyoto: 0, phuquoc: 0, hochiminh: 0, hanoi: 0, boracay: 0, phuket: 0, hongkong: 0, guam: 0, hawaii: 0, paris: 0, kualalumpur: 0, maldives: 0, sydney: 0, shanghai: 0, barcelona: 0 };
+        const bonus = { lisbon: 0, danang: 0, jeju: 0, taipei: 0, osaka: 0, tokyo: 0, bangkok: 0, bali: 0, chiangmai: 0, singapore: 0, cebu: 0, nhatrang: 0, fukuoka: 0, sapporo: 0, okinawa: 0, kyoto: 0, miyakojima: 0, phuquoc: 0, hochiminh: 0, hanoi: 0, boracay: 0, phuket: 0, hongkong: 0, guam: 0, hawaii: 0, paris: 0, kualalumpur: 0, maldives: 0, sydney: 0, shanghai: 0, barcelona: 0 };
         window.wizardTierOverride = null;
         WIZ_Q.forEach((q, si) => {
           const ai = wizState.answers[si];
@@ -9701,8 +10018,24 @@
           });
           if (q.opts[ai].tierOverride) window.wizardTierOverride = q.opts[ai].tierOverride;
         });
+        // ── riskType 옵션: 여행 월 기반 동적 페널티 적용 ──
+        var _selOpt = WIZ_Q[qi].opts[optIdx];
+        var _riskType = _selOpt.riskType || null;
+        if (_riskType) {
+          var _travelMonth = getTravelMonth();
+          v1_0_9_DEST_DATA.forEach(function(d) {
+            var risks = DEST_SEASONAL_RISKS[d.id] || {};
+            if ((risks[_riskType] || []).indexOf(_travelMonth) !== -1) {
+              if (bonus[d.id] !== undefined) bonus[d.id] -= 70;
+            }
+          });
+        }
         window.wizardBonus = bonus;
-        updateResultsByFilters();
+        // bonus가 비어있고 riskType도 없는 "상관없어요"는 결과 변경하지 않음
+        var _isNeutral = !_riskType && Object.keys(_selOpt.bonus || {}).length === 0;
+        if (!_isNeutral) {
+          updateResultsByFilters();
+        }
         renderWizList();
 
         // Show diff toast if top 3 changed
@@ -9729,7 +10062,7 @@
       function resetWizard() {
         wizState.answers = {};
         wizState.openRow = null;
-        window.wizardBonus = { lisbon: 0, danang: 0, jeju: 0, taipei: 0, osaka: 0, tokyo: 0, bangkok: 0, bali: 0, chiangmai: 0, singapore: 0, cebu: 0, nhatrang: 0, fukuoka: 0, sapporo: 0, okinawa: 0, kyoto: 0, phuquoc: 0, hochiminh: 0, hanoi: 0, boracay: 0, phuket: 0, hongkong: 0, guam: 0, hawaii: 0, paris: 0, kualalumpur: 0, maldives: 0, sydney: 0, shanghai: 0, barcelona: 0 };
+        window.wizardBonus = { lisbon: 0, danang: 0, jeju: 0, taipei: 0, osaka: 0, tokyo: 0, bangkok: 0, bali: 0, chiangmai: 0, singapore: 0, cebu: 0, nhatrang: 0, fukuoka: 0, sapporo: 0, okinawa: 0, kyoto: 0, miyakojima: 0, phuquoc: 0, hochiminh: 0, hanoi: 0, boracay: 0, phuket: 0, hongkong: 0, guam: 0, hawaii: 0, paris: 0, kualalumpur: 0, maldives: 0, sydney: 0, shanghai: 0, barcelona: 0 };
         window.wizardTierOverride = null;
         updateResultsByFilters();
         renderWizList();
@@ -9999,7 +10332,7 @@
           var check = el.querySelector('.cv-row-check');
           if (check) check.innerHTML = isActive ? checkSvg : '';
         });
-        var labels = { '50':'50만원 이내','80':'최저가','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음' };
+        var labels = { 'cheapest':'최저가','50':'50만원 이내','80':'최저가','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음' };
         var txt = labels[val] || '상관없음';
         var el = document.getElementById('cvt-budget-val'); if(el) el.textContent = txt;
         var srcEl = document.getElementById('sb-budget-display'); if(srcEl) srcEl.textContent = txt;
