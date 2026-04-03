@@ -7995,34 +7995,41 @@
             const destIdx = v1_0_9_DEST_DATA.indexOf(d);
             updateColumn(i, destIdx, budgetNum, duration);
             // TP Worker 가격이 있으면 updateColumn 결과 위에 오버라이드
-            // VIP 예산(300만원+)일 때는 비즈니스 항공 가격 유지 → 최저가 오버라이드 하지 않음
             var _isVipBudget = budgetNum >= 300 && budgetNum < 9000;
             setTimeout(function(col, dest) {
-              // 항공 오버라이드 (VIP 예산이면 스킵)
-              if (!_isVipBudget && dest && dest.airfare && dest._tpLink) {
+              // 항공 오버라이드 — VIP: 비즈니스 클래스 실시간, 일반: 이코노미 최저가
+              var _airPrice = _isVipBudget ? (dest._vipAirfare || dest.airfare) : dest.airfare;
+              var _airSub = _isVipBudget ? '실시간 비즈니스 (왕복)' : '실시간 최저가 (왕복)';
+              var _airKicker = _isVipBudget ? '비즈니스 · 인천 출발' : '이코노미 · 인천 출발';
+              if (dest && _airPrice && dest._tpLink) {
                 var airEl = document.getElementById('air-' + col);
                 if (airEl) {
                   var mEl = airEl.querySelector('.main');
                   var sEl = airEl.querySelector('.sub');
                   var kEl = airEl.querySelector('.kicker');
-                  if (mEl) mEl.textContent = dest.airfare;
-                  if (sEl) sEl.textContent = '실시간 최저가 (왕복)';
-                  if (kEl) kEl.textContent = '이코노미 · 인천 출발';
+                  if (mEl) mEl.textContent = _airPrice;
+                  if (sEl) sEl.textContent = _airSub;
+                  if (kEl) kEl.textContent = _airKicker;
                 }
               }
-              // 숙박 오버라이드
-              if (dest && dest._hotelPrice && dest._hotelLink) {
+              // 숙박 오버라이드 — VIP: 5성급 프리미엄, 일반: 최저가
+              var _htlPrice = _isVipBudget ? (dest._vipHotelPrice || dest._hotelPrice) : dest._hotelPrice;
+              var _htlLink = _isVipBudget ? (dest._vipHotelLink || dest._hotelLink) : dest._hotelLink;
+              var _htlSub = _isVipBudget ? '실시간 프리미엄 (1박)' : '실시간 최저가 (1박)';
+              var _htlName = _isVipBudget && dest._vipHotelName ? dest._vipHotelName : '';
+              var _htlKicker = _htlName ? (_htlName + ' · ' + (dest._vipHotelStars || 5) + '성급') : (_isVipBudget ? '5성급 리조트' : 'Hotellook 기준');
+              if (dest && _htlPrice && _htlLink) {
                 var hotelEl = document.getElementById('hotel-' + col);
                 if (hotelEl) {
                   var hmEl = hotelEl.querySelector('.main');
                   var hsEl = hotelEl.querySelector('.sub');
                   var hkEl = hotelEl.querySelector('.kicker');
-                  if (hmEl) hmEl.textContent = dest._hotelPrice;
-                  if (hsEl) hsEl.textContent = '실시간 최저가 (1박)';
-                  if (hkEl) hkEl.textContent = 'Hotellook 기준';
+                  if (hmEl) hmEl.textContent = _htlPrice;
+                  if (hsEl) hsEl.textContent = _htlSub;
+                  if (hkEl) hkEl.textContent = _htlKicker;
                   if (!hotelEl.querySelector('.tp-hotel-btn')) {
                     var hBtn = document.createElement('a');
-                    hBtn.href = dest._hotelLink; hBtn.target = '_blank';
+                    hBtn.href = _htlLink; hBtn.target = '_blank';
                     hBtn.rel = 'noopener noreferrer';
                     hBtn.className = 'tp-book-btn tp-hotel-btn';
                     hBtn.textContent = '숙소 예약하기 ›';
@@ -9110,7 +9117,7 @@
         // unlimited(상관없음)일 때는 예산 초과 경고 불필요
         var _isUnlimitedBudget = budgetRaw === 'unlimited';
         if (adjMin > budget && !isCheapestMode && !_isUnlimitedBudget) {
-          var _budgetLabel = {'100':'100만원','150':'150만원','200':'200만원','300':'300만원'}[budgetRaw] || (budget + '만원');
+          var _budgetLabel = {'100':'100만원','150':'150만원','200':'200만원','300':'VIP'}[budgetRaw] || (budget + '만원');
           showToast(`⚠️ ${d.name}은(는) 현재 예산(${_budgetLabel})을 초과합니다.`);
         }
 
@@ -9175,17 +9182,17 @@
         }
 
         // ── Travelpayouts 예약 링크 갱신 (드롭다운 변경 시) ──
-        // VIP 예산(300만원+)일 때는 비즈니스 항공 가격 유지 → 최저가 오버라이드 하지 않음
+        // VIP: 비즈니스 클래스 실시간 데이터, 일반: 이코노미 최저가
         var _isVipInChange = budget >= 300 && budget < 9000;
-        // d is already defined at the top of changeDest
-        if (!_isVipInChange && d && d._tpLink) {
-
+        var _cdAirPrice = _isVipInChange ? (d._vipAirfare || d.airfare) : d.airfare;
+        var _cdAirSub = _isVipInChange ? '실시간 비즈니스 (왕복)' : '실시간 최저가 (왕복)';
+        if (d && d._tpLink && _cdAirPrice) {
           const airEl = document.getElementById('air-' + col);
           if (airEl) {
             const mEl = airEl.querySelector('.main');
             const sEl = airEl.querySelector('.sub');
-            if (mEl && d.airfare) mEl.textContent = d.airfare;
-            if (sEl && d.airfare) sEl.textContent = '실시간 최저가 (왕복)';
+            if (mEl) mEl.textContent = _cdAirPrice;
+            if (sEl) sEl.textContent = _cdAirSub;
             // 기존 버튼 제거
             const oldBtn = airEl.querySelector('.tp-book-btn');
             if (oldBtn) oldBtn.remove();
@@ -9267,7 +9274,7 @@
         // Sync compare budget display
         var cBudgetDisplay = document.getElementById('sb-budget-display-c');
         if (cBudgetDisplay) {
-          var labels = {'cheapest':'최저가','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'300만원 이내','unlimited':'상관없음'};
+          var labels = {'cheapest':'최저가','100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'VIP','unlimited':'상관없음'};
           var bLabel = labels[budgetVal] || '상관없음';
           cBudgetDisplay.textContent = bLabel;
           cBudgetDisplay.classList.add('filled');
@@ -10950,6 +10957,25 @@
             }
           })
           .catch(function() { /* Hotellook API 실패 시 하드코딩 데이터 유지 */ });
+
+        // VIP용 5성급 호텔 데이터도 미리 가져오기
+        fetch('https://travel.le2jy.workers.dev/api/hotels/all?stars=5')
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (!data || !data.data) return;
+            v1_0_9_DEST_DATA.forEach(function(dest) {
+              var iata = HOTEL_IATA[dest.id];
+              if (!iata || !data.data[iata]) return;
+              var entry = data.data[iata];
+              if (!entry.priceLabel) return;
+              dest._vipHotelPrice = entry.priceLabel;
+              dest._vipHotelName = entry.hotelName || '';
+              dest._vipHotelStars = entry.stars || 5;
+              dest._vipHotelLink = entry.bookingLink || dest._hotelLink;
+            });
+            console.log('[VIP] 5성급 호텔 데이터 로드 완료');
+          })
+          .catch(function(e) { console.log('VIP hotel API error:', e); });
       })();
 
       // ── 위치 기반 출발 공항 자동 감지 ──
@@ -11091,6 +11117,23 @@
             }
           })
           .catch(function(e) { console.log('TP flight API error:', e); });
+
+        // VIP용 비즈니스 클래스 항공 데이터도 미리 가져오기
+        fetch('https://travel.le2jy.workers.dev/api/flights/all?trip_class=1')
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (!data || !data.data) return;
+            v1_0_9_DEST_DATA.forEach(function(dest) {
+              var iata = DEST_IATA[dest.id];
+              if (!iata || !data.data[iata]) return;
+              var entry = data.data[iata];
+              if (!entry.priceLabel) return;
+              dest._vipAirfare = entry.priceLabel;
+              dest._vipAirfareSub = '실시간 비즈니스 (왕복)';
+            });
+            console.log('[VIP] 비즈니스 항공 데이터 로드 완료');
+          })
+          .catch(function(e) { console.log('VIP flight API error:', e); });
       })();
 
       // ── GitHub passport-index-dataset: 한국여권 비자 요건 연동 ──

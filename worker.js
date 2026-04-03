@@ -35,7 +35,8 @@ export default {
 
     // ── /api/flights/all — 항공 최저가 전체 ──────────────
     if (url.pathname === '/api/flights/all') {
-      const apiUrl = `https://api.travelpayouts.com/v1/prices/cheap?origin=${ORIGIN_IATA}&token=${TP_TOKEN}&currency=KRW&limit=1000`;
+      const tripClass = url.searchParams.get('trip_class') || '0'; // 0=이코노미, 1=비즈니스, 2=퍼스트
+      const apiUrl = `https://api.travelpayouts.com/v1/prices/cheap?origin=${ORIGIN_IATA}&token=${TP_TOKEN}&currency=KRW&limit=1000&trip_class=${tripClass}`;
 
       try {
         const res = await fetch(apiUrl, { headers: { 'X-Access-Token': TP_TOKEN } });
@@ -89,22 +90,38 @@ export default {
             const locationId = cityResult.id || cityResult.cityId;
             if (!locationId) return;
 
-            // Step 2: get hotel prices for this city
-            const priceUrl = `https://engine.hotellook.com/api/v2/cache.json?location=${locationId}&currency=krw&token=${TP_TOKEN}&period=7&adults=1&limit=3`;
+            // Step 2: get hotel prices for this city (limit 늘려서 고급 호텔도 포함)
+            const minStars = parseInt(url.searchParams.get('stars') || '0');
+            const fetchLimit = minStars >= 4 ? 30 : 3; // 고급 필터 시 더 많이 가져와서 필터링
+            const priceUrl = `https://engine.hotellook.com/api/v2/cache.json?location=${locationId}&currency=krw&token=${TP_TOKEN}&period=7&adults=1&limit=${fetchLimit}`;
             const priceRes = await fetch(priceUrl);
             if (!priceRes.ok) return;
             const priceData = await priceRes.json();
 
             if (Array.isArray(priceData) && priceData.length > 0) {
-              const sorted = priceData
-                .filter(h => h.priceFrom > 0)
-                .sort((a, b) => (a.priceFrom || 9e9) - (b.priceFrom || 9e9));
+              let filtered = priceData.filter(h => h.priceFrom > 0);
+              // stars 필터: 4성급 이상만 (VIP용)
+              if (minStars > 0) {
+                const starFiltered = filtered.filter(h => (h.stars || 0) >= minStars);
+                if (starFiltered.length > 0) filtered = starFiltered;
+                // 5성급이 없으면 4성급까지 폴백
+                else if (minStars >= 5) {
+                  const fallback = filtered.filter(h => (h.stars || 0) >= 4);
+                  if (fallback.length > 0) filtered = fallback;
+                }
+              }
+              // 고급 호텔은 가격이 높은 순 (프리미엄), 일반은 낮은 순 (최저가)
+              const sorted = minStars > 0
+                ? filtered.sort((a, b) => (b.stars || 0) - (a.stars || 0) || (b.priceFrom || 0) - (a.priceFrom || 0))
+                : filtered.sort((a, b) => (a.priceFrom || 9e9) - (b.priceFrom || 9e9));
               if (sorted.length > 0) {
-                const pricePerNight = sorted[0].priceFrom;
+                const best = sorted[0];
+                const pricePerNight = best.priceFrom;
                 results[iata] = {
                   priceKRW: pricePerNight,
                   priceLabel: Math.round(pricePerNight / 10000) + '만원~/박',
-                  hotelName: sorted[0].hotelName || sorted[0].name || '',
+                  hotelName: best.hotelName || best.name || '',
+                  stars: best.stars || 0,
                   bookingLink: `https://tp.media/r?marker=${TP_MARKER}&trs=1&p=4114&u=` +
                     encodeURIComponent(`https://hotellook.com/cities/${encodeURIComponent(cityName)}/`),
                 };
