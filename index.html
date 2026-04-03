@@ -4105,6 +4105,25 @@
         </div>
       </div>
 
+      <!-- 주간 예보 -->
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="weekly-forecast-0">
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main" style="color:var(--gray);">—</div>
+          <div class="v-sm sub">이번 주 예보</div>
+        </div>
+        <div class="dc" id="weekly-forecast-1">
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main" style="color:var(--gray);">—</div>
+          <div class="v-sm sub">이번 주 예보</div>
+        </div>
+        <div class="dc" id="weekly-forecast-2">
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main" style="color:var(--gray);">—</div>
+          <div class="v-sm sub">이번 주 예보</div>
+        </div>
+      </div>
+
       <!-- ═══ SECTION: 추천 관광 ═══ -->
       <div class="sec-hd">
         <div class="sec-hd-inner">
@@ -8450,22 +8469,21 @@
         setCell('alert-' + col, alertSafe ? '-' : d.alert, '외교부 여행경보', alertSafe ? '안전한 여행지' : (d.alertSub || '\u00a0'));
         setCell('news-' + col, d.news, '최근 현지 이슈', d.newsSub || '\u00a0');
         setCell('disaster-' + col, (d.disaster === '없음' ? '-' : d.disaster), '자연재해 리스크', (d.disaster === '없음' ? '' : d.disasterSub) || '\u00a0');
-        // Weather — unified format: ⛅ 28°C · 32–36°C
+        // Weather — API 데이터만 사용 (하드코딩 제거)
         var ctEl = document.getElementById('cur-temp-' + col);
         if (ctEl) {
           var mainT = ctEl.querySelector('.main');
-          var subT = ctEl.querySelector('.sub');
-          var rangeText = d.temp || '';
-          // Upgrade to v-xl class for larger display
           if (mainT) { mainT.classList.remove('v-lg'); mainT.classList.add('v-xl'); }
-          if (d._currentTemp !== undefined && mainT) {
-            mainT.textContent = d._currentTemp + '°C';
-            mainT.style.color = '';
-            if (subT) subT.textContent = d.tempSub || rangeText || '현재 기온';
+          if (d._todayMax !== undefined) {
+            _updateWeatherCell(col, d);
           } else {
-            if (mainT) { mainT.textContent = rangeText || '—'; mainT.style.color = rangeText ? '' : 'var(--gray)'; }
-            if (subT) subT.textContent = d.tempSub || (rangeText ? rangeText : '—');
+            // API 로딩 전 기본 상태
+            if (mainT) { mainT.textContent = '—'; mainT.style.color = 'var(--gray)'; }
           }
+        }
+        // 밤(최저기온) 캐시 확인
+        if (d._todayMin !== undefined) {
+          _updateForecastCell(col, d);
         }
 
         // 5. ATTRACTIONS — split into sights / exps rows
@@ -9143,6 +9161,9 @@
             if (oldBtn) oldBtn.remove();
           }
         }
+
+        // 여행지 변경 시 날씨 실시간 갱신
+        if (typeof fetchWeather === 'function') fetchWeather();
       }
 
       function goHome() {
@@ -9223,6 +9244,8 @@
         }
         updateResultsByFilters();
         window.scrollTo(0, 0);
+        // 비교뷰 표시 후 실시간 날씨 갱신
+        setTimeout(function() { if (typeof fetchWeather === 'function') fetchWeather(); }, 500);
         // 태블릿·모바일에서는 스크롤 자동 팝업 비활성화
         if (window.innerWidth > 1068) {
           _initWizardScrollTrigger();
@@ -10693,64 +10716,147 @@
         phuquoc:[10.22,103.97], hochiminh:[10.82,106.63], hanoi:[21.03,105.84], boracay:[11.97,121.92],
         phuket:[7.89,98.40], hongkong:[22.32,114.17], guam:[13.44,144.79], hawaii:[21.31,-157.80],
         paris:[48.85,2.35], kualalumpur:[3.14,101.69], maldives:[4.17,73.51], sydney:[-33.87,151.21],
-        shanghai:[31.23,121.47], barcelona:[41.39,2.16]
+        shanghai:[31.23,121.47], barcelona:[41.39,2.16],
+        nagoya:[35.18,136.91], siemreap:[13.36,103.86], rome:[41.90,12.50], london:[51.51,-0.13],
+        kotakinabalu:[5.98,116.07], luangprabang:[19.89,102.13], madrid:[40.42,-3.70], kohsamui:[9.51,100.06],
+        interlaken:[46.69,7.87], dubrovnik:[42.65,18.09], istanbul:[41.01,28.98]
+      };
+
+      // WMO 날씨 코드 → 한국어 매핑
+      var WMO_KR = {
+        0: '맑음', 1: '대체로 맑음', 2: '구름 조금', 3: '흐림',
+        45: '안개', 48: '짙은 안개',
+        51: '가벼운 이슬비', 53: '이슬비', 55: '짙은 이슬비',
+        56: '얼어붙는 이슬비', 57: '강한 결빙 이슬비',
+        61: '약한 비', 63: '비', 65: '강한 비',
+        66: '약한 결빙 비', 67: '강한 결빙 비',
+        71: '약한 눈', 73: '눈', 75: '강한 눈', 77: '싸라기눈',
+        80: '소나기', 81: '강한 소나기', 82: '폭우',
+        85: '약한 눈보라', 86: '강한 눈보라',
+        95: '뇌우', 96: '우박 뇌우', 99: '강한 우박 뇌우'
       };
 
       function fetchWeather() {
-        // Only fetch for the 3 currently displayed destinations to reduce API calls
-        var toFetch = [];
+        // 현재 표시 중인 3개 여행지만 호출하여 API 절약
         for (var ci = 0; ci < 3; ci++) {
-          var nameEl = document.getElementById('dname' + ci);
-          if (nameEl && nameEl.textContent) {
-            // Find the dest object
-            var sel = document.getElementById('sel' + ci);
-            if (sel) {
-              var idx = parseInt(sel.value);
-              if (!isNaN(idx) && v1_0_9_DEST_DATA[idx]) toFetch.push(v1_0_9_DEST_DATA[idx]);
+          (function(colIdx) {
+            var sel = document.getElementById('sel' + colIdx);
+            if (!sel) return;
+            var idx = parseInt(sel.value);
+            if (isNaN(idx) || !v1_0_9_DEST_DATA[idx]) return;
+            var dest = v1_0_9_DEST_DATA[idx];
+            // 이미 로드된 경우 스킵
+            if (dest._todayMax !== undefined) {
+              _updateWeatherCell(colIdx, dest);
+              _updateForecastCell(colIdx, dest);
+              return;
             }
+            var coords = DEST_COORDS[dest.id];
+            if (!coords) return;
+            var apiUrl = 'https://api.open-meteo.com/v1/forecast?latitude=' + coords[0]
+              + '&longitude=' + coords[1]
+              + '&current=temperature_2m,weather_code'
+              + '&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max'
+              + '&timezone=auto&forecast_days=7&past_days=1';
+            fetch(apiUrl)
+              .then(function(r) { return r.json(); })
+              .then(function(data) {
+                if (!data || !data.current) return;
+                var cur = data.current;
+                var t = Math.round(cur.temperature_2m);
+                var wc = cur.weather_code;
+                dest._currentTemp = t;
+                dest._weatherCode = wc;
+                dest._weatherText = WMO_KR[wc] || '맑음';
+                // 오늘 최고/최저 + 어제 비교
+                if (data.daily) {
+                  var maxTemps = data.daily.temperature_2m_max || [];
+                  var minTemps = data.daily.temperature_2m_min || [];
+                  var rainProbs = data.daily.precipitation_probability_max || [];
+                  // past_days=1이므로 index 0=어제, 1=오늘
+                  var yesterdayMax = maxTemps.length > 0 ? maxTemps[0] : null;
+                  var todayMax = maxTemps.length > 1 ? Math.round(maxTemps[1]) : null;
+                  var todayMin = minTemps.length > 1 ? Math.round(minTemps[1]) : null;
+                  dest._todayMax = todayMax;
+                  dest._todayMin = todayMin;
+                  if (yesterdayMax !== null && todayMax !== null) {
+                    dest._tempDiff = Math.round(todayMax - yesterdayMax);
+                  }
+                  dest._todayRainProb = rainProbs.length > 1 ? Math.round(rainProbs[1]) : 0;
+                }
+                _updateWeatherCell(colIdx, dest);
+                _updateForecastCell(colIdx, dest);
+              })
+              .catch(function() {});
+          })(ci);
+        }
+      }
+
+      // WMO 코드 → Meteocons 아이콘 파일명 매핑
+      var WMO_ICON = {
+        0: 'clear', 1: 'partly-cloudy', 2: 'partly-cloudy', 3: 'overcast',
+        45: 'fog', 48: 'fog',
+        51: 'drizzle', 53: 'drizzle', 55: 'drizzle',
+        56: 'sleet', 57: 'sleet',
+        61: 'rain', 63: 'rain', 65: 'extreme-rain',
+        66: 'sleet', 67: 'sleet',
+        71: 'snow', 73: 'snow', 75: 'extreme-snow', 77: 'hail',
+        80: 'rain', 81: 'extreme-rain', 82: 'extreme-rain',
+        85: 'snow', 86: 'extreme-snow',
+        95: 'thunderstorms', 96: 'thunderstorms', 99: 'thunderstorms'
+      };
+      var METEO_CDN = 'https://raw.githubusercontent.com/basmilius/weather-icons/dev/production/fill/svg/';
+
+      function getWeatherIconUrl(wc, isNight) {
+        var base = WMO_ICON[wc] || 'clear';
+        // day/night 구분이 있는 아이콘
+        var hasDayNight = ['clear', 'partly-cloudy', 'overcast', 'drizzle', 'rain', 'snow', 'sleet', 'thunderstorms'];
+        if (hasDayNight.indexOf(base) !== -1) {
+          return METEO_CDN + base + '-' + (isNight ? 'night' : 'day') + '.svg';
+        }
+        return METEO_CDN + base + '.svg';
+      }
+
+      function _updateWeatherCell(colIdx, d) {
+        if (!d || d._todayMax === undefined) return;
+        var ctEl = document.getElementById('cur-temp-' + colIdx);
+        if (ctEl) {
+          var kEl = ctEl.querySelector('.kicker');
+          var mEl = ctEl.querySelector('.main');
+          var sEl = ctEl.querySelector('.sub');
+          if (kEl) kEl.textContent = '낮(최고기온)';
+          if (mEl) {
+            var iconUrl = getWeatherIconUrl(d._weatherCode, false);
+            mEl.innerHTML = '<img src="' + iconUrl + '" alt="' + d._weatherText + '" style="width:48px;height:48px;vertical-align:middle;margin-right:4px;">' + d._todayMax + '°';
+            mEl.style.color = '';
+          }
+          if (sEl) {
+            sEl.textContent = d._weatherText + ' / 강수확률 ' + d._todayRainProb + '%';
           }
         }
-        var fetched = 0;
-        v1_0_9_DEST_DATA.forEach(function(dest) {
-          var coords = DEST_COORDS[dest.id];
-          if (!coords) return;
-          fetch('https://api.open-meteo.com/v1/forecast?latitude=' + coords[0] + '&longitude=' + coords[1] + '&current=temperature_2m,weather_code&timezone=auto')
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-              if (!data || !data.current) return;
-              var t = Math.round(data.current.temperature_2m);
-              var wc = data.current.weather_code;
-              var icon = wc <= 1 ? '☀️' : wc <= 3 ? '⛅' : wc <= 67 ? '🌧️' : wc <= 77 ? '❄️' : '🌩️';
-              dest._currentTemp = t;
-              dest._currentWeatherIcon = icon;
-              dest.tempSub = '현재 현지 기온';
-              fetched++;
-              // Refresh display if we've loaded most of the data
-              if (fetched >= Math.min(5, v1_0_9_DEST_DATA.length / 3)) {
-                if (document.getElementById('compare-view') && document.getElementById('compare-view').style.display === 'block') {
-                  // Only update the cur-temp cells directly without full re-render
-                  for (var i = 0; i < 3; i++) {
-                    var sEl = document.getElementById('sel' + i);
-                    if (!sEl) continue;
-                    var dIdx = parseInt(sEl.value);
-                    if (isNaN(dIdx)) continue;
-                    var d = v1_0_9_DEST_DATA[dIdx];
-                    if (!d || d._currentTemp === undefined) continue;
-                    var ctEl = document.getElementById('cur-temp-' + i);
-                    if (ctEl) {
-                      var mEl = ctEl.querySelector('.main');
-                      var sEl2 = ctEl.querySelector('.sub');
-                      if (mEl) { mEl.textContent = d._currentTemp + '°C'; mEl.style.color = ''; }
-                      if (sEl2) sEl2.textContent = '현재 현지 기온';
-                    }
-                  }
-                }
-              }
-            })
-            .catch(function() {});
-        });
+      }
+
+      function _updateForecastCell(colIdx, d) {
+        if (!d || d._todayMin === undefined) return;
+        var el = document.getElementById('weekly-forecast-' + colIdx);
+        if (el) {
+          var kEl = el.querySelector('.kicker');
+          var mEl = el.querySelector('.main');
+          var sEl = el.querySelector('.sub');
+          if (kEl) kEl.textContent = '밤(최저기온)';
+          if (mEl) {
+            var iconUrl = getWeatherIconUrl(d._weatherCode, true);
+            mEl.innerHTML = '<img src="' + iconUrl + '" alt="' + d._weatherText + '" style="width:48px;height:48px;vertical-align:middle;margin-right:4px;">' + d._todayMin + '°';
+            mEl.style.color = '';
+          }
+          if (sEl) {
+            sEl.textContent = d._weatherText + ' / 강수확률 ' + d._todayRainProb + '%';
+          }
+        }
       }
       fetchWeather();
+
+
 
       // ── Travelpayouts 실시간 숙박 가격 연동 ──
       (function fetchTpHotelPrices() {
