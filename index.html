@@ -117,6 +117,10 @@
       margin: 28px auto 0;
       z-index: 90;
     }
+    /* 패널이 열린 상태에서만 z-index 상승 → sticky-sel(90) 위에 표시 */
+    .sb-wrap:has(.sb-panel.open) {
+      z-index: 95;
+    }
 
     .sb {
       display: flex;
@@ -8474,7 +8478,7 @@
         if (ctEl) {
           var mainT = ctEl.querySelector('.main');
           if (mainT) { mainT.classList.remove('v-lg'); mainT.classList.add('v-xl'); }
-          if (d._todayMax !== undefined) {
+          if (typeof d._todayMax === 'number') {
             _updateWeatherCell(col, d);
           } else {
             // API 로딩 전 기본 상태
@@ -8482,8 +8486,14 @@
           }
         }
         // 밤(최저기온) 캐시 확인
-        if (d._todayMin !== undefined) {
+        if (typeof d._todayMin === 'number') {
           _updateForecastCell(col, d);
+        } else {
+          var fcElTmp = document.getElementById('weekly-forecast-' + col);
+          if (fcElTmp) {
+            var fmTmp = fcElTmp.querySelector('.main');
+            if (fmTmp) { fmTmp.textContent = '—'; fmTmp.style.color = 'var(--gray)'; }
+          }
         }
 
         // 5. ATTRACTIONS — split into sights / exps rows
@@ -9394,7 +9404,7 @@
         ],
         danang:      [
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: APP_ICONS.gmaps },
-          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: '다낭 이동 필수 앱, 흥정 없이 정찰제', iconUrl: APP_ICONS.grab },
+          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: '현지 이동 필수 앱, 흥정 없이 정찰제', iconUrl: APP_ICONS.grab },
           { icon: '💳', name: 'MoMo', cat: 'QR결제', desc: '베트남 대표 간편결제 앱', iconUrl: APP_ICONS.momo },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '베트남어 카메라 번역 유용', iconUrl: APP_ICONS.gtransl },
         ],
@@ -9420,13 +9430,13 @@
         tokyo:       [
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: APP_ICONS.gmaps },
           { icon: '💳', name: 'Suica / PASMO', cat: '교통카드', desc: '전철·버스 탑승 + 편의점 결제', iconUrl: APP_ICONS.suica },
-          { icon: '🔄', name: '乗換案内', cat: '환승 안내', desc: '도쿄 전철 환승 최적 경로 검색', iconUrl: APP_ICONS.jorudan },
+          { icon: '🔄', name: '乗換案内', cat: '환승 안내', desc: '전철 환승 최적 경로 검색', iconUrl: APP_ICONS.jorudan },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '카메라 번역으로 메뉴판 즉시 번역', iconUrl: APP_ICONS.gtransl },
-          { icon: '💳', name: 'PayPay', cat: 'QR결제', desc: '편의점·음식점 QR 결제 (급속 확산중)', iconUrl: APP_ICONS.paypay },
+          { icon: '💳', name: 'PayPay', cat: 'QR결제', desc: '편의점·음식점 QR 결제', iconUrl: APP_ICONS.paypay },
         ],
         bangkok:     [
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: APP_ICONS.gmaps },
-          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: '방콕 택시 흥정 없이 정찰제로 이동', iconUrl: APP_ICONS.grab },
+          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: '현지 이동 필수 앱, 흥정 없이 정찰제', iconUrl: APP_ICONS.grab },
           { icon: '🚖', name: 'Bolt', cat: '택시', desc: 'Grab보다 저렴한 택시 앱', iconUrl: APP_ICONS.bolt },
           { icon: '💳', name: 'TrueMoney Wallet', cat: 'QR결제', desc: '편의점·식당 QR 결제', iconUrl: APP_ICONS.truemoney },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '태국어 카메라 번역 유용', iconUrl: APP_ICONS.gtransl },
@@ -9439,7 +9449,7 @@
         ],
         chiangmai:   [
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: APP_ICONS.gmaps },
-          { icon: '🛵', name: 'Grab', cat: '택시', desc: '치앙마이 시내 이동, 흥정 불필요', iconUrl: APP_ICONS.grab },
+          { icon: '🛵', name: 'Grab', cat: '택시', desc: '현지 이동 필수 앱, 흥정 없이 정찰제', iconUrl: APP_ICONS.grab },
           { icon: '💳', name: 'TrueMoney Wallet', cat: 'QR결제', desc: '편의점·카페 QR 결제', iconUrl: APP_ICONS.truemoney },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '태국어 카메라 번역 유용', iconUrl: APP_ICONS.gtransl },
         ],
@@ -9451,13 +9461,13 @@
         ],
         cebu:        [
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: APP_ICONS.gmaps },
-          { icon: '🛵', name: 'Grab', cat: '택시', desc: '세부 시내 이동, 흥정 없이 정찰제', iconUrl: APP_ICONS.grab },
+          { icon: '🛵', name: 'Grab', cat: '택시', desc: '현지 이동 필수 앱, 흥정 없이 정찰제', iconUrl: APP_ICONS.grab },
           { icon: '💳', name: 'GCash', cat: '현지결제', desc: '필리핀 간편결제, 현지인 필수 앱', iconUrl: APP_ICONS.gcash },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '필리핀어·영어 번역', iconUrl: APP_ICONS.gtransl },
         ],
         nhatrang:    [
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://maps.google.com&size=64' },
-          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: '나트랑 이동 필수, 흥정 없이 정찰제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://grab.com&size=64' },
+          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: '현지 이동 필수 앱, 흥정 없이 정찰제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://grab.com&size=64' },
           { icon: '💳', name: 'MoMo / ZaloPay', cat: 'QR결제', desc: '현지 QR 결제' },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '베트남어 카메라 번역 유용', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://translate.google.com&size=64' },
         ],
@@ -9485,7 +9495,7 @@
         kyoto:       [
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://maps.google.com&size=64' },
           { icon: '💳', name: 'Suica / ICOCA', cat: '교통카드', desc: '버스·지하철 탑승 + 편의점 결제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://www.jreast.co.jp/suica&size=64' },
-          { icon: '🔄', name: '乗換案内', cat: '환승 안내', desc: '교토 버스·전철 환승 경로 검색', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://jorudan.co.jp&size=64' },
+          { icon: '🔄', name: '乗換案内', cat: '환승 안내', desc: '전철 환승 최적 경로 검색', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://jorudan.co.jp&size=64' },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '카메라 번역으로 메뉴판 즉시 번역', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://translate.google.com&size=64' },
           { icon: '💳', name: 'PayPay', cat: 'QR결제', desc: '편의점·음식점 QR 결제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://paypay.ne.jp&size=64' },
         ],
@@ -9493,25 +9503,25 @@
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수 · 렌터카 내비 대용', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://maps.google.com&size=64' },
           { icon: '🚗', name: '타베로그', cat: '맛집', desc: '미야코지마 현지 식당·카페 검색' },
           { icon: '🌊', name: 'Waterlust', cat: '다이빙·스노클링', desc: '스노클링·다이빙 포인트 확인' },
-          { icon: '💬', name: 'Google 번역', cat: '번역', desc: '카메라 번역으로 현지 메뉴판 즉시 번역', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://translate.google.com&size=64' },
-          { icon: '💳', name: 'PayPay', cat: 'QR결제', desc: '편의점·식당 QR 결제 (섬 내 현금 병행)', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://paypay.ne.jp&size=64' },
+          { icon: '💬', name: 'Google 번역', cat: '번역', desc: '카메라 번역으로 메뉴판 즉시 번역', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://translate.google.com&size=64' },
+          { icon: '💳', name: 'PayPay', cat: 'QR결제', desc: '편의점·음식점 QR 결제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://paypay.ne.jp&size=64' },
         ],
         phuquoc:     [
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://maps.google.com&size=64' },
-          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: '푸꾸옥 이동, 흥정 없이 정찰제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://grab.com&size=64' },
+          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: '현지 이동 필수 앱, 흥정 없이 정찰제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://grab.com&size=64' },
           { icon: '💳', name: 'MoMo / ZaloPay', cat: 'QR결제', desc: '현지 QR 결제' },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '베트남어 카메라 번역 유용', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://translate.google.com&size=64' },
         ],
         hochiminh:   [
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://maps.google.com&size=64' },
-          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: '호치민 이동 필수, 바이크 택시도 가능', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://grab.com&size=64' },
+          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: '현지 이동 필수 앱, 흥정 없이 정찰제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://grab.com&size=64' },
           { icon: '💳', name: 'MoMo', cat: 'QR결제', desc: '베트남 대표 간편결제 앱', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://momo.vn&size=64' },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '베트남어 카메라 번역 유용', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://translate.google.com&size=64' },
         ],
         hanoi:       [
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://maps.google.com&size=64' },
-          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: '하노이 이동 필수, 흥정 없이 정찰제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://grab.com&size=64' },
-          { icon: '💳', name: 'ZaloPay', cat: 'QR결제', desc: '하노이 현지 QR 결제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://zalopay.vn&size=64' },
+          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: '현지 이동 필수 앱, 흥정 없이 정찰제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://grab.com&size=64' },
+          { icon: '💳', name: 'ZaloPay', cat: 'QR결제', desc: '현지 QR 결제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://zalopay.vn&size=64' },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '베트남어 카메라 번역 유용', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://translate.google.com&size=64' },
         ],
         boracay:     [
@@ -9521,7 +9531,7 @@
         ],
         phuket:      [
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://maps.google.com&size=64' },
-          { icon: '🛵', name: 'Grab', cat: '택시', desc: '푸켓 택시 흥정 없이 정찰제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://grab.com&size=64' },
+          { icon: '🛵', name: 'Grab', cat: '택시', desc: '현지 이동 필수 앱, 흥정 없이 정찰제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://grab.com&size=64' },
           { icon: '🚖', name: 'Bolt', cat: '택시', desc: 'Grab과 가격 비교 추천', iconSlug: 'bolt', iconBg: '#34FF00', iconFg: '000000' },
           { icon: '💳', name: 'TrueMoney Wallet', cat: 'QR결제', desc: '편의점·식당 QR 결제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://truemoney.com&size=64' },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '태국어 카메라 번역 유용', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://translate.google.com&size=64' },
@@ -9554,7 +9564,7 @@
         ],
         kualalumpur: [
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://maps.google.com&size=64' },
-          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: 'KL 필수 이동 수단, 정찰제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://grab.com&size=64' },
+          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: '현지 이동 필수 앱, 흥정 없이 정찰제', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://grab.com&size=64' },
           { icon: '💳', name: "Touch 'n Go eWallet", cat: '교통·결제', desc: '말레이시아 교통카드 겸 QR 결제 앱' },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '말레이어·중국어 번역', iconUrl: 'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://translate.google.com&size=64' },
         ],
@@ -9612,9 +9622,9 @@
         ],
         kotakinabalu:[
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: APP_ICONS.gmaps },
-          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: '코타키나발루 이동 필수, 정찰제', iconUrl: APP_ICONS.grab },
+          { icon: '🛵', name: 'Grab', cat: '택시·배달', desc: '현지 이동 필수 앱, 흥정 없이 정찰제', iconUrl: APP_ICONS.grab },
           { icon: '💳', name: "Touch 'n Go eWallet", cat: '교통·결제', desc: '말레이시아 교통카드 겸 QR 결제 앱' },
-          { icon: '💬', name: 'Google 번역', cat: '번역', desc: '말레이어·영어 번역', iconUrl: APP_ICONS.gtransl },
+          { icon: '💬', name: 'Google 번역', cat: '번역', desc: '말레이어·중국어 번역', iconUrl: APP_ICONS.gtransl },
         ],
         luangprabang:[
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수 · WiFi 제한적', iconUrl: APP_ICONS.gmaps },
@@ -9631,7 +9641,7 @@
         ],
         kohsamui:    [
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: APP_ICONS.gmaps },
-          { icon: '🛵', name: 'Grab', cat: '택시', desc: '코사무이 시내 이동, 흥정 불필요', iconUrl: APP_ICONS.grab },
+          { icon: '🛵', name: 'Grab', cat: '택시', desc: '현지 이동 필수 앱, 흥정 없이 정찰제', iconUrl: APP_ICONS.grab },
           { icon: '💳', name: 'TrueMoney Wallet', cat: 'QR결제', desc: '편의점·카페 QR 결제', iconUrl: APP_ICONS.truemoney },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '태국어 카메라 번역 유용', iconUrl: APP_ICONS.gtransl },
         ],
@@ -9658,59 +9668,65 @@
           airport: '인천공항 1터미널 지하 1층·2터미널 2층 환전소',
           note: '출발 전 은행 앱으로 환전 예약 시 최대 90% 우대료 적용'
         },
-        lisbon:  { currency: 'EUR (유로)', qr: false, cashPerDay: '€30–50', perPerson: '20–30만원 (5~7일 기준)', cashNote: '소규모 상점·식당 현금 선호', qrNote: null },
-        danang:  { currency: 'VND (베트남 동)', qr: true, cashPerDay: '₫300,000–500,000', perPerson: '15–25만원', cashNote: '현지 ATM 수수료 유의', qrNote: 'MoMo·ZaloPay로 편의점·식당 QR 결제 가능' },
-        jeju:    { currency: 'KRW (원화)', qr: true, cashPerDay: null, perPerson: null, cashNote: null, qrNote: '카카오페이·네이버페이 대부분 가맹점 가능 — 환전 불필요' },
-        taipei:  { currency: 'TWD (대만달러)', qr: false, cashPerDay: 'NT$500–1,000', perPerson: '10–20만원', cashNote: '야시장·소규모 식당 현금 필수', qrNote: null },
-        osaka:   { currency: 'JPY (일본 엔)', qr: true, cashPerDay: '¥3,000–6,000', perPerson: '20–40만원', cashNote: '엔저로 지금이 환전 최적기', qrNote: 'PayPay로 편의점·체인 식당 QR 결제 가능 — 일부 현금만 받는 가게 있음' },
-        tokyo:   { currency: 'JPY (일본 엔)', qr: true, cashPerDay: '¥3,000–6,000', perPerson: '20–40만원', cashNote: '엔저로 지금이 환전 최적기', qrNote: 'PayPay로 편의점·체인 식당 QR 결제 가능 — 일부 현금만 받는 가게 있음' },
-        bangkok: { currency: 'THB (태국 바트)', qr: true, cashPerDay: '฿500–1,000', perPerson: '10–20만원', cashNote: '수퍼리치 환전소 환율 좋음 (공항 외)', qrNote: 'TrueMoney·PromptPay로 쇼핑몰·카페 결제 가능' },
-        bali:    { currency: 'IDR (인도네시아 루피아)', qr: false, cashPerDay: 'Rp200,000–400,000', perPerson: '15–25만원', cashNote: '시내 환전소(머니체인저)가 공항보다 환율 유리', qrNote: null },
-        chiangmai: { currency: 'THB (태국 바트)', qr: true, cashPerDay: '฿400–800', perPerson: '10–15만원', cashNote: '수퍼리치 방콕 환전후 지참 추천', qrNote: 'TrueMoney로 편의점·식당 결제 가능' },
+        // ── 국내 ──
+        korea:     { currency: 'KRW (원화)', qr: true, cashPerDay: null, perPerson: null, cashNote: null, qrNote: '카카오페이·네이버페이 대부분 가맹점 가능 — 환전 불필요' },
+        // ── 일본 ──
+        japan:     { currency: 'JPY (일본 엔)', qr: true, cashPerDay: '¥3,000–6,000', perPerson: '20–40만원', cashNote: '엔저로 지금이 환전 최적기', qrNote: 'PayPay로 편의점·체인 식당 QR 결제 가능 — 일부 현금만 받는 가게 있음' },
+        // ── 대만 ──
+        taiwan:    { currency: 'TWD (대만달러)', qr: false, cashPerDay: 'NT$500–1,000', perPerson: '10–20만원', cashNote: '야시장·소규모 식당 현금 필수', qrNote: null },
+        // ── 베트남 ──
+        vietnam:   { currency: 'VND (베트남 동)', qr: true, cashPerDay: '₫300,000–500,000', perPerson: '15–25만원', cashNote: '현지 ATM 수수료 유의', qrNote: 'MoMo·ZaloPay로 편의점·식당 QR 결제 가능' },
+        // ── 태국 ──
+        thailand:  { currency: 'THB (태국 바트)', qr: true, cashPerDay: '฿500–1,000', perPerson: '10–20만원', cashNote: '수퍼리치 환전소 환율 좋음 (공항 외)', qrNote: 'TrueMoney·PromptPay로 쇼핑몰·카페 결제 가능' },
+        // ── 인도네시아 ──
+        indonesia: { currency: 'IDR (인도네시아 루피아)', qr: false, cashPerDay: 'Rp200,000–400,000', perPerson: '15–25만원', cashNote: '시내 환전소(머니체인저)가 공항보다 환율 유리', qrNote: null },
+        // ── 싱가포르 ──
         singapore: { currency: 'SGD (싱가포르 달러)', qr: true, cashPerDay: 'S$50–100', perPerson: '20–35만원', cashNote: 'SGD 강세 — 카드 결제 거의 어디서나 가능', qrNote: 'PayNow QR로 식당·마켓 결제 가능 — 현금 최소화 가능' },
-        cebu:    { currency: 'PHP (필리핀 페소)', qr: false, cashPerDay: '₱1,000–2,000', perPerson: '10–20만원', cashNote: '공항 환전소보다 SM몰 환전소 환율 유리', qrNote: null },
-        phuket:  { currency: 'THB (태국 바트)', qr: true, cashPerDay: '฿500–1,000', perPerson: '15–25만원', cashNote: '수퍼리치 또는 현지 ATM 사용', qrNote: 'TrueMoney로 편의점·식당 결제 가능' },
-        nhatrang: { currency: 'VND (베트남 동)', qr: true, cashPerDay: '₫300,000–500,000', perPerson: '10–20만원', cashNote: '현지 ATM 사용 (수수료 건당 약 3,000원)', qrNote: 'MoMo로 편의점·카페 QR 결제 가능' },
-        fukuoka: { currency: 'JPY (일본 엔)', qr: true, cashPerDay: '¥3,000–5,000', perPerson: '15–30만원', cashNote: '엔저로 지금이 환전 최적기', qrNote: 'PayPay로 편의점·식당 QR 결제 가능' },
-        sapporo: { currency: 'JPY (일본 엔)', qr: true, cashPerDay: '¥3,000–5,000', perPerson: '15–30만원', cashNote: '엔저 지속 — 출발 전 환전 추천', qrNote: 'PayPay로 편의점·식당 QR 결제 가능' },
-        okinawa: { currency: 'JPY (일본 엔)', qr: true, cashPerDay: '¥3,000–5,000', perPerson: '15–30만원', cashNote: '엔저로 지금이 환전 최적기', qrNote: 'PayPay 사용 가능 — 리조트·관광지는 카드 병행' },
-        kyoto:   { currency: 'JPY (일본 엔)', qr: true, cashPerDay: '¥3,000–6,000', perPerson: '20–40만원', cashNote: '교토는 현금 선호 가게 많음 — 넉넉히 환전 권장', qrNote: 'PayPay 사용 가능하지만 현금 필수 병행' },
-        miyakojima: { currency: 'JPY (일본 엔)', qr: true, cashPerDay: '¥3,000–5,000', perPerson: '15–30만원', cashNote: '엔저로 지금이 환전 최적기 · 섬 특성상 현금 병행 권장', qrNote: 'PayPay 사용 가능 — 리조트·다이빙숍은 카드 병행' },
-        phuquoc: { currency: 'VND (베트남 동)', qr: true, cashPerDay: '₫300,000–500,000', perPerson: '15–25만원', cashNote: '현지 ATM 사용 추천 (수수료 건당 약 3,000원)', qrNote: 'MoMo·ZaloPay로 식당·편의점 QR 결제 가능' },
-        hochiminh: { currency: 'VND (베트남 동)', qr: true, cashPerDay: '₫300,000–600,000', perPerson: '15–25만원', cashNote: '현지 ATM 또는 환전소 이용 — 달러 병행 가능', qrNote: 'MoMo·ZaloPay로 카페·쇼핑몰 결제 가능' },
-        hanoi:   { currency: 'VND (베트남 동)', qr: true, cashPerDay: '₫200,000–400,000', perPerson: '10–20만원', cashNote: '현지 ATM 사용 추천', qrNote: 'ZaloPay·MoMo로 카페·편의점 결제 가능' },
-        boracay: { currency: 'PHP (필리핀 페소)', qr: false, cashPerDay: '₱1,500–3,000', perPerson: '15–25만원', cashNote: '섬 내 환전소 환율 불리 — 세부·마닐라에서 미리 환전 추천', qrNote: null },
-        pattaya: { currency: 'THB (태국 바트)', qr: true, cashPerDay: '฿400–800', perPerson: '10–15만원', cashNote: '수퍼리치 방콕에서 환전 추천', qrNote: 'TrueMoney 사용 가능' },
-        hongkong: { currency: 'HKD (홍콩 달러)', qr: true, cashPerDay: 'HK$300–600', perPerson: '15–30만원', cashNote: 'HKD 달러 고정 환율 (안정적)', qrNote: 'Octopus 카드로 교통·편의점 거의 모두 결제 가능' },
-        guam:    { currency: 'USD (미국 달러)', qr: false, cashPerDay: '$30–60', perPerson: '15–25만원', cashNote: '달러 결제 기본 — 현지 환전 불필요', qrNote: null },
-        hawaii:  { currency: 'USD (미국 달러)', qr: false, cashPerDay: '$40–80', perPerson: '20–35만원', cashNote: '카드 결제 주류 — 현금은 팁용으로만 소지', qrNote: null },
-        paris:   { currency: 'EUR (유로)', qr: false, cashPerDay: '€30–60', perPerson: '20–35만원', cashNote: '카드 결제 일반화. 현금은 주로 팁·소규모 시장용', qrNote: null },
-        kualalumpur: { currency: 'MYR (말레이시아 링깃)', qr: true, cashPerDay: 'RM50–100', perPerson: '10–20만원', cashNote: '원화 강세, 현지 ATM 또는 환전소 이용', qrNote: 'Touch n Go e-Wallet로 편의점·카페 결제 가능' },
-        maldives: { currency: 'USD (미국 달러)', qr: false, cashPerDay: '$50–150', perPerson: '25–50만원', cashNote: '리조트는 달러·카드 결제 기본 — 루피야 거의 불필요', qrNote: null },
-        sydney:  { currency: 'AUD (호주 달러)', qr: true, cashPerDay: 'A$50–100', perPerson: '20–35만원', cashNote: '카드 결제 광범위 — 현금은 최소한으로', qrNote: 'Apple Pay·Google Pay 거의 모든 가게에서 사용 가능' },
-        shanghai: { currency: 'CNY (중국 위안)', qr: true, cashPerDay: '¥100–200', perPerson: '15–25만원', cashNote: '위챗페이·알리페이 없으면 현금 필수', qrNote: '위챗페이·알리페이 현지 계정 설정 강력 추천' },
-        barcelona: { currency: 'EUR (유로)', qr: false, cashPerDay: '€40–70', perPerson: '25–40만원', cashNote: '카드 결제 일반화 — 소매치기 주의로 현금 최소 소지 추천', qrNote: null },
-        nagoya:   { currency: 'JPY (일본 엔)', qr: true, cashPerDay: '¥3,000–6,000', perPerson: '20–40만원', cashNote: '엔저로 지금이 환전 최적기', qrNote: 'PayPay로 편의점·체인 식당 QR 결제 가능 — 일부 현금만 받는 가게 있음' },
-        siemreap: { currency: 'USD (미국 달러)', qr: false, cashPerDay: '$15–30', perPerson: '10–20만원', cashNote: '달러 통용 · 현지 리엘은 거스름돈용 — 잔돈 크메르 리엘로 수령', qrNote: null },
-        rome:     { currency: 'EUR (유로)', qr: false, cashPerDay: '€40–70', perPerson: '25–40만원', cashNote: '카드 결제 일반화 — 소매치기 주의로 현금 최소 소지 추천', qrNote: null },
-        london:   { currency: 'GBP (영국 파운드)', qr: true, cashPerDay: '£30–60', perPerson: '25–45만원', cashNote: '파운드 강세 — 카드·비접촉 결제 광범위', qrNote: 'Apple Pay·Google Pay 거의 모든 가게에서 사용 가능' },
-        kotakinabalu: { currency: 'MYR (말레이시아 링깃)', qr: true, cashPerDay: 'RM50–100', perPerson: '10–20만원', cashNote: '원화 강세, 현지 ATM 또는 환전소 이용', qrNote: 'Touch n Go e-Wallet로 편의점·카페 결제 가능' },
-        luangprabang: { currency: 'LAK (라오스 킵) / USD', qr: false, cashPerDay: '$15–25', perPerson: '8–15만원', cashNote: '달러·태국 바트 통용 — 킵 잔돈만 필요', qrNote: null },
-        madrid:   { currency: 'EUR (유로)', qr: false, cashPerDay: '€35–60', perPerson: '20–35만원', cashNote: '카드 결제 일반화 — 소매치기 주의로 현금 최소 소지 추천', qrNote: null },
-        kohsamui: { currency: 'THB (태국 바트)', qr: true, cashPerDay: '฿500–1,000', perPerson: '10–20만원', cashNote: '수퍼리치 환전소 방콕에서 환전 추천', qrNote: 'TrueMoney로 편의점·식당 결제 가능' },
-        interlaken: { currency: 'CHF (스위스 프랑)', qr: true, cashPerDay: 'CHF 50–100', perPerson: '30–50만원', cashNote: '세계 최고 물가 — 카드 결제 광범위', qrNote: 'Apple Pay·Google Pay 대부분 가게에서 사용 가능' },
-        dubrovnik: { currency: 'EUR (유로)', qr: false, cashPerDay: '€35–60', perPerson: '20–35만원', cashNote: '2023 유로 전환 완료 — 카드 결제 일반화', qrNote: null },
+        // ── 필리핀 ──
+        philippines: { currency: 'PHP (필리핀 페소)', qr: false, cashPerDay: '₱1,000–2,000', perPerson: '10–20만원', cashNote: '공항 환전소보다 SM몰 환전소 환율 유리', qrNote: null },
+        // ── 홍콩 ──
+        hongkong:  { currency: 'HKD (홍콩 달러)', qr: true, cashPerDay: 'HK$300–600', perPerson: '15–30만원', cashNote: 'HKD 달러 고정 환율 (안정적)', qrNote: 'Octopus 카드로 교통·편의점 거의 모두 결제 가능' },
+        // ── 미국 ──
+        usa_territory: { currency: 'USD (미국 달러)', qr: false, cashPerDay: '$30–60', perPerson: '15–25만원', cashNote: '달러 결제 기본 — 현지 환전 불필요', qrNote: null },
+        usa:       { currency: 'USD (미국 달러)', qr: false, cashPerDay: '$40–80', perPerson: '20–35만원', cashNote: '카드 결제 주류 — 현금은 팁용으로만 소지', qrNote: null },
+        // ── 유럽 (쉥겐) ──
+        portugal:  { currency: 'EUR (유로)', qr: false, cashPerDay: '€30–50', perPerson: '20–30만원', cashNote: '소규모 상점·식당 현금 선호', qrNote: null },
+        france:    { currency: 'EUR (유로)', qr: false, cashPerDay: '€30–60', perPerson: '20–35만원', cashNote: '카드 결제 일반화. 현금은 주로 팁·소규모 시장용', qrNote: null },
+        spain:     { currency: 'EUR (유로)', qr: false, cashPerDay: '€35–60', perPerson: '20–35만원', cashNote: '카드 결제 일반화 — 소매치기 주의로 현금 최소 소지 추천', qrNote: null },
+        italy:     { currency: 'EUR (유로)', qr: false, cashPerDay: '€40–70', perPerson: '25–40만원', cashNote: '카드 결제 일반화 — 소매치기 주의로 현금 최소 소지 추천', qrNote: null },
+        switzerland: { currency: 'CHF (스위스 프랑)', qr: true, cashPerDay: 'CHF 50–100', perPerson: '30–50만원', cashNote: '세계 최고 물가 — 카드 결제 광범위', qrNote: 'Apple Pay·Google Pay 대부분 가게에서 사용 가능' },
+        croatia:   { currency: 'EUR (유로)', qr: false, cashPerDay: '€35–60', perPerson: '20–35만원', cashNote: '2023 유로 전환 완료 — 카드 결제 일반화', qrNote: null },
+        // ── 영국 ──
+        uk:        { currency: 'GBP (영국 파운드)', qr: true, cashPerDay: '£30–60', perPerson: '25–45만원', cashNote: '파운드 강세 — 카드·비접촉 결제 광범위', qrNote: 'Apple Pay·Google Pay 거의 모든 가게에서 사용 가능' },
+        // ── 말레이시아 ──
+        malaysia:  { currency: 'MYR (말레이시아 링깃)', qr: true, cashPerDay: 'RM50–100', perPerson: '10–20만원', cashNote: '원화 강세, 현지 ATM 또는 환전소 이용', qrNote: 'Touch n Go e-Wallet로 편의점·카페 결제 가능' },
+        // ── 몰디브 ──
+        maldives:  { currency: 'USD (미국 달러)', qr: false, cashPerDay: '$50–150', perPerson: '25–50만원', cashNote: '리조트는 달러·카드 결제 기본 — 루피야 거의 불필요', qrNote: null },
+        // ── 호주 ──
+        australia: { currency: 'AUD (호주 달러)', qr: true, cashPerDay: 'A$50–100', perPerson: '20–35만원', cashNote: '카드 결제 광범위 — 현금은 최소한으로', qrNote: 'Apple Pay·Google Pay 거의 모든 가게에서 사용 가능' },
+        // ── 중국 ──
+        china:     { currency: 'CNY (중국 위안)', qr: true, cashPerDay: '¥100–200', perPerson: '15–25만원', cashNote: '위챗페이·알리페이 없으면 현금 필수', qrNote: '위챗페이·알리페이 현지 계정 설정 강력 추천' },
+        // ── 캄보디아 ──
+        cambodia:  { currency: 'USD (미국 달러)', qr: false, cashPerDay: '$15–30', perPerson: '10–20만원', cashNote: '달러 통용 · 현지 리엘은 거스름돈용 — 잔돈 크메르 리엘로 수령', qrNote: null },
+        // ── 라오스 ──
+        laos:      { currency: 'LAK (라오스 킵) / USD', qr: false, cashPerDay: '$15–25', perPerson: '8–15만원', cashNote: '달러·태국 바트 통용 — 킵 잔돈만 필요', qrNote: null },
+        // ── 튀르키예 ──
+        turkey:    { currency: 'TRY (터키 리라)', qr: true, cashPerDay: '₺500–1,000', perPerson: '15–25만원', cashNote: '리라 약세 — 달러·카드 결제 광범위', qrNote: 'Apple Pay·Google Pay 대형 매장에서 사용 가능' },
+        // ── 몽골 ──
+        mongolia:  { currency: 'MNT (몽골 투그릭)', qr: false, cashPerDay: '₮50,000–100,000', perPerson: '10–20만원', cashNote: '투그릭 현금 필수 — 시내 환전소 이용', qrNote: null },
       };
 
       function renderFxTips(containerId, destId, fxRate, fxRateSub) {
         var el = document.getElementById(containerId);
         if (!el) return;
-        var d = DEST_FX_TIPS[destId];
+        // 나라 코드 기반으로 조회 (같은 나라는 동일한 환전 정보)
+        var countryCode = (typeof DEST_COUNTRY !== 'undefined' && DEST_COUNTRY[destId]) || destId;
+        var d = DEST_FX_TIPS[countryCode] || DEST_FX_TIPS[destId];
         var def = DEST_FX_TIPS._default;
         if (!d) { el.innerHTML = ''; return; }
 
         // Apple-style: no box — just clean rows like MacBook compare page
-        if (destId === 'jeju') {
+        if (countryCode === 'korea') {
           el.innerHTML = [
             fxRate ? _appleRow('현재 환율', fxRate + (fxRateSub ? ' · ' + fxRateSub : '')) : '',
             _appleRow('통화', 'KRW (원화)'),
@@ -9740,25 +9756,8 @@
       }
 
       var DEST_ENTRY = {
-        lisbon: {
-          visa: '쉥겐 무비자 90일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '입국 심사 시 제시 요구 가능' },
-            { icon: '💡', text: '여행자 보험 가입 권장', sub: '쉥겐 지역 입국 요건' },
-          ],
-          tips: ['쉥겐 협약국으로 체류일 합산 180일 중 90일', 'ETIAS 도입 예정 (2026년경), 현재는 불필요', '포르투갈 입국 시 영어로 의사소통 가능'],
-        },
-        danang: {
-          visa: 'E-Visa 필수', visaType: 'eta',
-          docs: [
-            { icon: '‼️', text: 'E-Visa 사전 발급 필수', sub: 'evisa.xuatnhapcanh.gov.vn에서 신청' },
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-          ],
-          tips: ['E-Visa 승인 3~5일 소요, 출발 최소 1주일 전 신청', '체류기간 최대 90일', '베트남 동(VND) 현금 소지 권장'],
-        },
-        jeju: {
+        // ── 국내 ──
+        korea: {
           visa: '국내 여행 (신분증)', visaType: 'free',
           docs: [
             { icon: '✅', text: '신분증 (주민등록증 또는 여권)', sub: '' },
@@ -9766,7 +9765,18 @@
           ],
           tips: ['제주 입도 시 별도 서류 없음', '렌터카 이용 시 운전면허증 지참'],
         },
-        taipei: {
+        // ── 일본 ──
+        japan: {
+          visa: '무비자 90일', visaType: 'free',
+          docs: [
+            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
+            { icon: '📱', text: 'Visit Japan Web 등록 권장', sub: '입국카드·세관신고 전자화' },
+            { icon: '✅', text: '귀국 항공권', sub: '' },
+          ],
+          tips: ['면세한도: 20만엔 / 주류 3병 / 담배 200개비', '현금 문화 — 엔화 환전 필수', 'Visit Japan Web 등록 시 입국 심사 시간 단축'],
+        },
+        // ── 대만 ──
+        taiwan: {
           visa: '무비자 90일', visaType: 'free',
           docs: [
             { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
@@ -9775,33 +9785,38 @@
           ],
           tips: ['입국카드 기내에서 미리 작성 추천', '대만달러(TWD) 현금 소지 권장', '면세한도: TWD 20,000 (약 85만원)'],
         },
-        osaka: {
-          visa: '무비자 90일', visaType: 'free',
+        // ── 베트남 ──
+        vietnam: {
+          visa: 'E-Visa 필수', visaType: 'eta',
           docs: [
+            { icon: '‼️', text: 'E-Visa 사전 발급 필수', sub: 'evisa.xuatnhapcanh.gov.vn에서 신청' },
             { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '📱', text: 'Visit Japan Web 등록 권장', sub: '입국카드·세관신고 전자화' },
             { icon: '✅', text: '귀국 항공권', sub: '' },
           ],
-          tips: ['면세한도: 20만엔 / 주류 3병 / 담배 200개비', '현금 문화 - 엔화 환전 필수', 'Visit Japan Web 등록 시 입국 심사 시간 단축'],
+          tips: ['E-Visa 승인 3~5일 소요, 출발 최소 1주일 전 신청', '체류기간 최대 90일', '베트남 동(VND) 현금 소지 권장'],
         },
-        tokyo: {
-          visa: '무비자 90일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '📋', text: '세관신고서 작성', sub: 'e-CD 앱으로 전자 제출 가능' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-          ],
-          tips: ['루피아(IDR) 현금 필수, 공항 환전소보다 시내 ATM 추천', '생물·식품 반입 엄격 신고', '30일 초과 시 VOA(도착비자) 연장 가능'],
-        },
-        chiangmai: {
+        // ── 태국 ──
+        thailand: {
           visa: '무비자 60일', visaType: 'free',
           docs: [
             { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
             { icon: '✅', text: '귀국 항공권', sub: '입국 심사 시 제시 요구 가능' },
-            { icon: '✅', text: '숙소 예약 확인서', sub: '간혹 확인하는 경우 있음' },
+            { icon: '📋', text: '입국카드 (TM.6)', sub: '기내에서 미리 작성 권장' },
           ],
-          tips: ['2024년부터 무비자 60일로 확대', '태국 바트(THB) 현금 환전 권장'],
+          tips: ['2024년부터 무비자 60일로 확대 (기존 30일)', '태국 바트(THB) 현금 환전 권장', '면세한도: 주류 1L, 담배 200개비'],
         },
+        // ── 인도네시아 ──
+        indonesia: {
+          visa: '도착비자(VOA) 30일', visaType: 'eta',
+          docs: [
+            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
+            { icon: '✅', text: '귀국 항공권', sub: '입국 심사 시 제시 필수' },
+            { icon: '💰', text: '도착비자 수수료 IDR 500,000', sub: '약 4만원, 현금(USD) 또는 카드' },
+            { icon: '📋', text: '세관신고서 작성', sub: 'Customs Declaration 기내 배부' },
+          ],
+          tips: ['도착비자(VOA) 공항에서 현장 발급, 30일 체류 가능', '1회 연장 가능 (최대 60일)', '루피아(IDR) 현금 필수 — 시내 환전소가 공항보다 유리'],
+        },
+        // ── 싱가포르 ──
         singapore: {
           visa: '무비자 30일', visaType: 'eta',
           docs: [
@@ -9811,7 +9826,8 @@
           ],
           tips: ['SGAC 미제출 시 입국 지연 가능', 'ICA 공식 웹사이트에서 무료 제출', '싱가포르 달러(SGD), 카드 결제 광범위'],
         },
-        cebu: {
+        // ── 필리핀 ──
+        philippines: {
           visa: '무비자 30일', visaType: 'eta',
           docs: [
             { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
@@ -9820,105 +9836,7 @@
           ],
           tips: ['eTravel 미제출 시 탑승 거부 가능', 'etravel.gov.ph에서 무료 등록', '페소(PHP) 현금 소지 권장'],
         },
-        nhatrang: {
-          visa: 'E-Visa 필수', visaType: 'eta',
-          docs: [
-            { icon: '‼️', text: 'E-Visa 사전 발급 필수', sub: 'evisa.xuatnhapcanh.gov.vn에서 신청' },
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-          ],
-          tips: ['E-Visa 승인 3~5일 소요, 출발 최소 1주일 전 신청', '체류기간 최대 90일', '동(VND) 현금 소지 권장'],
-        },
-        fukuoka: {
-          visa: '무비자 90일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '📱', text: 'Visit Japan Web 등록 권장', sub: '입국카드·세관신고 전자화' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-          ],
-          tips: ['면세한도: 20만엔 / 주류 3병 / 담배 200개비', '현금 문화 - 엔화 환전 필수'],
-        },
-        sapporo: {
-          visa: '무비자 90일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '📱', text: 'Visit Japan Web 등록 권장', sub: '입국카드·세관신고 전자화' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-          ],
-          tips: ['면세한도: 20만엔 / 주류 3병 / 담배 200개비', '현금 문화 - 엔화 환전 필수', '겨울 방문 시 방한 장비 철저히 준비'],
-        },
-        okinawa: {
-          visa: '무비자 90일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '📱', text: 'Visit Japan Web 등록 권장', sub: '입국카드·세관신고 전자화' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-          ],
-          tips: ['면세한도: 20만엔 / 주류 3병 / 담배 200개비', '현금 문화 - 엔화 환전 필수'],
-        },
-        miyakojima: {
-          visa: '무비자 90일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '📱', text: 'Visit Japan Web 등록 권장', sub: '입국카드·세관신고 전자화' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-            { icon: '🚗', text: '렌터카 예약 (현지 필수)', sub: '국제운전면허증 지참 필수' },
-          ],
-          tips: ['면세한도: 20만엔 / 주류 3병 / 담배 200개비', '엔화 환전 필수 · 섬 내 카드 안 받는 가게 많음', '렌터카 없이 이동 거의 불가 — 공항 픽업 예약 권장'],
-        },
-        kyoto: {
-          visa: '무비자 90일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '📱', text: 'Visit Japan Web 등록 권장', sub: '입국카드·세관신고 전자화' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-          ],
-          tips: ['면세한도: 20만엔 / 주류 3병 / 담배 200개비', '현금 문화 - 엔화 환전 필수', '인기 관광지는 사전 예약 필수 (금각사 등)'],
-        },
-        phuquoc: {
-          visa: 'E-Visa 필수', visaType: 'eta',
-          docs: [
-            { icon: '‼️', text: 'E-Visa 사전 발급 필수', sub: 'evisa.xuatnhapcanh.gov.vn에서 신청' },
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-          ],
-          tips: ['E-Visa 승인 3~5일 소요, 출발 최소 1주일 전 신청', '체류기간 최대 90일', '동(VND) 현금 소지 권장'],
-        },
-        hochiminh: {
-          visa: 'E-Visa 필수', visaType: 'eta',
-          docs: [
-            { icon: '‼️', text: 'E-Visa 사전 발급 필수', sub: 'evisa.xuatnhapcanh.gov.vn에서 신청' },
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-          ],
-          tips: ['E-Visa 승인 3~5일 소요, 출발 최소 1주일 전 신청', '체류기간 최대 90일', '동(VND) 현금 소지 권장'],
-        },
-        hanoi: {
-          visa: 'E-Visa 필수', visaType: 'eta',
-          docs: [
-            { icon: '‼️', text: 'E-Visa 사전 발급 필수', sub: 'evisa.xuatnhapcanh.gov.vn에서 신청' },
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-          ],
-          tips: ['E-Visa 승인 3~5일 소요, 출발 최소 1주일 전 신청', '체류기간 최대 90일', '동(VND) 현금 소지 권장'],
-        },
-        boracay: {
-          visa: '무비자 30일', visaType: 'eta',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '‼️', text: 'eTravel 전자 입국신고', sub: '출발 72시간 내 사전 제출 필수' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-          ],
-          tips: ['eTravel 미제출 시 탑승 거부 가능', 'etravel.gov.ph에서 무료 등록', '페소(PHP) 현금 소지 권장'],
-        },
-        phuket: {
-          visa: '무비자 60일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '입국 심사 시 제시 요구 가능' },
-          ],
-          tips: ['2024년부터 무비자 60일로 확대', '태국 바트(THB) 현금 환전 권장'],
-        },
+        // ── 홍콩 ──
         hongkong: {
           visa: '무비자 90일', visaType: 'free',
           docs: [
@@ -9928,7 +9846,8 @@
           ],
           tips: ['옥토퍼스 카드(교통카드) 공항에서 구매 추천', '홍콩달러(HKD) 현금 소지 권장', 'e-Channel 등록 시 자동 입국심사대 이용 가능'],
         },
-        guam: {
+        // ── 미국(괌·하와이) ──
+        usa_territory: {
           visa: 'ESTA 필수 (미국령)', visaType: 'eta',
           docs: [
             { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
@@ -9938,7 +9857,7 @@
           ],
           tips: ['ESTA 유효기간 2년, 이미 있으면 재신청 불필요', 'esta.cbp.dhs.gov에서 신청', '미국 달러(USD) 사용'],
         },
-        hawaii: {
+        usa: {
           visa: 'ESTA 필수', visaType: 'eta',
           docs: [
             { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
@@ -9948,24 +9867,82 @@
           ],
           tips: ['ESTA 유효기간 2년, 이미 있으면 재신청 불필요', 'esta.cbp.dhs.gov에서 신청', '농산물·육류 반입 엄격 신고'],
         },
-        paris: {
+        // ── 쉥겐 유럽 (포르투갈·프랑스·스페인·이탈리아·스위스·크로아티아) ──
+        portugal: {
           visa: '쉥겐 무비자 90일', visaType: 'free',
           docs: [
             { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
             { icon: '✅', text: '귀국 항공권', sub: '' },
             { icon: '💡', text: '여행자 보험 가입 권장', sub: '쉥겐 지역 입국 요건' },
           ],
-          tips: ['쉥겐 협약국으로 체류일 합산 180일 중 90일', 'ETIAS 도입 예정 (2026년경), 현재는 불필요', '소매치기 주의 - 귀중품 관리 철저'],
+          tips: ['쉥겐 협약국으로 체류일 합산 180일 중 90일', 'ETIAS 도입 예정 (2026년경), 현재는 불필요', '유로(EUR) 사용, 카드 결제 광범위'],
         },
-        kualalumpur: {
+        france: {
+          visa: '쉥겐 무비자 90일', visaType: 'free',
+          docs: [
+            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
+            { icon: '✅', text: '귀국 항공권', sub: '' },
+            { icon: '💡', text: '여행자 보험 가입 권장', sub: '쉥겐 지역 입국 요건' },
+          ],
+          tips: ['쉥겐 협약국으로 체류일 합산 180일 중 90일', 'ETIAS 도입 예정 (2026년경), 현재는 불필요', '소매치기 주의 — 귀중품 관리 철저'],
+        },
+        spain: {
+          visa: '쉥겐 무비자 90일', visaType: 'free',
+          docs: [
+            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
+            { icon: '✅', text: '귀국 항공권', sub: '' },
+            { icon: '💡', text: '여행자 보험 가입 권장', sub: '쉥겐 지역 입국 요건' },
+          ],
+          tips: ['쉥겐 협약국으로 체류일 합산 180일 중 90일', 'ETIAS 도입 예정 (2026년경), 현재는 불필요', '소매치기 다발 — 귀중품 관리 철저'],
+        },
+        italy: {
+          visa: '쉥겐 무비자 90일', visaType: 'free',
+          docs: [
+            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
+            { icon: '✅', text: '귀국 항공권', sub: '' },
+            { icon: '💡', text: '여행자 보험 가입 권장', sub: '쉥겐 지역 입국 요건' },
+          ],
+          tips: ['쉥겐 협약국으로 체류일 합산 180일 중 90일', 'ETIAS 도입 예정 (2026년경), 현재는 불필요', '소매치기 주의 — 기차역·관광지 주변'],
+        },
+        switzerland: {
+          visa: '쉥겐 무비자 90일', visaType: 'free',
+          docs: [
+            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
+            { icon: '✅', text: '귀국 항공권', sub: '' },
+            { icon: '💡', text: '여행자 보험 가입 권장', sub: '쉥겐 지역 입국 요건' },
+          ],
+          tips: ['쉥겐 협약국으로 체류일 합산 180일 중 90일', '스위스 프랑(CHF) 환전 또는 카드 결제', '스위스 트래블 패스 사전 구매 강력 추천'],
+        },
+        croatia: {
+          visa: '쉥겐 무비자 90일', visaType: 'free',
+          docs: [
+            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
+            { icon: '✅', text: '귀국 항공권', sub: '' },
+            { icon: '💡', text: '여행자 보험 가입 권장', sub: '쉥겐 지역 입국 요건' },
+          ],
+          tips: ['2023년 쉥겐 가입 — 유로 전환 완료', 'ETIAS 도입 예정 (2026년경), 현재는 불필요', '여름 7-8월 극성수기 — 관광세 별도 부과'],
+        },
+        // ── 영국 ──
+        uk: {
+          visa: 'ETA 필수 (2026.2~)', visaType: 'eta',
+          docs: [
+            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
+            { icon: '‼️', text: 'ETA 전자여행허가 사전 신청', sub: 'gov.uk에서 온라인 발급 (£10)' },
+            { icon: '✅', text: '귀국 항공권', sub: '입국 심사 시 제시 요구 가능' },
+          ],
+          tips: ['2026.2.25부터 ETA 필수 — 미소지 시 탑승 불가', '영국은 쉥겐 비적용 — 별도 입국 심사', '파운드(GBP) 환전, 카드 결제 광범위'],
+        },
+        // ── 말레이시아 ──
+        malaysia: {
           visa: '무비자 90일', visaType: 'eta',
           docs: [
             { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
             { icon: '📱', text: 'MDAC 말레이시아 디지털 입국카드', sub: '온라인 사전 제출 권장' },
             { icon: '✅', text: '귀국 항공권', sub: '' },
           ],
-          tips: ['MDAC는 도착 전 온라인 제출 권장', '링깃(MYR) 현금 소지 권장', 'Touch n Go eWallet 사전 설치 추천'],
+          tips: ['MDAC는 도착 전 온라인 제출 권장', '링깃(MYR) 현금 소지 권장', 'Grab 앱 사전 설치 필수'],
         },
+        // ── 몰디브 ──
         maldives: {
           visa: '도착비자 무료 30일', visaType: 'free',
           docs: [
@@ -9974,9 +9951,10 @@
             { icon: '✅', text: '귀국 항공권', sub: '' },
             { icon: '📋', text: '입국신고서 작성', sub: 'IMUGA 플랫폼 또는 기내 작성' },
           ],
-          tips: ['숙박 확인서 미지참 시 입국 거부 가능', '미국 달러(USD) 또는 카드 사용', '이슬람 국가 - 음주는 리조트 내에서만 가능'],
+          tips: ['숙박 확인서 미지참 시 입국 거부 가능', '미국 달러(USD) 또는 카드 사용', '이슬람 국가 — 음주는 리조트 내에서만 가능'],
         },
-        sydney: {
+        // ── 호주 ──
+        australia: {
           visa: 'ETA 필수', visaType: 'eta',
           docs: [
             { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
@@ -9986,34 +9964,18 @@
           ],
           tips: ['ETA 승인 보통 즉시~수 시간 내', '음식물·흙 반입 미신고 시 고액 벌금', '호주 달러(AUD), 카드 결제 광범위'],
         },
-        shanghai: {
+        // ── 중국 ──
+        china: {
           visa: '무비자 15일 (한중 상호)', visaType: 'free',
           docs: [
             { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
             { icon: '✅', text: '귀국 항공권', sub: '' },
-            { icon: '‼️', text: 'WeChat Pay / Alipay 사전 설정', sub: '현지 결제 필수 - 현금 거부 사례 많음' },
+            { icon: '‼️', text: 'WeChat Pay / Alipay 사전 설정', sub: '현지 결제 필수 — 현금 거부 사례 많음' },
           ],
-          tips: ['구글·카카오·인스타 차단 - VPN 앱 출국 전 설치 필수', 'WeChat Pay 설정: 해외 카드 연동 필요', '위안화(CNY) 현금도 일부 병행'],
+          tips: ['구글·카카오·인스타 차단 — VPN 앱 출국 전 설치 필수', 'WeChat Pay 설정: 해외 카드 연동 필요', '위안화(CNY) 현금도 일부 병행'],
         },
-        barcelona: {
-          visa: '쉥겐 무비자 90일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-            { icon: '💡', text: '여행자 보험 가입 권장', sub: '쉥겐 지역 입국 요건' },
-          ],
-          tips: ['쉥겐 협약국으로 체류일 합산 180일 중 90일', 'ETIAS 도입 예정 (2026년경), 현재는 불필요', '소매치기 다발 지역 - 귀중품 관리 철저'],
-        },
-        nagoya: {
-          visa: '무비자 90일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '📱', text: 'Visit Japan Web 등록 권장', sub: '입국카드·세관신고 전자화' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-          ],
-          tips: ['면세한도: 20만엔 / 주류 3병 / 담배 200개비', '현금 문화 - 엔화 환전 필수', 'Visit Japan Web 등록 시 입국 심사 시간 단축'],
-        },
-        siemreap: {
+        // ── 캄보디아 ──
+        cambodia: {
           visa: 'E-Visa 필수', visaType: 'eta',
           docs: [
             { icon: '‼️', text: 'E-Visa 사전 발급 필수', sub: 'evisa.gov.kh에서 신청 ($36)' },
@@ -10023,34 +9985,8 @@
           ],
           tips: ['E-Visa 승인 3일 소요, 출발 최소 1주일 전 신청', '도착비자도 가능 ($30, 대기 있음)', '달러(USD) 현금 필수, 리엘은 거스름돈용'],
         },
-        rome: {
-          visa: '쉥겐 무비자 90일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-            { icon: '💡', text: '여행자 보험 가입 권장', sub: '쉥겐 지역 입국 요건' },
-          ],
-          tips: ['쉥겐 협약국으로 체류일 합산 180일 중 90일', 'ETIAS 도입 예정 (2026년경), 현재는 불필요', '소매치기 주의 - 테르미니역·콜로세움 주변'],
-        },
-        london: {
-          visa: '무비자 6개월', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '입국 심사 시 제시 요구 가능' },
-            { icon: '💡', text: '숙소 예약 확인서 권장', sub: '입국 심사 시 질문 가능' },
-          ],
-          tips: ['영국은 쉥겐 비적용 — 별도 입국 심사', 'ETA 도입 예정 (2025년 이후)', '파운드(GBP) 환전, 카드 결제 광범위'],
-        },
-        kotakinabalu: {
-          visa: '무비자 90일', visaType: 'eta',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '📱', text: 'MDAC 말레이시아 디지털 입국카드', sub: '온라인 사전 제출 권장' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-          ],
-          tips: ['MDAC는 도착 전 온라인 제출 권장', '링깃(MYR) 현금 소지 권장', 'Grab 앱 사전 설치 필수'],
-        },
-        luangprabang: {
+        // ── 라오스 ──
+        laos: {
           visa: '도착비자 무료 15일', visaType: 'free',
           docs: [
             { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
@@ -10059,61 +9995,8 @@
           ],
           tips: ['한국 여권 15일 무료 도착비자', '달러(USD) 또는 태국 바트(THB) 현금 소지 권장', 'WiFi 제한적 — 오프라인 지도 사전 다운로드 필수'],
         },
-        madrid: {
-          visa: '쉥겐 무비자 90일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-            { icon: '💡', text: '여행자 보험 가입 권장', sub: '쉥겐 지역 입국 요건' },
-          ],
-          tips: ['쉥겐 협약국으로 체류일 합산 180일 중 90일', 'ETIAS 도입 예정 (2026년경), 현재는 불필요', '소매치기 주의 - 그란비아·솔 광장 주변'],
-        },
-        kohsamui: {
-          visa: '무비자 60일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '입국 심사 시 제시 요구 가능' },
-          ],
-          tips: ['2024년부터 무비자 60일로 확대', '태국 바트(THB) 현금 환전 권장', '방콕 경유 시 수하물 수령 확인'],
-        },
-        interlaken: {
-          visa: '쉥겐 무비자 90일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-            { icon: '💡', text: '여행자 보험 가입 권장', sub: '쉥겐 지역 입국 요건' },
-          ],
-          tips: ['쉥겐 협약국으로 체류일 합산 180일 중 90일', '스위스 프랑(CHF) 환전 또는 카드 결제', '스위스 트래블 패스 사전 구매 강력 추천'],
-        },
-        dubrovnik: {
-          visa: '쉥겐 무비자 90일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '' },
-            { icon: '💡', text: '여행자 보험 가입 권장', sub: '쉥겐 지역 입국 요건' },
-          ],
-          tips: ['2023년 쉥겐 가입 — 유로 전환 완료', 'ETIAS 도입 예정 (2026년경), 현재는 불필요', '여름 7-8월 극성수기 — 관광세 별도 부과'],
-        },
-        bali: {
-          visa: '도착비자(VOA) 30일', visaType: 'eta',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '입국 심사 시 제시 필수' },
-            { icon: '💰', text: '도착비자 수수료 IDR 500,000', sub: '약 4만원, 현금(USD) 또는 카드' },
-            { icon: '📋', text: '세관신고서 작성', sub: 'Customs Declaration 기내 배부' },
-          ],
-          tips: ['도착비자(VOA) 공항에서 현장 발급, 30일 체류 가능', '1회 연장 가능 (최대 60일), 이민국 방문 필요', '루피아(IDR) 현금 필수 — 시내 환전소가 공항보다 유리', '발리 입도세 IDR 150,000 (약 1.2만원) 별도 부과'],
-        },
-        bangkok: {
-          visa: '무비자 60일', visaType: 'free',
-          docs: [
-            { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
-            { icon: '✅', text: '귀국 항공권', sub: '입국 심사 시 제시 요구 가능' },
-            { icon: '📋', text: '입국카드 (TM.6)', sub: '기내에서 미리 작성 권장' },
-          ],
-          tips: ['2024년부터 무비자 60일로 확대 (기존 30일)', '태국 바트(THB) 현금 환전 권장', '면세한도: 주류 1L, 담배 200개비', '수완나품·돈므앙 공항 주의 — 택시 미터기 확인'],
-        },
-        istanbul: {
+        // ── 튀르키예 ──
+        turkey: {
           visa: 'E-Visa 필수', visaType: 'eta',
           docs: [
             { icon: '✅', text: '여권 (유효기간 6개월 이상)', sub: '' },
@@ -10276,7 +10159,9 @@
       function renderEntryInfo(containerId, destId) {
         var el = document.getElementById(containerId);
         if (!el) return;
-        var e = DEST_ENTRY[destId];
+        // 나라 코드 기반으로 조회 (같은 나라는 동일한 출입국 정보)
+        var countryCode = (typeof DEST_COUNTRY !== 'undefined' && DEST_COUNTRY[destId]) || destId;
+        var e = DEST_ENTRY[countryCode] || DEST_ENTRY[destId];
         if (!e) { el.innerHTML = ''; return; }
         // Apple MacBook compare style — bold label rows, no colors
         var rows = [];
@@ -10745,8 +10630,8 @@
             var idx = parseInt(sel.value);
             if (isNaN(idx) || !v1_0_9_DEST_DATA[idx]) return;
             var dest = v1_0_9_DEST_DATA[idx];
-            // 이미 로드된 경우 스킵
-            if (dest._todayMax !== undefined) {
+            // 이미 로드된 경우 스킵 (typeof number로 통일)
+            if (typeof dest._todayMax === 'number') {
               _updateWeatherCell(colIdx, dest);
               _updateForecastCell(colIdx, dest);
               return;
@@ -10761,7 +10646,7 @@
             fetch(apiUrl)
               .then(function(r) { return r.json(); })
               .then(function(data) {
-                if (!data || !data.current) return;
+                if (!data || !data.current) { console.warn('[Weather] col'+colIdx+' ('+dest.id+'): no current data'); return; }
                 var cur = data.current;
                 var t = Math.round(cur.temperature_2m);
                 var wc = cur.weather_code;
@@ -10777,13 +10662,20 @@
                   var yesterdayMax = maxTemps.length > 0 ? maxTemps[0] : null;
                   var todayMax = maxTemps.length > 1 ? Math.round(maxTemps[1]) : null;
                   var todayMin = minTemps.length > 1 ? Math.round(minTemps[1]) : null;
-                  dest._todayMax = todayMax;
-                  dest._todayMin = todayMin;
-                  if (yesterdayMax !== null && todayMax !== null) {
-                    dest._tempDiff = Math.round(todayMax - yesterdayMax);
+                  // 0도도 유효한 값이므로 null 대신 숫자를 보장
+                  dest._todayMax = (todayMax !== null && todayMax !== undefined) ? todayMax : t;
+                  dest._todayMin = (todayMin !== null && todayMin !== undefined) ? todayMin : t;
+                  if (yesterdayMax !== null && dest._todayMax !== null) {
+                    dest._tempDiff = Math.round(dest._todayMax - yesterdayMax);
                   }
                   dest._todayRainProb = rainProbs.length > 1 ? Math.round(rainProbs[1]) : 0;
+                } else {
+                  // daily 데이터 없는 경우 현재 기온으로 대체
+                  dest._todayMax = t;
+                  dest._todayMin = t;
+                  dest._todayRainProb = 0;
                 }
+                console.log('[Weather] col'+colIdx+' '+dest.id+': max='+dest._todayMax+'° min='+dest._todayMin+'° code='+wc+' ('+dest._weatherText+')');
                 _updateWeatherCell(colIdx, dest);
                 _updateForecastCell(colIdx, dest);
               })
@@ -10818,26 +10710,25 @@
       }
 
       function _updateWeatherCell(colIdx, d) {
-        if (!d || d._todayMax === undefined) return;
+        if (!d || typeof d._todayMax !== 'number') return;
         var ctEl = document.getElementById('cur-temp-' + colIdx);
-        if (ctEl) {
-          var kEl = ctEl.querySelector('.kicker');
-          var mEl = ctEl.querySelector('.main');
-          var sEl = ctEl.querySelector('.sub');
-          if (kEl) kEl.textContent = '낮(최고기온)';
-          if (mEl) {
-            var iconUrl = getWeatherIconUrl(d._weatherCode, false);
-            mEl.innerHTML = '<img src="' + iconUrl + '" alt="' + d._weatherText + '" style="width:48px;height:48px;vertical-align:middle;margin-right:4px;">' + d._todayMax + '°';
-            mEl.style.color = '';
-          }
-          if (sEl) {
-            sEl.textContent = d._weatherText + ' / 강수확률 ' + d._todayRainProb + '%';
-          }
+        if (!ctEl) { console.warn('[Weather] cur-temp-'+colIdx+' not found'); return; }
+        var kEl = ctEl.querySelector('.kicker');
+        var mEl = ctEl.querySelector('.main');
+        var sEl = ctEl.querySelector('.sub');
+        if (kEl) kEl.textContent = '낮(최고기온)';
+        if (mEl) {
+          var iconUrl = getWeatherIconUrl(d._weatherCode, false);
+          mEl.innerHTML = '<img src="' + iconUrl + '" alt="' + d._weatherText + '" style="width:48px;height:48px;vertical-align:middle;margin-right:4px;">' + d._todayMax + '°';
+          mEl.style.color = '';
+        }
+        if (sEl) {
+          sEl.textContent = d._weatherText + ' / 강수확률 ' + (d._todayRainProb || 0) + '%';
         }
       }
 
       function _updateForecastCell(colIdx, d) {
-        if (!d || d._todayMin === undefined) return;
+        if (!d || typeof d._todayMin !== 'number') return;
         var el = document.getElementById('weekly-forecast-' + colIdx);
         if (el) {
           var kEl = el.querySelector('.kicker');
