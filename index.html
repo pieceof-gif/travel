@@ -1372,7 +1372,8 @@
       justify-content: center;
       gap: 6px;
       align-items: center;
-      min-height: 26px;
+      min-height: 30px;
+      height: 30px;
       margin-bottom: 6px;
       padding-left: 0;
     }
@@ -1959,27 +1960,8 @@
       /* sel-card: 데스크탑과 동일한 스타일 유지 */
       .sel-card { padding: 12px 16px; }
 
-      /* 모바일 드롭다운: 바텀시트 스타일 */
-      .dest-dd-menu {
-        position: fixed !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        top: auto !important;
-        min-width: 100vw !important;
-        max-height: 60vh !important;
-        border-radius: 16px 16px 0 0 !important;
-        box-shadow: 0 -4px 30px rgba(0,0,0,0.15) !important;
-        z-index: 10000 !important;
-        padding: 12px 0 env(safe-area-inset-bottom, 16px) !important;
-      }
-      .dest-dd.open::before {
-        content: '';
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.3);
-        z-index: 9998;
-      }
+
+
 
       /* 비교뷰: 모바일에서 pill 검색바 숨김, 검색 아이콘 표시 */
       #compare-view .sb-wrap { display: none !important; }
@@ -2387,7 +2369,7 @@
 
     /* ── RESPONSIVE: 태블릿 (744px ~ 1068px) — 가로형 pill 유지 ── */
     @media (min-width: 744px) and (max-width: 1068px) {
-      .home-content { padding-top: calc(18vh + 40px); }
+      .home-content { padding-top: 0; justify-content: center; padding-bottom: 80px; }
       .home-title { font-size: 40px; margin-bottom: 20px; }
       .sb-wrap { width: calc(100% - 48px) !important; }
       .sb { height: 58px; }
@@ -9205,7 +9187,7 @@
 
       function goHome() {
         // 모바일에서는 홈화면 대신 비교뷰에서 검색 시트 재오픈
-        if (window.innerWidth < 768) {
+        if (window.innerWidth < 744) {
           openCvSearchSheet();
           return;
         }
@@ -10294,7 +10276,7 @@
           window._userHasChangedFilters = true;
           window.selectedDates = [new Date(dcSel.start), new Date(dcSel.end)];
           // 모바일: 날짜 범위 선택 완료 시 패널 자동 닫기
-          if (window.innerWidth < 768) {
+          if (window.innerWidth < 744) {
             setTimeout(function() { closeAllHomePanels(); }, 200);
           }
         }
@@ -10355,7 +10337,7 @@
           }
 
           // 모바일: 취향설정 버튼 하프팝업 아래로
-          if (window.innerWidth < 768) {
+          if (window.innerWidth < 744) {
             var wizBtn = document.getElementById('wiz-launcher');
             if (wizBtn) wizBtn.style.display = 'none';
           }
@@ -10540,7 +10522,7 @@
         // 홈 화면 항목은 제외 (검색 전엔 비활성화 회색 유지)
 
         // ── 모바일: 홈화면 건너뛰고 바로 비교뷰 + 검색 시트 오픈 ──
-        if (window.innerWidth < 768) {
+        if (window.innerWidth < 744) {
           var homeView = document.getElementById('home-view');
           var compareView = document.getElementById('compare-view');
           if (homeView) homeView.style.display = 'none';
@@ -11785,7 +11767,7 @@
         document.body.style.width = '100%';
 
         // 모바일 첫 오픈 시 — 팝업 뒤 배경에 기본 여행지 2개 미리 렌더
-        if (!_cvSheetOpenedOnce && window.innerWidth < 768) {
+        if (!_cvSheetOpenedOnce && window.innerWidth < 744) {
           _cvSheetOpenedOnce = true;
           var cv = document.getElementById('compare-view');
           var hv = document.getElementById('home-view');
@@ -11813,7 +11795,7 @@
         document.body.style.width = '';
 
         // 모바일: 닫혔을 때 비교뷰가 비어있으면 기본 여행지 렌더
-        if (window.innerWidth < 768) {
+        if (window.innerWidth < 744) {
           var body = document.getElementById('comparison-body');
           if (body && body.style.display === 'none') {
             var bInput = document.getElementById('budget-input-home');
