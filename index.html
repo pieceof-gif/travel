@@ -8188,7 +8188,11 @@
 
         const dailySpend = Math.round(daily * dailyMultiplier * 10) / 10;
         const dailyTotal = Math.round(dailySpend * days);
-        const grandTotal = airPrice + hotelPrice + dailyTotal;
+        const grandTotalRaw = airPrice + hotelPrice + dailyTotal;
+        // 예산 선택 시 총 예상비용이 예산을 초과하지 않도록 캡 처리
+        const grandTotal = (!isUnlimited && budget < 9000 && budget !== 40 && grandTotalRaw > budget)
+          ? budget
+          : grandTotalRaw;
         const adjustedScore = Math.min(99, d.score + scoreBonus);
         const hotelPerNight = (days > 1) ? Math.round(hotelPrice / (days - 1)) : hotelPrice;
 
@@ -10795,6 +10799,7 @@
         95: 'thunderstorms', 96: 'thunderstorms', 99: 'thunderstorms'
       };
       var METEO_CDN = 'https://raw.githubusercontent.com/basmilius/weather-icons/dev/production/fill/svg/';
+      var METEO_CDN = 'https://cdn.jsdelivr.net/gh/basmilius/weather-icons@master/production/fill/svg/';
 
       function getWeatherIconUrl(wc, isNight) {
         var base = WMO_ICON[wc] || 'clear';
