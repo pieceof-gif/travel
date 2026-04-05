@@ -1824,7 +1824,7 @@
         grid-template-columns: repeat(2, 1fr) !important;
         overflow: visible !important;
         gap: 8px;
-        padding: 0 12px !important;
+        padding: 0 16px !important;
         box-sizing: border-box !important;
       }
       /* sel-card: 데스크탑과 동일한 스타일 유지, 모바일에서 패딩 최소화 */
@@ -1907,7 +1907,7 @@
         flex: 0 0 50vw;
         width: 50vw;
         min-width: 0;
-        padding: 0 12px;
+        padding: 0 16px;
         box-sizing: border-box;
         overflow: hidden;
       }
@@ -1930,7 +1930,7 @@
       .data-row .dc:nth-child(3) { display: none !important; }
       .data-row .dc {
         min-width: 0;
-        padding: 8px 12px 0;
+        padding: 8px 16px 0;
         box-sizing: border-box;
         overflow: hidden;
       }
@@ -2420,7 +2420,7 @@
         height: auto;
         border-radius: 0;
         width: 100%;
-        padding: 16px 20px;
+        padding: 16px 16px;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
@@ -2472,7 +2472,7 @@
         max-width: 100% !important;
         min-width: 0 !important;
         border-radius: 20px 20px 0 0 !important;
-        padding: 20px 20px 32px !important;
+        padding: 20px 16px 32px !important;
         background: #ffffff !important;
         box-shadow: 0 -4px 24px rgba(0,0,0,0.14) !important;
         z-index: 9999 !important;
@@ -2500,7 +2500,7 @@
       }
       /* 달력 패널: 여백 조정 + 불투명 배경 강제 */
       #home-view #date-panel {
-        padding: 20px 20px 40px !important;
+        padding: 20px 16px 40px !important;
         max-height: 85vh !important;
         overflow-y: auto !important;
         background: #ffffff !important;
@@ -7677,6 +7677,23 @@
             { name: '미슐랭 디너 경험', price: '약 15만원', link: 'https://maps.google.com/?q=Michelin+Restaurant+Istanbul' }
           ]
         },
+        food: {
+          low: [
+            { name: '시미트 (참깨 빵)', desc: '터키 전통 링 빵 · 3백원', link: 'https://maps.google.com/?q=Simit+Street+Food+Istanbul' },
+            { name: '케밥 (로컬 식당)', desc: '되네르 케밥·아다나 케밥 · 2천원', link: 'https://maps.google.com/?q=Kebab+Istanbul' },
+            { name: '발릭 에크멕 (생선 샌드위치)', desc: '갈라타 다리 명물 · 3천원', link: 'https://maps.google.com/?q=Balik+Ekmek+Galata+Bridge+Istanbul' }
+          ],
+          mid: [
+            { name: '메제 세트+라크 (아니스 술)', desc: '터키 전통 안주+전통주 세트', link: 'https://maps.google.com/?q=Meze+Restaurant+Istanbul' },
+            { name: '터키 조식 (카흐발트)', desc: '치즈·올리브·계란 풍성한 터키식 조식', link: 'https://maps.google.com/?q=Turkish+Breakfast+Istanbul' },
+            { name: '보스포루스 뷰 레스토랑', desc: '해협 전망 해산물 레스토랑', link: 'https://maps.google.com/?q=Bosphorus+View+Restaurant+Istanbul' }
+          ],
+          high: [
+            { name: '미카라 레스토랑', desc: '보스포루스 뷰 파인다이닝 · 미슐랭급', link: 'https://maps.google.com/?q=Fine+Dining+Bosphorus+Istanbul' },
+            { name: '누스레트 (솔트 바에)' , desc: '글로벌 스테이크 체인 본점', link: 'https://maps.google.com/?q=Nusr-et+Steakhouse+Istanbul' },
+            { name: '루프탑 오스만 쿠진', desc: '아야소피아 뷰 루프탑 코스요리', link: 'https://maps.google.com/?q=Ottoman+Cuisine+Rooftop+Istanbul' }
+          ]
+        },
         hotels: {
           low: [
             { name: '술탄아흐메트 호스텔', stars: 2, desc: '구시가 중심 · 블루모스크 도보 5분', priceRange: '약 3-5만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Sultanahmet+Hostel+Istanbul&dest_type=city' },
@@ -7698,9 +7715,9 @@
         ],
         flightTips: ['직항 11시간', '왕복 70-100만원', '터키항공 스탑오버 무료 호텔 프로그램', 'e-비자 온라인 신청 (약 3만원)']
       },
-      // ── 마카오 ──
+      // ── 마카오 (2nd) ──
       {
-        id: 'macau', name: '마카오', sub: '동양의 라스베가스 · 세계유산의 도시', score: 65, isTop: false,
+        id: 'macau', name: '마카오', sub: '동양의 라스베가스 · 카지노와 세계유산', score: 70, isTop: false,
         photo: 'https://images.unsplash.com/photo-1555277458-842b1ae67cf3?w=800&q=80',
         airfare: '25만원~', hotel: '호텔 다양', hotelSub: '3성급 8-15만원대', daily: '소비 보통', dailySub: '1일 8-15만원',
         alert: '경보 없음', alertSub: '전반적으로 안전', news: '파타카 안정', newsSub: '홍콩달러 1:1 사용 가능', disaster: '없음', disasterSub: '',
@@ -7741,7 +7758,24 @@
             { name: '럭셔리 스파 패키지', price: '약 20만원', link: 'https://www.klook.com/ko/search/?query=luxury+spa+macau' }
           ]
         },
-        stays: {
+        food: {
+          low: [
+            { name: '에그타르트 (로드 스토우즈)', desc: '마카오 에그타르트 원조 · 3천원', link: 'https://maps.google.com/?q=Lord+Stow+Bakery+Macau' },
+            { name: '마카니즈 소시지 볶음밥', desc: '포르투갈 풍미 현지 식당 · 1만원대', link: 'https://maps.google.com/?q=Macanese+food+Taipa+Village' },
+            { name: '콜로안 빌리지 디저트 카페', desc: '콜로안 마을 전통 과자·빵 · 5천원', link: 'https://maps.google.com/?q=Coloane+Village+Cafe+Macau' }
+          ],
+          mid: [
+            { name: '포르투갈 전통 요리', desc: '포르투갈식 대구 요리·전통 코스 · 5만원대', link: 'https://maps.google.com/?q=Portuguese+Restaurant+Macau' },
+            { name: '딤섬 레스토랑', desc: '마카오 스타일 딤섬 · 2~3만원', link: 'https://maps.google.com/?q=Dim+Sum+Restaurant+Macau' },
+            { name: '코타이 스트립 뷔페', desc: '베네시안 내 다양한 레스토랑 · 3~5만원', link: 'https://maps.google.com/?q=Cotai+Strip+Buffet+Macau' }
+          ],
+          high: [
+            { name: '만다린 오리엔탈 파인다이닝', desc: '마카오 최고급 코스요리 · 10만원+', link: 'https://maps.google.com/?q=Mandarin+Oriental+Restaurant+Macau' },
+            { name: '윙 레이 파인다이닝', desc: '윈 팰리스 최고급 레스토랑 · 미슐랭급', link: 'https://maps.google.com/?q=Wing+Lei+Restaurant+Wynn+Macau' },
+            { name: '미슐랭 카지노 레스토랑', desc: '스타마 등 유명 파인다이닝 · 15만원+', link: 'https://maps.google.com/?q=Casino+Restaurant+Macau' }
+          ]
+        },
+        hotels: {
           low: [
             { name: '올레 런던 호텔', stars: 3, desc: '세나도 광장 도보 5분', priceRange: '약 8-12만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Ole+London+Hotel+Macau&dest_type=city' },
             { name: '산바 호텔', stars: 3, desc: '관광지 접근성 우수', priceRange: '약 7-10만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Sanva+Hotel+Macau&dest_type=city' }
@@ -7805,7 +7839,24 @@
             { name: '고급 베이징덕 풀코스', price: '약 10만원', link: 'https://maps.google.com/?q=Da+Dong+Roast+Duck+Beijing' }
           ]
         },
-        stays: {
+        food: {
+          low: [
+            { name: '베이징 자장면 (炸醤面)', desc: '베이징식 춘장 비빔면 · 5천원', link: 'https://maps.google.com/?q=Zhajiangmian+Beijing' },
+            { name: '왕푸징 먹자골목 꼬치', desc: '전갈·양꼬치 등 다양한 로컬 간식', link: 'https://maps.google.com/?q=Wangfujing+Snack+Street+Beijing' },
+            { name: '훈둔 (완탕국)', desc: '현지 분식 · 한 끼 4천원', link: 'https://maps.google.com/?q=Wonton+Restaurant+Beijing' }
+          ],
+          mid: [
+            { name: '정통 베이징 덕 (全聚德)', desc: '창업 1864년 베이징덕 원조 · 3만원', link: 'https://maps.google.com/?q=Quanjude+Roast+Duck+Beijing' },
+            { name: '마라샹궈 (마라탕)', desc: '얼얼한 사천식 마라 볶음 · 2만원', link: 'https://maps.google.com/?q=Mala+Hot+Pot+Beijing' },
+            { name: '후통 골목 현지 식당', desc: '서민 정식·만두 코스 · 1-2만원', link: 'https://maps.google.com/?q=Hutong+local+restaurant+Beijing' }
+          ],
+          high: [
+            { name: '다동 베이징덕 (大董)', desc: '미슐랭급 고급 베이징덕 풀코스 · 10만원+', link: 'https://maps.google.com/?q=Da+Dong+Roast+Duck+Beijing' },
+            { name: '노 미슐랭 베이징 파인다이닝', desc: '현대 중식 파인다이닝 · 8만원+', link: 'https://maps.google.com/?q=TRB+Hutong+Restaurant+Beijing' },
+            { name: '만한취안시 (황제 코스 요리)', desc: '전통 궁중 코스요리 체험 · 15만원+', link: 'https://maps.google.com/?q=Imperial+Court+Cuisine+Beijing' }
+          ]
+        },
+        hotels: {
           low: [
             { name: '홀리데이 인 익스프레스', stars: 3, desc: '왕푸징 도보권', priceRange: '약 5-8만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Holiday+Inn+Express+Beijing+Wangfujing&dest_type=city' },
             { name: '이비스 베이징', stars: 3, desc: '깔끔한 비즈니스 호텔', priceRange: '약 4-7만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Ibis+Beijing&dest_type=city' }
@@ -7869,7 +7920,24 @@
             { name: '럭셔리 스파 체험', price: '약 5만원', link: 'https://www.klook.com/ko/search/?query=luxury+spa+qingdao' }
           ]
         },
-        stays: {
+        food: {
+          low: [
+            { name: '칭다오 맥주 거리 야식', desc: '맥주 한 잔 + 오징어구이 · 1~2만원', link: 'https://maps.google.com/?q=Qingdao+Beer+Street' },
+            { name: '로컬 해산물 시장', desc: '잉커우로 해산물 시장 · 신선한 조개·새우', link: 'https://maps.google.com/?q=Yingkou+Road+Seafood+Market+Qingdao' },
+            { name: '칭다오 냉면·만두', desc: '현지 분식 · 한 끼 5천원 내외', link: 'https://maps.google.com/?q=Qingdao+local+noodle+restaurant' }
+          ],
+          mid: [
+            { name: '해산물 BBQ 레스토랑', desc: '랍스터·새우·가리비 구이 · 3~5만원', link: 'https://maps.google.com/?q=Seafood+BBQ+Qingdao' },
+            { name: '라오산 녹차 체험', desc: '라오산 녹차와 함께하는 다도 · 2만원', link: 'https://www.klook.com/ko/search/?query=laoshan+green+tea+qingdao' },
+            { name: '독일풍 양조장 레스토랑', desc: '칭다오 맥주 공장 併설 레스토랑', link: 'https://maps.google.com/?q=Tsingtao+Beer+Festival+Qingdao' }
+          ],
+          high: [
+            { name: '프라이빗 해산물 코스', desc: '대게·전복 코스요리 · 8만원+', link: 'https://www.klook.com/ko/search/?query=premium+seafood+dinner+qingdao' },
+            { name: '하얏트 리젠시 레스토랑', desc: '오션뷰 파인다이닝 · 10만원+', link: 'https://maps.google.com/?q=Hyatt+Regency+Qingdao+restaurant' },
+            { name: '요트 선셋 크루즈 디너', desc: '바다 위 씨푸드 디너 · 8~12만원', link: 'https://www.klook.com/ko/search/?query=sunset+yacht+cruise+qingdao' }
+          ]
+        },
+        hotels: {
           low: [
             { name: '한팅 호텔', stars: 3, desc: '잔교 해변 근처', priceRange: '약 4-6만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Hanting+Hotel+Qingdao&dest_type=city' },
             { name: '이비스 칭다오', stars: 3, desc: '깔끔한 경제형', priceRange: '약 3-5만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Ibis+Qingdao&dest_type=city' }
@@ -10201,6 +10269,14 @@
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '크로아티아어 번역 유용', iconUrl: APP_ICONS.gtransl },
           { icon: '💳', name: 'Revolut', cat: '환전·결제', desc: '유로화 환전 없이 현지 결제', iconUrl: APP_ICONS.revolut },
         ],
+        istanbul:    [
+          { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: APP_ICONS.gmaps },
+          { icon: '🚇', name: 'İstanbul Ulaşım', cat: '대중교통', desc: '이스탄불 버스·지하철·트램 실시간 앱' },
+          { icon: '🚖', name: 'BiTaksi', cat: '택시', desc: '이스탄불 공식 택시 앱 · 바가지 방지', iconSlug: 'bitaksi', iconBg: '#FFD600', iconFg: '000000' },
+          { icon: '💳', name: 'İstanbulkart (HES)', cat: '교통카드', desc: '이스탄불 카드 — 지하철·버스·페리 통합 이용' },
+          { icon: '💬', name: 'Google 번역', cat: '번역', desc: '터키어 카메라 번역 유용', iconUrl: APP_ICONS.gtransl },
+          { icon: '💳', name: 'Revolut', cat: '환전·결제', desc: '리라(TRY) 환전 없이 현지 결제', iconUrl: APP_ICONS.revolut },
+        ],
         macau:       [
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: APP_ICONS.gmaps },
           { icon: '🚌', name: '마카오 버스', cat: '교통', desc: '시내버스 노선 · 카지노 셔틀 정보' },
@@ -10208,17 +10284,18 @@
           { icon: '💳', name: 'Alipay HK', cat: 'QR결제', desc: '마카오 대부분의 상점 결제 가능' },
         ],
         beijing:     [
-          { icon: '🗺️', name: '바이두 지도', cat: '지도', desc: '중국 내 Google Maps 대신 사용' },
-          { icon: '🚇', name: '北京地铁', cat: '지하철', desc: '베이징 지하철 노선도·실시간 정보' },
-          { icon: '💳', name: '알리페이', cat: 'QR결제', desc: '중국 필수 결제 앱 (외국인 등록 필요)', iconUrl: APP_ICONS.alipay },
+          { icon: '🗺️', name: '바이두 지도', cat: '지도', desc: '중국 내 Google Maps 대신 사용', iconSlug: 'baidu', iconBg: '#2932E1', iconFg: 'ffffff' },
+          { icon: '💬', name: 'WeChat (微信)', cat: 'QR결제·메신저', desc: '위챗페이로 베이징 현지 결제 필수', iconSlug: 'wechat', iconBg: '#07C160', iconFg: 'ffffff' },
+          { icon: '💳', name: '알리페이', cat: 'QR결제', desc: '중국 필수 결제 앱 (외국인 등록 필요)', iconSlug: 'alipay', iconBg: '#1677FF', iconFg: 'ffffff' },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '중국어 카메라 번역 (VPN 필요)', iconUrl: APP_ICONS.gtransl },
-          { icon: '🔐', name: 'VPN 앱', cat: '인터넷', desc: '중국 내 구글·카톡 접속 필수' },
+          { icon: '🔐', name: 'VPN 앱', cat: '인터넷', desc: '중국 내 구글·카톡 접속 필수', iconSlug: 'nordvpn', iconBg: '#4687FF', iconFg: 'ffffff' },
         ],
         qingdao:     [
-          { icon: '🗺️', name: '바이두 지도', cat: '지도', desc: '중국 내 Google Maps 대신 사용' },
-          { icon: '💳', name: '알리페이', cat: 'QR결제', desc: '중국 필수 결제 앱 (외국인 등록 필요)', iconUrl: APP_ICONS.alipay },
+          { icon: '🗺️', name: '바이두 지도', cat: '지도', desc: '중국 내 Google Maps 대신 사용', iconSlug: 'baidu', iconBg: '#2932E1', iconFg: 'ffffff' },
+          { icon: '💬', name: 'WeChat (微信)', cat: 'QR결제·메신저', desc: '위챗페이로 칭다오 현지 결제 필수', iconSlug: 'wechat', iconBg: '#07C160', iconFg: 'ffffff' },
+          { icon: '💳', name: '알리페이', cat: 'QR결제', desc: '중국 필수 결제 앱 (외국인 등록 필요)', iconSlug: 'alipay', iconBg: '#1677FF', iconFg: 'ffffff' },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '중국어 카메라 번역 (VPN 필요)', iconUrl: APP_ICONS.gtransl },
-          { icon: '🔐', name: 'VPN 앱', cat: '인터넷', desc: '중국 내 구글·카톡 접속 필수' },
+          { icon: '🔐', name: 'VPN 앱', cat: '인터넷', desc: '중국 내 구글·카톡 접속 필수', iconSlug: 'nordvpn', iconBg: '#4687FF', iconFg: 'ffffff' },
         ],
         saipan:      [
           { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 권장', iconUrl: APP_ICONS.gmaps },
@@ -10233,10 +10310,11 @@
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '영어 통용되지만 필리핀어 번역 유용', iconUrl: APP_ICONS.gtransl },
         ],
         sanya:       [
-          { icon: '🗺️', name: '바이두 지도', cat: '지도', desc: '중국 내 Google Maps 대신 사용' },
-          { icon: '💳', name: '알리페이', cat: 'QR결제', desc: '중국 필수 결제 앱 (외국인 등록 필요)', iconUrl: APP_ICONS.alipay },
+          { icon: '🗺️', name: '바이두 지도', cat: '지도', desc: '중국 내 Google Maps 대신 사용', iconSlug: 'baidu', iconBg: '#2932E1', iconFg: 'ffffff' },
+          { icon: '💬', name: 'WeChat (微信)', cat: 'QR결제·메신저', desc: '위챗페이로 삼아 현지 결제 필수', iconSlug: 'wechat', iconBg: '#07C160', iconFg: 'ffffff' },
+          { icon: '💳', name: '알리페이', cat: 'QR결제', desc: '중국 필수 결제 앱 (외국인 등록 필요)', iconSlug: 'alipay', iconBg: '#1677FF', iconFg: 'ffffff' },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '중국어 카메라 번역 (VPN 필요)', iconUrl: APP_ICONS.gtransl },
-          { icon: '🔐', name: 'VPN 앱', cat: '인터넷', desc: '중국 내 구글·카톡 접속 필수' },
+          { icon: '🔐', name: 'VPN 앱', cat: '인터넷', desc: '중국 내 구글·카톡 접속 필수', iconSlug: 'nordvpn', iconBg: '#4687FF', iconFg: 'ffffff' },
         ],
       };
 
@@ -10284,7 +10362,7 @@
         // ── 호주 ──
         australia: { currency: 'AUD (호주 달러)', qr: true, cashPerDay: 'A$50–100', perPerson: '20–35만원', cashNote: '카드 결제 광범위 — 현금은 최소한으로', qrNote: 'Apple Pay·Google Pay 거의 모든 가게에서 사용 가능' },
         // ── 중국 ──
-        china:     { currency: 'CNY (중국 위안)', qr: true, cashPerDay: '¥100–200', perPerson: '15–25만원', cashNote: '위챗페이·알리페이 없으면 현금 필수', qrNote: '위챗페이·알리페이 현지 계정 설정 강력 추천' },
+        china:     { currency: 'CNY (중국 위안)', qr: true, cashPerDay: '¥100–200', perPerson: '20–40만원', cashNote: '위챗페이·알리페이 없으면 현금 필수', qrNote: '위챗페이·알리페이 현지 계정 설정 강력 추천' },
         // ── 캄보디아 ──
         cambodia:  { currency: 'USD (미국 달러)', qr: false, cashPerDay: '$15–30', perPerson: '10–20만원', cashNote: '달러 통용 · 현지 리엘은 거스름돈용 — 잔돈 크메르 리엘로 수령', qrNote: null },
         // ── 라오스 ──
