@@ -3094,12 +3094,12 @@
           </div>
           <div class="sb-region-hr"></div>
           <div class="sb-region-opt" data-val="east_asia" onclick="selectRegion(event,'east_asia')">
-            <div><div class="sb-region-title">🏙️ 동아시아</div><div class="sb-region-sub">홍콩 · 마카오 · 싱가포르 등</div></div>
+            <div><div class="sb-region-title">🏙️ 동아시아</div><div class="sb-region-sub">홍콩 · 싱가포르 · 마카오 · 베이징 등</div></div>
             <span class="sb-region-check"></span>
           </div>
           <div class="sb-region-hr"></div>
-          <div class="sb-region-opt" data-val="pacific" onclick="selectRegion(event,'pacific')">
-            <div><div class="sb-region-title">🌺 괌·하와이·호주</div><div class="sb-region-sub">리조트 · 자연경관</div></div>
+          <div class="sb-region-opt" data-val="resort" onclick="selectRegion(event,'resort')">
+            <div><div class="sb-region-title">🏖️ 휴양지</div><div class="sb-region-sub">발리 · 몰디브 · 오키나와 등</div></div>
             <span class="sb-region-check"></span>
           </div>
         </div>
@@ -3117,7 +3117,7 @@
           </div>
           <div id="date-panel-flexible" style="display:none">
             <div class="sb-date-flexible">
-              날짜에 상관없이<br>최적의 여행지를 추천해드립니다.<br><span style="font-size:13px;color:#999">기본 5박 6일로 계산됩니다</span>
+              날짜에 상관없이<br>최적의 여행지를 추천해드립니다.<br><span style="font-size:13px;color:#999">기본 5박 6일로 계산됩니다</span><br><span style="font-size:12px;color:#bbb">오늘 기준 최저가로 비교합니다</span>
               <br>
               <button class="sb-flex-confirm" onclick="confirmFlexibleDate(event)" type="button">언제든지 선택하기</button>
             </div>
@@ -3297,7 +3297,7 @@
         <div class="cv-row" data-val="east_asia" onclick="cvSelectRegion('east_asia')">
           <div>
             <div class="cv-row-title">🏙️ 동아시아</div>
-            <div class="cv-row-sub">홍콩 · 마카오 · 싱가포르 등</div>
+            <div class="cv-row-sub">홍콩 · 싱가포르 · 마카오 · 베이징 등</div>
           </div>
           <span class="cv-row-check"></span>
         </div>
@@ -3319,7 +3319,7 @@
         </div>
         <div id="cv-date-specific"><div id="cv-cal"></div></div>
         <div id="cv-date-flexible" style="display:none">
-          <div class="cv-flex-msg">날짜에 상관없이<br>최적의 여행지를 추천해드립니다.<br><span style="font-size:13px;color:#999">기본 5박 6일로 계산됩니다</span></div>
+          <div class="cv-flex-msg">날짜에 상관없이<br>최적의 여행지를 추천해드립니다.<br><span style="font-size:13px;color:#999">기본 5박 6일로 계산됩니다</span><br><span style="font-size:12px;color:#bbb">오늘 기준 최저가로 비교합니다</span></div>
           <button class="cv-flex-btn" onclick="cvConfirmFlexibleDate()" type="button">언제든지</button>
         </div>
       </div>
@@ -3611,12 +3611,12 @@
           </div>
           <div class="sb-region-hr"></div>
           <div class="sb-region-opt" data-val="east_asia" onclick="selectRegion(event,'east_asia')">
-            <div><div class="sb-region-title">🏙️ 동아시아</div><div class="sb-region-sub">홍콩 · 마카오 · 싱가포르 등</div></div>
+            <div><div class="sb-region-title">🏙️ 동아시아</div><div class="sb-region-sub">홍콩 · 싱가포르 · 마카오 · 베이징 등</div></div>
             <span class="sb-region-check"></span>
           </div>
           <div class="sb-region-hr"></div>
-          <div class="sb-region-opt" data-val="pacific" onclick="selectRegion(event,'pacific')">
-            <div><div class="sb-region-title">🌺 괌·하와이·호주</div><div class="sb-region-sub">리조트 · 자연경관</div></div>
+          <div class="sb-region-opt" data-val="resort" onclick="selectRegion(event,'resort')">
+            <div><div class="sb-region-title">🏖️ 휴양지</div><div class="sb-region-sub">발리 · 몰디브 · 오키나와 등</div></div>
             <span class="sb-region-check"></span>
           </div>
         </div>
@@ -3634,7 +3634,7 @@
           </div>
           <div id="date-panel-flexible-c" style="display:none">
             <div class="sb-date-flexible">
-              날짜에 상관없이<br>최적의 여행지를 추천해드립니다.<br><span style="font-size:13px;color:#999">기본 5박 6일로 계산됩니다</span>
+              날짜에 상관없이<br>최적의 여행지를 추천해드립니다.<br><span style="font-size:13px;color:#999">기본 5박 6일로 계산됩니다</span><br><span style="font-size:12px;color:#bbb">오늘 기준 최저가로 비교합니다</span>
               <br>
               <button class="sb-flex-confirm" onclick="confirmFlexibleDate(event)" type="button">언제든지 선택하기</button>
             </div>
@@ -7700,6 +7700,198 @@
         ],
         flightTips: ['직항 11시간', '왕복 70-100만원', '터키항공 스탑오버 무료 호텔 프로그램', 'e-비자 온라인 신청 (약 3만원)']
       },
+      // ── 마카오 ──
+      {
+        id: 'macau', name: '마카오', sub: '동양의 라스베가스 · 세계유산의 도시', score: 65, isTop: false,
+        photo: 'https://images.unsplash.com/photo-1555277458-842b1ae67cf3?w=800&q=80',
+        airfare: '25만원~', hotel: '호텔 다양', hotelSub: '3성급 8-15만원대', daily: '소비 보통', dailySub: '1일 8-15만원',
+        alert: '경보 없음', alertSub: '전반적으로 안전', news: '파타카 안정', newsSub: '홍콩달러 1:1 사용 가능', disaster: '없음', disasterSub: '',
+        temp: '아열대', tempSub: '가을·겨울(10-2월) 최적',
+        fx: '마카오 파타카', fxSub: '홍콩달러·위안 병용 가능',
+        baseAir: 25, baseHotel: 10, baseHotelLow: 8, baseHotelHigh: 35, minDays: 3, minBudget: 50,
+        sights: {
+          low: [
+            { name: '세나도 광장 산책', price: '무료', link: 'https://maps.google.com/?q=Senado+Square+Macau' },
+            { name: '성 바울 성당 유적', price: '무료', link: 'https://maps.google.com/?q=Ruins+of+St+Pauls+Macau' },
+            { name: '기아 등대 요새', price: '무료', link: 'https://maps.google.com/?q=Guia+Fortress+Macau' }
+          ],
+          mid: [
+            { name: '마카오 타워 전망대', price: '약 2만원', link: 'https://www.klook.com/ko/search/?query=macau+tower+observation' },
+            { name: '베네시안 리조트 투어', price: '무료', link: 'https://maps.google.com/?q=Venetian+Macau' },
+            { name: '타이파 빌리지 탐방', price: '무료', link: 'https://maps.google.com/?q=Taipa+Village+Macau' }
+          ],
+          high: [
+            { name: '마카오 타워 번지점프', price: '약 50만원', link: 'https://www.klook.com/ko/search/?query=macau+tower+bungy+jump' },
+            { name: '시티 오브 드림즈 쇼', price: '약 10만원', link: 'https://www.klook.com/ko/search/?query=city+of+dreams+show+macau' },
+            { name: '윈 팰리스 분수 쇼', price: '무료', link: 'https://maps.google.com/?q=Wynn+Palace+Macau' }
+          ]
+        },
+        exps: {
+          low: [
+            { name: '에그타르트 맛집 투어', price: '약 0.3만원', link: 'https://maps.google.com/?q=Lord+Stows+Bakery+Macau' },
+            { name: '콜로안 빌리지 산책', price: '무료', link: 'https://maps.google.com/?q=Coloane+Village+Macau' },
+            { name: '세계유산 도보 투어', price: '무료', link: 'https://maps.google.com/?q=Historic+Centre+Macau' }
+          ],
+          mid: [
+            { name: '포르투갈 요리 체험', price: '약 5만원', link: 'https://www.klook.com/ko/search/?query=macau+portuguese+food' },
+            { name: '마카오 와인 박물관', price: '약 0.5만원', link: 'https://maps.google.com/?q=Wine+Museum+Macau' },
+            { name: '만다린 오리엔탈 스파', price: '약 10만원', link: 'https://www.klook.com/ko/search/?query=mandarin+oriental+spa+macau' }
+          ],
+          high: [
+            { name: '미슐랭 레스토랑 디너', price: '약 15만원', link: 'https://www.klook.com/ko/search/?query=michelin+restaurant+macau' },
+            { name: '카지노 VIP 체험', price: '약 30만원+', link: 'https://maps.google.com/?q=Galaxy+Macau' },
+            { name: '럭셔리 스파 패키지', price: '약 20만원', link: 'https://www.klook.com/ko/search/?query=luxury+spa+macau' }
+          ]
+        },
+        stays: {
+          low: [
+            { name: '올레 런던 호텔', stars: 3, desc: '세나도 광장 도보 5분', priceRange: '약 8-12만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Ole+London+Hotel+Macau&dest_type=city' },
+            { name: '산바 호텔', stars: 3, desc: '관광지 접근성 우수', priceRange: '약 7-10만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Sanva+Hotel+Macau&dest_type=city' }
+          ],
+          mid: [
+            { name: '쉐라톤 그랜드 마카오', stars: 4, desc: '코타이 스트립 · 대형 리조트', priceRange: '약 15-25만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Sheraton+Grand+Macao&dest_type=city' },
+            { name: '스튜디오 시티', stars: 4, desc: '엔터테인먼트 리조트', priceRange: '약 12-20만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Studio+City+Macau&dest_type=city' }
+          ],
+          high: [
+            { name: '더 베네시안 마카오', stars: 5, desc: '세계 최대 카지노 리조트', priceRange: '약 25-50만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Venetian+Macao&dest_type=city' },
+            { name: '윈 팰리스', stars: 5, desc: '코타이 최고급 리조트', priceRange: '약 35-70만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Wynn+Palace+Macau&dest_type=city' }
+          ]
+        },
+        hotelTips: ['코타이 스트립 리조트 무료 셔틀 활용', '세나도 광장 근처 구시가 숙소 관광 편리', '홍콩-마카오 페리 터미널 근처도 편리', '주말·공휴일 숙박비 급등 주의'],
+        cheapFlights: [
+          { label: '에어마카오 (직항)', desc: '인천 직항 3시간 30분', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mfm/' },
+          { label: '홍콩 경유', desc: '홍콩+마카오 동시 여행 가능', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mfm/' }
+        ],
+        flightTips: ['직항 3시간 30분', '왕복 25-40만원', '홍콩 경유 페리 이동도 인기', '홍콩+마카오 콤보 추천']
+      },
+      // ── 베이징 ──
+      {
+        id: 'beijing', name: '베이징', sub: '중국 수도 · 만리장성과 자금성의 도시', score: 65, isTop: false,
+        photo: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=800&q=80',
+        airfare: '20만원~', hotel: '호텔 저렴', hotelSub: '3성급 5-10만원대', daily: '소비 적음', dailySub: '1일 5-10만원',
+        alert: '경보 없음', alertSub: '전반적으로 안전', news: '위안화 안정', newsSub: '환율 변동 적음', disaster: '없음', disasterSub: '',
+        temp: '대륙성 기후', tempSub: '봄(4-5월)·가을(9-10월) 최적',
+        fx: '중국 위안', fxSub: '알리페이·위챗페이 필수',
+        baseAir: 20, baseHotel: 6, baseHotelLow: 5, baseHotelHigh: 25, minDays: 4, minBudget: 40,
+        sights: {
+          low: [
+            { name: '천안문 광장', price: '무료', link: 'https://maps.google.com/?q=Tiananmen+Square+Beijing' },
+            { name: '798 예술구', price: '무료', link: 'https://maps.google.com/?q=798+Art+District+Beijing' },
+            { name: '후통 골목 산책', price: '무료', link: 'https://maps.google.com/?q=Nanluoguxiang+Hutong+Beijing' }
+          ],
+          mid: [
+            { name: '자금성 (고궁)', price: '약 1만원', link: 'https://www.klook.com/ko/search/?query=forbidden+city+beijing' },
+            { name: '천단 공원', price: '약 0.5만원', link: 'https://maps.google.com/?q=Temple+of+Heaven+Beijing' },
+            { name: '이화원', price: '약 0.5만원', link: 'https://maps.google.com/?q=Summer+Palace+Beijing' }
+          ],
+          high: [
+            { name: '만리장성 (무티안위)', price: '약 3만원', link: 'https://www.klook.com/ko/search/?query=mutianyu+great+wall+beijing' },
+            { name: '베이징 오페라 관람', price: '약 5만원', link: 'https://www.klook.com/ko/search/?query=peking+opera+beijing' },
+            { name: '올림픽 공원 야경', price: '무료', link: 'https://maps.google.com/?q=Beijing+Olympic+Park' }
+          ]
+        },
+        exps: {
+          low: [
+            { name: '후통 인력거 체험', price: '약 1만원', link: 'https://www.klook.com/ko/search/?query=hutong+rickshaw+tour+beijing' },
+            { name: '왕푸징 먹자골목', price: '약 0.5만원', link: 'https://maps.google.com/?q=Wangfujing+Snack+Street+Beijing' },
+            { name: '징산 공원 일몰', price: '약 0.1만원', link: 'https://maps.google.com/?q=Jingshan+Park+Beijing' }
+          ],
+          mid: [
+            { name: '베이징 덕 정통 코스', price: '약 3만원', link: 'https://maps.google.com/?q=Quanjude+Roast+Duck+Beijing' },
+            { name: '만리장성 하이킹 투어', price: '약 5만원', link: 'https://www.klook.com/ko/search/?query=great+wall+hiking+tour+beijing' },
+            { name: '중국 요리 쿠킹 클래스', price: '약 5만원', link: 'https://www.klook.com/ko/search/?query=cooking+class+beijing' }
+          ],
+          high: [
+            { name: '자금성 프라이빗 투어', price: '약 10만원', link: 'https://www.klook.com/ko/search/?query=forbidden+city+private+tour+beijing' },
+            { name: '스프링 레전드 스파', price: '약 8만원', link: 'https://www.klook.com/ko/search/?query=luxury+spa+beijing' },
+            { name: '고급 베이징덕 풀코스', price: '약 10만원', link: 'https://maps.google.com/?q=Da+Dong+Roast+Duck+Beijing' }
+          ]
+        },
+        stays: {
+          low: [
+            { name: '홀리데이 인 익스프레스', stars: 3, desc: '왕푸징 도보권', priceRange: '약 5-8만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Holiday+Inn+Express+Beijing+Wangfujing&dest_type=city' },
+            { name: '이비스 베이징', stars: 3, desc: '깔끔한 비즈니스 호텔', priceRange: '약 4-7만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Ibis+Beijing&dest_type=city' }
+          ],
+          mid: [
+            { name: '더블트리 바이 힐튼', stars: 4, desc: '왕푸징 중심가', priceRange: '약 10-18만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=DoubleTree+Hilton+Beijing&dest_type=city' },
+            { name: '노보텔 베이징', stars: 4, desc: '비즈니스·관광 겸용', priceRange: '약 8-15만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Novotel+Beijing&dest_type=city' }
+          ],
+          high: [
+            { name: '아만 서머 팰리스', stars: 5, desc: '이화원 옆 최고급 리조트', priceRange: '약 60-120만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Aman+Summer+Palace+Beijing&dest_type=city' },
+            { name: '만다린 오리엔탈 왕푸징', stars: 5, desc: '왕푸징 중심 · 최고급', priceRange: '약 40-80만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Mandarin+Oriental+Wangfujing+Beijing&dest_type=city' }
+          ]
+        },
+        hotelTips: ['왕푸징 지역 관광 최적', '후통 근처 부티크 호텔도 인기', '지하철 접근성 확인 필수', '겨울 난방 잘 되는 호텔 선택'],
+        cheapFlights: [
+          { label: '대한항공·아시아나 (직항)', desc: '인천 직항 2시간 · 왕복 20만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pek/' },
+          { label: 'LCC (직항)', desc: '인천 직항 · 제주항공·티웨이 등', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pek/' }
+        ],
+        flightTips: ['직항 2시간', '왕복 20-35만원', 'LCC 초특가 빈번', '중국 비자 면제 여부 사전 확인']
+      },
+      // ── 칭다오 ──
+      {
+        id: 'qingdao', name: '칭다오', sub: '중국 독일풍 해변도시 · 맥주의 도시', score: 60, isTop: false,
+        photo: 'https://images.unsplash.com/photo-1567001988898-15b41cddc77a?w=800&q=80',
+        airfare: '15만원~', hotel: '호텔 저렴', hotelSub: '3성급 4-8만원대', daily: '소비 매우 적음', dailySub: '1일 4-8만원',
+        alert: '경보 없음', alertSub: '전반적으로 안전', news: '위안화 안정', newsSub: '환율 변동 적음', disaster: '없음', disasterSub: '',
+        temp: '온대 해양성', tempSub: '여름(6-9월) 해변·맥주 축제 최적',
+        fx: '중국 위안', fxSub: '알리페이·위챗페이 필수',
+        baseAir: 15, baseHotel: 5, baseHotelLow: 4, baseHotelHigh: 15, minDays: 3, minBudget: 30,
+        sights: {
+          low: [
+            { name: '잔교 해변 산책', price: '무료', link: 'https://maps.google.com/?q=Zhanqiao+Pier+Qingdao' },
+            { name: '팔대관 풍경구', price: '무료', link: 'https://maps.google.com/?q=Eight+Great+Passes+Qingdao' },
+            { name: '소어산 공원', price: '무료', link: 'https://maps.google.com/?q=Xiaoyushan+Park+Qingdao' }
+          ],
+          mid: [
+            { name: '칭다오 맥주 박물관', price: '약 1만원', link: 'https://www.klook.com/ko/search/?query=qingdao+beer+museum' },
+            { name: '라오산 풍경구', price: '약 2만원', link: 'https://www.klook.com/ko/search/?query=laoshan+scenic+area+qingdao' },
+            { name: '해저 세계 아쿠아리움', price: '약 2만원', link: 'https://www.klook.com/ko/search/?query=qingdao+underwater+world' }
+          ],
+          high: [
+            { name: '라오산 프라이빗 하이킹', price: '약 5만원', link: 'https://www.klook.com/ko/search/?query=laoshan+hiking+private+qingdao' },
+            { name: '올림픽 세일링 센터', price: '약 3만원', link: 'https://maps.google.com/?q=Olympic+Sailing+Center+Qingdao' },
+            { name: '해변 요트 투어', price: '약 5만원', link: 'https://www.klook.com/ko/search/?query=yacht+tour+qingdao' }
+          ]
+        },
+        exps: {
+          low: [
+            { name: '칭다오 맥주 거리', price: '약 0.5만원', link: 'https://maps.google.com/?q=Qingdao+Beer+Street' },
+            { name: '해산물 시장 투어', price: '약 1만원', link: 'https://maps.google.com/?q=Yingkou+Road+Seafood+Market+Qingdao' },
+            { name: '독일풍 거리 산책', price: '무료', link: 'https://maps.google.com/?q=German+Quarter+Qingdao' }
+          ],
+          mid: [
+            { name: '해산물 BBQ 디너', price: '약 3만원', link: 'https://maps.google.com/?q=Seafood+BBQ+Qingdao' },
+            { name: '라오산 녹차 체험', price: '약 2만원', link: 'https://www.klook.com/ko/search/?query=laoshan+green+tea+qingdao' },
+            { name: '칭다오 야경 투어', price: '약 3만원', link: 'https://www.klook.com/ko/search/?query=night+tour+qingdao' }
+          ],
+          high: [
+            { name: '프라이빗 해산물 코스', price: '약 8만원', link: 'https://www.klook.com/ko/search/?query=premium+seafood+dinner+qingdao' },
+            { name: '요트 선셋 크루즈', price: '약 5만원', link: 'https://www.klook.com/ko/search/?query=sunset+yacht+cruise+qingdao' },
+            { name: '럭셔리 스파 체험', price: '약 5만원', link: 'https://www.klook.com/ko/search/?query=luxury+spa+qingdao' }
+          ]
+        },
+        stays: {
+          low: [
+            { name: '한팅 호텔', stars: 3, desc: '잔교 해변 근처', priceRange: '약 4-6만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Hanting+Hotel+Qingdao&dest_type=city' },
+            { name: '이비스 칭다오', stars: 3, desc: '깔끔한 경제형', priceRange: '약 3-5만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Ibis+Qingdao&dest_type=city' }
+          ],
+          mid: [
+            { name: '힐튼 가든 인', stars: 4, desc: '오션뷰 · 해변 접근성', priceRange: '약 8-14만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Hilton+Garden+Inn+Qingdao&dest_type=city' },
+            { name: '인터컨티넨탈 칭다오', stars: 4, desc: '시내 중심가', priceRange: '약 10-18만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=InterContinental+Qingdao&dest_type=city' }
+          ],
+          high: [
+            { name: '하얏트 리젠시', stars: 5, desc: '오션뷰 최고급', priceRange: '약 20-35만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Hyatt+Regency+Qingdao&dest_type=city' },
+            { name: '섕그릴라 호텔', stars: 5, desc: '해변 럭셔리 리조트', priceRange: '약 25-45만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Shangri-La+Qingdao&dest_type=city' }
+          ]
+        },
+        hotelTips: ['잔교·구시가 근처 관광 최적', '해변 오션뷰 숙소 인기', '라오산 근처 리조트도 추천', '여름 성수기 조기 예약 필수'],
+        cheapFlights: [
+          { label: 'LCC 직항', desc: '인천 직항 1시간 30분 · 왕복 15만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/tao/' },
+          { label: '대한항공·아시아나', desc: '인천 직항 · 안정적 스케줄', link: 'https://www.skyscanner.co.kr/transport/flights/icn/tao/' }
+        ],
+        flightTips: ['직항 1시간 30분', '왕복 15-25만원', '한국에서 가장 가까운 중국 도시 중 하나', 'LCC 초특가 수시 확인']
+      },
       ];
 
       var fpHome = null, fpCompare = null;
@@ -7891,6 +8083,7 @@
         const _wb = window.wizardBonus || {};
         const _erb = window.exchangeRateBonus || {};
         const _selRegion = window.selectedRegion || '';
+        console.log('[Filter] region=' + _selRegion + ', budget=' + filterBudget + ', duration=' + duration);
         const allCandidates = [...v1_0_9_DEST_DATA].filter(d => {
           const baseMin = d.minBudget || 40;
           // unlimited/cheapest 예산일 때는 duration 페널티 없이 모든 여행지 노출
@@ -7898,18 +8091,27 @@
             ? baseMin
             : baseMin + (duration > 5 ? (duration - 5) * 6 : 0);
           if (adjustedMin > filterBudget) return false;
-          // Region filter
-          if (_selRegion && typeof DEST_REGION !== 'undefined') {
-            const dRegion = DEST_REGION[d.id] || '';
-            if (dRegion !== _selRegion) return false;
+          // Region filter (휴양지는 cross-cutting 필터로 별도 처리)
+          if (_selRegion) {
+            if (_selRegion === 'resort') {
+              if (!DEST_RESORT || !DEST_RESORT.has(d.id)) return false;
+            } else if (typeof DEST_REGION !== 'undefined') {
+              const dRegion = DEST_REGION[d.id] || '';
+              if (dRegion !== _selRegion) return false;
+            }
           }
           return true;
         });
 
         // ── 랜덤 셔플 (Fisher-Yates) ──
-        // 최저가 모드: 가격순 정렬 유지하되 동일 가격대 내 랜덤
+        // 최저가 모드: 가격순 정렬 + 동일 가격대 내 랜덤 셔플
         // 일반 모드: 전체 랜덤 셔플
         if (isCheapest) {
+          // 먼저 전체 셔플 후 가격순 안정 정렬 → 동일 가격대 내 랜덤
+          for (let i = allCandidates.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [allCandidates[i], allCandidates[j]] = [allCandidates[j], allCandidates[i]];
+          }
           allCandidates.sort((a, b) => (a.minBudget || 40) - (b.minBudget || 40));
         } else {
           for (let i = allCandidates.length - 1; i > 0; i--) {
@@ -7945,7 +8147,7 @@
           }
         }
 
-        console.log("v1.1.0 MATCHING:", matching.map(m => m.name));
+        console.log('[Filter] candidates=' + allCandidates.length + ', matching:', matching.map(m => m.id + '(' + (DEST_REGION[m.id]||'?') + ')'));
 
         if (matching.length === 0) {
           body.style.display = 'none';
@@ -8031,7 +8233,15 @@
             // Sync both selectors immediately and after short delay (for safety)
             const syncId = (id) => {
               const s = document.getElementById(id);
-              if (s) { s.value = String(destIdx); s.style.color = '#000000'; }
+              if (!s) return;
+              // 해당 option이 없으면 동적 생성 (지역 필터 변경 시 발생 가능)
+              if (!Array.from(s.options).some(o => o.value === String(destIdx))) {
+                const opt = document.createElement('option');
+                opt.value = String(destIdx);
+                opt.textContent = _getDestLabel(d, window.selectedRegion || null);
+                s.appendChild(opt);
+              }
+              s.value = String(destIdx); s.style.color = '#000000';
             };
             syncId('sel' + i);
             syncId('sel' + i + '-fixed');
@@ -8407,6 +8617,21 @@
             `동서양 문명의 교차로, 이스탄불입니다.<br>아야소피아의 장엄한 돔 아래 서면<br>비잔틴과 오스만의 역사가 눈앞에 펼쳐집니다.<br>보스포루스 해협의 크루즈와 그랜드 바자르의 활기까지<br>세계 어느 도시에서도 느낄 수 없는 독특함입니다.`,
             `이스탄불의 밤은 낮보다 아름답습니다.<br>블루모스크의 조명, 갈라타 타워에서 바라보는 야경,<br>이스티클랄 거리의 열기까지<br>리라 약세 덕분에 유럽 물가 대비<br>압도적인 가성비를 자랑하는 도시입니다.`,
             `이스탄불에서 카파도키아까지 국내선 1시간이면 도착합니다.<br>열기구 위에서 바라보는 기암괴석의 절경,<br>동굴 호텔에서의 하룻밤까지<br>이스탄불+카파도키아 조합은<br>평생 잊지 못할 ${days}일이 될 것입니다.`
+          ],
+          'macau': [
+            `동양의 라스베가스, 마카오입니다.<br>세계유산으로 등재된 세나도 광장과<br>성 바울 성당 유적의 이국적 아름다움,<br>화려한 카지노 리조트의 분수 쇼까지<br>홍콩에서 페리로 1시간이면 도착합니다.`,
+            `마카오는 미식가의 숨은 천국입니다.<br>미슐랭 스타 레스토랑부터<br>에그타르트와 포르투갈 요리까지<br>동서양 식문화가 완벽하게 융합된 도시.<br>홍콩과 함께 방문하면 ${days}일이 더욱 풍성합니다.`,
+            `세계유산과 화려한 엔터테인먼트의 조합.<br>코타이 스트립의 메가 리조트에서<br>수영장과 쇼를 즐기고, 구시가에서<br>400년 포르투갈 건축을 감상하세요.<br>작은 도시 안에 큰 감동이 있습니다.`
+          ],
+          'beijing': [
+            `5천 년 역사의 수도, 베이징입니다.<br>만리장성에 올라 끝없이 이어지는 성벽을 보고,<br>자금성에서 황제의 위엄을 느끼며,<br>후통 골목에서 서민적 매력을 발견하세요.<br>중국 여행의 시작이자 완성입니다.`,
+            `베이징은 미식의 도시이기도 합니다.<br>정통 베이징덕의 바삭한 껍질,<br>왕푸징 먹자골목의 다양한 간식,<br>양꼬치와 마라탕까지<br>저렴한 물가 덕분에 마음껏 즐길 수 있습니다.`,
+            `인천에서 2시간, 왕복 20만원대.<br>가까우면서도 스케일이 다른 여행지입니다.<br>천안문광장의 웅장함, 이화원의 평화로움,<br>798 예술구의 트렌디한 감성까지<br>${days}일 동안 고대와 현대를 동시에 경험하세요.`
+          ],
+          'qingdao': [
+            `맥주와 해변의 도시, 칭다오입니다.<br>독일 조차지 시절의 유럽풍 건물과<br>잔교 해변의 시원한 바다가 어우러진<br>중국 속 이국적인 도시.<br>한국에서 1시간 30분이면 도착하는 최단거리입니다.`,
+            `칭다오는 해산물 천국입니다.<br>싱싱한 해산물을 시장에서 골라<br>바로 구워 칭다오 맥주와 함께 즐기는 행복.<br>라오산의 절경과 녹차 체험까지<br>가성비 최고의 ${days}일이 됩니다.`,
+            `압도적인 가성비의 중국 해변 도시입니다.<br>왕복 15만원대 항공에 1박 5만원 호텔까지<br>해외여행 중 가장 저렴한 축에 속합니다.<br>팔대관 풍경구의 가로수길 산책과<br>칭다오 맥주 박물관은 필수 코스입니다.`
           ]
         };
 
@@ -8896,14 +9121,15 @@
         australia:'호주', china:'중국',
         cambodia:'캄보디아', italy:'이탈리아', uk:'영국',
         laos:'라오스', switzerland:'스위스', croatia:'크로아티아',
-        turkey:'튀르키예'
+        turkey:'튀르키예', macau:'마카오'
       };
       const DEST_REGION_LABELS = {
         domestic:'국내', japan:'일본', east_asia:'동아시아',
-        sea:'동남아시아', pacific:'태평양·오세아니아', europe:'유럽'
+        sea:'동남아시아', pacific:'태평양·오세아니아', europe:'유럽',
+        resort:'휴양지'
       };
       const DEST_REGION_ORDER = ['domestic','japan','east_asia','sea','pacific','europe'];
-      const DEST_REGION_MULTI = new Set(['east_asia','sea','pacific','europe']);
+      const DEST_REGION_MULTI = new Set(['east_asia','sea','pacific','europe','resort']);
 
       // 순수 도시명 추출
       function _getDestCity(d) {
@@ -8915,7 +9141,7 @@
       function _getDestLabel(d, activeRegion) {
         const city = _getDestCity(d);
         const rk = (typeof DEST_REGION !== 'undefined' && DEST_REGION[d.id]) || '';
-        const needCountry = !activeRegion || DEST_REGION_MULTI.has(rk);
+        const needCountry = !activeRegion || activeRegion === 'resort' || DEST_REGION_MULTI.has(rk);
         if (!needCountry) return city;
         const cc = (typeof DEST_COUNTRY !== 'undefined' && DEST_COUNTRY[d.id]) || '';
         const country = DEST_COUNTRY_KR[cc] || '';
@@ -8939,7 +9165,11 @@
           el.innerHTML = '';
           if (_selRegion) {
             v1_0_9_DEST_DATA.forEach((d, did) => {
-              if ((typeof DEST_REGION !== 'undefined' ? DEST_REGION[d.id] : '') !== _selRegion) return;
+              if (_selRegion === 'resort') {
+                if (!DEST_RESORT || !DEST_RESORT.has(d.id)) return;
+              } else {
+                if ((typeof DEST_REGION !== 'undefined' ? DEST_REGION[d.id] : '') !== _selRegion) return;
+              }
               const opt = document.createElement('option');
               opt.value = String(did);
               opt.textContent = _getDestLabel(d, _selRegion);
@@ -8962,7 +9192,11 @@
               el.appendChild(grp);
             });
           }
-          if (cur) el.value = cur;
+          // cur 복원: 새 옵션에 해당 값이 있을 때만 (지역 변경 시 stale 값 방지)
+          if (cur) {
+            var hasOpt = Array.from(el.options).some(function(o) { return o.value === cur; });
+            if (hasOpt) el.value = cur;
+          }
         });
 
         // ── 2. 커스텀 드롭다운 메뉴 재빌드 ──
@@ -8987,7 +9221,11 @@
 
           if (_selRegion) {
             v1_0_9_DEST_DATA.forEach((d,did) => {
-              if ((typeof DEST_REGION!=='undefined'?DEST_REGION[d.id]:'') !== _selRegion) return;
+              if (_selRegion === 'resort') {
+                if (!DEST_RESORT || !DEST_RESORT.has(d.id)) return;
+              } else {
+                if ((typeof DEST_REGION!=='undefined'?DEST_REGION[d.id]:'') !== _selRegion) return;
+              }
               addOpt(d, did, _getDestLabel(d, _selRegion));
             });
           } else {
@@ -9192,8 +9430,8 @@
           }
         }
 
-        // 여행지 변경 시 날씨 실시간 갱신
-        if (typeof fetchWeather === 'function') fetchWeather();
+        // 여행지 변경 시 날씨 실시간 갱신 (디바운스로 중복 호출 방지)
+        if (typeof fetchWeatherDebounced === 'function') fetchWeatherDebounced();
       }
 
       function goHome() {
@@ -9274,8 +9512,8 @@
         }
         updateResultsByFilters();
         window.scrollTo(0, 0);
-        // 비교뷰 표시 후 실시간 날씨 갱신
-        setTimeout(function() { if (typeof fetchWeather === 'function') fetchWeather(); }, 500);
+        // 비교뷰 표시 후 실시간 날씨 갱신 (디바운스로 중복 호출 방지)
+        if (typeof fetchWeatherDebounced === 'function') fetchWeatherDebounced();
         // 태블릿·모바일에서는 스크롤 자동 팝업 비활성화
         if (window.innerWidth > 1068) {
           _initWizardScrollTrigger();
@@ -9369,13 +9607,14 @@
       // ── 지역 필터 & 국가 다양성 데이터 ──
       var DEST_REGION = {
         lisbon:'europe', danang:'sea', jeju:'domestic', taipei:'east_asia', osaka:'japan', tokyo:'japan',
-        bangkok:'sea', bali:'sea', chiangmai:'sea', singapore:'sea', cebu:'sea', nhatrang:'sea',
+        bangkok:'sea', bali:'sea', chiangmai:'sea', singapore:'east_asia', cebu:'sea', nhatrang:'sea',
         fukuoka:'japan', sapporo:'japan', okinawa:'japan', kyoto:'japan', miyakojima:'japan', phuquoc:'sea', hochiminh:'sea',
         hanoi:'sea', boracay:'sea', phuket:'sea', hongkong:'east_asia', guam:'pacific', hawaii:'pacific',
         paris:'europe', kualalumpur:'sea', maldives:'sea', sydney:'pacific', shanghai:'east_asia', barcelona:'europe',
         nagoya:'japan', siemreap:'sea', rome:'europe', london:'europe', kotakinabalu:'sea',
         luangprabang:'sea', madrid:'europe', kohsamui:'sea', interlaken:'europe', dubrovnik:'europe',
-        istanbul:'europe'
+        istanbul:'europe',
+        macau:'east_asia', beijing:'east_asia', qingdao:'east_asia'
       };
       var DEST_COUNTRY = {
         lisbon:'portugal', danang:'vietnam', jeju:'korea', taipei:'taiwan', osaka:'japan', tokyo:'japan',
@@ -9386,8 +9625,16 @@
         maldives:'maldives', sydney:'australia', shanghai:'china', barcelona:'spain',
         nagoya:'japan', siemreap:'cambodia', rome:'italy', london:'uk', kotakinabalu:'malaysia',
         luangprabang:'laos', madrid:'spain', kohsamui:'thailand', interlaken:'switzerland', dubrovnik:'croatia',
-        istanbul:'turkey'
+        istanbul:'turkey', macau:'macau', beijing:'china', qingdao:'china'
       };
+      // ── 휴양지 (cross-cutting: 기존 지역 분류와 중복 허용) ──
+      var DEST_RESORT = new Set([
+        'guam', 'hawaii', 'sydney',           // 태평양·오세아니아
+        'bali', 'cebu', 'boracay', 'phuket',  // 동남아 해변
+        'kohsamui', 'maldives', 'nhatrang',   // 동남아 리조트
+        'phuquoc', 'kotakinabalu',            // 동남아 섬·자연
+        'okinawa', 'miyakojima'               // 일본 해변
+      ]);
       window.selectedRegion = '';
 
       // ── 필수 앱 & 출입국 준비 데이터 ──
@@ -9413,6 +9660,7 @@
         simplygo: 'https://play-lh.googleusercontent.com/GRMdCEJxeHHSGbKCilGxVNH9-Q3g9Ee7z1wWW1aMxE-bm-4L4w4RDyPirYGCJ3K1Nw=s256',
         paynow:   'https://play-lh.googleusercontent.com/V6nT1SNhKLbBDnMk72dA4mruCRlHEXiNSB6a7nLvyf1ELqpKi3mLJY5FmOEjFvTw_Q=s256',
         bolt:     'https://play-lh.googleusercontent.com/e6OkJ7bpBFAuqjWm5JuYv5hJevd_b5OC5dDhEupYOv0m4VHON2vVxipQpwqZ8mj3m2Y=s256',
+        alipay:   'https://play-lh.googleusercontent.com/oGy4IfL4W8V8BNNV-5qe7fHJV4FU-GCbH5GqLKY2yYCiVP_cxE3K5CRR9wP0qLRpMw=s256',
       };
       var DEST_APPS = {
         lisbon:      [
@@ -9678,6 +9926,25 @@
           { icon: '🚌', name: 'Libertasdubrovnik', cat: '버스', desc: '두브로브니크 시내버스 앱' },
           { icon: '💬', name: 'Google 번역', cat: '번역', desc: '크로아티아어 번역 유용', iconUrl: APP_ICONS.gtransl },
           { icon: '💳', name: 'Revolut', cat: '환전·결제', desc: '유로화 환전 없이 현지 결제', iconUrl: APP_ICONS.revolut },
+        ],
+        macau:       [
+          { icon: '🗺️', name: 'Google Maps', cat: '지도', desc: '오프라인 지도 사전 다운로드 필수', iconUrl: APP_ICONS.gmaps },
+          { icon: '🚌', name: '마카오 버스', cat: '교통', desc: '시내버스 노선 · 카지노 셔틀 정보' },
+          { icon: '💬', name: 'Google 번역', cat: '번역', desc: '광둥어·포르투갈어 번역', iconUrl: APP_ICONS.gtransl },
+          { icon: '💳', name: 'Alipay HK', cat: 'QR결제', desc: '마카오 대부분의 상점 결제 가능' },
+        ],
+        beijing:     [
+          { icon: '🗺️', name: '바이두 지도', cat: '지도', desc: '중국 내 Google Maps 대신 사용' },
+          { icon: '🚇', name: '北京地铁', cat: '지하철', desc: '베이징 지하철 노선도·실시간 정보' },
+          { icon: '💳', name: '알리페이', cat: 'QR결제', desc: '중국 필수 결제 앱 (외국인 등록 필요)', iconUrl: APP_ICONS.alipay },
+          { icon: '💬', name: 'Google 번역', cat: '번역', desc: '중국어 카메라 번역 (VPN 필요)', iconUrl: APP_ICONS.gtransl },
+          { icon: '🔐', name: 'VPN 앱', cat: '인터넷', desc: '중국 내 구글·카톡 접속 필수' },
+        ],
+        qingdao:     [
+          { icon: '🗺️', name: '바이두 지도', cat: '지도', desc: '중국 내 Google Maps 대신 사용' },
+          { icon: '💳', name: '알리페이', cat: 'QR결제', desc: '중국 필수 결제 앱 (외국인 등록 필요)', iconUrl: APP_ICONS.alipay },
+          { icon: '💬', name: 'Google 번역', cat: '번역', desc: '중국어 카메라 번역 (VPN 필요)', iconUrl: APP_ICONS.gtransl },
+          { icon: '🔐', name: 'VPN 앱', cat: '인터넷', desc: '중국 내 구글·카톡 접속 필수' },
         ],
       };
 
@@ -10025,6 +10292,15 @@
             { icon: '💡', text: '여행자 보험 가입 권장', sub: 'E-Visa 신청 시 보험 정보 요구 가능' },
           ],
           tips: ['E-Visa는 온라인으로 즉시~수일 내 승인', '체류기간 최대 30일 (단수 입국)', '터키 리라(TRY) 현금 환전 또는 카드 결제', '이스탄불 카드 교통카드 필수 — 공항에서 구매 가능'],
+        },
+        // ── 마카오 ──
+        macau: {
+          visa: '무비자 30일', visaType: 'free',
+          docs: [
+            { icon: '✅', text: '여권 (유효기간 1개월 이상)', sub: '' },
+            { icon: '✅', text: '귀국 항공권', sub: '' },
+          ],
+          tips: ['한국 여권 30일 무비자', '홍콩-마카오 페리 이동 시 별도 입출국', '파타카(MOP) 또는 홍콩달러(HKD) 사용', '카지노 내 무료 와이파이 이용 가능'],
         },
       };
 
@@ -10385,7 +10661,7 @@
           var chk = o.querySelector('.sb-region-check');
           if (chk) chk.innerHTML = isActive ? checkSVG : '';
         });
-        var labels = {'':'어디든지','japan':'일본','sea':'동남아','europe':'유럽','east_asia':'동아시아','pacific':'괌·하와이·호주','domestic':'국내'};
+        var labels = {'':'어디든지','japan':'일본','sea':'동남아','europe':'유럽','east_asia':'동아시아','pacific':'괌·하와이·호주','domestic':'국내','resort':'휴양지'};
         var labelText = labels[val] || '어디든지';
         var disp = document.getElementById('region-display');
         var dispC = document.getElementById('region-display-c');
@@ -10624,7 +10900,8 @@
         shanghai:[31.23,121.47], barcelona:[41.39,2.16],
         nagoya:[35.18,136.91], siemreap:[13.36,103.86], rome:[41.90,12.50], london:[51.51,-0.13],
         kotakinabalu:[5.98,116.07], luangprabang:[19.89,102.13], madrid:[40.42,-3.70], kohsamui:[9.51,100.06],
-        interlaken:[46.69,7.87], dubrovnik:[42.65,18.09], istanbul:[41.01,28.98]
+        interlaken:[46.69,7.87], dubrovnik:[42.65,18.09], istanbul:[41.01,28.98],
+        macau:[22.20,113.55], beijing:[39.90,116.40], qingdao:[36.07,120.38]
       };
 
       // WMO 날씨 코드 → 한국어 매핑
@@ -10649,6 +10926,18 @@
         for (var ci = 0; ci < 3; ci++) {
           _fetchWeatherForCol(ci, 0);
         }
+      }
+
+      // ── 디바운스 래퍼: fetchWeather 중복 호출 방지 ──
+      // updateColumn이 3개 컬럼에 대해 연속 호출될 때
+      // fetchWeather가 3번 실행되어 9+개 API 요청이 발생하는 문제 해결
+      var _fetchWeatherTimer = null;
+      function fetchWeatherDebounced() {
+        if (_fetchWeatherTimer) clearTimeout(_fetchWeatherTimer);
+        _fetchWeatherTimer = setTimeout(function() {
+          _fetchWeatherTimer = null;
+          fetchWeather();
+        }, 300);
       }
 
       function _fetchWeatherForCol(colIdx, retryCount) {
@@ -10798,24 +11087,27 @@
         85: 'snow', 86: 'extreme-snow',
         95: 'thunderstorms', 96: 'thunderstorms', 99: 'thunderstorms'
       };
-      var METEO_CDN = 'https://raw.githubusercontent.com/basmilius/weather-icons/dev/production/fill/svg/';
-      var METEO_CDN = 'https://cdn.jsdelivr.net/gh/basmilius/weather-icons@master/production/fill/svg/';
-
-      function getWeatherIconUrl(wc, isNight) {
-        var base = WMO_ICON[wc] || 'clear';
-        // day/night 구분이 있는 아이콘
-        var hasDayNight = ['clear', 'partly-cloudy', 'overcast', 'drizzle', 'rain', 'snow', 'sleet', 'thunderstorms'];
-        if (hasDayNight.indexOf(base) !== -1) {
-          return METEO_CDN + base + '-' + (isNight ? 'night' : 'day') + '.svg';
-        }
-        return METEO_CDN + base + '.svg';
+      // 날씨 이모지 매핑 (외부 CDN 없이 바로 표시)
+      var WMO_EMOJI = {
+        0:'☀️', 1:'🌤️', 2:'⛅', 3:'☁️',
+        45:'🌫️', 48:'🌫️',
+        51:'🌦️', 53:'🌦️', 55:'🌧️',
+        56:'🌨️', 57:'🌨️',
+        61:'🌧️', 63:'🌧️', 65:'🌧️',
+        66:'🌨️', 67:'🌨️',
+        71:'🌨️', 73:'❄️', 75:'❄️', 77:'🌨️',
+        80:'🌦️', 81:'🌧️', 82:'⛈️',
+        85:'🌨️', 86:'❄️',
+        95:'⛈️', 96:'⛈️', 99:'⛈️'
+      };
+      function getWeatherEmoji(wc) {
+        return WMO_EMOJI[wc] || '🌡️';
       }
 
       function _updateWeatherCell(colIdx, d, _retryCount) {
         if (!d || typeof d._todayMax !== 'number') return;
         var ctEl = document.getElementById('cur-temp-' + colIdx);
         if (!ctEl) {
-          // DOM 미존재 시 200ms 후 재시도 (최대 3회)
           var retry = _retryCount || 0;
           if (retry < 3) {
             setTimeout(function() { _updateWeatherCell(colIdx, d, retry + 1); }, 200);
@@ -10829,8 +11121,8 @@
         var sEl = ctEl.querySelector('.sub');
         if (kEl) kEl.textContent = '낮(최고기온)';
         if (mEl) {
-          var iconUrl = getWeatherIconUrl(d._weatherCode, false);
-          mEl.innerHTML = '<img src="' + iconUrl + '" alt="' + d._weatherText + '" style="width:48px;height:48px;vertical-align:middle;margin-right:4px;">' + d._todayMax + '°';
+          var emoji = getWeatherEmoji(d._weatherCode);
+          mEl.innerHTML = '<span style="font-size:36px;vertical-align:middle;margin-right:6px;line-height:1;">' + emoji + '</span>' + d._todayMax + '°';
           mEl.style.color = '';
         }
         if (sEl) {
@@ -10854,8 +11146,8 @@
         var sEl = el.querySelector('.sub');
         if (kEl) kEl.textContent = '밤(최저기온)';
         if (mEl) {
-          var iconUrl = getWeatherIconUrl(d._weatherCode, true);
-          mEl.innerHTML = '<img src="' + iconUrl + '" alt="' + d._weatherText + '" style="width:48px;height:48px;vertical-align:middle;margin-right:4px;">' + d._todayMin + '°';
+          var emoji = getWeatherEmoji(d._weatherCode);
+          mEl.innerHTML = '<span style="font-size:36px;vertical-align:middle;margin-right:6px;line-height:1;">' + emoji + '</span>' + d._todayMin + '°';
           mEl.style.color = '';
         }
         if (sEl) {
@@ -10906,7 +11198,8 @@
           phuquoc: 'PQC', hochiminh: 'SGN', hanoi: 'HAN', boracay: 'MPH',
           phuket: 'HKT', hongkong: 'HKG', guam: 'GUM', hawaii: 'HNL',
           paris: 'PAR', kualalumpur: 'KUL', maldives: 'MLE',
-          sydney: 'SYD', shanghai: 'SHA', barcelona: 'BCN'
+          sydney: 'SYD', shanghai: 'SHA', barcelona: 'BCN',
+          macau: 'MFM', beijing: 'PEK', qingdao: 'TAO'
         };
 
         fetch('https://travel.le2jy.workers.dev/api/hotels/all')
@@ -11050,7 +11343,8 @@
           phuquoc: 'PQC', hochiminh: 'SGN', hanoi: 'HAN', boracay: 'MPH',
           phuket: 'HKT', hongkong: 'HKG', guam: 'GUM', hawaii: 'HNL',
           paris: 'PAR', kualalumpur: 'KUL', maldives: 'MLE',
-          sydney: 'SYD', shanghai: 'SHA', barcelona: 'BCN'
+          sydney: 'SYD', shanghai: 'SHA', barcelona: 'BCN',
+          macau: 'MFM', beijing: 'PEK', qingdao: 'TAO'
         };
 
         // 제휴 예약 링크 생성 — Skyscanner 검색 (한국어 UI)
@@ -11140,7 +11434,8 @@
           phuquoc:'PQC', hochiminh:'SGN', hanoi:'HAN', boracay:'MPH',
           phuket:'HKT', hongkong:'HKG', guam:'GUM', hawaii:'HNL',
           paris:'PAR', kualalumpur:'KUL', maldives:'MLE',
-          sydney:'SYD', shanghai:'SHA', barcelona:'BCN'
+          sydney:'SYD', shanghai:'SHA', barcelona:'BCN',
+          macau:'MFM', beijing:'PEK', qingdao:'TAO'
         };
 
         fetch('https://travel.le2jy.workers.dev/api/visa')
@@ -11842,7 +12137,7 @@
           var check = el.querySelector('.cv-row-check');
           if (check) check.innerHTML = isActive ? checkSvg : '';
         });
-        var labels = { '': '어디든지', 'japan': '일본', 'sea': '동남아시아', 'europe': '유럽', 'east_asia': '동아시아', 'pacific': '괌·하와이·호주' };
+        var labels = { '': '어디든지', 'japan': '일본', 'sea': '동남아시아', 'europe': '유럽', 'east_asia': '동아시아', 'pacific': '괌·하와이·호주', 'resort': '휴양지' };
         var txt = labels[val] || '어디든지';
         var el = document.getElementById('cvt-region-val'); if(el) el.textContent = txt;
         var src = document.getElementById('region-display'); if(src) src.textContent = txt;
