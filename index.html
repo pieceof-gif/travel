@@ -8922,10 +8922,10 @@
           if (typeof d._todayMax === 'number') {
             _updateWeatherCell(col, d);
           } else {
-            // API 로딩 전: 빈 상태 (로딩 중 스피너)
-            if (mainT) { mainT.innerHTML = '<span style="font-size:14px;color:var(--gray);opacity:0.5">☁️</span>'; }
+            // API 로딩 전: 빈 상태
+            if (mainT) { mainT.textContent = ''; }
             var subEl = ctEl.querySelector('.sub');
-            if (subEl) subEl.textContent = '날씨 불러오는 중...';
+            if (subEl) subEl.textContent = '';
           }
         }
         // 밤(최저기온) 캐시 확인
@@ -8935,9 +8935,9 @@
           var fcElTmp = document.getElementById('weekly-forecast-' + col);
           if (fcElTmp) {
             var fmTmp = fcElTmp.querySelector('.main');
-            if (fmTmp) { fmTmp.innerHTML = '<span style="font-size:14px;color:var(--gray);opacity:0.5">🌙</span>'; }
+            if (fmTmp) { fmTmp.textContent = ''; }
             var fsubTmp = fcElTmp.querySelector('.sub');
-            if (fsubTmp) fsubTmp.textContent = '날씨 불러오는 중...';
+            if (fsubTmp) fsubTmp.textContent = '';
           }
         }
 
