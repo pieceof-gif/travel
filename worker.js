@@ -23,6 +23,7 @@ const DEST_CITY = {
   KUL: 'Kuala Lumpur', MLE: 'Male', SYD: 'Sydney',
   SHA: 'Shanghai', BCN: 'Barcelona',
   CJU: 'Jeju', NHA: 'Nha Trang',
+  MFM: 'Macau', PEK: 'Beijing', TAO: 'Qingdao',
 };
 
 export default {
