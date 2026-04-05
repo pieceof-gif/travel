@@ -10625,7 +10625,19 @@
       function renderAppList(containerId, destId) {
         var el = document.getElementById(containerId);
         if (!el) return;
+        // DEST_APPS fallback: destId → 같은 나라 다른 도시 앱 → 빈 리스트
         var apps = DEST_APPS[destId];
+        if (!apps) {
+          var country = (typeof DEST_COUNTRY !== 'undefined' && DEST_COUNTRY[destId]) || '';
+          if (country) {
+            // 같은 나라의 다른 도시 앱을 찾아 fallback
+            for (var k in DEST_APPS) {
+              if (DEST_COUNTRY[k] === country && DEST_APPS[k] && DEST_APPS[k].length > 0) {
+                apps = DEST_APPS[k]; break;
+              }
+            }
+          }
+        }
         if (!apps || apps.length === 0) { el.innerHTML = ''; return; }
         el.innerHTML = '<div class="app-list">' +
           apps.map(function(a) {
@@ -11390,6 +11402,30 @@
           sEl.textContent = d._weatherText + ' / 강수확률 ' + d._todayRainProb + '%';
         }
       }
+      // ── 시작 검증: 매핑 누락 경고 ──
+      (function validateDestMappings() {
+        var requiredMaps = {
+          DEST_REGION: typeof DEST_REGION !== 'undefined' ? DEST_REGION : null,
+          DEST_COUNTRY: typeof DEST_COUNTRY !== 'undefined' ? DEST_COUNTRY : null,
+          DEST_COORDS: typeof DEST_COORDS !== 'undefined' ? DEST_COORDS : null,
+        };
+        var warnings = [];
+        v1_0_9_DEST_DATA.forEach(function(d) {
+          for (var mapName in requiredMaps) {
+            var map = requiredMaps[mapName];
+            if (map && !map[d.id]) {
+              warnings.push('[' + mapName + '] ' + d.id + ' 누락');
+            }
+          }
+        });
+        if (warnings.length > 0) {
+          console.warn('⚠️ [여행지 매핑 검증] 누락된 항목 ' + warnings.length + '개:');
+          warnings.forEach(function(w) { console.warn('  → ' + w); });
+        } else {
+          console.log('✅ [여행지 매핑 검증] 총 ' + v1_0_9_DEST_DATA.length + '개 여행지 — 필수 매핑 완료');
+        }
+      })();
+
       fetchWeather();
 
 
