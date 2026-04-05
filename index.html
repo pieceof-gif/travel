@@ -8518,6 +8518,8 @@
       function updateColumn(col, destIdx, budgetLimit, duration) {
         const d = v1_0_9_DEST_DATA[destIdx];
         if (!d) return;
+        // 현재 컬럼에 표시 중인 destIdx 저장 (날씨 API에서 참조)
+        if (typeof _currentDestIdx !== 'undefined') _currentDestIdx[col] = destIdx;
         const colEl = document.getElementById('col-' + col); // Fix: colEl must be defined here, not from outer scope
         const budget = budgetLimit || 150;
         const days = duration || 5;
@@ -11149,11 +11151,12 @@
 
       // ── 날씨 fetch 전역 버전 카운터 (race condition 방지) ──
       var _weatherRequestId = [0, 0, 0]; // 컬럼별 요청 ID
+      var _currentDestIdx = [-1, -1, -1]; // 컬럼별 현재 표시 중인 destIdx
 
       function fetchWeather() {
         // 현재 표시 중인 3개 여행지만 호출하여 API 절약
         for (var ci = 0; ci < 3; ci++) {
-          _fetchWeatherForCol(ci, 0);
+          _fetchWeatherForCol(ci, 0, _currentDestIdx[ci] >= 0 ? _currentDestIdx[ci] : undefined);
         }
       }
 
@@ -11169,19 +11172,24 @@
         }, 300);
       }
 
-      function _fetchWeatherForCol(colIdx, retryCount) {
+      function _fetchWeatherForCol(colIdx, retryCount, forcedDestIdx) {
         var MAX_RETRIES = 3;
         var TIMEOUT_MS = 10000; // 10초 타임아웃
 
-        var sel = document.getElementById('sel' + colIdx);
-        if (!sel || !sel.value) {
-          // sel 요소가 아직 없으면 200ms 후 재시도 (최대 3회)
-          if (retryCount < MAX_RETRIES) {
-            setTimeout(function() { _fetchWeatherForCol(colIdx, retryCount + 1); }, 200);
+        // forcedDestIdx가 있으면 sel.value 대신 사용 (동기화 타이밍 문제 방지)
+        var idx;
+        if (typeof forcedDestIdx === 'number' && forcedDestIdx >= 0) {
+          idx = forcedDestIdx;
+        } else {
+          var sel = document.getElementById('sel' + colIdx);
+          if (!sel || !sel.value) {
+            if (retryCount < MAX_RETRIES) {
+              setTimeout(function() { _fetchWeatherForCol(colIdx, retryCount + 1); }, 200);
+            }
+            return;
           }
-          return;
+          idx = parseInt(sel.value);
         }
-        var idx = parseInt(sel.value);
         if (isNaN(idx) || !v1_0_9_DEST_DATA[idx]) return;
         var dest = v1_0_9_DEST_DATA[idx];
 
