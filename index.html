@@ -590,6 +590,7 @@
       color: #1d1d1f;
       pointer-events: none;
       -webkit-appearance: none;
+      appearance: none;
       background: transparent;
       border: none;
     }
@@ -1276,6 +1277,7 @@
       padding: 16px 0 16px;
       z-index: 90;
       width: 100%;
+      overflow: visible;
     }
     .sticky-sel::after {
       content: '';
@@ -1820,13 +1822,17 @@
       .sel-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        overflow-x: hidden !important;
+        overflow: visible !important;
         gap: 8px;
         padding: 0 12px !important;
         box-sizing: border-box !important;
       }
-      /* sel-card: 데스크탑과 동일한 스타일 유지 */
-      .sel-card { padding: 12px 16px; }
+      /* sel-card: 데스크탑과 동일한 스타일 유지, 모바일에서 패딩 최소화 */
+      .sel-card { padding: 10px 12px; overflow: visible; }
+      /* 모바일에서 드롭다운 값 텍스트 축소 */
+      .dest-dd-val { font-size: 14px !important; }
+      /* 드롭다운 메뉴 overflow 보장 */
+      .dest-dd { overflow: visible !important; }
 
       /* Toast notification */
       #toast {
@@ -1880,14 +1886,7 @@
         padding-top: 16px !important;
       }
 
-      /* sticky-sel: 2열 그리드 */
-      .sel-grid {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        overflow-x: unset !important;
-        gap: 8px;
-        padding: 0 12px;
-      }
+      /* sticky-sel: 2열 그리드 (3번째 카드 숨김) */
       .sel-grid .sel-card:nth-child(3) { display: none !important; }
 
       /* 3번째 비교 컬럼 완전 숨김 */
@@ -1957,8 +1956,7 @@
       .dest-narrative { font-size: 12px; line-height: 1.5; margin: 4px 0 10px; }
       .dest-photo-wrap { height: 90px; border-radius: 10px; margin-bottom: 8px; }
 
-      /* sel-card: 데스크탑과 동일한 스타일 유지 */
-      .sel-card { padding: 12px 16px; }
+      /* sel-card: 모바일에서 overflow 보장 (중복 규칙 제거) */
 
 
 
@@ -3002,7 +3000,7 @@
       padding: 10px 0;
       font-size: 13px; color: #222; line-height: 1.4;
     }
-    .entry-doc-item:last-child { }
+
     .entry-doc-icon { flex-shrink: 0; font-size: 12px; margin-top: 2px; color: #888; }
     .entry-doc-sub { font-size: 11px; color: #999; display: block; margin-top: 1px; }
     .entry-tips-box {
@@ -3302,10 +3300,10 @@
           <span class="cv-row-check"></span>
         </div>
         <div class="cv-row-hr"></div>
-        <div class="cv-row" data-val="pacific" onclick="cvSelectRegion('pacific')">
+        <div class="cv-row" data-val="resort" onclick="cvSelectRegion('resort')">
           <div>
-            <div class="cv-row-title">🌺 괌·하와이·호주</div>
-            <div class="cv-row-sub">리조트 · 자연경관</div>
+            <div class="cv-row-title">🏖️ 휴양지</div>
+            <div class="cv-row-sub">괌 · 사이판 · 하와이 · 몰디브 등</div>
           </div>
           <span class="cv-row-check"></span>
         </div>
@@ -7935,6 +7933,23 @@
             { name: '프라이빗 요트 투어', price: '약 30만원', link: 'https://www.klook.com/ko/search/?query=saipan+yacht+tour' }
           ]
         },
+        food: {
+          low: [
+            { name: '차모로 BBQ', desc: '사이판 원주민 전통 구이 · 가라판 야시장', link: 'https://maps.google.com/?q=Chamorro+BBQ+Garapan+Saipan' },
+            { name: '포케 보울', desc: '하와이안 스타일 해산물 덮밥 · 1만원대', link: 'https://maps.google.com/?q=Poke+Bowl+Saipan' },
+            { name: '로컬 야시장 음식', desc: '켈라구엔·레드 라이스 등 전통 음식', link: 'https://maps.google.com/?q=Garapan+Night+Market+Saipan' }
+          ],
+          mid: [
+            { name: '킹피셔 레스토랑', desc: '해산물 요리 · 오션뷰 인기 레스토랑', link: 'https://maps.google.com/?q=Kingfisher+Restaurant+Saipan' },
+            { name: '차모로 그릴', desc: '현지식 플레이트 런치 · 2만원대', link: 'https://maps.google.com/?q=Chamorro+Grill+Saipan' },
+            { name: '일식 & 스시', desc: '사이판 일식당 · 일본인 관광 영향', link: 'https://maps.google.com/?q=Japanese+restaurant+Saipan' }
+          ],
+          high: [
+            { name: '하얏트 레스토랑 디너', desc: '프라이빗 비치뷰 코스 요리 · 5만원+', link: 'https://maps.google.com/?q=Hyatt+Regency+Saipan+restaurant' },
+            { name: '랍스터 씨푸드 디너', desc: '신선한 태평양 해산물 풀코스', link: 'https://maps.google.com/?q=Lobster+seafood+Saipan' },
+            { name: '선셋 바베큐', desc: '해변 선셋 뷔페 바베큐 · 리조트 전용', link: 'https://maps.google.com/?q=Sunset+BBQ+Saipan' }
+          ]
+        },
         hotels: {
           low: [
             { name: 'Saipan World Resort', stars: 3, desc: '가라판 중심, 가성비 좋은 리조트', priceRange: '약 10-15만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Saipan+World+Resort&dest_type=city' }
@@ -7997,6 +8012,23 @@
             { name: '럭셔리 스파', price: '약 8만원', link: 'https://www.klook.com/ko/search/?query=palawan+luxury+spa' }
           ]
         },
+        food: {
+          low: [
+            { name: '이니하우 (구운 생선)', desc: '필리핀 전통 생선 요리 · 망고·토마토 소스', link: 'https://maps.google.com/?q=Inihaw+na+Isda+Palawan' },
+            { name: '씨푸드 야시장', desc: '푸에르토 프린세사 야시장 해산물', link: 'https://maps.google.com/?q=Puerto+Princesa+night+market' },
+            { name: '할로할로', desc: '필리핀 빙수 디저트 · 5천원', link: 'https://maps.google.com/?q=Halo+Halo+Palawan' }
+          ],
+          mid: [
+            { name: '카파이 가든 레스토랑', desc: '엘니도 오션뷰 레스토랑 · 해산물', link: 'https://maps.google.com/?q=Kapai+Garden+Restaurant+El+Nido' },
+            { name: '크림슨 비치 레스토랑', desc: '코론 해変 뷰 · 신선한 시푸드', link: 'https://maps.google.com/?q=Coron+beach+restaurant' },
+            { name: '아도보 & 시니강', desc: '필리핀 국민 요리 · 탕·조림', link: 'https://maps.google.com/?q=Adobo+Sinigang+restaurant+Palawan' }
+          ],
+          high: [
+            { name: '엘니도 리조트 다이닝', desc: '프라이빗 비치 파인다이닝 · 현지·서양식', link: 'https://maps.google.com/?q=El+Nido+Resorts+restaurant' },
+            { name: '팡라시안 아일랜드 디너', desc: '고립된 섬 비치 바베큐 디너', link: 'https://maps.google.com/?q=Pangulasian+Island+restaurant+El+Nido' },
+            { name: '랑곤고 코코넛 크랩', desc: '팔라완 특산 코코넛 크랩 요리', link: 'https://maps.google.com/?q=coconut+crab+Palawan' }
+          ]
+        },
         hotels: {
           low: [
             { name: 'Astoria Palawan', stars: 3, desc: '공항 근처, 수영장 포함', priceRange: '약 5-8만원/박', link: 'https://www.booking.com/searchresults.ko.html?ss=Astoria+Palawan&dest_type=city' }
@@ -8057,6 +8089,23 @@
             { name: '체험 다이빙', price: '약 8만원', link: 'https://www.klook.com/ko/search/?query=sanya+diving+experience' },
             { name: '요트 파티', price: '약 15만원', link: 'https://www.klook.com/ko/search/?query=sanya+yacht+party' },
             { name: '럭셔리 스파 (리조트)', price: '약 10만원', link: 'https://www.klook.com/ko/search/?query=sanya+luxury+spa' }
+          ]
+        },
+        food: {
+          low: [
+            { name: '하이난 닭밥 (하이난지판)', desc: '삼아 대표 음식 · 3-5천원', link: 'https://maps.google.com/?q=Hainanese+chicken+rice+Sanya' },
+            { name: '씨푸드 야시장', desc: '해선시장 해산물 구이 · 2만원대', link: 'https://maps.google.com/?q=Sanya+seafood+night+market' },
+            { name: '코코넛 스낵', desc: '하이난 특산 코코넛 음료·과자', link: 'https://maps.google.com/?q=coconut+snack+Sanya' }
+          ],
+          mid: [
+            { name: '따이취안 씨푸드', desc: '큰 랍스터·새우 시푸드 정식 · 5만원대', link: 'https://maps.google.com/?q=seafood+restaurant+Sanya' },
+            { name: '하이난 훠궈', desc: '동남아식 해산물 훠궈 · 현지 인기', link: 'https://maps.google.com/?q=hotpot+restaurant+Sanya' },
+            { name: '딤섬 & 조식', desc: '중국식 조식 뷔페 · 리조트 조식', link: 'https://maps.google.com/?q=dim+sum+Sanya' }
+          ],
+          high: [
+            { name: '아틀란티스 씨드래곤 레스토랑', desc: '아틀란티스 리조트 오션뷰 파인다이닝', link: 'https://maps.google.com/?q=Atlantis+Sanya+restaurant' },
+            { name: 'MGM 레스토랑 디너', desc: 'MGM Grand 서양식·중식 코스 · 10만원+', link: 'https://maps.google.com/?q=MGM+Grand+Sanya+restaurant' },
+            { name: '힐튼 선셋 씨푸드', desc: '야롱만 힐튼 해산물 뷔페', link: 'https://maps.google.com/?q=Hilton+Sanya+Yalong+Bay+restaurant' }
           ]
         },
         hotels: {
@@ -9152,7 +9201,7 @@
         }
 
         const effectiveTier = window.wizardTierOverride || tier;
-        const getTiered = obj => Array.isArray(obj) ? obj : (obj[effectiveTier] || obj.mid || []);
+        const getTiered = obj => !obj ? [] : Array.isArray(obj) ? obj : (obj[effectiveTier] || obj.mid || []);
         renderAttrList('sights-' + col, getTiered(d.sights));
         renderAttrList('exps-' + col, getTiered(d.exps));
         renderFoodList('food-' + col, getTiered(d.food));
@@ -9192,6 +9241,9 @@
           'sydney':     { label: '대한항공 · 콴타스 비즈니스', desc: '직항 10시간 비즈니스석 · 왕복 500만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/syd/?adults=1&cabinclass=business' },
           'shanghai':   { label: '대한항공 · 중국동방 비즈니스', desc: '직항 2시간 비즈니스석 · 왕복 80만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pvg/?adults=1&cabinclass=business' },
           'barcelona':  { label: '대한항공 · 이베리아 비즈니스', desc: '경유 비즈니스석 · 왕복 400만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bcn/?adults=1&cabinclass=business' },
+          'saipan':     { label: '대한항공 · 유나이티드 비즈니스', desc: '직항 4.5시간 비즈니스석 · 왕복 180만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/spn/?adults=1&cabinclass=business' },
+          'palawan':    { label: '필리핀항공 비즈니스 (마닐라 경유)', desc: '마닐라 경유 비즈니스석 · 왕복 200만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pps/?adults=1&cabinclass=business' },
+          'sanya':      { label: '중국남방항공 비즈니스', desc: '직항 4시간 비즈니스석 · 왕복 150만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/syx/?adults=1&cabinclass=business' },
         };
         const _vipFlightTips = [
           '✈️ 비즈니스석 예약은 출발 2~3개월 전 마일리지 좌석 우선 확인',
@@ -9226,7 +9278,7 @@
             end = `${endYear}${d2[0].padStart(2, '0')}${d2[1].replace('일', '').padStart(2, '0')}`;
           } catch (e) {}
         }
-        const codes = { 'lisbon': 'LIS', 'danang': 'DAD', 'jeju': 'CJU', 'taipei': 'TPE', 'osaka': 'KIX', 'tokyo': 'NRT', 'bangkok': 'BKK', 'bali': 'DPS', 'chiangmai': 'CNX', 'singapore': 'SIN', 'cebu': 'CEB', 'nhatrang': 'CXR', 'fukuoka': 'FUK', 'sapporo': 'CTS', 'okinawa': 'OKA', 'kyoto': 'KIX', 'miyakojima': 'SHI', 'phuquoc': 'PQC', 'hochiminh': 'SGN', 'hanoi': 'HAN', 'boracay': 'MPH', 'phuket': 'HKT', 'hongkong': 'HKG', 'guam': 'GUM', 'hawaii': 'HNL', 'paris': 'CDG', 'kualalumpur': 'KUL', 'maldives': 'MLE', 'sydney': 'SYD', 'shanghai': 'PVG', 'barcelona': 'BCN' };
+        const codes = { 'lisbon': 'LIS', 'danang': 'DAD', 'jeju': 'CJU', 'taipei': 'TPE', 'osaka': 'KIX', 'tokyo': 'NRT', 'bangkok': 'BKK', 'bali': 'DPS', 'chiangmai': 'CNX', 'singapore': 'SIN', 'cebu': 'CEB', 'nhatrang': 'CXR', 'fukuoka': 'FUK', 'sapporo': 'CTS', 'okinawa': 'OKA', 'kyoto': 'KIX', 'miyakojima': 'SHI', 'phuquoc': 'PQC', 'hochiminh': 'SGN', 'hanoi': 'HAN', 'boracay': 'MPH', 'phuket': 'HKT', 'hongkong': 'HKG', 'guam': 'GUM', 'hawaii': 'HNL', 'paris': 'CDG', 'kualalumpur': 'KUL', 'maldives': 'MLE', 'sydney': 'SYD', 'shanghai': 'PVG', 'barcelona': 'BCN', 'sanya': 'SYX', 'saipan': 'SPN', 'palawan': 'PPS' };
         const code = codes[d.id] || 'ANY';
         const isInternational = d.id !== 'jeju';
         const link = isInternational
@@ -9655,6 +9707,16 @@
       }
 
       function startSearch() {
+        // 모바일 하프팝업이 열려있으면 자연스럽게 닫기
+        if (window.innerWidth < 744) {
+          var _sheet = document.getElementById('cv-search-sheet');
+          if (_sheet && _sheet.classList.contains('open')) {
+            _sheet.classList.remove('open');
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
+          }
+        }
         var budgetVal = document.getElementById('budget-input-home').value;
         // Default to cheapest if no budget selected
         if (!budgetVal) {
@@ -11119,7 +11181,10 @@
         maldives:    'https://images.unsplash.com/photo-1573843981267-be1480e65a72?w=480&h=320&fit=crop&q=80',
         sydney:      'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=480&h=320&fit=crop&q=80',
         shanghai:    'https://images.unsplash.com/photo-1537531829901-a289ce15ad4d?w=480&h=320&fit=crop&q=80',
-        barcelona:   'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=480&h=320&fit=crop&q=80'
+        barcelona:   'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=480&h=320&fit=crop&q=80',
+        saipan:      'https://images.unsplash.com/photo-1596401057633-54a921691d8e?w=480&h=320&fit=crop&q=80',
+        palawan:     'https://images.unsplash.com/photo-1553603227-2358aabe821e?w=480&h=320&fit=crop&q=80',
+        sanya:       'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=480&h=320&fit=crop&q=80'
       };
 
       // ── 여행지 플래그 이모지 ──
@@ -11128,7 +11193,8 @@
         bangkok:'🇹🇭', bali:'🇮🇩', chiangmai:'🇹🇭', singapore:'🇸🇬', cebu:'🇵🇭', nhatrang:'🇻🇳',
         fukuoka:'🇯🇵', sapporo:'🇯🇵', okinawa:'🇯🇵', kyoto:'🇯🇵', phuquoc:'🇻🇳', hochiminh:'🇻🇳',
         hanoi:'🇻🇳', boracay:'🇵🇭', phuket:'🇹🇭', hongkong:'🇭🇰', guam:'🇬🇺', hawaii:'🇺🇸',
-        paris:'🇫🇷', kualalumpur:'🇲🇾', maldives:'🇲🇻', sydney:'🇦🇺', shanghai:'🇨🇳', barcelona:'🇪🇸'
+        paris:'🇫🇷', kualalumpur:'🇲🇾', maldives:'🇲🇻', sydney:'🇦🇺', shanghai:'🇨🇳', barcelona:'🇪🇸',
+        saipan:'🇲🇵', palawan:'🇵🇭', sanya:'🇨🇳'
       };
 
       var DEST_COORDS = {
@@ -11445,7 +11511,8 @@
           boracay:'Boracay', phuket:'Phuket', hongkong:'Hong+Kong',
           guam:'Guam', hawaii:'Honolulu', paris:'Paris',
           kualalumpur:'Kuala+Lumpur', maldives:'Maldives',
-          sydney:'Sydney', shanghai:'Shanghai', barcelona:'Barcelona'
+          sydney:'Sydney', shanghai:'Shanghai', barcelona:'Barcelona',
+          saipan:'Saipan', palawan:'Puerto+Princesa', sanya:'Sanya'
         };
         var _makeBookingComLink = function(destId) {
           var city = BOOKING_CITY[destId] || '';
@@ -12037,6 +12104,9 @@
         barcelona:   { rainy:[10,11,12],    heat:[7,8],       disaster:[] },
         maldives:    { rainy:[5,6,7,8,9],   heat:[],          disaster:[] },
         sydney:      { rainy:[6,7,8],       heat:[12,1,2],    disaster:[] },
+        saipan:      { rainy:[7,8,9,10],    heat:[6,7,8,9],   disaster:[7,8,9,10] },
+        palawan:     { rainy:[6,7,8,9,10],  heat:[3,4,5],     disaster:[10,11] },
+        sanya:       { rainy:[5,6,7,8,9,10],heat:[6,7,8],     disaster:[7,8,9,10] },
       };
 
       function getTravelMonth() {
@@ -12057,10 +12127,10 @@
         {
           q: '어떤 여행을 꿈꾸세요?', e: WIZ_ICONS.globe,
           opts: [
-            { e: WIZ_ICONS.waves,  label: '해변·휴양', bonus: { danang: 55, jeju: 50, lisbon: 5, osaka: -55, taipei: -55, bali: 60, nhatrang: 50, cebu: 55, bangkok: -10, chiangmai: -15, singapore: -25, tokyo: -50, fukuoka: -30, sapporo: -40, okinawa: 60, kyoto: -35, miyakojima: 65, phuquoc: 60, hochiminh: -20, hanoi: -20, boracay: 65, phuket: 55, hongkong: -30, guam: 55, hawaii: 55, paris: -40, kualalumpur: -20, maldives: 70, sydney: 10, shanghai: -40, barcelona: 20 } },
-            { e: WIZ_ICONS.pin,    label: '도시 탐험', bonus: { osaka: 40, taipei: 40, lisbon: 30, danang: -30, jeju: -40, tokyo: 45, singapore: 35, bangkok: 25, chiangmai: 10, bali: -40, cebu: -40, nhatrang: -30, fukuoka: 40, sapporo: 15, okinawa: -30, kyoto: 45, miyakojima: -40, phuquoc: -35, hochiminh: 30, hanoi: 30, boracay: -45, phuket: -30, hongkong: 45, guam: -30, hawaii: -20, paris: 50, kualalumpur: 30, maldives: -50, sydney: 35, shanghai: 40, barcelona: 45 } },
-            { e: WIZ_ICONS.cloud,  label: '자연·액티비티', bonus: { jeju: 50, danang: 20, lisbon: 20, osaka: -20, taipei: -20, chiangmai: 45, bali: 35, cebu: 20, nhatrang: 15, bangkok: -10, singapore: -30, tokyo: -15, fukuoka: 10, sapporo: 40, okinawa: 35, kyoto: -20, miyakojima: 40, phuquoc: 20, hochiminh: -10, hanoi: -10, boracay: 25, phuket: 15, hongkong: -25, guam: 20, hawaii: 35, paris: -30, kualalumpur: 0, maldives: 25, sydney: 25, shanghai: -30, barcelona: -10 } },
-            { e: WIZ_ICONS.coffee, label: '미식 여행', bonus: { osaka: 45, taipei: 40, danang: 20, lisbon: 15, jeju: -10, tokyo: 50, singapore: 40, bangkok: 35, chiangmai: 20, nhatrang: 15, bali: 5, cebu: 5, fukuoka: 55, sapporo: 30, okinawa: 15, kyoto: 50, miyakojima: 5, phuquoc: 5, hochiminh: 35, hanoi: 35, boracay: 5, phuket: 20, hongkong: 45, guam: 5, hawaii: 15, paris: 55, kualalumpur: 30, maldives: 5, sydney: 25, shanghai: 40, barcelona: 50 } },
+            { e: WIZ_ICONS.waves,  label: '해변·휴양', bonus: { danang: 55, jeju: 50, lisbon: 5, osaka: -55, taipei: -55, bali: 60, nhatrang: 50, cebu: 55, bangkok: -10, chiangmai: -15, singapore: -25, tokyo: -50, fukuoka: -30, sapporo: -40, okinawa: 60, kyoto: -35, miyakojima: 65, phuquoc: 60, hochiminh: -20, hanoi: -20, boracay: 65, phuket: 55, hongkong: -30, guam: 55, hawaii: 55, paris: -40, kualalumpur: -20, maldives: 70, sydney: 10, shanghai: -40, barcelona: 20, saipan: 60, palawan: 65, sanya: 55 } },
+            { e: WIZ_ICONS.pin,    label: '도시 탐험', bonus: { osaka: 40, taipei: 40, lisbon: 30, danang: -30, jeju: -40, tokyo: 45, singapore: 35, bangkok: 25, chiangmai: 10, bali: -40, cebu: -40, nhatrang: -30, fukuoka: 40, sapporo: 15, okinawa: -30, kyoto: 45, miyakojima: -40, phuquoc: -35, hochiminh: 30, hanoi: 30, boracay: -45, phuket: -30, hongkong: 45, guam: -30, hawaii: -20, paris: 50, kualalumpur: 30, maldives: -50, sydney: 35, shanghai: 40, barcelona: 45, saipan: -35, palawan: -40, sanya: -20 } },
+            { e: WIZ_ICONS.cloud,  label: '자연·액티비티', bonus: { jeju: 50, danang: 20, lisbon: 20, osaka: -20, taipei: -20, chiangmai: 45, bali: 35, cebu: 20, nhatrang: 15, bangkok: -10, singapore: -30, tokyo: -15, fukuoka: 10, sapporo: 40, okinawa: 35, kyoto: -20, miyakojima: 40, phuquoc: 20, hochiminh: -10, hanoi: -10, boracay: 25, phuket: 15, hongkong: -25, guam: 20, hawaii: 35, paris: -30, kualalumpur: 0, maldives: 25, sydney: 25, shanghai: -30, barcelona: -10, saipan: 25, palawan: 35, sanya: 10 } },
+            { e: WIZ_ICONS.coffee, label: '미식 여행', bonus: { osaka: 45, taipei: 40, danang: 20, lisbon: 15, jeju: -10, tokyo: 50, singapore: 40, bangkok: 35, chiangmai: 20, nhatrang: 15, bali: 5, cebu: 5, fukuoka: 55, sapporo: 30, okinawa: 15, kyoto: 50, miyakojima: 5, phuquoc: 5, hochiminh: 35, hanoi: 35, boracay: 5, phuket: 20, hongkong: 45, guam: 5, hawaii: 15, paris: 55, kualalumpur: 30, maldives: 5, sydney: 25, shanghai: 40, barcelona: 50, saipan: 5, palawan: 5, sanya: 20 } },
           ]
         },
         {
@@ -12075,18 +12145,18 @@
         {
           q: '허용 가능한 비행 시간은?', e: WIZ_ICONS.rocket,
           opts: [
-            { e: WIZ_ICONS.clock,  label: '1–2시간 (국내·근거리)', bonus: { jeju: 70, danang: -40, osaka: -30, taipei: -30, lisbon: -60, tokyo: -20, singapore: -40, bangkok: -40, bali: -55, chiangmai: -40, cebu: -45, nhatrang: -40, fukuoka: 65, sapporo: -10, okinawa: 10, kyoto: -20, miyakojima: -40, phuquoc: -40, hochiminh: -40, hanoi: -40, boracay: -45, phuket: -45, hongkong: -20, guam: -35, hawaii: -60, paris: -70, kualalumpur: -45, maldives: -65, sydney: -65, shanghai: 20, barcelona: -70 } },
-            { e: WIZ_ICONS.rocket, label: '3–5시간 (아시아권)', bonus: { taipei: 30, osaka: 30, danang: 30, jeju: -20, lisbon: -50, tokyo: 25, singapore: 25, bangkok: 30, cebu: 25, nhatrang: 30, chiangmai: 25, bali: 15, fukuoka: 15, sapporo: 15, okinawa: 30, kyoto: 20, miyakojima: 35, phuquoc: 20, hochiminh: 25, hanoi: 25, boracay: 20, phuket: 20, hongkong: 30, guam: 15, hawaii: -30, paris: -55, kualalumpur: 15, maldives: -30, sydney: -45, shanghai: 30, barcelona: -55 } },
-            { e: WIZ_ICONS.globe,  label: '멀리도 좋아요', bonus: { lisbon: 60, danang: 5, osaka: 5, taipei: 5, jeju: -10, bali: 15, cebu: 10, bangkok: 5, chiangmai: 5, singapore: 10, nhatrang: 5, tokyo: 5, fukuoka: -10, sapporo: 5, okinawa: 5, kyoto: 5, miyakojima: 10, phuquoc: 15, hochiminh: 10, hanoi: 10, boracay: 15, phuket: 15, hongkong: 5, guam: 20, hawaii: 30, paris: 40, kualalumpur: 10, maldives: 35, sydney: 30, shanghai: -5, barcelona: 40 } },
+            { e: WIZ_ICONS.clock,  label: '1–2시간 (국내·근거리)', bonus: { jeju: 70, danang: -40, osaka: -30, taipei: -30, lisbon: -60, tokyo: -20, singapore: -40, bangkok: -40, bali: -55, chiangmai: -40, cebu: -45, nhatrang: -40, fukuoka: 65, sapporo: -10, okinawa: 10, kyoto: -20, miyakojima: -40, phuquoc: -40, hochiminh: -40, hanoi: -40, boracay: -45, phuket: -45, hongkong: -20, guam: -35, hawaii: -60, paris: -70, kualalumpur: -45, maldives: -65, sydney: -65, shanghai: 20, barcelona: -70, saipan: -30, palawan: -45, sanya: -35 } },
+            { e: WIZ_ICONS.rocket, label: '3–5시간 (아시아권)', bonus: { taipei: 30, osaka: 30, danang: 30, jeju: -20, lisbon: -50, tokyo: 25, singapore: 25, bangkok: 30, cebu: 25, nhatrang: 30, chiangmai: 25, bali: 15, fukuoka: 15, sapporo: 15, okinawa: 30, kyoto: 20, miyakojima: 35, phuquoc: 20, hochiminh: 25, hanoi: 25, boracay: 20, phuket: 20, hongkong: 30, guam: 15, hawaii: -30, paris: -55, kualalumpur: 15, maldives: -30, sydney: -45, shanghai: 30, barcelona: -55, saipan: 15, palawan: 20, sanya: 25 } },
+            { e: WIZ_ICONS.globe,  label: '멀리도 좋아요', bonus: { lisbon: 60, danang: 5, osaka: 5, taipei: 5, jeju: -10, bali: 15, cebu: 10, bangkok: 5, chiangmai: 5, singapore: 10, nhatrang: 5, tokyo: 5, fukuoka: -10, sapporo: 5, okinawa: 5, kyoto: 5, miyakojima: 10, phuquoc: 15, hochiminh: 10, hanoi: 10, boracay: 15, phuket: 15, hongkong: 5, guam: 20, hawaii: 30, paris: 40, kualalumpur: 10, maldives: 35, sydney: 30, shanghai: -5, barcelona: 40, saipan: 20, palawan: 15, sanya: 10 } },
           ]
         },
         {
           q: '여행에서 가장 중요한 건?', e: WIZ_ICONS.star,
           opts: [
-            { e: WIZ_ICONS.wallet,  label: '최대한 저렴하게', bonus: { danang: 40, jeju: 25, taipei: 25, osaka: 10, lisbon: -30, nhatrang: 50, chiangmai: 45, bangkok: 35, cebu: 35, bali: 20, singapore: -50, tokyo: -10, fukuoka: 30, sapporo: 5, okinawa: 10, kyoto: 5, miyakojima: -20, phuquoc: 40, hochiminh: 50, hanoi: 50, boracay: 25, phuket: 20, hongkong: -20, guam: -15, hawaii: -60, paris: -70, kualalumpur: 35, maldives: -75, sydney: -50, shanghai: 35, barcelona: -65 }, tierOverride: 'low' },
-            { e: WIZ_ICONS.shield,  label: '안전·치안이 최우선', bonus: { jeju: 45, osaka: 30, taipei: 25, lisbon: 10, danang: -10, singapore: 45, tokyo: 35, chiangmai: 5, bali: -5, bangkok: -15, cebu: -20, nhatrang: -20, fukuoka: 30, sapporo: 25, okinawa: 25, kyoto: 30, miyakojima: 30, phuquoc: -5, hochiminh: -10, hanoi: -5, boracay: -5, phuket: 0, hongkong: 15, guam: 20, hawaii: 25, paris: 5, kualalumpur: 5, maldives: 20, sydney: 20, shanghai: 5, barcelona: 5 } },
-            { e: WIZ_ICONS.sun,     label: '완벽한 날씨와 분위기', bonus: { lisbon: 30, danang: 30, osaka: 20, jeju: 15, taipei: 10, bali: 40, nhatrang: 30, cebu: 25, chiangmai: 20, bangkok: 15, singapore: 10, tokyo: 10, fukuoka: 15, sapporo: 20, okinawa: 30, kyoto: 20, miyakojima: 55, phuquoc: 30, hochiminh: 10, hanoi: 10, boracay: 35, phuket: 25, hongkong: 15, guam: 25, hawaii: 35, paris: 30, kualalumpur: 5, maldives: 45, sydney: 20, shanghai: 5, barcelona: 30 } },
-            { e: WIZ_ICONS.sparkle, label: '잊지 못할 특별한 체험', bonus: { lisbon: 35, osaka: 25, taipei: 20, danang: 15, jeju: 10, tokyo: 30, singapore: 25, bali: 25, chiangmai: 20, bangkok: 20, cebu: 20, nhatrang: 10, fukuoka: 20, sapporo: 30, okinawa: 25, kyoto: 30, miyakojima: 40, phuquoc: 15, hochiminh: 15, hanoi: 15, boracay: 25, phuket: 20, hongkong: 20, guam: 25, hawaii: 40, paris: 45, kualalumpur: 10, maldives: 50, sydney: 25, shanghai: 10, barcelona: 35 } },
+            { e: WIZ_ICONS.wallet,  label: '최대한 저렴하게', bonus: { danang: 40, jeju: 25, taipei: 25, osaka: 10, lisbon: -30, nhatrang: 50, chiangmai: 45, bangkok: 35, cebu: 35, bali: 20, singapore: -50, tokyo: -10, fukuoka: 30, sapporo: 5, okinawa: 10, kyoto: 5, miyakojima: -20, phuquoc: 40, hochiminh: 50, hanoi: 50, boracay: 25, phuket: 20, hongkong: -20, guam: -15, hawaii: -60, paris: -70, kualalumpur: 35, maldives: -75, sydney: -50, shanghai: 35, barcelona: -65, saipan: -10, palawan: 30, sanya: 15 }, tierOverride: 'low' },
+            { e: WIZ_ICONS.shield,  label: '안전·치안이 최우선', bonus: { jeju: 45, osaka: 30, taipei: 25, lisbon: 10, danang: -10, singapore: 45, tokyo: 35, chiangmai: 5, bali: -5, bangkok: -15, cebu: -20, nhatrang: -20, fukuoka: 30, sapporo: 25, okinawa: 25, kyoto: 30, miyakojima: 30, phuquoc: -5, hochiminh: -10, hanoi: -5, boracay: -5, phuket: 0, hongkong: 15, guam: 20, hawaii: 25, paris: 5, kualalumpur: 5, maldives: 20, sydney: 20, shanghai: 5, barcelona: 5, saipan: 20, palawan: -5, sanya: 10 } },
+            { e: WIZ_ICONS.sun,     label: '완벽한 날씨와 분위기', bonus: { lisbon: 30, danang: 30, osaka: 20, jeju: 15, taipei: 10, bali: 40, nhatrang: 30, cebu: 25, chiangmai: 20, bangkok: 15, singapore: 10, tokyo: 10, fukuoka: 15, sapporo: 20, okinawa: 30, kyoto: 20, miyakojima: 55, phuquoc: 30, hochiminh: 10, hanoi: 10, boracay: 35, phuket: 25, hongkong: 15, guam: 25, hawaii: 35, paris: 30, kualalumpur: 5, maldives: 45, sydney: 20, shanghai: 5, barcelona: 30, saipan: 30, palawan: 35, sanya: 25 } },
+            { e: WIZ_ICONS.sparkle, label: '잊지 못할 특별한 체험', bonus: { lisbon: 35, osaka: 25, taipei: 20, danang: 15, jeju: 10, tokyo: 30, singapore: 25, bali: 25, chiangmai: 20, bangkok: 20, cebu: 20, nhatrang: 10, fukuoka: 20, sapporo: 30, okinawa: 25, kyoto: 30, miyakojima: 40, phuquoc: 15, hochiminh: 15, hanoi: 15, boracay: 25, phuket: 20, hongkong: 20, guam: 25, hawaii: 40, paris: 45, kualalumpur: 10, maldives: 50, sydney: 25, shanghai: 10, barcelona: 35, saipan: 20, palawan: 30, sanya: 15 } },
           ]
         },
       ];
@@ -12161,7 +12231,7 @@
 
         wizState.answers[qi] = optIdx;
         wizState.openRow = null;
-        const bonus = { lisbon: 0, danang: 0, jeju: 0, taipei: 0, osaka: 0, tokyo: 0, bangkok: 0, bali: 0, chiangmai: 0, singapore: 0, cebu: 0, nhatrang: 0, fukuoka: 0, sapporo: 0, okinawa: 0, kyoto: 0, miyakojima: 0, phuquoc: 0, hochiminh: 0, hanoi: 0, boracay: 0, phuket: 0, hongkong: 0, guam: 0, hawaii: 0, paris: 0, kualalumpur: 0, maldives: 0, sydney: 0, shanghai: 0, barcelona: 0 };
+        const bonus = {}; v1_0_9_DEST_DATA.forEach(function(d){ bonus[d.id] = 0; });
         window.wizardTierOverride = null;
         var _travelMonth = getTravelMonth(); // 여행 월 한 번만 계산
         WIZ_Q.forEach((q, si) => {
@@ -12197,7 +12267,7 @@
       function resetWizard() {
         wizState.answers = {};
         wizState.openRow = null;
-        window.wizardBonus = { lisbon: 0, danang: 0, jeju: 0, taipei: 0, osaka: 0, tokyo: 0, bangkok: 0, bali: 0, chiangmai: 0, singapore: 0, cebu: 0, nhatrang: 0, fukuoka: 0, sapporo: 0, okinawa: 0, kyoto: 0, miyakojima: 0, phuquoc: 0, hochiminh: 0, hanoi: 0, boracay: 0, phuket: 0, hongkong: 0, guam: 0, hawaii: 0, paris: 0, kualalumpur: 0, maldives: 0, sydney: 0, shanghai: 0, barcelona: 0 };
+        window.wizardBonus = {}; v1_0_9_DEST_DATA.forEach(function(d){ window.wizardBonus[d.id] = 0; });
         window.wizardTierOverride = null;
         updateResultsByFilters();
         renderWizList();
