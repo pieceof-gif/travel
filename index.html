@@ -11177,11 +11177,11 @@
         var TIMEOUT_MS = 10000; // 10초 타임아웃
 
         // forcedDestIdx가 있으면 sel.value 대신 사용 (동기화 타이밍 문제 방지)
+        var sel = document.getElementById('sel' + colIdx);
         var idx;
         if (typeof forcedDestIdx === 'number' && forcedDestIdx >= 0) {
           idx = forcedDestIdx;
         } else {
-          var sel = document.getElementById('sel' + colIdx);
           if (!sel || !sel.value) {
             if (retryCount < MAX_RETRIES) {
               setTimeout(function() { _fetchWeatherForCol(colIdx, retryCount + 1); }, 200);
@@ -11206,8 +11206,8 @@
           return;
         }
 
-        // Race condition 방지: 요청 시점 sel 값 캡처 + 요청 ID 증가
-        var requestSelValue = sel.value;
+        // Race condition 방지: 요청 시점 destIdx 캡처 + 요청 ID 증가
+        var requestDestIdx = idx;
         _weatherRequestId[colIdx] = (_weatherRequestId[colIdx] || 0) + 1;
         var myRequestId = _weatherRequestId[colIdx];
 
@@ -11235,10 +11235,9 @@
           .then(function(data) {
             if (timeoutId) clearTimeout(timeoutId);
 
-            // Race condition 체크: 응답이 온 시점의 sel 값이 요청 시점과 다르면 무시
-            var currentSel = document.getElementById('sel' + colIdx);
-            if (!currentSel || currentSel.value !== requestSelValue) {
-              console.log('[Weather] col' + colIdx + ': 여행지 변경됨, 응답 무시 (요청: ' + requestSelValue + ', 현재: ' + (currentSel ? currentSel.value : 'N/A') + ')');
+            // Race condition 체크: 현재 컬럼의 destIdx가 요청 시점과 다르면 무시
+            if (typeof _currentDestIdx !== 'undefined' && _currentDestIdx[colIdx] !== requestDestIdx) {
+              console.log('[Weather] col' + colIdx + ': 여행지 변경됨, 응답 무시');
               return;
             }
             // 요청 ID 체크: 더 최신 요청이 있으면 이 응답 무시
