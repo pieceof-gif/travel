@@ -24,6 +24,7 @@ const DEST_CITY = {
   SHA: 'Shanghai', BCN: 'Barcelona',
   CJU: 'Jeju', NHA: 'Nha Trang',
   MFM: 'Macau', PEK: 'Beijing', TAO: 'Qingdao',
+  SPN: 'Saipan', PPS: 'Puerto Princesa', SYX: 'Sanya',
 };
 
 export default {
