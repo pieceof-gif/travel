@@ -1447,7 +1447,7 @@
       border-radius: 14px;
       box-shadow: 0 6px 36px rgba(0,0,0,0.13);
       padding: 6px 0; z-index: 9999;
-      max-height: 400px; overflow-y: auto;
+      max-height: 60vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
     }
     .dest-dd.open .dest-dd-menu {
       display: block;
@@ -8370,6 +8370,7 @@
 
             const d = matching[i];
             const destIdx = v1_0_9_DEST_DATA.indexOf(d);
+            // 콘텐츠 업데이트 (동기)
             updateColumn(i, destIdx, budgetNum, duration);
             // TP Worker 가격이 있으면 updateColumn 결과 위에 오버라이드
             var _isVipBudget = budgetNum >= 300 && budgetNum < 9000;
@@ -8449,6 +8450,7 @@
         }
 
         syncAllDestDdLabels(); // 루프 완료 후 한 번만 동기화
+        setTimeout(syncAllDestDdLabels, 250); // updateColumn setTimeout 이후 재동기화
 
         [grid, selGrid, ...dataGrids].forEach(el => {
           if (el) el.style.justifyContent = (count < 3) ? 'center' : 'space-between';
@@ -8920,8 +8922,10 @@
           if (typeof d._todayMax === 'number') {
             _updateWeatherCell(col, d);
           } else {
-            // API 로딩 전 기본 상태
-            if (mainT) { mainT.textContent = '—'; mainT.style.color = 'var(--gray)'; }
+            // API 로딩 전: 빈 상태 (로딩 중 스피너)
+            if (mainT) { mainT.innerHTML = '<span style="font-size:14px;color:var(--gray);opacity:0.5">☁️</span>'; }
+            var subEl = ctEl.querySelector('.sub');
+            if (subEl) subEl.textContent = '날씨 불러오는 중...';
           }
         }
         // 밤(최저기온) 캐시 확인
@@ -8931,7 +8935,9 @@
           var fcElTmp = document.getElementById('weekly-forecast-' + col);
           if (fcElTmp) {
             var fmTmp = fcElTmp.querySelector('.main');
-            if (fmTmp) { fmTmp.textContent = '—'; fmTmp.style.color = 'var(--gray)'; }
+            if (fmTmp) { fmTmp.innerHTML = '<span style="font-size:14px;color:var(--gray);opacity:0.5">🌙</span>'; }
+            var fsubTmp = fcElTmp.querySelector('.sub');
+            if (fsubTmp) fsubTmp.textContent = '날씨 불러오는 중...';
           }
         }
 
