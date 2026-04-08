@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>트래비 로고 폰트 후보</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@700;900&family=Jua&family=Noto+Sans+KR:wght@700;900&family=Outfit:wght@600;700;800&family=Plus+Jakarta+Sans:wght@700;800&family=Space+Grotesk:wght@600;700&family=Sora:wght@600;700;800&family=Urbanist:wght@700;800&family=DM+Sans:wght@700;800&family=Unbounded:wght@600;700;800&family=Comfortaa:wght@700&family=Righteous&family=Do+Hyeon&family=Gugi&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #f5f5f7;
+  font-family: 'Noto Sans KR', sans-serif;
+  padding: 40px 60px;
+  color: #1a1a1a;
+}
+h1 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.sub { font-size: 13px; color: #888; margin-bottom: 40px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 2px solid transparent;
+  transition: all .2s;
+  cursor: pointer;
+  position: relative;
+}
+.card:hover { border-color: #3478F6; }
+.card .num {
+  font-size: 11px;
+  color: #aaa;
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.card .font-name {
+  font-size: 12px;
+  color: #3478F6;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.card .logo-ko {
+  font-size: 42px;
+  line-height: 1.2;
+  letter-spacing: -1px;
+}
+.card .logo-en {
+  font-size: 38px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  color: #333;
+}
+.card .logo-combo {
+  font-size: 14px;
+  color: #999;
+  margin-top: 8px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 400;
+}
+
+.card .preview-bar {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.card .preview-bar .nav-sample {
+  font-size: 15px;
+  letter-spacing: -0.5px;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: 0.5px;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+.badge.rec { background: #3478F6; color: #fff; }
+.badge.alt { background: #f0f0f0; color: #666; }
+
+.divider {
+  grid-column: 1 / -1;
+  border: none;
+  border-top: 1px solid #e5e5e5;
+  margin: 8px 0;
+}
+.section-label {
+  grid-column: 1 / -1;
+  font-size: 13px;
+  font-weight: 700;
+  color: #666;
+  margin-top: 8px;
+}
+</style>
+</head>
+<body>
+
+<h1>트래비 — 로고 폰트 후보</h1>
+<p class="sub">한글(트래비) + 영문(travi) 조합을 확인하세요. 카드를 클릭하면 선택됩니다.</p>
+
+<p class="section-label">✦ 한글 + 영문 조합 (추천)</p>
+
+<div class="grid">
+
+  <!-- Option 1: Outfit + Noto Sans KR -->
+  <div class="card">
+    <span class="badge rec">추천</span>
+    <span class="num">Option 01</span>
+    <span class="font-name">Outfit + Noto Sans KR</span>
+    <div class="logo-ko" style="font-family:'Noto Sans KR'; font-weight:900;">트래비</div>
+    <div class="logo-en" style="font-family:'Outfit'; font-weight:700;">travi</div>
+    <span class="logo-combo">모던 · 깔끔 · 기하학적</span>
+    <div class="preview-bar">
+      <span class="nav-sample" style="font-family:'Noto Sans KR'; font-weight:900; font-size:20px; color:#1a1a1a;">트래비</span>
+      <span class="nav-sample" style="font-family:'Outfit'; font-weight:400; font-size:13px; color:#999;">여행지를 비교하세요</span>
+    </div>
+  </div>
+
+  <!-- Option 2: Plus Jakarta Sans + Noto Sans KR -->
+  <div class="card">
+    <span class="badge rec">추천</span>
+    <span class="num">Option 02</span>
+    <span class="font-name">Plus Jakarta Sans + Noto Sans KR</span>
+    <div class="logo-ko" style="font-family:'Noto Sans KR'; font-weight:900;">트래비</div>
+    <div class="logo-en" style="font-family:'Plus Jakarta Sans'; font-weight:800;">travi</div>
+    <span class="logo-combo">프리미엄 · 세련됨 · 도시적</span>
+    <div class="preview-bar">
+      <span class="nav-sample" style="font-family:'Noto Sans KR'; font-weight:900; font-size:20px; color:#1a1a1a;">트래비</span>
+      <span class="nav-sample" style="font-family:'Plus Jakarta Sans'; font-weight:400; font-size:13px; color:#999;">Compare your dream trips</span>
+    </div>
+  </div>
+
+  <!-- Option 3: Space Grotesk + Noto Sans KR -->
+  <div class="card">
+    <span class="num">Option 03</span>
+    <span class="font-name">Space Grotesk + Noto Sans KR</span>
+    <div class="logo-ko" style="font-family:'Noto Sans KR'; font-weight:900;">트래비</div>
+    <div class="logo-en" style="font-family:'Space Grotesk'; font-weight:700;">travi</div>
+    <span class="logo-combo">테크 · 독특함 · 스마트</span>
+    <div class="preview-bar">
+      <span class="nav-sample" style="font-family:'Noto Sans KR'; font-weight:900; font-size:20px; color:#1a1a1a;">트래비</span>
+      <span class="nav-sample" style="font-family:'Space Grotesk'; font-weight:400; font-size:13px; color:#999;">smart travel compare</span>
+    </div>
+  </div>
+
+  <!-- Option 4: Sora + Noto Sans KR -->
+  <div class="card">
+    <span class="num">Option 04</span>
+    <span class="font-name">Sora + Noto Sans KR</span>
+    <div class="logo-ko" style="font-family:'Noto Sans KR'; font-weight:900;">트래비</div>
+    <div class="logo-en" style="font-family:'Sora'; font-weight:700;">travi</div>
+    <span class="logo-combo">미니멀 · 깨끗 · 심플</span>
+    <div class="preview-bar">
+      <span class="nav-sample" style="font-family:'Noto Sans KR'; font-weight:900; font-size:20px; color:#1a1a1a;">트래비</span>
+      <span class="nav-sample" style="font-family:'Sora'; font-weight:400; font-size:13px; color:#999;">find your perfect trip</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <p class="section-label">✦ 한글 단독 로고 (한글만으로 임팩트)</p>
+
+  <!-- Option 5: Black Han Sans -->
+  <div class="card">
+    <span class="num">Option 05</span>
+    <span class="font-name">Black Han Sans</span>
+    <div class="logo-ko" style="font-family:'Black Han Sans'; font-size:48px;">트래비</div>
+    <div class="logo-en" style="font-family:'Outfit'; font-weight:600; font-size:28px; color:#aaa;">travi</div>
+    <span class="logo-combo">임팩트 · 대담 · 한글 중심</span>
+  </div>
+
+  <!-- Option 6: Do Hyeon -->
+  <div class="card">
+    <span class="num">Option 06</span>
+    <span class="font-name">Do Hyeon</span>
+    <div class="logo-ko" style="font-family:'Do Hyeon'; font-size:48px;">트래비</div>
+    <div class="logo-en" style="font-family:'Outfit'; font-weight:600; font-size:28px; color:#aaa;">travi</div>
+    <span class="logo-combo">친근 · 캐주얼 · 가독성</span>
+  </div>
+
+  <!-- Option 7: Unbounded (영문 중심) -->
+  <div class="card">
+    <span class="num">Option 07</span>
+    <span class="font-name">Unbounded</span>
+    <div class="logo-en" style="font-family:'Unbounded'; font-weight:700; font-size:44px; color:#1a1a1a;">travi</div>
+    <div class="logo-ko" style="font-family:'Noto Sans KR'; font-weight:700; font-size:20px; color:#888;">트래비</div>
+    <span class="logo-combo">글로벌 · 둥근 · 미래적</span>
+  </div>
+
+  <!-- Option 8: Gugi -->
+  <div class="card">
+    <span class="num">Option 08</span>
+    <span class="font-name">Gugi</span>
+    <div class="logo-ko" style="font-family:'Gugi'; font-size:48px;">트래비</div>
+    <div class="logo-en" style="font-family:'Gugi'; font-size:28px; color:#aaa;">travi</div>
+    <span class="logo-combo">유니크 · 개성 · 아트</span>
+  </div>
+
+</div>
+
+</body>
+</html>
