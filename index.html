@@ -12,7 +12,11 @@
   </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>여행지 비교하기 — 최고의 여행</title>
+  <title>여행지 비교하기 — travi</title>
+  <!-- Logo Font: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&display=swap" rel="stylesheet">
   <!-- Flatpickr (Calendar) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -62,9 +66,11 @@
     }
 
     .nav-brand {
-      font-size: 17px;
-      font-weight: 600;
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
       color: var(--black);
+      letter-spacing: -0.5px;
     }
 
     /* ── HOME VIEW ── */
@@ -3027,7 +3033,7 @@
   <!-- HOME VIEW -->
   <div id="home-view">
     <nav class="home-nav">
-      <span class="nav-brand">최고의 여행</span>
+      <span class="nav-brand">travi</span>
     </nav>
     <div class="top-banner" id="home-top-banner" style="position: relative; z-index: 99;">
       <div class="banner-news-wrap" id="home-banner-wrap">
@@ -3222,7 +3228,7 @@
   <div id="compare-view" style="display: none;">
     <!-- NAV -->
     <nav class="nav">
-      <span class="nav-brand">최고의 여행</span>
+      <span class="nav-brand">travi</span>
       <!-- 모바일 전용 검색 아이콘: nav-actions 밖에 배치 -->
       <button id="cv-search-icon" onclick="openCvSearchSheet()" type="button" aria-label="검색 조건 수정">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -4211,11 +4217,11 @@
     <footer>
       <div class="footer-inner">
         <p id="footer-date-note">* 항공권 가격은 최저가 기준이며 실시간 변동합니다. 안전도는 외교부 여행경보 기준이며, 현지 정보는 참고용입니다. 여행 전 반드시 <a href="https://www.0404.go.kr" target="_blank" rel="noopener" style="color:inherit;">외교부 해외안전여행</a>을 확인하세요.</p>
-        <p style="margin-top:16px" id="footer-copyright">© 최고의 여행</p>
+        <p style="margin-top:16px" id="footer-copyright">© travi</p>
         <script>
           (function() {
             const now = new Date();
-            document.getElementById('footer-copyright').textContent = `© ${now.getFullYear()} 최고의 여행`;
+            document.getElementById('footer-copyright').textContent = `© ${now.getFullYear()} travi`;
           })();
         </script>
       </div>
