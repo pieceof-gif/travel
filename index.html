@@ -4200,6 +4200,18 @@
         <div class="dc" id="apps-2"></div>
       </div>
 
+      <!-- ═══ SECTION: 여행 정보 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">여행 정보</div>
+        </div>
+      </div>
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="travelinfo-0" style="text-align:left;align-items:flex-start;"></div>
+        <div class="dc" id="travelinfo-1" style="text-align:left;align-items:flex-start;"></div>
+        <div class="dc" id="travelinfo-2" style="text-align:left;align-items:flex-start;"></div>
+      </div>
+
       <div class="sec-hd">
         <div class="sec-hd-inner">
           <div class="sec-title">출입국 준비</div>
@@ -9349,6 +9361,7 @@
         renderAppList('apps-' + col, d.id);
         renderEntryInfo('entry-' + col, d.id);
         renderFxTips('fxtip-' + col, d.id, d.fx, d.fxSub);
+        renderTravelInfo('travelinfo-' + col, d.id);
 
         // 6. EXTERNAL LINKS (Naver Flights)
         const dateVal = document.getElementById('home-date-value').textContent;
@@ -10561,6 +10574,217 @@
           '<div style="font-size:17px;color:#1d1d1f;line-height:1.5;font-weight:700;letter-spacing:-0.3px;">' + value + '</div>' +
           (sub ? '<div style="font-size:11px;color:#86868b;margin-top:2px;">' + sub + '</div>' : '') +
           '</div>';
+      }
+
+      // ═══════════════════════════════════════════
+      // 여행 정보 (나라 단위 — 시차·전압·팁·인터넷·긴급전화)
+      // ═══════════════════════════════════════════
+      var DEST_TRAVEL_INFO = {
+        korea: {
+          timezone: '시차 없음',
+          voltage: '220V · Type C/F',
+          tip: '팁 불필요',
+          internet: '국내 통신 그대로 사용',
+          emergency: '112 (경찰) · 119 (소방/구급)'
+        },
+        japan: {
+          timezone: '시차 없음 (UTC+9)',
+          voltage: '100V · Type A — 어댑터 필요',
+          tip: '팁 불필요 · 오히려 실례',
+          internet: 'eSIM 지원 · 공항 유심 추천',
+          emergency: '110 (경찰) · 119 (소방/구급)'
+        },
+        taiwan: {
+          timezone: '한국보다 1시간 느림',
+          voltage: '110V · Type A/B — 어댑터 필요',
+          tip: '팁 불필요',
+          internet: 'eSIM 지원 · 현지 유심 저렴',
+          emergency: '110 (경찰) · 119 (소방/구급)'
+        },
+        vietnam: {
+          timezone: '한국보다 2시간 느림',
+          voltage: '220V · Type A/C — 대부분 호환',
+          tip: '팁 선택 (5~10%)',
+          internet: 'eSIM 지원 · 현지 유심 매우 저렴',
+          emergency: '113 (경찰) · 115 (구급)'
+        },
+        thailand: {
+          timezone: '한국보다 2시간 느림',
+          voltage: '220V · Type A/B/C — 대부분 호환',
+          tip: '팁 선택 (20~50바트)',
+          internet: 'eSIM 지원 · 공항 유심 추천',
+          emergency: '191 (경찰) · 1669 (구급)'
+        },
+        indonesia: {
+          timezone: '한국보다 1시간 느림 (발리 기준)',
+          voltage: '230V · Type C/F — 호환 가능',
+          tip: '팁 선택 (5~10%)',
+          internet: 'eSIM 지원 · 현지 유심 저렴',
+          emergency: '112 (통합) · 118 (구급)'
+        },
+        singapore: {
+          timezone: '한국보다 1시간 느림',
+          voltage: '230V · Type G — 어댑터 필요',
+          tip: '팁 불필요 (서비스차지 포함)',
+          internet: 'eSIM 지원 · Wi-Fi 매우 우수',
+          emergency: '999 (경찰) · 995 (소방/구급)'
+        },
+        philippines: {
+          timezone: '한국보다 1시간 느림',
+          voltage: '220V · Type A/B — 대부분 호환',
+          tip: '팁 선택 (10%)',
+          internet: 'eSIM 지원 · 현지 유심 저렴',
+          emergency: '911 (통합) · 117 (경찰)'
+        },
+        hongkong: {
+          timezone: '한국보다 1시간 느림',
+          voltage: '220V · Type G — 어댑터 필요',
+          tip: '팁 10% (서비스차지 별도)',
+          internet: 'eSIM 지원 · Wi-Fi 우수',
+          emergency: '999 (통합)'
+        },
+        usa_territory: {
+          timezone: '한국보다 1시간 빠름 (괌/사이판)',
+          voltage: '120V · Type A/B — 어댑터 필요',
+          tip: '팁 15~20% 필수',
+          internet: 'eSIM 지원 · 미국 통신사 로밍',
+          emergency: '911 (통합)'
+        },
+        usa: {
+          timezone: '한국보다 14~17시간 느림 (지역별)',
+          voltage: '120V · Type A/B — 어댑터 필요',
+          tip: '팁 15~20% 필수',
+          internet: 'eSIM 지원 · 현지 유심 추천',
+          emergency: '911 (통합)'
+        },
+        portugal: {
+          timezone: '한국보다 8시간 느림',
+          voltage: '230V · Type C/F — 호환 가능',
+          tip: '팁 선택 (5~10%)',
+          internet: 'eSIM 지원 · EU 로밍 가능',
+          emergency: '112 (통합)'
+        },
+        france: {
+          timezone: '한국보다 7시간 느림',
+          voltage: '230V · Type C/E — 호환 가능',
+          tip: '팁 선택 (서비스 포함)',
+          internet: 'eSIM 지원 · EU 로밍 가능',
+          emergency: '112 (통합) · 15 (구급)'
+        },
+        spain: {
+          timezone: '한국보다 7시간 느림',
+          voltage: '230V · Type C/F — 호환 가능',
+          tip: '팁 선택 (5~10%)',
+          internet: 'eSIM 지원 · EU 로밍 가능',
+          emergency: '112 (통합)'
+        },
+        italy: {
+          timezone: '한국보다 7시간 느림',
+          voltage: '230V · Type C/F/L — 호환 가능',
+          tip: '팁 선택 (coperto 별도)',
+          internet: 'eSIM 지원 · EU 로밍 가능',
+          emergency: '112 (통합) · 118 (구급)'
+        },
+        croatia: {
+          timezone: '한국보다 7시간 느림',
+          voltage: '230V · Type C/F — 호환 가능',
+          tip: '팁 선택 (10%)',
+          internet: 'eSIM 지원 · EU 로밍 가능',
+          emergency: '112 (통합)'
+        },
+        switzerland: {
+          timezone: '한국보다 7시간 느림',
+          voltage: '230V · Type C/J — 어댑터 권장',
+          tip: '팁 불필요 (서비스차지 포함)',
+          internet: 'eSIM 지원 · 비EU (별도 유심 필요)',
+          emergency: '112 (통합) · 144 (구급)'
+        },
+        uk: {
+          timezone: '한국보다 8시간 느림',
+          voltage: '230V · Type G — 어댑터 필요',
+          tip: '팁 10~15%',
+          internet: 'eSIM 지원 · 현지 유심 추천',
+          emergency: '999 (통합) · 112'
+        },
+        malaysia: {
+          timezone: '한국보다 1시간 느림',
+          voltage: '240V · Type G — 어댑터 필요',
+          tip: '팁 불필요 (서비스차지 포함)',
+          internet: 'eSIM 지원 · 현지 유심 저렴',
+          emergency: '999 (경찰) · 994 (구급)'
+        },
+        maldives: {
+          timezone: '한국보다 4시간 느림',
+          voltage: '230V · Type G — 어댑터 필요 (리조트 대부분 제공)',
+          tip: '팁 선택 ($5~10/일)',
+          internet: '리조트 Wi-Fi 기본 · eSIM 지원',
+          emergency: '119 (경찰) · 102 (구급)'
+        },
+        australia: {
+          timezone: '한국보다 1시간 빠름 (시드니 기준)',
+          voltage: '230V · Type I — 어댑터 필요',
+          tip: '팁 선택 (10~15%)',
+          internet: 'eSIM 지원 · 현지 유심 추천',
+          emergency: '000 (통합) · 112'
+        },
+        china: {
+          timezone: '한국보다 1시간 느림',
+          voltage: '220V · Type A/C/I — 대부분 호환',
+          tip: '팁 불필요',
+          internet: 'VPN 필수 · 구글/카카오 차단 · 현지 유심 추천',
+          emergency: '110 (경찰) · 120 (구급)'
+        },
+        cambodia: {
+          timezone: '한국보다 2시간 느림',
+          voltage: '230V · Type A/C — 대부분 호환',
+          tip: '팁 선택 ($1~2)',
+          internet: 'eSIM 지원 · 현지 유심 매우 저렴',
+          emergency: '117 (경찰) · 119 (소방)'
+        },
+        laos: {
+          timezone: '한국보다 2시간 느림',
+          voltage: '230V · Type A/B/C — 대부분 호환',
+          tip: '팁 불필요',
+          internet: '현지 유심 저렴 · eSIM 일부 지원',
+          emergency: '191 (경찰) · 195 (구급)'
+        },
+        turkey: {
+          timezone: '한국보다 6시간 느림',
+          voltage: '230V · Type C/F — 호환 가능',
+          tip: '팁 선택 (5~10%)',
+          internet: 'eSIM 지원 · 현지 유심 추천',
+          emergency: '112 (통합) · 155 (경찰)'
+        },
+        mongolia: {
+          timezone: '한국보다 1시간 느림',
+          voltage: '220V · Type C/E — 호환 가능',
+          tip: '팁 불필요',
+          internet: '현지 유심 추천 · LTE 커버리지 제한적',
+          emergency: '102 (경찰) · 103 (소방) · 105 (구급)'
+        },
+        macau: {
+          timezone: '한국보다 1시간 느림',
+          voltage: '220V · Type G — 어댑터 필요 (호텔 대부분 제공)',
+          tip: '팁 선택 (카지노 10%)',
+          internet: 'eSIM 지원 · 홍콩 유심 호환',
+          emergency: '999 (통합)'
+        }
+      };
+
+      function renderTravelInfo(containerId, destId) {
+        var el = document.getElementById(containerId);
+        if (!el) return;
+        var countryCode = (typeof DEST_COUNTRY !== 'undefined' && DEST_COUNTRY[destId]) || destId;
+        var d = DEST_TRAVEL_INFO[countryCode];
+        if (!d) { el.innerHTML = ''; return; }
+
+        el.innerHTML = [
+          _appleRow('시차', d.timezone),
+          _appleRow('전압 / 플러그', d.voltage),
+          _appleRow('팁 문화', d.tip),
+          _appleRow('인터넷', d.internet),
+          _appleRow('긴급 전화', d.emergency),
+        ].join('');
       }
 
       var DEST_ENTRY = {
