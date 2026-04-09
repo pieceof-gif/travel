@@ -2690,6 +2690,12 @@
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
+    /* 실시간 환율 라이브 인디케이터 */
+    @keyframes fxPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
     /* ── 랭킹 변경 토스트 ── */
     .rank-toast {
       position: fixed;
@@ -10401,19 +10407,118 @@
         macau:     { currency: 'MOP (마카오 파타카) / HKD', qr: true, cashPerDay: 'MOP 200–400', perPerson: '10–20만원', cashNote: 'HKD 1:1 환율로 통용 — 별도 환전 불필요. 카지노·호텔은 카드·HKD 기본', qrNote: 'Alipay·WeChat Pay 쇼핑몰·대형 식당에서 사용 가능' },
       };
 
+      // ═══════════════════════════════════════════
+      // 실시간 환율 API (Frankfurter — ECB 기반, 무료, API 키 불필요)
+      // ═══════════════════════════════════════════
+      var COUNTRY_CURRENCY = {
+        japan:'JPY', taiwan:'TWD', vietnam:'VND', thailand:'THB',
+        indonesia:'IDR', singapore:'SGD', philippines:'PHP', hongkong:'HKD',
+        usa:'USD', usa_territory:'USD', portugal:'EUR', france:'EUR',
+        spain:'EUR', italy:'EUR', croatia:'EUR', switzerland:'CHF',
+        uk:'GBP', malaysia:'MYR', maldives:'USD', australia:'AUD',
+        china:'CNY', cambodia:'USD', laos:'USD', turkey:'TRY',
+        mongolia:'MNT', macau:'HKD'
+      };
+      var CURRENCY_SYMBOL = {
+        JPY:'¥', TWD:'NT$', VND:'₫', THB:'฿', IDR:'Rp',
+        SGD:'S$', PHP:'₱', HKD:'HK$', USD:'$', EUR:'€',
+        CHF:'CHF ', GBP:'£', MYR:'RM', AUD:'A$', CNY:'CN¥',
+        TRY:'₺', MNT:'₮'
+      };
+
+      var _liveRates = null;
+      var _liveRatesTime = null;
+      var _liveRatesDate = '';
+
+      function fetchLiveExchangeRates(callback) {
+        // open.er-api.com: 무료, API 키 불필요, CORS 완벽 지원
+        var url = 'https://open.er-api.com/v6/latest/KRW';
+        fetch(url)
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (data && data.result === 'success' && data.rates) {
+              _liveRates = data.rates;
+              _liveRatesDate = data.time_last_update_utc
+                ? new Date(data.time_last_update_utc).toISOString().slice(0, 10)
+                : '';
+              _liveRatesTime = new Date();
+              console.log('[FX] ✅ 실시간 환율 로드 완료 (' + _liveRatesDate + ')', Object.keys(_liveRates).length + '개 통화');
+              if (callback) callback();
+            }
+          })
+          .catch(function(e) {
+            console.warn('[FX] ⚠️ 환율 API 실패 (하드코딩 유지):', e);
+          });
+      }
+
+      function getLiveRateText(countryCode) {
+        if (!_liveRates) return null;
+        var curCode = COUNTRY_CURRENCY[countryCode];
+        if (!curCode || curCode === 'KRW') return null;
+        var rate = _liveRates[curCode];
+        if (!rate) return null;
+
+        // rate = 1 KRW → X 외화
+        var symbol = CURRENCY_SYMBOL[curCode] || curCode + ' ';
+        var converted = rate * 10000; // 1만원 기준
+
+        // 포맷: 소수점 처리
+        var formatted;
+        if (converted >= 1000) {
+          formatted = Math.round(converted).toLocaleString();
+        } else if (converted >= 10) {
+          formatted = converted.toFixed(1);
+        } else {
+          formatted = converted.toFixed(2);
+        }
+
+        return {
+          main: '1만원 = ' + symbol + formatted,
+          time: _liveRatesDate,
+          curCode: curCode
+        };
+      }
+
+      // 페이지 로드 시 환율 fetch + 30분마다 자동 갱신
+      fetchLiveExchangeRates(function() {
+        // 이미 렌더링된 환전 섹션 업데이트
+        if (typeof _lastRenderedFx !== 'undefined') {
+          _lastRenderedFx.forEach(function(item) {
+            renderFxTips(item.containerId, item.destId, item.fxRate, item.fxRateSub);
+          });
+        }
+      });
+      setInterval(function() {
+        fetchLiveExchangeRates(function() {
+          if (typeof _lastRenderedFx !== 'undefined') {
+            _lastRenderedFx.forEach(function(item) {
+              renderFxTips(item.containerId, item.destId, item.fxRate, item.fxRateSub);
+            });
+          }
+        });
+      }, 30 * 60 * 1000); // 30분
+
+      var _lastRenderedFx = [];
+
       function renderFxTips(containerId, destId, fxRate, fxRateSub) {
         var el = document.getElementById(containerId);
         if (!el) return;
-        // 나라 코드 기반으로 조회 (같은 나라는 동일한 환전 정보)
+
+        // 렌더링 추적 (자동 갱신용)
+        var exists = _lastRenderedFx.some(function(i) { return i.containerId === containerId; });
+        if (!exists) _lastRenderedFx.push({ containerId: containerId, destId: destId, fxRate: fxRate, fxRateSub: fxRateSub });
+
         var countryCode = (typeof DEST_COUNTRY !== 'undefined' && DEST_COUNTRY[destId]) || destId;
         var d = DEST_FX_TIPS[countryCode] || DEST_FX_TIPS[destId];
         var def = DEST_FX_TIPS._default;
         if (!d) { el.innerHTML = ''; return; }
 
-        // Apple-style: no box — just clean rows like MacBook compare page
+        // 실시간 환율 가져오기
+        var live = getLiveRateText(countryCode);
+
+        // 국내 여행
         if (countryCode === 'korea') {
           el.innerHTML = [
-            fxRate ? _appleRow('현재 환율', fxRate + (fxRateSub ? ' · ' + fxRateSub : '')) : '',
             _appleRow('통화', 'KRW (원화)'),
             _appleRow('환전', '불필요'),
             _appleRow('결제', '카카오페이 · 네이버페이 등 국내 앱 사용 가능'),
@@ -10422,7 +10527,14 @@
         }
 
         var rows = [];
-        if (fxRate) rows.push(_appleRow('현재 환율', fxRate + (fxRateSub ? ' · ' + fxRateSub : '')));
+
+        // 실시간 환율 (기존 디자인 유지)
+        if (live) {
+          rows.push(_appleRow('현재 환율', live.main));
+        } else if (fxRate) {
+          rows.push(_appleRow('현재 환율', fxRate + (fxRateSub ? ' · ' + fxRateSub : '')));
+        }
+
         if (d.currency)  rows.push(_appleRow('통화', d.currency));
         if (d.perPerson) rows.push(_appleRow('권장 환전', d.perPerson));
         if (d.cashNote)  rows.push(_appleRow('환전 팁', d.cashNote));
@@ -10437,6 +10549,17 @@
         return '<div style="padding:14px 0;text-align:left;">' +
           '<div style="font-size:13px;font-weight:700;color:#1d1d1f;margin-bottom:5px;">' + label + '</div>' +
           '<div style="font-size:14px;color:#1d1d1f;line-height:1.5;font-weight:400;">' + value + '</div>' +
+          '</div>';
+      }
+
+      function _appleRowLive(label, value, sub) {
+        return '<div style="padding:14px 0;text-align:left;">' +
+          '<div style="font-size:13px;font-weight:700;color:#1d1d1f;margin-bottom:5px;display:flex;align-items:center;gap:6px;">' +
+            label +
+            '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#34c759;animation:fxPulse 2s ease-in-out infinite;"></span>' +
+          '</div>' +
+          '<div style="font-size:17px;color:#1d1d1f;line-height:1.5;font-weight:700;letter-spacing:-0.3px;">' + value + '</div>' +
+          (sub ? '<div style="font-size:11px;color:#86868b;margin-top:2px;">' + sub + '</div>' : '') +
           '</div>';
       }
 
