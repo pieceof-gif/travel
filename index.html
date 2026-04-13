@@ -1063,10 +1063,11 @@
     .tip-summary::-webkit-details-marker { display: none; }
 
     .tip-summary .tip-arrow {
-      font-size: 16px;
-      color: var(--gray);
-      transition: transform 0.2s ease;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      color: #0071e3;
+      transition: transform 0.22s ease;
+      flex-shrink: 0;
     }
 
     .tip-details[open] .tip-arrow {
@@ -3519,14 +3520,21 @@
     <!-- NAV -->
     <nav class="nav">
       <span class="nav-brand"><span style="letter-spacing:0.1px">t</span>ravi</span>
-      <!-- 모바일 전용 검색 아이콘: nav-actions 밖에 배치 -->
-      <button id="cv-search-icon" onclick="openCvSearchSheet()" type="button" aria-label="검색 조건 수정">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </button>
-      <div class="nav-actions">
-        <a class="nav-link" href="#">개요</a>
-        <a class="nav-link" href="#" onclick="goHome(); return false;">내 조건 수정</a>
-        <a class="btn-nav" href="#">예약하기</a>
+      <div style="display:flex;align-items:center;gap:4px;">
+        <!-- 모바일 전용 검색 아이콘: nav-actions 밖에 배치 -->
+        <button id="cv-search-icon" onclick="openCvSearchSheet()" type="button" aria-label="검색 조건 수정">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <button class="nav-share-btn" onclick="handleShare()" aria-label="공유하기">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13.9289 9.21468V4.92896L21 12L13.9289 19.0711V14.2392M13.9289 9.22304C13.2857 9.07708 12.6163 9.00002 11.9289 9.00002C6.95836 9.00002 2.92892 13.0295 2.92892 18C2.92892 18.8675 3.05165 19.7063 3.28069 20.5C4.36404 16.7457 7.82583 14 11.9289 14C12.6163 14 13.2857 14.0771 13.9289 14.223" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="nav-actions">
+          <a class="nav-link" href="#">개요</a>
+          <a class="nav-link" href="#" onclick="goHome(); return false;">내 조건 수정</a>
+          <a class="btn-nav" href="#">예약하기</a>
+        </div>
       </div>
     </nav>
 
@@ -9555,7 +9563,7 @@
             details.className = 'tip-details';
             const summary = document.createElement('summary');
             summary.className = 'tip-summary';
-            summary.innerHTML = '숙소 절약 팁 <span class="tip-arrow">∨</span>';
+            summary.innerHTML = '숙소 절약 팁 <span class="tip-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0071e3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>';
             details.appendChild(summary);
             const content = document.createElement('div');
             content.className = 'tip-content';
@@ -9622,7 +9630,7 @@
             details.className = 'tip-details';
             const summary = document.createElement('summary');
             summary.className = 'tip-summary';
-            summary.innerHTML = (isVip ? '💍 VIP 항공 추천 팁' : '항공권 절약 팁') + ' <span class="tip-arrow">∨</span>';
+            summary.innerHTML = (isVip ? '💍 VIP 항공 추천 팁' : '항공권 절약 팁') + ' <span class="tip-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0071e3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>';
             details.appendChild(summary);
             const content = document.createElement('div');
             content.className = 'tip-content';
