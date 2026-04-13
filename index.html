@@ -9350,11 +9350,14 @@
                 nameEl.textContent = item.name;
                 li.appendChild(nameEl);
               }
-              if (item.desc) {
+               if (item.desc) {
                 const descEl = document.createElement('div');
                 descEl.className = 'attr-item-price';
                 descEl.style.marginTop = '3px';
-                descEl.textContent = item.desc;
+                // 가격 패턴 일괄 제거 (렌더 시점 strip — 데이터 보존)
+                // 커버 패턴: · N만원, · 약 N만원, · N~M만원, · N천원, (N만원) 등
+                var _desc = (item.desc || '').replace(/\s*[·\-]\s*약?\s*[\d,~\-\.]+\s*(만원|천원)[대~]*/g, '').replace(/\s*\(약?\s*[\d,~\-\.]+\s*(만원|천원)[대~]*\)/g, '').trim();
+                descEl.textContent = _desc;
                 li.appendChild(descEl);
               }
             }
