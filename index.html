@@ -21,6 +21,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://unpkg.com/flatpickr/dist/l10n/ko.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <style>
     *,
     *::before,
@@ -2120,7 +2122,7 @@
       /* Typography 축소 */
       .dest-name { font-size: 16px; margin-bottom: 3px; }
       .dest-sub { font-size: 11px; min-height: auto; margin-bottom: 6px; }
-      .dest-narrative { font-size: 12px; line-height: 1.5; margin: 4px 0 10px; }
+      .dest-narrative { font-size: 14px; line-height: 1.6; margin: 6px 0 10px; }
       .dest-photo-wrap { height: 90px; border-radius: 10px; margin-bottom: 8px; }
 
       /* sel-card: 모바일에서 overflow 보장 (중복 규칙 제거) */
@@ -3310,6 +3312,9 @@
       }
       #wiz-launcher { bottom: 20px; left: 20px; transform: none; }
     }
+    @media (min-width: 1069px) {
+      #wiz-launcher { display: none !important; }
+    }
   </style>
 </head>
 
@@ -3524,6 +3529,12 @@
         <!-- 모바일 전용 검색 아이콘: nav-actions 밖에 배치 -->
         <button id="cv-search-icon" onclick="openCvSearchSheet()" type="button" aria-label="검색 조건 수정">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <button class="nav-share-btn" id="nav-save-btn" onclick="handleSaveImage()" aria-label="이미지로 저장">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 14V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 3V17M12 17L7 11.5555M12 17L17 11.5556" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </button>
         <button class="nav-share-btn" onclick="handleShare()" aria-label="공유하기">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -9817,6 +9828,93 @@
         window._toastTimer = setTimeout(() => {
           t.classList.remove('show');
         }, 2500);
+      }
+
+      // ── SAVE AS IMAGE ──
+      function handleSaveImage() {
+        if (typeof html2canvas === 'undefined') {
+          showToast('⚠️ 라이브러리 로드 중이에요. 잠시 후 다시 시도해주세요.');
+          return;
+        }
+        var btn = document.getElementById('nav-save-btn');
+        if (btn) { btn.style.opacity = '0.4'; btn.style.pointerEvents = 'none'; }
+        showToast('📷 이미지 준비 중...');
+
+        var target = document.getElementById('compare-view');
+        if (!target) {
+          if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
+          showToast('오류: 화면을 읽을 수 없어요');
+          return;
+        }
+
+        html2canvas(target, {
+          useCORS: false,
+          allowTaint: false,
+          scale: 1.5,
+          backgroundColor: '#ffffff',
+          logging: false,
+          onclone: function(doc) {
+            // 외부 이미지 src 제거 → canvas 오염 방지
+            doc.querySelectorAll('img').forEach(function(img) {
+              var src = img.getAttribute('src') || '';
+              if (src && !src.startsWith('data:')) {
+                try {
+                  var u = new URL(src, window.location.href);
+                  if (u.origin !== window.location.origin) {
+                    img.removeAttribute('src');
+                    img.style.display = 'none';
+                  }
+                } catch(e2) {}
+              }
+            });
+            // nav 숨김
+            var cloneNav = doc.querySelector('#compare-view .nav');
+            if (cloneNav) cloneNav.style.display = 'none';
+          }
+        }).then(function(canvas) {
+          if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
+
+          // 모달 오버레이
+          var overlay = document.createElement('div');
+          overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;box-sizing:border-box;';
+
+          var img = document.createElement('img');
+          img.src = canvas.toDataURL('image/png');
+          img.style.cssText = 'max-width:min(900px,90vw);max-height:72vh;object-fit:contain;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,0.5);';
+
+          var hint = document.createElement('p');
+          hint.style.cssText = 'color:rgba(255,255,255,0.75);font-size:13px;margin:0;text-align:center;letter-spacing:-0.2px;';
+          hint.textContent = '이미지를 우클릭 → 이미지를 다른 이름으로 저장';
+
+          var btnWrap = document.createElement('div');
+          btnWrap.style.cssText = 'display:flex;gap:10px;';
+
+          var dlBtn = document.createElement('a');
+          dlBtn.href = img.src;
+          var today = new Date();
+          var ds = today.getFullYear() + '' + String(today.getMonth()+1).padStart(2,'0') + String(today.getDate()).padStart(2,'0');
+          dlBtn.download = 'travi-여행비교-' + ds + '.png';
+          dlBtn.textContent = '⬇ 다운로드';
+          dlBtn.style.cssText = 'background:#0071e3;color:#fff;border:none;padding:11px 24px;border-radius:22px;cursor:pointer;font-size:14px;font-weight:600;text-decoration:none;font-family:inherit;letter-spacing:-0.2px;';
+
+          var closeBtn = document.createElement('button');
+          closeBtn.textContent = '닫기';
+          closeBtn.style.cssText = 'background:rgba(255,255,255,0.15);color:#fff;border:none;padding:11px 24px;border-radius:22px;cursor:pointer;font-size:14px;font-weight:600;font-family:inherit;';
+          closeBtn.onclick = function() { document.body.removeChild(overlay); };
+
+          btnWrap.appendChild(dlBtn);
+          btnWrap.appendChild(closeBtn);
+          overlay.appendChild(img);
+          overlay.appendChild(hint);
+          overlay.appendChild(btnWrap);
+          overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
+          document.body.appendChild(overlay);
+
+        }).catch(function(e) {
+          if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
+          console.error('html2canvas error:', e);
+          showToast('⚠️ 저장 실패: ' + (e.message || '오류'));
+        });
       }
 
       // ── SHARE SHEET ──
