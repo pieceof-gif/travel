@@ -1779,11 +1779,11 @@
       footer { margin-top: 40px; }
 
 
-      /* 모바일/태블릿: wiz-launcher → 여행 검색 버튼 (중앙 배치) */
+      /* 모바일/태블릿: wiz-launcher → 여행 검색 버튼 (좌측 하단 고정) */
       #wiz-launcher { 
         bottom: 20px !important; 
-        left: 50% !important;
-        transform: translateX(-50%);
+        left: 20px !important;
+        transform: none !important;
         z-index: 2100 !important;
       }
       /* 모바일/태블릿: 여행자 탭 숨김 */
@@ -1796,6 +1796,8 @@
       /* 모바일/태블릿: wiz-launcher 라벨 텍스트 CSS 교체 */
       .wiz-launcher-label { font-size: 0 !important; }
       .wiz-launcher-label::after { content: "여행 검색"; font-size: 13px; font-weight: 600; color: #222; letter-spacing: -0.2px; }
+      /* 모바일/태블릿: 비교뷰 검색 바 숨김 */
+      #compare-sb-wrap { display: none !important; }
     }
 
     /* ── RESPONSIVE: Mobile only (2-col layout) ── */
@@ -2288,10 +2290,8 @@
       font-weight: 600;
     }
 
-    /* ── 커스텀 에어비앤비 스타일 캘린더 ── */
+    /* ── 커스텀 에어비앤비 스타일 캘린더 (row-pill 방식) ── */
     #cv-cal {
-      overflow-y: auto;
-      max-height: 54vh;
       padding: 0 2px;
     }
     .cv-cal-month { margin-bottom: 24px; }
@@ -2313,13 +2313,33 @@
       font-weight: 500;
       padding: 4px 0;
     }
+    /* grid는 row 래퍼들의 flex column 컨테이너 */
     .cv-cal-grid {
+      display: flex;
+      flex-direction: column;
+    }
+    /* 각 7일 행 */
+    .cv-cal-row {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
+      position: relative;
     }
-    /* 날짜 셀 - border-radius 없음, 풀 너비로 범위 배경 수용 */
+    /* row 전체 pill 배경 (::before로 그림) */
+    .cv-cal-row.has-pill::before {
+      content: '';
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: var(--pill-left, 0%);
+      right: var(--pill-right, 0%);
+      background: #f2f2f2;
+      border-radius: 999px;
+      z-index: 0;
+      pointer-events: none;
+    }
+    /* 날짜 셀 */
     .cv-cal-day {
-      height: 44px;
+      height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -2328,16 +2348,17 @@
       background: transparent;
       user-select: none;
       -webkit-user-select: none;
+      z-index: 1;
     }
     .cv-cal-day.empty { cursor: default; pointer-events: none; }
     .cv-cal-day.disabled { pointer-events: none; }
     .cv-cal-day.disabled .cv-cal-num { color: #c7c7cc; }
     /* 날짜 숫자 원형 레이어 */
     .cv-cal-num {
-      width: 36px; height: 36px;
+      width: 40px; height: 40px;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
+      font-size: 15px;
       color: #1d1d1f;
       position: relative;
       z-index: 1;
@@ -2349,32 +2370,133 @@
     .cv-cal-day.sel-end .cv-cal-num {
       background: #1d1d1f !important;
       color: #fff !important;
+      font-weight: 600;
     }
-    /* 범위 배경: 풀 너비 셀 배경 */
-    .cv-cal-day.in-range { background: #f0f0f0; }
-    /* 시작/끝 셀: 절반 범위색 + 절반 흰색(그라디언트) */
-    .cv-cal-day.sel-start.has-range {
-      background: linear-gradient(to right, transparent 50%, #f0f0f0 50%);
-    }
-    .cv-cal-day.sel-end.has-range {
-      background: linear-gradient(to left, transparent 50%, #f0f0f0 50%);
-    }
-    /* 범위 첫 셀(일요일/월 첫날): 오른쪽만 범위색 */
-    .cv-cal-day.in-range.row-start { background: linear-gradient(to right, transparent 50%, #f0f0f0 50%); }
-    /* 범위 마지막 셀(토요일/월 마지막날): 왼쪽만 범위색 */
-    .cv-cal-day.in-range.row-end   { background: linear-gradient(to left, transparent 50%, #f0f0f0 50%); }
+    /* hover */
     .cv-cal-day:not(.disabled):not(.empty):not(.sel-start):not(.sel-end):hover .cv-cal-num {
-      background: #f0f0f0;
+      background: #e8e8e8;
     }
-    /* 언제든지 컨테이너 중앙 정렬 */
+    /* ── 언제든지 컨테이너 ── */
     #cv-date-flexible {
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-align: center;
-      padding-top: 8px;
+      gap: 0;
+      padding: 16px 0 8px;
     }
-    .cv-flex-msg { padding-bottom: 20px; }
+    .cv-flex-section-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #1d1d1f;
+      margin-bottom: 16px;
+      text-align: center;
+      width: 100%;
+    }
+    /* 숙박 기간 pills */
+    .cv-flex-duration { margin-bottom: 28px; width: 100%; }
+    .cv-flex-duration-list { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .cv-flex-dur-btn {
+      padding: 8px 18px;
+      border: 1px solid #d8d8dc;
+      border-radius: 999px;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1d1d1f;
+      cursor: pointer;
+      transition: outline 0s, font-weight 0.1s;
+      font-family: inherit;
+      outline: 1.5px solid transparent;
+      outline-offset: -2px;
+    }
+    .cv-flex-dur-btn.active {
+      border-color: transparent;
+      outline: 1.5px solid #1d1d1f;
+      outline-offset: -1px;
+      background: #fff;
+      color: #1d1d1f;
+      font-weight: 700;
+    }
+    /* 월 카드 캐러셀 */
+    .cv-flex-months { margin-bottom: 20px; margin-top: 4px; position: relative; width: 100%; }
+    .cv-flex-month-scroll {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 4px 2px 8px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .cv-flex-month-scroll::-webkit-scrollbar { display: none; }
+    .cv-flex-month-card {
+      flex-shrink: 0;
+      width: 84px;
+      border: 1px solid #e5e5ea;
+      border-radius: 14px;
+      padding: 14px 0 12px;
+      cursor: pointer;
+      text-align: center;
+      background: #fff;
+      transition: outline 0s;
+      user-select: none;
+      outline: 1.5px solid transparent;
+      outline-offset: -1px;
+    }
+    .cv-flex-month-card.active {
+      border-color: transparent;
+      outline: 1.5px solid #1d1d1f;
+      outline-offset: -1px;
+    }
+    .cv-flex-month-icon { display: flex; align-items: center; justify-content: center; margin-bottom: 8px; color: #aaa; }
+    .cv-flex-month-card.active .cv-flex-month-icon { color: #1d1d1f; }
+    .cv-flex-month-name { font-size: 14px; font-weight: 600; color: #1d1d1f; }
+    .cv-flex-month-year { font-size: 11px; color: #aaa; margin-top: 2px; }
+    /* 월 스크롤 화살표 */
+    .cv-flex-month-arrow {
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%) translateY(-4px);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid #e0e0e5;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: box-shadow 0.15s;
+      z-index: 2;
+    }
+    .cv-flex-month-arrow:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.18); }
+    /* 요약 */
+    .cv-flex-summary {
+      text-align: center;
+      font-size: 13px;
+      color: #86868b;
+      margin-bottom: 16px;
+      min-height: 18px;
+    }
+    .cv-flex-summary strong { color: #1d1d1f; font-weight: 600; }
+    /* 확인 버튼 */
+    .cv-flex-btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background: #fff;
+      color: #1d1d1f;
+      border: 1.5px solid #d2d2d7;
+      border-radius: 980px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      align-self: center;
+      font-family: inherit;
+    }
+    .cv-flex-btn:hover { border-color: #1d1d1f; background: #f5f5f7; }
+
 
     /* ── 태블릿/PC(≥744px) 홈 화면에서 footer 숨김 ── */
     @media (min-width: 744px) {
@@ -3034,7 +3156,7 @@
         border-radius: 24px 24px 0 0;
         max-height: 85vh;
       }
-      #wiz-launcher { bottom: 20px; left: 12px; }
+      #wiz-launcher { bottom: 20px; left: 20px; transform: none; }
     }
   </style>
 </head>
@@ -3335,8 +3457,25 @@
         </div>
         <div id="cv-date-specific"><div id="cv-cal"></div></div>
         <div id="cv-date-flexible" style="display:none">
-          <div class="cv-flex-msg">날짜에 상관없이<br>최적의 여행지를 추천해드립니다.<br><span style="font-size:13px;color:#999">기본 5박 6일로 계산됩니다</span><br><span style="font-size:12px;color:#bbb">오늘 기준 최저가로 비교합니다</span></div>
-          <button class="cv-flex-btn" onclick="cvConfirmFlexibleDate()" type="button">언제든지</button>
+          <!-- 숙박 기간 선택 -->
+          <div class="cv-flex-duration">
+            <div class="cv-flex-section-title">숙박 기간을 선택하세요.</div>
+            <div class="cv-flex-duration-list">
+              <button class="cv-flex-dur-btn" data-dur="weekend" onclick="cvSetDuration(this,'weekend')" type="button">주말</button>
+              <button class="cv-flex-dur-btn" data-dur="week" onclick="cvSetDuration(this,'week')" type="button">1주일</button>
+              <button class="cv-flex-dur-btn" data-dur="month" onclick="cvSetDuration(this,'month')" type="button">한 달</button>
+            </div>
+          </div>
+          <!-- 월 선택 카드 -->
+          <div class="cv-flex-months">
+            <div class="cv-flex-section-title">여행 날짜를 선택하세요.</div>
+            <div class="cv-flex-month-scroll" id="cv-flex-month-list"></div>
+            <button class="cv-flex-month-arrow" id="cv-flex-month-arrow" onclick="cvScrollMonths()" type="button" aria-label="다음 달 보기">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+          <!-- 요약 텍스트 -->
+          <div class="cv-flex-summary" id="cv-flex-summary"></div>
         </div>
       </div>
 
@@ -3435,7 +3574,7 @@
       <div class="cv-sheet-footer">
         <button class="cv-sheet-search-btn" onclick="startSearch(); closeCvSearchSheet();" type="button">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          여행지 비교하기
+          검색
         </button>
       </div>
     </div>
@@ -12589,6 +12728,12 @@
         panel.classList.add('wiz-open');
       }
 
+      function closeWizard() {
+        const panel = document.getElementById('wiz-panel');
+        if (!panel) return;
+        panel.classList.remove('wiz-open');
+      }
+
 
       // ── 모바일/태블릿: 여행 검색 진행률 뱃지 ──
 
@@ -12796,9 +12941,12 @@
         wrap.appendChild(weekdays);
         var grid = document.createElement('div');
         grid.className = 'cv-cal-grid';
+
+        // 모든 셀(빈칸 포함)을 flat 배열로 만든 후 7개씩 row로 묶음
+        var cells = [];
         var firstDay = new Date(year, month, 1).getDay();
         for (var e = 0; e < firstDay; e++) {
-          var em = document.createElement('span'); em.className = 'cv-cal-day empty'; grid.appendChild(em);
+          var em = document.createElement('span'); em.className = 'cv-cal-day empty'; cells.push(em);
         }
         var daysInMonth = new Date(year, month + 1, 0).getDate();
         for (var d = 1; d <= daysInMonth; d++) {
@@ -12807,7 +12955,6 @@
           var el = document.createElement('span');
           el.className = 'cv-cal-day';
           el.dataset.iso = iso;
-          // inner span for the circle
           var num = document.createElement('span');
           num.className = 'cv-cal-num';
           num.textContent = d;
@@ -12817,7 +12964,15 @@
             if (dt.getTime() === today.getTime()) el.classList.add('today');
             el.addEventListener('click', function() { cvCalClickDay(this.dataset.iso); });
           }
-          grid.appendChild(el);
+          cells.push(el);
+        }
+        // 7개씩 row div로 묶어서 grid에 추가
+        for (var ri = 0; ri < cells.length; ri += 7) {
+          var row = document.createElement('div');
+          row.className = 'cv-cal-row';
+          var rowCells = cells.slice(ri, ri + 7);
+          rowCells.forEach(function(c) { row.appendChild(c); });
+          grid.appendChild(row);
         }
         wrap.appendChild(grid);
         return wrap;
@@ -12847,20 +13002,84 @@
         var hasRange = cvCalSel.start && cvCalSel.end && cvCalSel.start !== cvCalSel.end;
         var s = cvCalSel.start, e = cvCalSel.end;
         var allDays = document.querySelectorAll('#cv-cal .cv-cal-day:not(.empty)');
+
+        // 1) 모든 날짜 클래스 초기화
         allDays.forEach(function(el) {
-          el.classList.remove('sel-start','sel-end','in-range','has-range','row-start','row-end');
+          el.classList.remove('sel-start','sel-end','in-range','has-range');
           var iso = el.dataset.iso; if (!iso) return;
           if (s && iso === s) { el.classList.add('sel-start'); if (hasRange) el.classList.add('has-range'); }
           if (e && iso === e) { el.classList.add('sel-end'); if (hasRange) el.classList.add('has-range'); }
-          if (hasRange && iso > s && iso < e) {
-            el.classList.add('in-range');
-            // 각 셀의 grid 위치(0~6) 판별
-            var siblings = Array.from(el.parentNode.children);
-            var idx = siblings.indexOf(el);
-            var col = idx % 7;
-            if (col === 0) el.classList.add('row-start');
-            if (col === 6) el.classList.add('row-end');
+          if (hasRange && iso > s && iso < e) el.classList.add('in-range');
+        });
+
+        // 2) 모든 row pill 초기화
+        document.querySelectorAll('#cv-cal .cv-cal-row').forEach(function(row) {
+          row.classList.remove('has-pill');
+          row.style.removeProperty('--pill-left');
+          row.style.removeProperty('--pill-right');
+        });
+
+        if (!hasRange) return;
+
+        // 3) row 단위로 pill 배경 계산
+        document.querySelectorAll('#cv-cal .cv-cal-row').forEach(function(row) {
+          var cells = Array.from(row.querySelectorAll('.cv-cal-day'));
+          // row 내에서 선택 범위에 포함되는 첫/끝 col 인덱스 찾기
+          var pillStartCol = -1, pillEndCol = -1;
+
+          cells.forEach(function(cell, ci) {
+            var iso = cell.dataset.iso;
+            if (!iso) return;
+            var inSel = (iso >= s && iso <= e);
+            if (inSel) {
+              if (pillStartCol === -1) pillStartCol = ci;
+              pillEndCol = ci;
+            }
+          });
+
+          if (pillStartCol === -1) return; // 이 row에 선택 범위 없음
+
+          // col 인덱스를 % 기준으로 변환 (7등분) — 셀 경계 기준
+          var leftPct = (pillStartCol / 7 * 100).toFixed(2) + '%';
+          var rightPct = ((7 - pillEndCol - 1) / 7 * 100).toFixed(2) + '%';
+
+          var hasInRange = cells.some(function(c) { return c.classList.contains('in-range'); });
+          var hasSelStart = cells.some(function(c) { return c.classList.contains('sel-start') && c.classList.contains('has-range'); });
+          var hasSelEnd = cells.some(function(c) { return c.classList.contains('sel-end') && c.classList.contains('has-range'); });
+
+          if (!hasInRange && !hasSelStart && !hasSelEnd) return;
+
+          row.classList.add('has-pill');
+
+          // 원의 반지름(20px)만큼 안쪽으로 당겨서 pill이 원 테두리에서 정확히 시작/끝나도록 calc() 사용
+          var R = 20; // cv-cal-num 반지름 (40px / 2)
+          if (hasSelStart && !hasSelEnd) {
+            // start -> row 끝: pill 왼쪽 = 원 중앙% - R(px) → 원의 왼쪽 테두리
+            var startCell = cells.find(function(c) { return c.classList.contains('sel-start'); });
+            var startIdx = cells.indexOf(startCell);
+            var centerPct = ((startIdx + 0.5) / 7 * 100).toFixed(4);
+            leftPct = 'calc(' + centerPct + '% - ' + R + 'px)';
+            rightPct = '0%';
+          } else if (hasSelEnd && !hasSelStart) {
+            // row 처음 -> end: pill 오른쪽 = 원 중앙% - R(px) → 원의 오른쪽 테두리
+            var endCell = cells.find(function(c) { return c.classList.contains('sel-end'); });
+            var endIdx = cells.indexOf(endCell);
+            var centerFromRightPct = ((7 - endIdx - 0.5) / 7 * 100).toFixed(4);
+            leftPct = '0%';
+            rightPct = 'calc(' + centerFromRightPct + '% - ' + R + 'px)';
+          } else if (hasSelStart && hasSelEnd) {
+            // start -> end 같은 row
+            var sCell = cells.find(function(c) { return c.classList.contains('sel-start'); });
+            var eCell = cells.find(function(c) { return c.classList.contains('sel-end'); });
+            var sIdx = cells.indexOf(sCell);
+            var eIdx = cells.indexOf(eCell);
+            var sCenterPct = ((sIdx + 0.5) / 7 * 100).toFixed(4);
+            var eCenterFromRightPct = ((7 - eIdx - 0.5) / 7 * 100).toFixed(4);
+            leftPct = 'calc(' + sCenterPct + '% - ' + R + 'px)';
+            rightPct = 'calc(' + eCenterFromRightPct + '% - ' + R + 'px)';
           }
+          row.style.setProperty('--pill-left', leftPct);
+          row.style.setProperty('--pill-right', rightPct);
         });
       }
 
@@ -13031,13 +13250,159 @@
         if(f) f.style.display = tab === 'flexible' ? '' : 'none';
         if(ts) ts.classList.toggle('active', tab === 'specific');
         if(tf) tf.classList.toggle('active', tab === 'flexible');
+        if(tab === 'flexible') cvUpdateFlexDisplay();
+      }
+
+      // ── 유연한 일정 상태 ──
+      var _cvFlexDuration = null; // 'weekend' | 'week' | 'month' | null
+      var _cvFlexMonth = null; // { year, month(0-indexed) }
+
+      var CV_FLEX_DUR_LABELS = { weekend: '주말', week: '1주일', month: '한 달' };
+      var CV_FLEX_DUR_NIGHTS = { weekend: 2, week: 6, month: 29 };
+      var CV_FLEX_MONTH_ICON = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2V5M16 2V5M3.5 9.09H20.5M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z" stroke="currentColor" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+      function cvScrollMonths() {
+        var list = document.getElementById('cv-flex-month-list');
+        if (!list) return;
+        var maxScroll = list.scrollWidth - list.clientWidth;
+        if (list.scrollLeft >= maxScroll - 4) {
+          list.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          list.scrollBy({ left: 94, behavior: 'smooth' });
+        }
+      }
+
+      function cvInitFlexMonths() {
+        var list = document.getElementById('cv-flex-month-list');
+        if (!list || list.children.length > 0) return; // 이미 생성됨
+        var today = new Date();
+        var curY = today.getFullYear(), curM = today.getMonth();
+        var monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+        for (var i = 0; i < 9; i++) {
+          var m = (curM + i) % 12, y = curY + Math.floor((curM + i) / 12);
+          (function(mi, yi, idx) {
+            var card = document.createElement('div');
+            card.className = 'cv-flex-month-card';
+            card.dataset.month = mi; card.dataset.year = yi;
+            card.innerHTML =
+              '<div class="cv-flex-month-icon">' + CV_FLEX_MONTH_ICON + '</div>' +
+              '<div class="cv-flex-month-name">' + monthNames[mi] + '</div>' +
+              '<div class="cv-flex-month-year">' + yi + '</div>';
+            card.addEventListener('click', function() {
+              document.querySelectorAll('.cv-flex-month-card').forEach(function(c){ c.classList.remove('active'); });
+              card.classList.add('active');
+              _cvFlexMonth = { year: yi, month: mi };
+              cvUpdateFlexSummary();
+            });
+            list.appendChild(card);
+          })(m, y, i);
+        }
+      }
+
+      function cvSetDuration(btn, dur) {
+        _cvFlexDuration = dur;
+        document.querySelectorAll('.cv-flex-dur-btn').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        cvUpdateFlexSummary();
+      }
+
+      function cvUpdateFlexSummary() {
+        var el = document.getElementById('cv-flex-summary');
+        var monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+        var durLabel = _cvFlexDuration ? (CV_FLEX_DUR_LABELS[_cvFlexDuration] || '') : '';
+        var monthLabel = _cvFlexMonth ? monthNames[_cvFlexMonth.month] : '';
+
+        // 팝업 내부 요약 텍스트
+        if (el) {
+          if (_cvFlexMonth && _cvFlexDuration) {
+            el.innerHTML = '<strong>' + monthLabel + '의 ' + durLabel + '</strong>으로 검색합니다';
+          } else if (_cvFlexMonth) {
+            el.innerHTML = '<strong>' + monthLabel + '</strong> 선택됨';
+          } else if (_cvFlexDuration) {
+            el.innerHTML = '<strong>' + durLabel + '</strong> 선택됨 · 월을 선택해주세요';
+          } else {
+            el.innerHTML = '';
+          }
+        }
+
+        // 상단 바 날짜 필드 실시간 반영
+        var label = '';
+        if (monthLabel && durLabel) {
+          label = monthLabel + ' · ' + durLabel;
+        } else if (monthLabel) {
+          label = monthLabel;
+        } else if (durLabel) {
+          label = durLabel;
+        }
+
+        var displays = ['sb-date-display', 'sb-date-display-c'];
+        displays.forEach(function(id) {
+          var d = document.getElementById(id);
+          if (!d) return;
+          if (label) {
+            d.textContent = label;
+            d.classList.add('filled');
+          } else {
+            d.textContent = '언제든지';
+            d.classList.remove('filled');
+          }
+        });
+      }
+
+      // 기간+월 조합으로 실제 날짜 계산
+      function cvCalcFlexDates() {
+        var today = new Date(); today.setHours(0,0,0,0);
+        var ym = _cvFlexMonth || { year: today.getFullYear(), month: today.getMonth() + 1 };
+        // 해당 월의 첫날
+        var firstOfMonth = new Date(ym.year, ym.month, 1);
+        var dep, ret;
+        var D = ['일','월','화','수','목','금','토'];
+        if (_cvFlexDuration === 'weekend') {
+          // 그 달의 첫 번째 금요일
+          dep = new Date(firstOfMonth);
+          while (dep.getDay() !== 5) dep.setDate(dep.getDate() + 1);
+          ret = new Date(dep); ret.setDate(dep.getDate() + 2); // 2박 3일
+        } else if (_cvFlexDuration === 'week') {
+          // 그 달의 첫 번째 금요일부터 6박 7일
+          dep = new Date(firstOfMonth);
+          while (dep.getDay() !== 5) dep.setDate(dep.getDate() + 1);
+          ret = new Date(dep); ret.setDate(dep.getDate() + 6);
+        } else {
+          // 한 달: 1일 ~ 말일
+          dep = new Date(firstOfMonth);
+          ret = new Date(ym.year, ym.month + 1, 0); // 말일
+        }
+        // 오늘보다 이전이면 오늘+3일 기준으로 조정
+        if (dep < today) {
+          dep = new Date(today); dep.setDate(today.getDate() + 3);
+          if (_cvFlexDuration === 'weekend') {
+            while (dep.getDay() !== 5 && dep.getDay() !== 6) dep.setDate(dep.getDate() + 1);
+            ret = new Date(dep); ret.setDate(dep.getDate() + 2);
+          } else if (_cvFlexDuration === 'week') {
+            while (dep.getDay() !== 5) dep.setDate(dep.getDate() + 1);
+            ret = new Date(dep); ret.setDate(dep.getDate() + 6);
+          } else {
+            ret = new Date(dep); ret.setDate(dep.getDate() + 29);
+          }
+        }
+        function fmt(d) { return (d.getMonth()+1) + '월 ' + d.getDate() + '일(' + D[d.getDay()] + ')'; }
+        return { dep: dep, ret: ret, label: fmt(dep) + ' – ' + fmt(ret) };
+      }
+
+      function cvUpdateFlexDisplay() {
+        cvInitFlexMonths();
+        cvUpdateFlexSummary();
       }
 
       function cvConfirmFlexibleDate() {
-        var txt = '언제든지';
+        var info = cvCalcFlexDates();
+        window.selectedDates = [info.dep, info.ret];
+        var monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+        var ym = _cvFlexMonth;
+        var durLabel = CV_FLEX_DUR_LABELS[_cvFlexDuration] || '';
+        var txt = ym ? monthNames[ym.month] + '의 ' + durLabel : info.label;
         var el = document.getElementById('cvt-date-val'); if(el) el.textContent = txt;
         var src = document.getElementById('sb-date-display'); if(src) src.textContent = txt;
-        window.selectedDates = null;
         switchCvTab('traveler');
       }
     </script>
