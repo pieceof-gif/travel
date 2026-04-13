@@ -9854,61 +9854,70 @@
           backgroundColor: '#ffffff',
           logging: false,
           onclone: function(doc) {
-            // 외부 이미지 src 제거 → canvas 오염 방지
+            // 외부 이미지 전부 제거 → canvas taint 방지
             doc.querySelectorAll('img').forEach(function(img) {
               var src = img.getAttribute('src') || '';
-              if (src && !src.startsWith('data:')) {
-                try {
-                  var u = new URL(src, window.location.href);
-                  if (u.origin !== window.location.origin) {
-                    img.removeAttribute('src');
-                    img.style.display = 'none';
-                  }
-                } catch(e2) {}
+              if (src && !src.startsWith('data:') && !src.startsWith('/')) {
+                img.removeAttribute('src');
+                img.style.display = 'none';
               }
             });
-            // nav 숨김
             var cloneNav = doc.querySelector('#compare-view .nav');
             if (cloneNav) cloneNav.style.display = 'none';
           }
         }).then(function(canvas) {
           if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
 
-          // 모달 오버레이
-          var overlay = document.createElement('div');
-          overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;box-sizing:border-box;';
-
-          var img = document.createElement('img');
-          img.src = canvas.toDataURL('image/png');
-          img.style.cssText = 'max-width:min(900px,90vw);max-height:72vh;object-fit:contain;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,0.5);';
-
-          var hint = document.createElement('p');
-          hint.style.cssText = 'color:rgba(255,255,255,0.75);font-size:13px;margin:0;text-align:center;letter-spacing:-0.2px;';
-          hint.textContent = '이미지를 우클릭 → 이미지를 다른 이름으로 저장';
-
-          var btnWrap = document.createElement('div');
-          btnWrap.style.cssText = 'display:flex;gap:10px;';
-
-          var dlBtn = document.createElement('a');
-          dlBtn.href = img.src;
           var today = new Date();
-          var ds = today.getFullYear() + '' + String(today.getMonth()+1).padStart(2,'0') + String(today.getDate()).padStart(2,'0');
-          dlBtn.download = 'travi-여행비교-' + ds + '.png';
-          dlBtn.textContent = '⬇ 다운로드';
-          dlBtn.style.cssText = 'background:#0071e3;color:#fff;border:none;padding:11px 24px;border-radius:22px;cursor:pointer;font-size:14px;font-weight:600;text-decoration:none;font-family:inherit;letter-spacing:-0.2px;';
+          var ds = today.getFullYear() + '' +
+            String(today.getMonth()+1).padStart(2,'0') +
+            String(today.getDate()).padStart(2,'0');
+          var fileName = 'travi-여행비교-' + ds + '.png';
 
-          var closeBtn = document.createElement('button');
-          closeBtn.textContent = '닫기';
-          closeBtn.style.cssText = 'background:rgba(255,255,255,0.15);color:#fff;border:none;padding:11px 24px;border-radius:22px;cursor:pointer;font-size:14px;font-weight:600;font-family:inherit;';
-          closeBtn.onclick = function() { document.body.removeChild(overlay); };
+          canvas.toBlob(function(blob) {
+            if (!blob) { showToast('⚠️ 이미지 생성 실패'); return; }
 
-          btnWrap.appendChild(dlBtn);
-          btnWrap.appendChild(closeBtn);
-          overlay.appendChild(img);
-          overlay.appendChild(hint);
-          overlay.appendChild(btnWrap);
-          overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
-          document.body.appendChild(overlay);
+            var blobUrl = URL.createObjectURL(blob);
+
+            // 모달 오버레이
+            var overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;box-sizing:border-box;';
+
+            var img = document.createElement('img');
+            img.src = blobUrl;
+            img.style.cssText = 'max-width:min(900px,90vw);max-height:70vh;object-fit:contain;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,0.5);';
+
+            var hint = document.createElement('p');
+            hint.style.cssText = 'color:rgba(255,255,255,0.65);font-size:13px;margin:0;text-align:center;';
+            hint.textContent = '이미지를 우클릭 → 이미지를 다른 이름으로 저장';
+
+            var btnWrap = document.createElement('div');
+            btnWrap.style.cssText = 'display:flex;gap:10px;';
+
+            // 다운로드 버튼 — 사용자가 직접 클릭 → Chrome이 파일명 존중
+            var dlBtn = document.createElement('a');
+            dlBtn.href = blobUrl;
+            dlBtn.setAttribute('download', fileName);
+            dlBtn.textContent = '⬇  PNG 저장';
+            dlBtn.style.cssText = 'background:#0071e3;color:#fff;padding:12px 28px;border-radius:24px;font-size:14px;font-weight:600;text-decoration:none;font-family:inherit;letter-spacing:-0.2px;cursor:pointer;';
+
+            var closeBtn = document.createElement('button');
+            closeBtn.textContent = '닫기';
+            closeBtn.style.cssText = 'background:rgba(255,255,255,0.15);color:#fff;border:none;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;';
+            closeBtn.onclick = function() {
+              document.body.removeChild(overlay);
+              URL.revokeObjectURL(blobUrl);
+            };
+
+            btnWrap.appendChild(dlBtn);
+            btnWrap.appendChild(closeBtn);
+            overlay.appendChild(img);
+            overlay.appendChild(hint);
+            overlay.appendChild(btnWrap);
+            overlay.onclick = function(e) { if (e.target === overlay) closeBtn.onclick(); };
+            document.body.appendChild(overlay);
+
+          }, 'image/png');
 
         }).catch(function(e) {
           if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
@@ -13964,8 +13973,8 @@
       }
     </script>
 
-  <!-- WIZARD LAUNCHER BUTTON -->
-  <button id="wiz-launcher" onclick="toggleWizard()" aria-label="여행 취향 찾기">
+  <!-- WIZARD LAUNCHER BUTTON (숨김) -->
+  <button id="wiz-launcher" onclick="toggleWizard()" aria-label="여행 취향 찾기" style="display:none">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="10"/>
       <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
@@ -13974,8 +13983,8 @@
     <span class="wiz-launcher-badge" id="wiz-launcher-badge"></span>
   </button>
 
-  <!-- WIZARD PANEL -->
-  <div id="wiz-panel">
+  <!-- WIZARD PANEL (숨김) -->
+  <div id="wiz-panel" style="display:none">
     <div class="wiz-header">
       <div class="wiz-title">여행 취향 찾기</div>
       <div class="wiz-header-right">
