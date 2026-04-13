@@ -936,7 +936,7 @@
     }
 
     .tip-details[open] .tip-arrow {
-      transform: rotate(90deg);
+      transform: rotate(180deg);
     }
 
     .tip-content {
@@ -9416,7 +9416,7 @@
             details.className = 'tip-details';
             const summary = document.createElement('summary');
             summary.className = 'tip-summary';
-            summary.innerHTML = '숙소 절약 팁 <span class="tip-arrow">›</span>';
+            summary.innerHTML = '숙소 절약 팁 <span class="tip-arrow">∨</span>';
             details.appendChild(summary);
             const content = document.createElement('div');
             content.className = 'tip-content';
@@ -9483,7 +9483,7 @@
             details.className = 'tip-details';
             const summary = document.createElement('summary');
             summary.className = 'tip-summary';
-            summary.innerHTML = (isVip ? '💍 VIP 항공 추천 팁' : '항공권 절약 팁') + ' <span class="tip-arrow">›</span>';
+            summary.innerHTML = (isVip ? '💍 VIP 항공 추천 팁' : '항공권 절약 팁') + ' <span class="tip-arrow">∨</span>';
             details.appendChild(summary);
             const content = document.createElement('div');
             content.className = 'tip-content';
