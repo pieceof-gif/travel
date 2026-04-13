@@ -12279,26 +12279,30 @@
         }, function() { /* 권한 거부 → ICN 유지 */ }, { timeout: 5000 });
       })();
 
+      // ── 목적지 → IATA 도시코드 공유 상수 (TP API·비자 API 공용) ──
+      // NOTE: codes(9578)은 공항코드(KIX/NRT)라 별도 유지, 이 맵은 도시코드(OSA/TYO)
+      window.DEST_CITY_IATA = {
+        lisbon:'LIS', danang:'DAD', taipei:'TPE',
+        osaka:'OSA', tokyo:'TYO', bangkok:'BKK', bali:'DPS',
+        chiangmai:'CNX', singapore:'SIN', cebu:'CEB',
+        fukuoka:'FUK', sapporo:'SPK', okinawa:'OKA', kyoto:'OSA',
+        phuquoc:'PQC', hochiminh:'SGN', hanoi:'HAN', boracay:'MPH',
+        phuket:'HKT', hongkong:'HKG', guam:'GUM', hawaii:'HNL',
+        paris:'PAR', kualalumpur:'KUL', maldives:'MLE',
+        sydney:'SYD', shanghai:'SHA', barcelona:'BCN',
+        macau:'MFM', beijing:'PEK', qingdao:'TAO',
+        saipan:'SPN', palawan:'PPS', sanya:'SYX',
+        istanbul:'IST', madrid:'MAD', london:'LON'
+      };
+
       // ── Travelpayouts 실시간 항공 가격 연동 ──
       (function fetchTpFlightPrices() {
         var TP_TOKEN = '6a6084c8f32d44f563ba4baa66f11975';
         var TP_MARKER = '510036';
         var ORIGIN = window.DEPARTURE_AIRPORT || 'ICN';
 
-        // 목적지별 IATA 코드 (Travelpayouts 도시코드 기준)
-        // ※ 제주(CJU)·나트랑(CXR) 제외 — 국내선/API 데이터 없음 → 하드코딩 유지
-        var DEST_IATA = {
-          lisbon: 'LIS', danang: 'DAD', taipei: 'TPE',
-          osaka: 'OSA', tokyo: 'TYO', bangkok: 'BKK', bali: 'DPS',
-          chiangmai: 'CNX', singapore: 'SIN', cebu: 'CEB',
-          fukuoka: 'FUK', sapporo: 'SPK', okinawa: 'OKA', kyoto: 'OSA',
-          phuquoc: 'PQC', hochiminh: 'SGN', hanoi: 'HAN', boracay: 'MPH',
-          phuket: 'HKT', hongkong: 'HKG', guam: 'GUM', hawaii: 'HNL',
-          paris: 'PAR', kualalumpur: 'KUL', maldives: 'MLE',
-          sydney: 'SYD', shanghai: 'SHA', barcelona: 'BCN',
-          macau: 'MFM', beijing: 'PEK', qingdao: 'TAO',
-          saipan: 'SPN', palawan: 'PPS', sanya: 'SYX'
-        };
+        // 목적지별 IATA 도시코드 — 전역 공유 상수 참조
+        var DEST_IATA = window.DEST_CITY_IATA;
 
         // 제휴 예약 링크 생성 — Skyscanner 검색 (한국어 UI)
         var makeBookingLink = function(iata) {
@@ -12330,8 +12334,16 @@
               if (!entry.priceLabel) return;
               dest.airfare = entry.priceLabel;
               dest.airfareSub = '실시간 최저가 (왕복)';
-              // Aviasales 검색 URL 사용 (도시코드 인식 확실)
               dest._tpLink = makeBookingLink(iata);
+              // ── 실시간 가격 → cheapFlights desc 동적 반영 ──
+              var _livePrice = (entry.priceLabel || '').replace(/[^0-9]/g, '');
+              if (_livePrice && dest.cheapFlights) {
+                dest.cheapFlights.forEach(function(f) {
+                  if (f.desc) {
+                    f.desc = f.desc.replace(/왕복\s*[\d,\-]+만원[대~]*/, '왕복 ' + _livePrice + '만원대');
+                  }
+                });
+              }
             });
             // 현재 보이는 카드 업데이트
             if (document.getElementById('compare-view') &&
@@ -12343,7 +12355,7 @@
                 if (isNaN(dIdx)) continue;
                 var d = v1_0_9_DEST_DATA[dIdx];
                 if (!d || !d.airfare) continue;
-                // air-i 셀 업데이트
+                // air-i 셀 (요약 카드) 업데이트
                 var airEl = document.getElementById('air-' + i);
                 if (airEl) {
                   var mEl = airEl.querySelector('.main');
@@ -12352,7 +12364,13 @@
                   if (mEl) { mEl.textContent = d.airfare; }
                   if (sEl) { sEl.textContent = '실시간 최저가 (왕복)'; }
                   if (kEl) { kEl.textContent = '이코노미 · 인천 출발'; }
-
+                }
+                // flightrec-i 항공 카드 desc 실시간 업데이트
+                var recEl = document.getElementById('flightrec-' + i);
+                if (recEl && d.cheapFlights) {
+                  recEl.querySelectorAll('.flight-card-desc').forEach(function(descEl, fi) {
+                    if (d.cheapFlights[fi]) descEl.textContent = d.cheapFlights[fi].desc;
+                  });
                 }
               }
             }
@@ -12379,18 +12397,8 @@
 
       // ── GitHub passport-index-dataset: 한국여권 비자 요건 연동 ──
       (function fetchVisaInfo() {
-        var DEST_TO_IATA = {
-          lisbon:'LIS', danang:'DAD', taipei:'TPE',
-          osaka:'OSA', tokyo:'TYO', bangkok:'BKK', bali:'DPS',
-          chiangmai:'CNX', singapore:'SIN', cebu:'CEB',
-          fukuoka:'FUK', sapporo:'SPK', okinawa:'OKA', kyoto:'OSA',
-          phuquoc:'PQC', hochiminh:'SGN', hanoi:'HAN', boracay:'MPH',
-          phuket:'HKT', hongkong:'HKG', guam:'GUM', hawaii:'HNL',
-          paris:'PAR', kualalumpur:'KUL', maldives:'MLE',
-          sydney:'SYD', shanghai:'SHA', barcelona:'BCN',
-          macau:'MFM', beijing:'PEK', qingdao:'TAO',
-          saipan:'SPN', palawan:'PPS', sanya:'SYX'
-        };
+        // 비자 API용 IATA 도시코드 — 전역 공유 상수 참조
+        var DEST_TO_IATA = window.DEST_CITY_IATA;
 
         fetch('https://travel.le2jy.workers.dev/api/visa')
           .then(function(r) { return r.json(); })
