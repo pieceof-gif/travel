@@ -99,6 +99,140 @@
       will-change: background, backdrop-filter;
     }
 
+    /* ── SHARE BUTTON ── */
+    .nav-share-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1d1d1f;
+      transition: background 0.15s ease;
+      padding: 0;
+      flex-shrink: 0;
+    }
+    .nav-share-btn:hover {
+      background: rgba(0, 0, 0, 0.07);
+    }
+    .nav-share-btn:active {
+      background: rgba(0, 0, 0, 0.12);
+      transform: scale(0.93);
+    }
+
+    /* ── SHARE SHEET ── */
+    #share-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 3000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+    #share-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    #share-sheet {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%) translateY(100%);
+      width: min(480px, 100vw);
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      z-index: 3001;
+      padding: 0 0 max(24px, env(safe-area-inset-bottom)) 0;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 -4px 40px rgba(0,0,0,0.12);
+    }
+    #share-sheet.open {
+      transform: translateX(-50%) translateY(0);
+    }
+    .share-sheet-handle {
+      width: 36px;
+      height: 4px;
+      background: #e0e0e5;
+      border-radius: 2px;
+      margin: 12px auto 20px;
+    }
+    .share-sheet-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #aeaeb2;
+      text-align: center;
+      letter-spacing: 0.3px;
+      margin-bottom: 20px;
+    }
+    .share-options {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      padding: 0 24px 20px;
+    }
+    .share-opt {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+      padding: 0;
+    }
+    .share-opt-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    .share-opt:active .share-opt-icon {
+      transform: scale(0.9);
+      opacity: 0.75;
+    }
+    .share-opt-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #3a3a3c;
+    }
+    .share-opt-icon.kakao {
+      background: #FEE500;
+    }
+    .share-opt-icon.copy {
+      background: #f2f2f7;
+    }
+    .share-opt-icon.more {
+      background: #f2f2f7;
+    }
+    .share-divider {
+      border: none;
+      border-top: 1px solid #f2f2f2;
+      margin: 0 0 4px;
+    }
+    .share-cancel {
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #1d1d1f;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.1s;
+    }
+    .share-cancel:active { background: #f5f5f7; }
+
     .home-content {
       flex: 1;
       display: flex;
@@ -3185,6 +3319,11 @@
   <div id="home-view">
     <nav class="home-nav">
       <span class="nav-brand"><span style="letter-spacing:0.1px">t</span>ravi</span>
+      <button class="nav-share-btn" id="nav-share-btn" onclick="handleShare()" aria-label="공유하기">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13.9289 9.21468V4.92896L21 12L13.9289 19.0711V14.2392M13.9289 9.22304C13.2857 9.07708 12.6163 9.00002 11.9289 9.00002C6.95836 9.00002 2.92892 13.0295 2.92892 18C2.92892 18.8675 3.05165 19.7063 3.28069 20.5C4.36404 16.7457 7.82583 14 11.9289 14C12.6163 14 13.2857 14.0771 13.9289 14.223" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </nav>
     <div class="top-banner" id="home-top-banner" style="position: relative; z-index: 99;">
       <div class="banner-news-wrap" id="home-banner-wrap">
@@ -9670,6 +9809,110 @@
         window._toastTimer = setTimeout(() => {
           t.classList.remove('show');
         }, 2500);
+      }
+
+      // ── SHARE SHEET ──
+      function handleShare() {
+        let overlay = document.getElementById('share-overlay');
+        let sheet   = document.getElementById('share-sheet');
+        if (!overlay) {
+          // 오버레이
+          overlay = document.createElement('div');
+          overlay.id = 'share-overlay';
+          overlay.onclick = closeShareSheet;
+          document.body.appendChild(overlay);
+          // 시트
+          sheet = document.createElement('div');
+          sheet.id = 'share-sheet';
+          sheet.innerHTML = `
+            <div class="share-sheet-handle"></div>
+            <div class="share-sheet-title">공유하기</div>
+            <div class="share-options">
+              <button class="share-opt" onclick="shareKakao()">
+                <div class="share-opt-icon kakao">
+                  <svg width="28" height="26" viewBox="0 0 28 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14 0C6.268 0 0 4.925 0 11c0 3.999 2.576 7.514 6.468 9.588L4.8 26l6.304-4.18C11.677 21.94 12.826 22 14 22c7.732 0 14-4.925 14-11S21.732 0 14 0z" fill="#3B1E1E"/>
+                  </svg>
+                </div>
+                <span class="share-opt-label">카카오톡</span>
+              </button>
+              <button class="share-opt" onclick="shareCopyLink()">
+                <div class="share-opt-icon copy">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="#1d1d1f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="#1d1d1f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <span class="share-opt-label">링크 복사</span>
+              </button>
+              <button class="share-opt" id="share-more-btn" onclick="shareMore()">
+                <div class="share-opt-icon more">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="5" r="1.5" fill="#1d1d1f"/>
+                    <circle cx="12" cy="12" r="1.5" fill="#1d1d1f"/>
+                    <circle cx="12" cy="19" r="1.5" fill="#1d1d1f"/>
+                  </svg>
+                </div>
+                <span class="share-opt-label">더보기</span>
+              </button>
+            </div>
+            <hr class="share-divider">
+            <button class="share-cancel" onclick="closeShareSheet()">취소</button>
+          `;
+          document.body.appendChild(sheet);
+          // '더보기' 없으면 숨김
+          if (!navigator.share) {
+            const moreBtn = sheet.querySelector('#share-more-btn');
+            if (moreBtn) moreBtn.style.display = 'none';
+          }
+        }
+        requestAnimationFrame(() => {
+          overlay.classList.add('open');
+          sheet.classList.add('open');
+        });
+      }
+
+      function closeShareSheet() {
+        const overlay = document.getElementById('share-overlay');
+        const sheet   = document.getElementById('share-sheet');
+        if (overlay) overlay.classList.remove('open');
+        if (sheet)   sheet.classList.remove('open');
+      }
+
+      function shareKakao() {
+        const url  = location.href;
+        const text = '여행지 비교는 travi에서!\n항공권·호텔·현지 비용을 한눈에 확인하세요.\n👉 ' + url;
+        const kakaoLink = 'kakaotalk://msg/send?text=' + encodeURIComponent(text);
+        const opened = window.open(kakaoLink, '_blank');
+        // 딥링크 실패 시 fallback: 웹 공유 or 복사
+        setTimeout(() => {
+          try {
+            if (!opened || opened.closed) {
+              shareCopyLink();
+              showToast('카카오톡을 찾지 못했어요. 링크를 복사했어요 🔗');
+            }
+          } catch(e) {}
+        }, 1200);
+        closeShareSheet();
+      }
+
+      function shareCopyLink() {
+        closeShareSheet();
+        navigator.clipboard.writeText(location.href).then(() => {
+          showToast('🔗 링크가 복사되었어요');
+        }).catch(() => {
+          showToast('링크: ' + location.href);
+        });
+      }
+
+      function shareMore() {
+        closeShareSheet();
+        const url  = location.href;
+        const title = 'travi — 여행지 비교하기';
+        const text  = '여행지 비교는 travi에서! 항공권·호텔·현지 비용을 한눈에 확인하세요.';
+        if (navigator.share) {
+          navigator.share({ title, text, url }).catch(() => {});
+        }
       }
 
       // ── DESTINATION DROPDOWN SHARED CONSTANTS ──
