@@ -54,15 +54,16 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(255, 255, 255, .85);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0);  /* starts transparent -> JS progressive */
+      backdrop-filter: saturate(100%) blur(0px);
+      -webkit-backdrop-filter: saturate(100%) blur(0px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 22px;
       height: 44px;
+      will-change: background, backdrop-filter;
     }
 
     .nav-brand {
@@ -86,15 +87,16 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(255, 255, 255, .85);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0);
+      backdrop-filter: saturate(100%) blur(0px);
+      -webkit-backdrop-filter: saturate(100%) blur(0px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 22px;
       height: 44px;
+      will-change: background, backdrop-filter;
     }
 
     .home-content {
@@ -122,6 +124,19 @@
       width: min(880px, calc(100vw - 32px));
       margin: 28px auto 0;
       z-index: 90;
+    }
+    /* PC: 여행자 숨기고 검색바 너비 축소 */
+    @media (min-width: 1069px) {
+      #traveler-seg,
+      #traveler-seg-c { display: none; }
+      #date-seg + .sb-div,
+      #date-seg-c + .sb-div { display: none; }
+      .sb-wrap { width: min(720px, calc(100vw - 32px)); }
+      /* PC 유연한 일정 화살표 위치 */
+      #sb-flex-month-arrow-right-c { right: -4px; left: auto; }
+      #sb-flex-month-arrow-left-c  { left: -4px; right: auto; }
+      /* PC 월 카드 간격 확대 */
+      #sb-flex-month-list-c { gap: 16px; }
     }
     /* 패널이 열린 상태에서만 z-index 상승 → sticky-sel(90) 위에 표시 */
     .sb-wrap:has(.sb-panel.open) {
@@ -2377,12 +2392,13 @@
       background: #e8e8e8;
     }
     /* ── 언제든지 컨테이너 ── */
-    #cv-date-flexible {
+    #cv-date-flexible,
+    #date-panel-flexible-c {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 0;
-      padding: 16px 0 8px;
+      padding: 36px 0 8px;
     }
     .cv-flex-section-title {
       font-size: 17px;
@@ -2454,7 +2470,6 @@
     /* 월 스크롤 화살표 */
     .cv-flex-month-arrow {
       position: absolute;
-      right: -4px;
       top: 50%;
       transform: translateY(-50%) translateY(-4px);
       width: 32px;
@@ -2470,6 +2485,8 @@
       transition: box-shadow 0.15s;
       z-index: 2;
     }
+    #cv-flex-month-arrow-right { right: -4px; }
+    #cv-flex-month-arrow-left  { left: -4px; display: none; }
     .cv-flex-month-arrow:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.18); }
     /* 요약 */
     .cv-flex-summary {
@@ -3189,7 +3206,7 @@
           <!-- 2. 날짜 -->
           <div class="sb-seg sb-seg--wide" id="date-seg" onclick="toggleSbPanel('date-panel',event,this);if(!fpHome)initFlatpickr('home')">
             <div class="sb-label">날짜</div>
-            <div class="sb-val" id="sb-date-display">언제든지</div>
+            <div class="sb-val" id="sb-date-display">날짜 선택</div>
           </div>
           <div class="sb-div"></div>
           <!-- 3. 여행자 -->
@@ -3246,7 +3263,7 @@
         <div class="sb-panel" id="date-panel">
           <div class="sb-date-tabs">
             <button class="sb-date-tab active" id="date-tab-specific" onclick="switchDateTab('specific',event)" type="button">날짜 지정</button>
-            <button class="sb-date-tab" id="date-tab-flexible" onclick="switchDateTab('flexible',event)" type="button">언제든지</button>
+            <button class="sb-date-tab" id="date-tab-flexible" onclick="switchDateTab('flexible',event)" type="button">유연한 일정</button>
           </div>
           <div id="date-panel-specific">
             <div id="dc-home-wrap">
@@ -3400,12 +3417,12 @@
 
       <!-- 지역 콘텐츠 -->
       <div class="cv-tab-content" id="cv-content-region">
-        <div class="cv-row active" data-val="" onclick="cvSelectRegion('')">
+        <div class="cv-row" data-val="" onclick="cvSelectRegion('')">
           <div>
             <div class="cv-row-title">🌏 어디든지</div>
             <div class="cv-row-sub">전체 지역 비교</div>
           </div>
-          <span class="cv-row-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="cv-row-check"></span>
         </div>
         <div class="cv-row-hr"></div>
         <div class="cv-row" data-val="japan" onclick="cvSelectRegion('japan')">
@@ -3453,7 +3470,7 @@
       <div class="cv-tab-content" id="cv-content-date" style="display:none">
         <div class="cv-date-tabs">
           <button class="cv-date-tab active" id="cvdt-specific" onclick="switchCvDateTab('specific')" type="button">날짜 지정</button>
-          <button class="cv-date-tab" id="cvdt-flexible" onclick="switchCvDateTab('flexible')" type="button">언제든지</button>
+          <button class="cv-date-tab" id="cvdt-flexible" onclick="switchCvDateTab('flexible')" type="button">유연한 일정</button>
         </div>
         <div id="cv-date-specific"><div id="cv-cal"></div></div>
         <div id="cv-date-flexible" style="display:none">
@@ -3469,8 +3486,11 @@
           <!-- 월 선택 카드 -->
           <div class="cv-flex-months">
             <div class="cv-flex-section-title">여행 날짜를 선택하세요.</div>
+            <button class="cv-flex-month-arrow" id="cv-flex-month-arrow-left" onclick="cvScrollMonths('left')" type="button" aria-label="이전 달 보기">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
             <div class="cv-flex-month-scroll" id="cv-flex-month-list"></div>
-            <button class="cv-flex-month-arrow" id="cv-flex-month-arrow" onclick="cvScrollMonths()" type="button" aria-label="다음 달 보기">
+            <button class="cv-flex-month-arrow" id="cv-flex-month-arrow-right" onclick="cvScrollMonths('right')" type="button" aria-label="다음 달 보기">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
             </button>
           </div>
@@ -3521,12 +3541,12 @@
       <!-- 예산 콘텐츠 -->
       <div class="cv-tab-content" id="cv-content-budget" style="display:none">
         <div class="cv-budget-header">1인당 예산 (항공+숙박 기준)</div>
-        <div class="cv-row active" data-val="unlimited" onclick="cvSelectBudget('unlimited')">
+        <div class="cv-row" data-val="unlimited" onclick="cvSelectBudget('unlimited')">
           <div>
             <div class="cv-row-title">상관없음</div>
             <div class="cv-row-sub">예산 제한 없이 비교</div>
           </div>
-          <span class="cv-row-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="cv-row-check"></span>
         </div>
         <div class="cv-row-hr"></div>
         <div class="cv-row" data-val="300" onclick="cvSelectBudget('300')">
@@ -3723,7 +3743,7 @@
           <!-- 2. 날짜 -->
           <div class="sb-seg sb-seg--wide" id="date-seg-c" onclick="toggleSbPanel('date-panel-c',event,this)">
             <div class="sb-label">날짜</div>
-            <div class="sb-val" id="sb-date-display-c">언제든지</div>
+            <div class="sb-val" id="sb-date-display-c">날짜 선택</div>
           </div>
           <div class="sb-div"></div>
           <!-- 3. 여행자 -->
@@ -3780,7 +3800,7 @@
         <div class="sb-panel" id="date-panel-c">
           <div class="sb-date-tabs">
             <button class="sb-date-tab active" id="date-tab-specific-c" onclick="switchDateTab('specific-c',event)" type="button">날짜 지정</button>
-            <button class="sb-date-tab" id="date-tab-flexible-c" onclick="switchDateTab('flexible-c',event)" type="button">언제든지</button>
+            <button class="sb-date-tab" id="date-tab-flexible-c" onclick="switchDateTab('flexible-c',event)" type="button">유연한 일정</button>
           </div>
           <div id="date-panel-specific-c">
             <div id="dc-compare-wrap">
@@ -3788,11 +3808,28 @@
             </div>
           </div>
           <div id="date-panel-flexible-c" style="display:none">
-            <div class="sb-date-flexible">
-              날짜에 상관없이<br>최적의 여행지를 추천해드립니다.<br><span style="font-size:13px;color:#999">기본 5박 6일로 계산됩니다</span><br><span style="font-size:12px;color:#bbb">오늘 기준 최저가로 비교합니다</span>
-              <br>
-              <button class="sb-flex-confirm" onclick="confirmFlexibleDate(event)" type="button">언제든지 선택하기</button>
+            <!-- 숙박 기간 선택 -->
+            <div class="cv-flex-duration">
+              <div class="cv-flex-section-title">숙박 기간을 선택하세요.</div>
+              <div class="cv-flex-duration-list">
+                <button class="cv-flex-dur-btn" data-dur="weekend" onclick="cvSetDuration(this,'weekend')" type="button">주말</button>
+                <button class="cv-flex-dur-btn" data-dur="week" onclick="cvSetDuration(this,'week')" type="button">1주일</button>
+                <button class="cv-flex-dur-btn" data-dur="month" onclick="cvSetDuration(this,'month')" type="button">한 달</button>
+              </div>
             </div>
+            <!-- 월 선택 카드 -->
+            <div class="cv-flex-months">
+              <div class="cv-flex-section-title">여행 날짜를 선택하세요.</div>
+              <button class="cv-flex-month-arrow" id="sb-flex-month-arrow-left-c" onclick="sbScrollMonths('left')" type="button" aria-label="이전 달 보기" style="display:none">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <div class="cv-flex-month-scroll" id="sb-flex-month-list-c"></div>
+              <button class="cv-flex-month-arrow" id="sb-flex-month-arrow-right-c" onclick="sbScrollMonths('right')" type="button" aria-label="다음 달 보기">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+            <!-- 요약 텍스트 -->
+            <div class="cv-flex-summary" id="sb-flex-summary-c"></div>
           </div>
         </div>
 
@@ -8426,7 +8463,10 @@
             updateResultsByFilters();
           }
         }, 250);
+        // 사용자 직접 날짜 선택 → auto 플래그 해제
+        window._isAutoDate = false;
         refreshButtonStates();
+        if (typeof updateSearchBadge === 'function') updateSearchBadge();
       }
 
       function initFlatpickr(which) {
@@ -9995,7 +10035,7 @@
           isFlexDate = true;
           // Show "언제든지" in home search bar
           var sbDate = document.getElementById('sb-date-display');
-          if (sbDate) { sbDate.textContent = '언제든지'; sbDate.classList.add('filled'); }
+          if (sbDate) { sbDate.textContent = '날짜 선택'; sbDate.classList.remove('filled'); }
         }
         // Region: show "어디든지" if none selected
         var selectedReg = window.selectedRegion || '';
@@ -10011,7 +10051,7 @@
         if (cDateSeg) {
           var valEl = cDateSeg.querySelector('.sb-val');
           if (valEl) {
-            valEl.textContent = isFlexDate ? '언제든지' : dateVal;
+            valEl.textContent = isFlexDate ? '날짜 선택' : dateVal;
             valEl.classList.add('filled');
           }
         }
@@ -10042,6 +10082,18 @@
         // 태블릿·모바일에서는 스크롤 자동 팝업 비활성화
         if (window.innerWidth > 1068) {
           _initWizardScrollTrigger();
+        }
+        // 검색 후 배지: 지역+예산 디폴트=2, 날짜 선택 시=3
+        if (window.innerWidth <= 1068) {
+          var badge = document.getElementById('wiz-launcher-badge');
+          if (badge) {
+            var bCount = 2; // 지역(어디든지) + 예산(상관없음) 항상 포함
+            var hasDate = !window._isAutoDate && dateVal && dateVal.includes(' \u2013 ');
+            var hasFlex = (window._cvFlexMonth != null) || (window._cvFlexDuration != null);
+            if (hasDate || hasFlex) bCount = 3;
+            badge.textContent = bCount + '/3';
+            badge.style.display = 'inline-block';
+          }
         }
       }
 
@@ -11437,6 +11489,7 @@
           });
           // home-date-value 업데이트 (updateResultsByFilters에서 읽음)
           var hdv = document.getElementById('home-date-value'); if(hdv) hdv.textContent = txt;
+          window._isAutoDate = false; // 사용자 직접 선택
           window._userHasChangedFilters = true;
           window.selectedDates = [new Date(dcSel.start), new Date(dcSel.end)];
           // 모바일: 날짜 범위 선택 완료 시 패널 자동 닫기
@@ -11560,6 +11613,10 @@
         if (panelSpec) panelSpec.style.display = isFlexible ? 'none' : '';
         if (panelFlex) panelFlex.style.display = isFlexible ? '' : 'none';
         if (!isFlexible && !fpHome) initFlatpickr('home');
+        // PC 유연한 일정 탭 선택 시 초기화
+        if (isFlexible && suffix === '-c') {
+          setTimeout(function() { if (typeof sbInitFlexMonths === 'function') sbInitFlexMonths(); }, 50);
+        }
       }
 
       function confirmFlexibleDate(e) {
@@ -11575,7 +11632,7 @@
         if (hd) hd.textContent = rangeStr;
         // Show '언제든지' label in visible display elements
         var sbDate = document.getElementById('sb-date-display');
-        if (sbDate) { sbDate.textContent = '언제든지'; sbDate.classList.add('filled'); }
+        if (sbDate) { sbDate.textContent = '날짜 선택'; sbDate.classList.remove('filled'); }
         // compare-date-value: store range for calculation, display '언제든지' as label
         var cdv = document.getElementById('compare-date-value');
         if (cdv) { cdv.textContent = rangeStr; cdv.classList.add('filled'); }
@@ -11685,14 +11742,12 @@
         // compare-sb는 항상 filled (검색 결과 화면에서 기본값도 선택된 색상)
         // 홈 화면 항목은 제외 (검색 전엔 비활성화 회색 유지)
 
-          // ── 모바일/태블릿: 홈화면 건너뛰고 바로 비교뷰 ──
+          // ── 전체 화면: 홈화면 건너뛰고 바로 비교뷰 ──
           _initMobileCompare();
-
-          // 리사이즈 시에도 모바일 초기화 트리거 (PC→모바일 전환 대응)
-          var mql = window.matchMedia("(max-width: 1068px)");
-          mql.addEventListener("change", function(e) {
-            if (e.matches) _initMobileCompare();
-          });
+          // PC에서는 wizard scroll trigger 초기화
+          if (window.innerWidth > 1068) {
+            setTimeout(_initWizardScrollTrigger, 200);
+          }
       });
 
       // ── 실시간 날씨 (Open-Meteo API) ──
@@ -12741,7 +12796,6 @@
       var _mobileInitDone = false;
       function _initMobileCompare() {
         if (_mobileInitDone) return;
-        if (window.innerWidth > 1068) return;
         _mobileInitDone = true;
         var homeView = document.getElementById("home-view");
         var compareView = document.getElementById("compare-view");
@@ -12752,6 +12806,7 @@
           if (bInput && !bInput.value) bInput.value = "150";
           var bInputC = document.getElementById("budget-input-compare");
           if (bInputC && !bInputC.value) bInputC.value = "150";
+          window._isAutoBudget = true; // 자동 세팅
           var now = new Date();
           var dep = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
           var ret = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 6);
@@ -12759,7 +12814,8 @@
           var d2 = (ret.getMonth()+1) + "월 " + ret.getDate() + "일";
           var dateEl = document.getElementById("home-date-value");
           if (dateEl && (!dateEl.textContent || dateEl.textContent === "날짜선택")) {
-            dateEl.textContent = d1 + " – " + d2;
+            dateEl.textContent = d1 + " \u2013 " + d2;
+            window._isAutoDate = true; // 자동 세팅
           }
           var s0 = document.getElementById("sel0"), s1 = document.getElementById("sel1");
           var sf0 = document.getElementById("sel0-fixed"), sf1 = document.getElementById("sel1-fixed");
@@ -12767,11 +12823,13 @@
           if (s1) s1.value = "4"; if (sf1) sf1.value = "4";
           updateResultsByFilters();
           _cvSheetOpenedOnce = true;
-          // wiz-launcher 텍스트 변경
-          var wizLabel = document.querySelector(".wiz-launcher-label");
-          if (wizLabel) wizLabel.textContent = "여행 검색";
-          var wizSvg = document.querySelector("#wiz-launcher svg");
-          if (wizSvg) wizSvg.innerHTML = '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>';
+          // wiz-launcher 텍스트 변경 (모바일/태블릿만)
+          if (window.innerWidth <= 1068) {
+            var wizLabel = document.querySelector(".wiz-launcher-label");
+            if (wizLabel) wizLabel.textContent = "여행 검색";
+            var wizSvg = document.querySelector("#wiz-launcher svg");
+            if (wizSvg) wizSvg.innerHTML = '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>';
+          }
           if (typeof updateSearchBadge === "function") updateSearchBadge();
           if (typeof fetchWeatherDebounced === "function") fetchWeatherDebounced();
         }, 100);
@@ -12781,12 +12839,29 @@
         if (window.innerWidth > 1068) return;
         var badge = document.getElementById('wiz-launcher-badge');
         if (!badge) return;
+
+        var inCompareView = document.getElementById('compare-view') &&
+                            document.getElementById('compare-view').style.display !== 'none';
+        // undefined 초기화 전 방어: 자동 세팅된 것으로 간주
+        var isAutoDate   = (window._isAutoDate   !== false); // undefined → true
+        var isAutoBudget = (window._isAutoBudget !== false); // undefined → true
+
+        var hasNormalDate = !isAutoDate &&
+                            (function() {
+                              var el = document.getElementById('home-date-value');
+                              return el && el.textContent && el.textContent.includes(' \u2013 ');
+                            })();
+        var hasFlexDate = (window._cvFlexMonth != null) || (window._cvFlexDuration != null);
+        var hasDate = hasNormalDate || hasFlexDate;
+
         var count = 0;
-        if (window.selectedRegion && window.selectedRegion !== '') count++;
-        var dateEl = document.getElementById('home-date-value');
-        if (dateEl && dateEl.textContent && dateEl.textContent !== '날짜선택' && dateEl.textContent.includes(' \u2013 ')) count++;
-        var budgetEl = document.getElementById('budget-input-home');
-        if (budgetEl && budgetEl.value && budgetEl.value !== '' && budgetEl.value !== 'unlimited') count++;
+        // 지역: 사용자가 명시적으로 선택 (어디든지 포함)
+        if (window._regionTouched) count++;
+        // 날짜: 사용자 직접 선택 (자동 아님)
+        if (hasDate) count++;
+        // 예산: 사용자 직접 선택 (자동 아님)
+        if (!isAutoBudget) count++;
+
         if (count > 0) {
           badge.textContent = count + '/3';
           badge.style.display = 'inline-block';
@@ -12991,10 +13066,15 @@
           var fmt = function(s) { var p = s.split('-'); return parseInt(p[1]) + '월 ' + parseInt(p[2]) + '일'; };
           var txt = cvCalSel.start === cvCalSel.end
             ? fmt(cvCalSel.start)
-            : fmt(cvCalSel.start) + ' - ' + fmt(cvCalSel.end);
+            : fmt(cvCalSel.start) + ' \u2013 ' + fmt(cvCalSel.end); // 엔대시 통일
           var ev = document.getElementById('cvt-date-val'); if(ev) ev.textContent = txt;
-          var src = document.getElementById('sb-date-display'); if(src) src.textContent = txt;
+          var src = document.getElementById('sb-date-display'); if(src) { src.textContent = txt; src.classList.add('filled'); }
+          var srcC = document.getElementById('sb-date-display-c'); if(srcC) { srcC.textContent = txt; srcC.classList.add('filled'); }
+          // home-date-value 업데이트 (hasNormalDate 체크용)
+          var hdv = document.getElementById('home-date-value'); if(hdv) hdv.textContent = txt;
           window.selectedDates = [new Date(cvCalSel.start), new Date(cvCalSel.end)];
+          window._isAutoDate = false; // 사용자 직접 선택
+          if (typeof updateSearchBadge === 'function') updateSearchBadge();
         }
       }
 
@@ -13089,7 +13169,7 @@
         if (el) el.textContent = (regionSrc ? regionSrc.textContent.trim() : '') || '어디든지';
         var dateSrc = document.getElementById('sb-date-display');
         el = document.getElementById('cvt-date-val');
-        if (el) el.textContent = (dateSrc ? dateSrc.textContent.trim() : '') || '언제든지';
+        if (el) el.textContent = (dateSrc ? dateSrc.textContent.trim() : '') || '날짜 선택';
         var travSrc = document.getElementById('sb-traveler-display');
         el = document.getElementById('cvt-traveler-val');
         if (el) el.textContent = (travSrc ? travSrc.textContent.trim() : '') || '1명';
@@ -13154,11 +13234,13 @@
             if (bInput) bInput.value = '150';
             var bInputC = document.getElementById('budget-input-compare');
             if (bInputC) bInputC.value = '150';
+            window._isAutoBudget = true; // 사용자 미선택 자동 예산
             var now = new Date();
             var dep = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
             var ret = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 6);
             var dateEl = document.getElementById('home-date-value');
             if (dateEl) dateEl.textContent = (dep.getMonth()+1)+'월 '+dep.getDate()+'일 – '+(ret.getMonth()+1)+'월 '+ret.getDate()+'일';
+            window._isAutoDate = true; // 사용자 미선택 자동 날짜 표시
             updateResultsByFilters();
           }
         }
@@ -13188,6 +13270,7 @@
         var el = document.getElementById('cvt-region-val'); if(el) el.textContent = txt;
         var src = document.getElementById('region-display'); if(src) src.textContent = txt;
         window.selectedRegion = val;
+        window._regionTouched = true; // 사용자 명시적 선택
         document.querySelectorAll('.sb-region-opt').forEach(function(o) {
           o.classList.toggle('active', o.getAttribute('data-val') === val);
         });
@@ -13235,6 +13318,7 @@
         var el = document.getElementById('cvt-budget-val'); if(el) el.textContent = txt;
         var srcEl = document.getElementById('sb-budget-display'); if(srcEl) srcEl.textContent = txt;
         window.selectedBudget = val === 'unlimited' ? null : val;
+        window._isAutoBudget = false; // 사용자 직접 선택
         document.querySelectorAll('.budget-pill').forEach(function(o) {
           o.classList.toggle('active', o.getAttribute('data-val') === val);
         });
@@ -13261,15 +13345,72 @@
       var CV_FLEX_DUR_NIGHTS = { weekend: 2, week: 6, month: 29 };
       var CV_FLEX_MONTH_ICON = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2V5M16 2V5M3.5 9.09H20.5M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z" stroke="currentColor" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-      function cvScrollMonths() {
+      function cvScrollMonths(dir) {
         var list = document.getElementById('cv-flex-month-list');
         if (!list) return;
-        var maxScroll = list.scrollWidth - list.clientWidth;
-        if (list.scrollLeft >= maxScroll - 4) {
-          list.scrollTo({ left: 0, behavior: 'smooth' });
+        if (dir === 'left') {
+          list.scrollBy({ left: -94, behavior: 'smooth' });
         } else {
           list.scrollBy({ left: 94, behavior: 'smooth' });
         }
+        // 스크롤 후 화살표 표시 업데이트
+        setTimeout(cvUpdateMonthArrows, 350);
+      }
+
+      function cvUpdateMonthArrows() {
+        var list = document.getElementById('cv-flex-month-list');
+        var btnL = document.getElementById('cv-flex-month-arrow-left');
+        var btnR = document.getElementById('cv-flex-month-arrow-right');
+        if (!list) return;
+        var maxScroll = list.scrollWidth - list.clientWidth;
+        if (btnL) btnL.style.display = list.scrollLeft > 4 ? 'flex' : 'none';
+        if (btnR) btnR.style.display = list.scrollLeft < maxScroll - 4 ? 'flex' : 'none';
+      }
+
+      // ── PC 유연한 일정 함수 (sb-flex-*-c IDs) ──
+      function sbInitFlexMonths() {
+        var list = document.getElementById('sb-flex-month-list-c');
+        if (!list || list.children.length > 0) return;
+        var today = new Date();
+        var curY = today.getFullYear(), curM = today.getMonth();
+        var monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+        for (var i = 0; i < 9; i++) {
+          var m = (curM + i) % 12, y = curY + Math.floor((curM + i) / 12);
+          (function(mi, yi) {
+            var card = document.createElement('div');
+            card.className = 'cv-flex-month-card';
+            card.dataset.month = mi; card.dataset.year = yi;
+            card.innerHTML =
+              '<div class="cv-flex-month-icon">' + CV_FLEX_MONTH_ICON + '</div>' +
+              '<div class="cv-flex-month-name">' + monthNames[mi] + '</div>' +
+              '<div class="cv-flex-month-year">' + yi + '</div>';
+            card.addEventListener('click', function() {
+              document.querySelectorAll('.cv-flex-month-card').forEach(function(c){ c.classList.remove('active'); });
+              card.classList.add('active');
+              _cvFlexMonth = { year: yi, month: mi };
+              cvUpdateFlexSummary();
+            });
+            list.appendChild(card);
+          })(m, y);
+        }
+        setTimeout(sbUpdateMonthArrows, 50);
+      }
+
+      function sbScrollMonths(dir) {
+        var list = document.getElementById('sb-flex-month-list-c');
+        if (!list) return;
+        list.scrollBy({ left: dir === 'left' ? -94 : 94, behavior: 'smooth' });
+        setTimeout(sbUpdateMonthArrows, 350);
+      }
+
+      function sbUpdateMonthArrows() {
+        var list = document.getElementById('sb-flex-month-list-c');
+        var btnL = document.getElementById('sb-flex-month-arrow-left-c');
+        var btnR = document.getElementById('sb-flex-month-arrow-right-c');
+        if (!list) return;
+        var maxScroll = list.scrollWidth - list.clientWidth;
+        if (btnL) btnL.style.display = list.scrollLeft > 4 ? 'flex' : 'none';
+        if (btnR) btnR.style.display = list.scrollLeft < maxScroll - 4 ? 'flex' : 'none';
       }
 
       function cvInitFlexMonths() {
@@ -13297,6 +13438,8 @@
             list.appendChild(card);
           })(m, y, i);
         }
+        // 초기 화살표 상태 설정 (렌더 후 실행)
+        setTimeout(cvUpdateMonthArrows, 50);
       }
 
       function cvSetDuration(btn, dur) {
@@ -13343,10 +13486,26 @@
             d.textContent = label;
             d.classList.add('filled');
           } else {
-            d.textContent = '언제든지';
+            d.textContent = '날짜 선택';
             d.classList.remove('filled');
           }
         });
+        // PC 요약 텍스트도 동기화
+        var elC = document.getElementById('sb-flex-summary-c');
+        if (elC) {
+          if (_cvFlexMonth && _cvFlexDuration) {
+            elC.innerHTML = '<strong>' + monthLabel + '의 ' + durLabel + '</strong>으로 검색합니다';
+          } else if (_cvFlexMonth) {
+            elC.innerHTML = '<strong>' + monthLabel + '</strong> 선택됨';
+          } else if (_cvFlexDuration) {
+            elC.innerHTML = '<strong>' + durLabel + '</strong> 선택됨 · 월을 선택해주세요';
+          } else {
+            elC.innerHTML = '';
+          }
+        }
+
+        // 배지도 업데이트
+        if (typeof updateSearchBadge === 'function') updateSearchBadge();
       }
 
       // 기간+월 조합으로 실제 날짜 계산
@@ -13391,6 +13550,29 @@
 
       function cvUpdateFlexDisplay() {
         cvInitFlexMonths();
+        // 모바일 카드 active 상태 동기화
+        var mobileList = document.getElementById('cv-flex-month-list');
+        if (mobileList && _cvFlexMonth) {
+          var hasActive = false;
+          mobileList.querySelectorAll('.cv-flex-month-card').forEach(function(card) {
+            var match = parseInt(card.dataset.month) === _cvFlexMonth.month &&
+                        parseInt(card.dataset.year)  === _cvFlexMonth.year;
+            card.classList.toggle('active', match);
+            if (match) hasActive = true;
+          });
+          // 모바일 카드에 active가 없으면 (PC에서만 선택된 경우) 상태 초기화
+          if (!hasActive) {
+            _cvFlexMonth = null;
+            _cvFlexDuration = null;
+            document.querySelectorAll('.cv-flex-dur-btn').forEach(function(b){ b.classList.remove('active'); });
+          }
+        }
+        // duration 버튼 active 복원
+        if (_cvFlexDuration) {
+          document.querySelectorAll('.cv-flex-dur-btn').forEach(function(b){
+            b.classList.toggle('active', b.dataset.dur === _cvFlexDuration);
+          });
+        }
         cvUpdateFlexSummary();
       }
 
@@ -13434,5 +13616,30 @@
   </div>
 
 </body>
+
+<script>
+  // ── Progressive Blur Header ──
+  (function() {
+    var MAX_SCROLL = 80;
+    var nav = document.querySelector('.nav');
+    if (!nav) return;
+
+    function updateProgressiveBlur() {
+      var p = Math.min(window.scrollY / MAX_SCROLL, 1);
+      var alpha   = p * 0.88;
+      var blur    = p * 20;
+      var sat     = 100 + p * 80;
+      var border  = p * 0.08;
+
+      nav.style.background            = 'rgba(255,255,255,' + alpha + ')';
+      nav.style.backdropFilter        = 'saturate(' + sat + '%) blur(' + blur + 'px)';
+      nav.style.webkitBackdropFilter  = 'saturate(' + sat + '%) blur(' + blur + 'px)';
+      nav.style.borderBottomColor     = 'rgba(0,0,0,' + border + ')';
+    }
+
+    window.addEventListener('scroll', updateProgressiveBlur, { passive: true });
+    updateProgressiveBlur(); // 초기 실행 (이미 스크롤된 상태 대응)
+  })();
+</script>
 
 </html>
