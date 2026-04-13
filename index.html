@@ -1779,14 +1779,23 @@
       footer { margin-top: 40px; }
 
 
-      /* 취향 설정 버튼 위치 조정 (검색바 공간 확보) */
+      /* 모바일/태블릿: wiz-launcher → 여행 검색 버튼 (중앙 배치) */
       #wiz-launcher { 
         bottom: 20px !important; 
-        left: 20px !important;
+        left: 50% !important;
+        transform: translateX(-50%);
         z-index: 2100 !important;
       }
-
-
+      /* 모바일/태블릿: 여행자 탭 숨김 */
+      #cv-tab-traveler { display: none !important; }
+      /* 모바일/태블릿: cv-search-icon 숨김 */
+      #cv-search-icon { display: none !important; }
+      /* 모바일/태블릿: 홈뷰 숨김, 비교뷰 표시 */
+      #home-view { display: none !important; }
+      #compare-view { display: block !important; }
+      /* 모바일/태블릿: wiz-launcher 라벨 텍스트 CSS 교체 */
+      .wiz-launcher-label { font-size: 0 !important; }
+      .wiz-launcher-label::after { content: "여행 검색"; font-size: 13px; font-weight: 600; color: #222; letter-spacing: -0.2px; }
     }
 
     /* ── RESPONSIVE: Mobile only (2-col layout) ── */
@@ -1993,11 +2002,8 @@
       margin: 80px auto 40px;
     }
 
-    /* 검색 아이콘: pc/태블릿에서 숨김, 모바일에서 미디어쿼리로 표시 */
+    /* 검색 아이콘: 모바일/태블릿에서 완전 숨김 (wiz-launcher가 대체) */
     #cv-search-icon { display: none !important; }
-    @media (max-width: 743px) {
-      #cv-search-icon { display: flex !important; }
-    }
 
 
 
@@ -11540,41 +11546,14 @@
         // compare-sb는 항상 filled (검색 결과 화면에서 기본값도 선택된 색상)
         // 홈 화면 항목은 제외 (검색 전엔 비활성화 회색 유지)
 
-        // ── 모바일: 홈화면 건너뛰고 바로 비교뷰 + 검색 시트 오픈 ──
-        if (window.innerWidth < 744) {
-          var homeView = document.getElementById('home-view');
-          var compareView = document.getElementById('compare-view');
-          if (homeView) homeView.style.display = 'none';
-          if (compareView) compareView.style.display = 'block';
-          // 기본 예산·날짜 세팅 후 updateResultsByFilters로 배경 렌더
-          setTimeout(function() {
-            var bInput = document.getElementById('budget-input-home');
-            if (bInput && !bInput.value) bInput.value = '150';
-            var bInputC = document.getElementById('budget-input-compare');
-            if (bInputC && !bInputC.value) bInputC.value = '150';
-            // 기본 날짜: 내일~5일 후
-            var now = new Date();
-            var dep = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-            var ret = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 6);
-            var d1 = (dep.getMonth()+1) + '월 ' + dep.getDate() + '일';
-            var d2 = (ret.getMonth()+1) + '월 ' + ret.getDate() + '일';
-            var dateEl = document.getElementById('home-date-value');
-            if (dateEl && (!dateEl.textContent || dateEl.textContent === '날짜선택')) {
-              dateEl.textContent = d1 + ' – ' + d2;
-            }
-            // sel0=타이베이(3), sel1=오사카(4) 기본 설정
-            var s0 = document.getElementById('sel0'), s1 = document.getElementById('sel1');
-            var sf0 = document.getElementById('sel0-fixed'), sf1 = document.getElementById('sel1-fixed');
-            if (s0) s0.value = '3'; if (sf0) sf0.value = '3';
-            if (s1) s1.value = '4'; if (sf1) sf1.value = '4';
-            updateResultsByFilters();
-            _cvSheetOpenedOnce = true;
-          }, 0);
-          // 검색 시트 자동 오픈
-          setTimeout(function() {
-            openCvSearchSheet();
-          }, 150);
-        }
+          // ── 모바일/태블릿: 홈화면 건너뛰고 바로 비교뷰 ──
+          _initMobileCompare();
+
+          // 리사이즈 시에도 모바일 초기화 트리거 (PC→모바일 전환 대응)
+          var mql = window.matchMedia("(max-width: 1068px)");
+          mql.addEventListener("change", function(e) {
+            if (e.matches) _initMobileCompare();
+          });
       });
 
       // ── 실시간 날씨 (Open-Meteo API) ──
@@ -12610,17 +12589,79 @@
         panel.classList.add('wiz-open');
       }
 
+
+      // ── 모바일/태블릿: 여행 검색 진행률 뱃지 ──
+
+      // ── 모바일/태블릿 초기화 (한 번만 실행) ──
+      var _mobileInitDone = false;
+      function _initMobileCompare() {
+        if (_mobileInitDone) return;
+        if (window.innerWidth > 1068) return;
+        _mobileInitDone = true;
+        var homeView = document.getElementById("home-view");
+        var compareView = document.getElementById("compare-view");
+        if (homeView) homeView.style.display = "none";
+        if (compareView) compareView.style.display = "block";
+        setTimeout(function() {
+          var bInput = document.getElementById("budget-input-home");
+          if (bInput && !bInput.value) bInput.value = "150";
+          var bInputC = document.getElementById("budget-input-compare");
+          if (bInputC && !bInputC.value) bInputC.value = "150";
+          var now = new Date();
+          var dep = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+          var ret = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 6);
+          var d1 = (dep.getMonth()+1) + "월 " + dep.getDate() + "일";
+          var d2 = (ret.getMonth()+1) + "월 " + ret.getDate() + "일";
+          var dateEl = document.getElementById("home-date-value");
+          if (dateEl && (!dateEl.textContent || dateEl.textContent === "날짜선택")) {
+            dateEl.textContent = d1 + " – " + d2;
+          }
+          var s0 = document.getElementById("sel0"), s1 = document.getElementById("sel1");
+          var sf0 = document.getElementById("sel0-fixed"), sf1 = document.getElementById("sel1-fixed");
+          if (s0) s0.value = "3"; if (sf0) sf0.value = "3";
+          if (s1) s1.value = "4"; if (sf1) sf1.value = "4";
+          updateResultsByFilters();
+          _cvSheetOpenedOnce = true;
+          // wiz-launcher 텍스트 변경
+          var wizLabel = document.querySelector(".wiz-launcher-label");
+          if (wizLabel) wizLabel.textContent = "여행 검색";
+          var wizSvg = document.querySelector("#wiz-launcher svg");
+          if (wizSvg) wizSvg.innerHTML = '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>';
+          if (typeof updateSearchBadge === "function") updateSearchBadge();
+          if (typeof fetchWeatherDebounced === "function") fetchWeatherDebounced();
+        }, 100);
+      }
+
+      function updateSearchBadge() {
+        if (window.innerWidth > 1068) return;
+        var badge = document.getElementById('wiz-launcher-badge');
+        if (!badge) return;
+        var count = 0;
+        if (window.selectedRegion && window.selectedRegion !== '') count++;
+        var dateEl = document.getElementById('home-date-value');
+        if (dateEl && dateEl.textContent && dateEl.textContent !== '날짜선택' && dateEl.textContent.includes(' \u2013 ')) count++;
+        var budgetEl = document.getElementById('budget-input-home');
+        if (budgetEl && budgetEl.value && budgetEl.value !== '' && budgetEl.value !== 'unlimited') count++;
+        if (count > 0) {
+          badge.textContent = count + '/3';
+          badge.style.display = 'inline-block';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+
       function toggleWizard() {
+        // 모바일/태블릿: 취향설정 대신 여행 검색 하프팝업
+        if (window.innerWidth <= 1068) {
+          openCvSearchSheet();
+          return;
+        }
         const panel = document.getElementById('wiz-panel');
         if (panel.classList.contains('wiz-open')) {
           closeWizard();
         } else {
           showWizard();
         }
-      }
-
-      function closeWizard() {
-        document.getElementById('wiz-panel').classList.remove('wiz-open');
       }
 
       function renderWizList() {
@@ -12902,6 +12943,7 @@
             updateResultsByFilters();
           }
         }
+        if (typeof updateSearchBadge === 'function') updateSearchBadge();
       }
 
       function switchCvTab(tab) {
@@ -12930,6 +12972,7 @@
         document.querySelectorAll('.sb-region-opt').forEach(function(o) {
           o.classList.toggle('active', o.getAttribute('data-val') === val);
         });
+        if (typeof updateSearchBadge === 'function') updateSearchBadge();
       }
 
       function cvUpdateTravelers(type, delta) {
@@ -12976,6 +13019,7 @@
         document.querySelectorAll('.budget-pill').forEach(function(o) {
           o.classList.toggle('active', o.getAttribute('data-val') === val);
         });
+        if (typeof updateSearchBadge === 'function') updateSearchBadge();
       }
 
       function switchCvDateTab(tab) {
