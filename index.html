@@ -3200,7 +3200,7 @@
           <!-- 1. 여행 지역 -->
           <div class="sb-seg" id="region-seg" onclick="toggleSbPanel('region-panel',event,this)">
             <div class="sb-label">여행 지역</div>
-            <div class="sb-val" id="region-display">어디든지</div>
+            <div class="sb-val" id="region-display">전체 지역</div>
           </div>
           <div class="sb-div"></div>
           <!-- 2. 날짜 -->
@@ -3229,7 +3229,7 @@
         <!-- PANEL 1: 여행 지역 -->
         <div class="sb-panel" id="region-panel">
           <div class="sb-region-opt active" data-val="" onclick="selectRegion(event,'')">
-            <div><div class="sb-region-title">🌏 어디든지</div><div class="sb-region-sub">전체 지역 비교</div></div>
+            <div><div class="sb-region-title">🌏 전체 지역</div><div class="sb-region-sub">전체 지역 비교</div></div>
             <span class="sb-region-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
           </div>
           <div class="sb-region-hr"></div>
@@ -3419,7 +3419,7 @@
       <div class="cv-tab-content" id="cv-content-region">
         <div class="cv-row" data-val="" onclick="cvSelectRegion('')">
           <div>
-            <div class="cv-row-title">🌏 어디든지</div>
+            <div class="cv-row-title">🌏 전체 지역</div>
             <div class="cv-row-sub">전체 지역 비교</div>
           </div>
           <span class="cv-row-check"></span>
@@ -3737,7 +3737,7 @@
           <!-- 1. 여행 지역 -->
           <div class="sb-seg" id="region-seg-c" onclick="toggleSbPanel('region-panel-c',event,this)">
             <div class="sb-label">여행 지역</div>
-            <div class="sb-val" id="region-display-c">어디든지</div>
+            <div class="sb-val" id="region-display-c">전체 지역</div>
           </div>
           <div class="sb-div"></div>
           <!-- 2. 날짜 -->
@@ -3766,7 +3766,7 @@
         <!-- PANEL 1: 여행 지역 -->
         <div class="sb-panel" id="region-panel-c">
           <div class="sb-region-opt active" data-val="" onclick="selectRegion(event,'')">
-            <div><div class="sb-region-title">🌏 어디든지</div><div class="sb-region-sub">전체 지역 비교</div></div>
+            <div><div class="sb-region-title">🌏 전체 지역</div><div class="sb-region-sub">전체 지역 비교</div></div>
             <span class="sb-region-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
           </div>
           <div class="sb-region-hr"></div>
@@ -4510,8 +4510,8 @@
             '리스본 카드 포함 패키지 숙소 비교 권장'
           ],
           cheapFlights: [
-            { label: '핀에어 (헬싱키 경유)', desc: '인기 최저가 루트 · 비행 약 16시간', link: 'https://www.skyscanner.co.kr/transport/flights/icn/lis/' },
-            { label: '터키항공 (이스탄불 경유)', desc: '이스탄불 스탑오버 가능', link: 'https://www.skyscanner.co.kr/transport/flights/icn/lis/' }
+            { label: '핀에어 (헬싱키 경유)', desc: '약 16시간 · 왕복 70만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/lis/' },
+            { label: '터키항공 (이스탄불 경유)', desc: '약 16시간 · 왕복 65만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/lis/' }
           ],
           flightTips: [
             '직항 없음 · 헬싱키·이스탄불·도하 경유가 가장 저렴',
@@ -4601,8 +4601,8 @@
             '체크인 시 동(VND) 현금 지불 시 할인 가능한 숙소 多'
           ],
           cheapFlights: [
-            { label: '비엣젯항공 (직항)', desc: '최저가 LCC · 인천 출발 직항', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dad/' },
-            { label: '제주항공 (직항)', desc: '국내 LCC · 국내선 연결 편리', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dad/' }
+            { label: '비엣젯항공 (직항)', desc: '4.5시간 직항 LCC · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dad/' },
+            { label: '제주항공 (직항)', desc: '4.5시간 직항 · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dad/' }
           ],
           flightTips: [
             '다낭 직항 LCC 다수 · 1-2개월 전 예약이 최적 타이밍',
@@ -4692,8 +4692,8 @@
             '렌터카 포함 패키지가 개별 예약보다 평균 15% 저렴'
           ],
           cheapFlights: [
-            { label: '제주항공·진에어 (김포↔제주)', desc: '최저가 국내선 · 수시 특가 발생', link: 'https://www.skyscanner.co.kr/transport/flights/gmp/cju/' },
-            { label: '티웨이항공 (인천↔제주)', desc: '인천 출발 옵션 · 앱 전용 특가', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cju/' }
+            { label: '제주항공·진에어 (김포↔제주)', desc: '1시간 국내선 · 왕복 8만원대', link: 'https://www.skyscanner.co.kr/transport/flights/gmp/cju/' },
+            { label: '티웨이항공 (인천↔제주)', desc: '1시간 직항 · 왕복 8만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cju/' }
           ],
           flightTips: [
             '제주 항공편은 75일 전 예약이 통계적으로 최저가',
@@ -4782,8 +4782,8 @@
             '타이베이 패스(교통+관광 통합권) 호텔 로비에서 구매 가능'
           ],
           cheapFlights: [
-            { label: '티웨이·진에어 (직항)', desc: '2.5시간 직항 LCC · 최저가', link: 'https://www.skyscanner.co.kr/transport/flights/icn/tpe/' },
-            { label: '이스타항공 (직항)', desc: '경쟁사 대비 5-10% 저렴한 경우 多', link: 'https://www.skyscanner.co.kr/transport/flights/icn/tpe/' }
+            { label: '티웨이·진에어 (직항)', desc: '2.5시간 · 왕복 22만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/tpe/' },
+            { label: '이스타항공 (직항)', desc: '2.5시간 직항 · 왕복 22만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/tpe/' }
           ],
           flightTips: [
             '타이베이 직항 LCC 경쟁 치열 · 얼리버드 30-45일 전 최저가',
@@ -4872,8 +4872,8 @@
             '도미인 체인은 온천 포함 가성비 최고 · 한국인 선호 높음'
           ],
           cheapFlights: [
-            { label: '제주항공·진에어 (직항)', desc: '2시간 직항 LCC · 간사이 공항 도착', link: 'https://www.skyscanner.co.kr/transport/flights/icn/kix/' },
-            { label: '피치항공 (LCC)', desc: '일본 로컬 LCC · 오사카 특가 자주 발생', link: 'https://www.skyscanner.co.kr/transport/flights/icn/kix/' }
+            { label: '제주항공·진에어 (직항)', desc: '2시간 · 왕복 22만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/kix/' },
+            { label: '피치항공 (LCC)', desc: '2시간 직항 · 왕복 22만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/kix/' }
           ],
           flightTips: [
             '엔저로 숙박·현지 비용 절약 · 항공도 LCC 경쟁 치열',
@@ -4962,8 +4962,8 @@
             '여행 60-90일 전 얼리버드 예약 시 최대 40% 절약'
           ],
           cheapFlights: [
-            { label: '제주항공·진에어 (직항)', desc: '2.5시간 직항 LCC · 나리타·하네다 취항', link: 'https://www.skyscanner.co.kr/transport/flights/icn/nrt/' },
-            { label: '대한항공·아시아나 (직항)', desc: '마일리지 사용 최적 · 비즈니스 업그레이드 가능', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hnd/' }
+            { label: '제주항공·진에어 (직항)', desc: '2.5시간 · 왕복 40만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/nrt/' },
+            { label: '대한항공·아시아나 (직항)', desc: '2.5시간 직항 · 왕복 40만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hnd/' }
           ],
           flightTips: [
             'LCC 기준 왕복 15-25만원 특가 자주 발생 · 알림 설정 필수',
@@ -5052,8 +5052,8 @@
             '4성급 호텔도 한국 대비 50% 수준 · 고급 숙소 강력 추천'
           ],
           cheapFlights: [
-            { label: '대한항공·아시아나 (직항)', desc: '5시간 직항 · 수완나품 공항 도착', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bkk/' },
-            { label: '티웨이·진에어 (LCC 직항)', desc: 'LCC 특가 자주 발생 · 왕복 30만원대 가능', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bkk/' }
+            { label: '대한항공·아시아나 (직항)', desc: '5시간 · 왕복 30만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bkk/' },
+            { label: '티웨이·진에어 (LCC 직항)', desc: '5시간 직항 · 왕복 30만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bkk/' }
           ],
           flightTips: [
             '직항 5시간 · LCC 경쟁 치열로 특가 자주 발생',
@@ -5142,8 +5142,8 @@
             '우붓 숙소는 계곡 전망·논밭 전망 차이 예약 전 확인 필수'
           ],
           cheapFlights: [
-            { label: '에어아시아·스쿠트 (경유)', desc: 'KL·싱가포르 경유 최저가 · 왕복 45만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dps/' },
-            { label: '가루다·싱가포르항공 (경유)', desc: '자카르타·싱가포르 경유 · 총 8-11시간', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dps/' }
+            { label: '에어아시아·스쿠트 (경유)', desc: '7시간 · 왕복 45만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dps/' },
+            { label: '가루다·싱가포르항공 (경유)', desc: '약 10시간 · 왕복 45만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dps/' }
           ],
           flightTips: [
             '직항 없음 · 싱가포르·KL·자카르타 경유 8-11시간',
@@ -5232,8 +5232,8 @@
             '코끼리 투어 예정이면 메이림 지역 숙소 고려'
           ],
           cheapFlights: [
-            { label: '대한항공·아시아나 (방콕 경유)', desc: '방콕 환승 국내선 · 총 7-9시간', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cnx/' },
-            { label: '에어아시아 (KL 경유)', desc: '저가 환승 최적 루트 · 왕복 40만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cnx/' }
+            { label: '대한항공·아시아나 (방콕 경유)', desc: '약 9시간 · 왕복 40만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cnx/' },
+            { label: '에어아시아 (KL 경유)', desc: '약 10시간 · 왕복 40만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cnx/' }
           ],
           flightTips: [
             '직항 없음 · 방콕 또는 KL 경유 7-9시간',
@@ -5322,8 +5322,8 @@
             '싱가포르는 호텔이 비쌈 · 고급 숙소도 1박 전략 추천'
           ],
           cheapFlights: [
-            { label: '스쿠트·에어아시아 (직항 LCC)', desc: '직항 저가항공 · 왕복 45만원대 가능', link: 'https://www.skyscanner.co.kr/transport/flights/icn/sin/' },
-            { label: '싱가포르항공 (직항)', desc: '6시간 직항 · 세계 최고 항공사', link: 'https://www.skyscanner.co.kr/transport/flights/icn/sin/' }
+            { label: '스쿠트·에어아시아 (직항 LCC)', desc: '6시간 · 왕복 45만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/sin/' },
+            { label: '싱가포르항공 (직항)', desc: '6시간 · 왕복 32만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/sin/' }
           ],
           flightTips: [
             '직항 6시간 · 스쿠트 LCC 직항 왕복 45-60만원대 자주',
@@ -5412,8 +5412,8 @@
             '고래상어(오슬롭) 투어는 새벽 출발 필수 · 전날 남부 숙박 추천'
           ],
           cheapFlights: [
-            { label: '제주항공·에어부산 (직항)', desc: '4시간 직항 · 세부 국제공항 도착', link: 'https://www.skyscanner.co.kr/transport/flights/icn/ceb/' },
-            { label: '대한항공 (직항)', desc: '직항 4시간 · 마일리지 사용 가능', link: 'https://www.skyscanner.co.kr/transport/flights/icn/ceb/' }
+            { label: '제주항공·에어부산 (직항)', desc: '4시간 · 왕복 35만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/ceb/' },
+            { label: '대한항공 (직항)', desc: '4시간 · 왕복 40만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/ceb/' }
           ],
           flightTips: [
             '직항 4시간 · LCC 왕복 40-55만원대 특가 정기 발생',
@@ -5502,8 +5502,8 @@
             '해변 직접 연결 리조트 vs 해변 도보 숙소 가격 차이 확인'
           ],
           cheapFlights: [
-            { label: '베트남항공·뱀부항공 (직항)', desc: '직항 4.5시간 · 칸란 공항 도착', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cxr/' },
-            { label: '제주항공·진에어 (직항)', desc: 'LCC 직항 · 왕복 35만원대 가능', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cxr/' }
+            { label: '베트남항공·뱀부항공 (직항)', desc: '4.5시간 · 왕복 35만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cxr/' },
+            { label: '제주항공·진에어 (직항)', desc: '5시간 직항 · 왕복 35만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cxr/' }
           ],
           flightTips: [
             '직항 4.5시간 · 다낭보다 저렴한 경우 많음',
@@ -5587,8 +5587,8 @@
         },
         hotelTips: ['하카타역 도보 10분 내 추천', '텐진 지역이 쇼핑·식당 접근성 최고', '주말 숙박비 평일보다 30% 높음', '벳푸·유후인은 별도 숙박 필요'],
         cheapFlights: [
-          { label: '제주항공·에어부산 (직항)', desc: '직항 1.5시간 · 가장 저렴한 일본', link: 'https://www.skyscanner.co.kr/transport/flights/icn/fuk/' },
-          { label: '진에어·티웨이 (직항)', desc: 'LCC 왕복 15-20만원대 가능', link: 'https://www.skyscanner.co.kr/transport/flights/icn/fuk/' }
+          { label: '제주항공·에어부산 (직항)', desc: '1.5시간 · 왕복 15만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/fuk/' },
+          { label: '진에어·티웨이 (직항)', desc: '1.5시간 직항 · 왕복 15만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/fuk/' }
         ],
         flightTips: ['직항 1.5시간 · 일본 최단거리 도시', 'LCC 왕복 15-20만원 특가 자주 발생', '부산 출발 시 페리도 옵션 (3.5시간)', '후쿠오카+벳푸+유후인 3박4일 코스 인기']
       },
@@ -5668,7 +5668,7 @@
         hotelTips: ['삿포로역·오도리역 근처 추천', '2월 눈축제 시즌 숙박 3개월 전 예약', '니세코 스키는 현지 숙박 필수', '오타루 당일치기로 숙박비 절약 가능'],
         cheapFlights: [
           { label: '진에어·제주항공 (직항)', desc: '직항 2.5시간 · LCC 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cts/' },
-          { label: '아시아나·대한항공 (직항)', desc: '직항 2.5시간 · 안정적 스케줄', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cts/' }
+          { label: '아시아나·대한항공 (직항)', desc: '2.5시간 · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cts/' }
         ],
         flightTips: ['직항 2.5시간 · 인천·부산 출발', '2월 눈축제 시즌 항공권 2-3개월 전 예약', '여름(7-8월) 항공권 저렴하고 날씨 쾌적', '삿포로+오타루+후라노 4박5일 코스 추천']
       },
@@ -5748,7 +5748,7 @@
         hotelTips: ['남부 나하 시내 vs 북부 리조트 선택', '렌터카 필수 (버스 불편)', '4-6월 물 맑고 붐비지 않아 최적', '태풍 시즌(9-10월) 여행 취소보험 권장'],
         cheapFlights: [
           { label: '제주항공·티웨이 (직항)', desc: '직항 2시간 · LCC 왕복 20만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/oka/' },
-          { label: '진에어·에어서울 (직항)', desc: '직항 2시간 · 저렴한 LCC 옵션', link: 'https://www.skyscanner.co.kr/transport/flights/icn/oka/' }
+          { label: '진에어·에어서울 (직항)', desc: '2시간 · 왕복 20만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/oka/' }
         ],
         flightTips: ['직항 2시간 · LCC 왕복 20-25만원대', '봄(4-5월) 항공권 + 해변 최적 시즌', '태풍 시즌 항공권 저렴하지만 리스크 있음', '오키나와 본섬+이시가키 섬 분리 여행 추천']
       },
@@ -5827,8 +5827,8 @@
         },
         hotelTips: ['교토역 주변이 이동 편리', '기온·아라시야마 근처는 감성적', '벚꽃·단풍 시즌 숙박 3-4개월 전 예약', '오사카 숙박 후 교토 당일치기도 가능'],
         cheapFlights: [
-          { label: '제주항공·진에어 (오사카 KIX 입국)', desc: '오사카 직항 후 교토 신칸센 30분', link: 'https://www.skyscanner.co.kr/transport/flights/icn/kix/' },
-          { label: 'LCC 오사카·나고야 도착', desc: '나고야 경유 교토 이동 가능', link: 'https://www.skyscanner.co.kr/transport/flights/icn/ngoy/' }
+          { label: '제주항공·진에어 (오사카 KIX 입국)', desc: '2시간 · 왕복 22만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/kix/' },
+          { label: 'LCC 오사카·나고야 도착', desc: '2.5시간 · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/ngoy/' }
         ],
         flightTips: ['오사카(간사이 공항) 도착 후 교토 JR 75분', '직항 1.5시간 + 이동 · 실질 3시간 내', '오사카+교토+나라 3박4일 패키지 효율적', '벚꽃(3-4월) 항공권 최소 2개월 전 예약']
       },
@@ -5908,7 +5908,7 @@
         hotelTips: ['렌터카 필수 (시내도 버스 드문 섬)', '요나하마에하마 해변 근처 숙소 추천', '3-6월 물 맑고 태풍 없는 최적 시즌', '성수기(7-8월) 2개월 전 예약 필수'],
         cheapFlights: [
           { label: '진에어 (인천→시모지시마 직항)', desc: '직항 2.5시간 · LCC 왕복 30만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/shi/' },
-          { label: '제주항공 (직항 운항시)', desc: '시즌별 직항 · 스카이스캐너 확인 권장', link: 'https://www.skyscanner.co.kr/transport/flights/icn/shi/' }
+          { label: '제주항공 (직항 운항시)', desc: '2.5시간 직항 · 왕복 30만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/shi/' }
         ],
         flightTips: ['시모지시마(SHI) 공항 도착 = 미야코지마 직결', '인천 직항 2.5시간 · 진에어 운항', '3-5월 항공권 저렴 + 날씨 최적 시즌', '렌터카 공항에서 바로 픽업 추천']
       },
@@ -5988,7 +5988,7 @@
         hotelTips: ['롱비치(Long Beach) 지역이 식당·상점 접근성 최고', '북부 해변은 조용하고 깨끗함', '빌라 타입 숙소도 합리적 가격', '건기(11-4월)에 방문해야 맑은 바다 경험'],
         cheapFlights: [
           { label: '비엣젯·뱀부항공 (직항)', desc: '직항 5시간 · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pqc/' },
-          { label: '베트남항공 (직항)', desc: '직항 5시간 · 안정적 운항', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pqc/' }
+          { label: '베트남항공 (직항)', desc: '5시간 · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pqc/' }
         ],
         flightTips: ['직항 5시간 · 인천 출발 LCC 다수', '왕복 25-35만원 특가 자주 발생', '푸꾸옥+호치민 경유 조합 가능', '건기(11-4월) 항공권 성수기 요금 주의']
       },
@@ -6068,7 +6068,7 @@
         hotelTips: ['1군 지역이 관광명소 도보 접근 최고', '팜응우라오 거리 배낭여행자 밀집 구역', '오토바이 날치기 주의 · 가방 앞으로 착용', '그랩(Grab) 앱 필수 · 택시 흥정 불필요'],
         cheapFlights: [
           { label: '제주항공·비엣젯 (직항)', desc: '직항 5시간 · 왕복 20만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/sgn/' },
-          { label: '진에어·티웨이 (직항)', desc: 'LCC 직항 · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/sgn/' }
+          { label: '진에어·티웨이 (직항)', desc: '5시간 직항 · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/sgn/' }
         ],
         flightTips: ['직항 5시간 · LCC 왕복 20-30만원', '호치민+푸꾸옥 연계 5박6일 추천', '건기(12-4월)가 여행하기 최적', '비행 직후 시차 없어 피로도 낮음']
       },
@@ -6148,7 +6148,7 @@
         hotelTips: ['구시가지 내 숙소가 도보 관광 최적', '호안끼엠 호수 주변 위치 추천', '그랩(Grab) 이용 시 저렴하고 안전', '하롱베이 투어는 구시가지 여행사 이용'],
         cheapFlights: [
           { label: '제주항공·티웨이 (직항)', desc: '직항 5시간 · 왕복 20만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/han/' },
-          { label: '베트남항공·비엣젯 (직항)', desc: '직항 5시간 · 다양한 선택지', link: 'https://www.skyscanner.co.kr/transport/flights/icn/han/' }
+          { label: '베트남항공·비엣젯 (직항)', desc: '5시간 · 왕복 20만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/han/' }
         ],
         flightTips: ['직항 5시간 · LCC 왕복 20-30만원', '하노이+하롱베이 4박5일 코스 인기', '봄(3-4월)·가을(10-11월) 최적 날씨', '하노이+다낭 국내선 연결 가능']
       },
@@ -6227,8 +6227,8 @@
         },
         hotelTips: ['스테이션 2 지역이 화이트비치 접근성 최고', '건기(11-4월) 예약은 2-3개월 전 필수', '스테이션 1은 조용하고 프라이빗 분위기', '태풍 시즌(11-12월) 여행 취소보험 필수'],
         cheapFlights: [
-          { label: '세부퍼시픽·필리핀항공 (칼리보)', desc: '칼리보 공항→버스+보트 2시간', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mph/' },
-          { label: '제주항공 (직항)', desc: '칼리보 직항 · 왕복 30만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mph/' }
+          { label: '세부퍼시픽·필리핀항공 (칼리보)', desc: '4.5시간 · 왕복 28만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mph/' },
+          { label: '제주항공 (직항)', desc: '4.5시간 · 왕복 30만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mph/' }
         ],
         flightTips: ['칼리보(KLO) 공항이 저렴 · 이리오일로(ILO)도 가능', '직항 4.5시간 · LCC 왕복 25-35만원', '마닐라 경유 시 이동 복잡 · 직항 추천', '건기 성수기(12-3월) 항공권 2개월 전 예약']
       },
@@ -6308,7 +6308,7 @@
         hotelTips: ['빠똥(Patong) 나이트라이프 중심', '카타·카론 해변은 조용하고 가족 적합', '라와이·수린 지역은 고급 리조트 밀집', '우기(5-10월) 파도 높아 해수욕 제한'],
         cheapFlights: [
           { label: '에어아시아·비엣젯 (직항)', desc: '직항 6시간 · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hkt/' },
-          { label: '타이항공·진에어 (직항)', desc: '직항 6시간 · 안정적 스케줄', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hkt/' }
+          { label: '타이항공·진에어 (직항)', desc: '6시간 · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hkt/' }
         ],
         flightTips: ['직항 6시간 · LCC 왕복 25-35만원', '방콕+푸켓 조합 7박8일 추천', '건기 성수기(12-3월) 항공권 2개월 전 예약', '피피섬은 당일치기 또는 숙박 가능']
       },
@@ -6388,7 +6388,7 @@
         hotelTips: ['침사추이·몽콕 지역이 쇼핑·관광 허브', '홍콩섬(센트럴) 은 업무·고급 지구', '숙박비가 비싸 3박 이내 일정 추천', '마카오 페리 이동 시 페리 터미널 근처 숙박 유리'],
         cheapFlights: [
           { label: '캐세이퍼시픽·홍콩항공 (직항)', desc: '직항 3.5시간 · 왕복 20만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hkg/' },
-          { label: '제주항공·진에어 (직항)', desc: 'LCC 직항 · 왕복 15-20만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hkg/' }
+          { label: '제주항공·진에어 (직항)', desc: '3.5시간 직항 · 왕복 15만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hkg/' }
         ],
         flightTips: ['직항 3.5시간 · LCC 왕복 15-20만원', '홍콩+마카오 3박4일 조합 인기', '옥토퍼스 카드(교통카드) 공항에서 즉시 구입', '마카오는 페리 1시간 · 별도 비자 불필요']
       },
@@ -6468,7 +6468,7 @@
         hotelTips: ['투몬(Tumon) 지역이 쇼핑·해변 중심', '리조트 내 액티비티 패키지 알뜰', '렌터카 있으면 섬 전체 투어 편리', '태풍 시즌(7-11월) 항공 취소 리스크'],
         cheapFlights: [
           { label: '유나이티드항공·제주항공 (직항)', desc: '직항 4시간 · 왕복 35만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/gum/' },
-          { label: '아시아나·대한항공 (직항)', desc: '직항 4시간 · 안정적 스케줄', link: 'https://www.skyscanner.co.kr/transport/flights/icn/gum/' }
+          { label: '아시아나·대한항공 (직항)', desc: '4시간 · 왕복 35만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/gum/' }
         ],
         flightTips: ['직항 4시간 · 가장 가까운 미국 영토', 'LCC 왕복 35-45만원대', 'ESTA 전자여행허가 사전 신청 필수', '괌+사이판 연계 여행 가능']
       },
@@ -6547,7 +6547,7 @@
         },
         hotelTips: ['와이키키 지역이 해변·쇼핑 중심', '카일루아·노스쇼어는 렌터카 필수', '최소 7박 이상 여유롭게 일정 잡기', 'ESTA 전자여행허가 사전 신청 필수'],
         cheapFlights: [
-          { label: '하와이안항공 (직항)', desc: '인천→호놀룰루 직항 9.5시간', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hnl/' },
+          { label: '하와이안항공 (직항)', desc: '9.5시간 · 왕복 80만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hnl/' },
           { label: '대한항공·아시아나 (직항)', desc: '직항 9.5시간 · 왕복 80만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hnl/' }
         ],
         flightTips: ['직항 9.5시간 · 왕복 80-120만원', '성수기(6-8월) 항공권 3-4개월 전 예약', '이웃 섬(마우이·빅아일랜드) 국내선 추가', 'ESTA 사전 신청 · 왕복 항공+호텔 패키지 유리']
@@ -6627,7 +6627,7 @@
         hotelTips: ['1·2·3구 역사 중심부 추천', '메트로 근처 숙소가 이동 편리', '소매치기 주의 · 귀중품 분산 보관', '파리 패스(Paris Pass) 구입으로 관광지 절약'],
         cheapFlights: [
           { label: '에어프랑스·대한항공 (직항)', desc: '직항 12시간 · 왕복 90만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cdg/' },
-          { label: '에미레이트·카타르항공 (경유)', desc: '두바이·도하 경유 · 더 저렴', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cdg/' }
+          { label: '에미레이트·카타르항공 (경유)', desc: '약 15시간 · 왕복 60만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cdg/' }
         ],
         flightTips: ['직항 12시간 · 왕복 90-130만원', '경유 항공 이용 시 60-80만원대 가능', '파리+런던+암스테르담 유럽 루트 인기', '쉥겐 비자 무필요 (90일 이내 무비자)']
       },
@@ -6707,7 +6707,7 @@
         hotelTips: ['KLCC·부킷 빈탕 지역 중심 추천', '그랩(Grab) 앱 필수 · 저렴하고 안전', '무슬림 문화 존중 · 의복 주의', '랑카위·페낭 국내선 연계 추천'],
         cheapFlights: [
           { label: '에어아시아 (직항)', desc: '직항 6.5시간 · 왕복 20만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/kul/' },
-          { label: '말레이시아항공·진에어 (직항)', desc: '직항 6.5시간 · 다양한 선택', link: 'https://www.skyscanner.co.kr/transport/flights/icn/kul/' }
+          { label: '말레이시아항공·진에어 (직항)', desc: '6.5시간 · 왕복 20만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/kul/' }
         ],
         flightTips: ['직항 6.5시간 · 에어아시아 저가 강점', 'LCC 왕복 20-30만원대 특가 자주 발생', 'KL+랑카위 또는 KL+페낭 조합 추천', '에어아시아 수화물 추가 비용 확인 필수']
       },
@@ -6786,8 +6786,8 @@
         },
         hotelTips: ['수상 빌라(오버워터 빌라)가 핵심 경험', '리조트 자체가 섬 · 스피드보트·수상비행기 이동', '올인클루시브 패키지가 비용 예측에 유리', '허니문·특별한 기념일에 최적'],
         cheapFlights: [
-          { label: '스리랑카항공 (콜롬보 경유)', desc: '콜롬보 경유 · 왕복 60만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mle/' },
-          { label: '인디고·에어인디아 (델리 경유)', desc: '인도 경유 · 가장 저렴한 옵션', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mle/' }
+          { label: '스리랑카항공 (콜롬보 경유)', desc: '약 10시간 · 왕복 60만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mle/' },
+          { label: '인디고·에어인디아 (델리 경유)', desc: '약 12시간 · 왕복 65만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mle/' }
         ],
         flightTips: ['직항 없음 · 경유 12-16시간', '왕복 항공 60-100만원 + 리조트 이동 별도', '스피드보트 or 세플레인 이동 예약 필수', '허니문 패키지 이용 시 항공+리조트 묶음 유리']
       },
@@ -6867,7 +6867,7 @@
         hotelTips: ['CBD·서큘러 키 지역이 관광·교통 허브', '본다이 지역은 해변 가까운 힙한 분위기', '오팔 카드(교통카드) 공항에서 구입', '워킹홀리데이 비자 관련 규정 확인'],
         cheapFlights: [
           { label: '대한항공·아시아나 (직항)', desc: '직항 10시간 · 왕복 90만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/syd/' },
-          { label: '젯스타·에어아시아 (경유)', desc: '경유로 50-70만원대 가능', link: 'https://www.skyscanner.co.kr/transport/flights/icn/syd/' }
+          { label: '젯스타·에어아시아 (경유)', desc: '약 13시간 경유 · 왕복 50만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/syd/' }
         ],
         flightTips: ['직항 10시간 · 왕복 90-130만원', '경유(싱가포르·쿠알라룸푸르) 시 50-70만원대', '시드니+멜버른 이동 국내선 추가', '입국 시 식품·동물성 물품 반입 금지 엄격']
       },
@@ -6947,7 +6947,7 @@
         hotelTips: ['와이탄·인민광장 지역 관광 중심', '메트로(지하철) 망 발달 · 이동 편리', 'VPN 필요 (구글·카카오 차단)', '알리페이 또는 위챗페이 미리 등록 권장'],
         cheapFlights: [
           { label: '상하이항공·중국동방 (직항)', desc: '직항 2시간 · 왕복 15만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pvg/' },
-          { label: '제주항공·진에어 (직항)', desc: 'LCC 직항 · 왕복 12-18만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pvg/' }
+          { label: '제주항공·진에어 (직항)', desc: '2시간 직항 · 왕복 12만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pvg/' }
         ],
         flightTips: ['직항 2시간 · 일본 다음으로 가까운 국제선', 'LCC 왕복 12-18만원 특가 빈번', '비자 면제 협정 (30일 이내 무비자)', 'VPN 앱 미리 설치 · 현지 스마트폰 이용 필수']
       },
@@ -7026,8 +7026,8 @@
         },
         hotelTips: ['고딕 지구·에이샴플라 지역 중심 추천', '소매치기 많음 · 지갑·폰 앞주머니 보관', '바르셀로나 카드(Barcelona Card) 교통+관광 절약', '사그라다 파밀리아 입장권 최소 2개월 전 온라인 예약'],
         cheapFlights: [
-          { label: '에어유로파·이베리아 (마드리드 경유)', desc: '마드리드 경유 · 왕복 70만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bcn/' },
-          { label: '에미레이트·카타르 (경유)', desc: '중동 경유 · 더 저렴한 옵션', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bcn/' }
+          { label: '에어유로파·이베리아 (마드리드 경유)', desc: '약 14시간 · 왕복 70만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bcn/' },
+          { label: '에미레이트·카타르 (경유)', desc: '약 15시간 · 왕복 60만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bcn/' }
         ],
         flightTips: ['직항 없음 · 경유 14-16시간', '왕복 70-110만원 (경유)', '파리+바르셀로나 조합 유럽 2개국 인기', '쉥겐 비자 무필요 (90일 이내 무비자)']
       },
@@ -7107,8 +7107,8 @@
         },
         hotelTips: ['나고야역 주변이 교통 최적', '사카에·후시미 지역 식당·쇼핑 밀집', '지브리파크는 아이치 현 리니모선 이용', '레고랜드는 아오나미선 킨조후토역'],
         cheapFlights: [
-          { label: '에어부산·진에어 (직항)', desc: '인천-나고야 직항 2시간', link: 'https://www.skyscanner.co.kr/transport/flights/icn/ngo/' },
-          { label: '제주항공·피치 (직항)', desc: '직항 왕복 20만원대~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/ngo/' }
+          { label: '에어부산·진에어 (직항)', desc: '2시간 · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/ngo/' },
+          { label: '제주항공·피치 (직항)', desc: '2시간 · 왕복 20만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/ngo/' }
         ],
         flightTips: ['직항 2시간', '왕복 20-40만원', 'LCC 직항 다수', '중부국제공항 나고야역 뮤스카이 28분']
       },
@@ -7188,8 +7188,8 @@
         },
         hotelTips: ['올드마켓·펍스트리트 주변 숙소 추천', '풀빌라 리조트도 10만원 이내', '앙코르 입장권 미리 온라인 구매', '툭툭 1일 대절 약 2만원'],
         cheapFlights: [
-          { label: '비엣젯·에어아시아 (경유)', desc: '호치민/방콕 경유 · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/rep/' },
-          { label: '진에어 (프놈펜 경유)', desc: '프놈펜 경유 입국', link: 'https://www.skyscanner.co.kr/transport/flights/icn/rep/' }
+          { label: '비엣젯·에어아시아 (경유)', desc: '약 7시간 · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/rep/' },
+          { label: '진에어 (프놈펜 경유)', desc: '약 7시간 · 왕복 30만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/rep/' }
         ],
         flightTips: ['직항 없음 · 경유 6-10시간', '왕복 25-50만원', '방콕·호치민 경유가 저렴', '비자: 도착 비자 $30 또는 E-Visa']
       },
@@ -7269,8 +7269,8 @@
         },
         hotelTips: ['테르미니역 주변 교통 최적', '트라스테베레 감성 숙소 추천', '로마패스(Roma Pass) 교통+입장 절약', '소매치기 주의 · 크로스백 필수'],
         cheapFlights: [
-          { label: '대한항공 (직항)', desc: '인천-로마 직항 12시간', link: 'https://www.skyscanner.co.kr/transport/flights/icn/fco/' },
-          { label: '에미레이트·카타르 (경유)', desc: '중동 경유 · 더 저렴', link: 'https://www.skyscanner.co.kr/transport/flights/icn/fco/' }
+          { label: '대한항공 (직항)', desc: '12시간 · 왕복 80만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/fco/' },
+          { label: '에미레이트·카타르 (경유)', desc: '약 15시간 · 왕복 60만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/fco/' }
         ],
         flightTips: ['직항 12시간 (대한항공)', '왕복 80-130만원', '경유편 60만원대~', '쉥겐 비자 무필요 (90일 무비자)']
       },
@@ -7350,8 +7350,8 @@
         },
         hotelTips: ['존1 내 숙소 교통 편리', '오이스터 카드 교통 절약 필수', '뮤지컬 TKTS 부스 당일 할인', '대부분 박물관 무료 입장'],
         cheapFlights: [
-          { label: '대한항공·아시아나 (직항)', desc: '인천-런던 직항 12시간', link: 'https://www.skyscanner.co.kr/transport/flights/icn/lhr/' },
-          { label: '핀에어·LOT (경유)', desc: '헬싱키/바르샤바 경유 · 저렴', link: 'https://www.skyscanner.co.kr/transport/flights/icn/lhr/' }
+          { label: '대한항공·아시아나 (직항)', desc: '12시간 · 왕복 90만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/lhr/' },
+          { label: '핀에어·LOT (경유)', desc: '약 14시간 · 왕복 70만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/lhr/' }
         ],
         flightTips: ['직항 12시간 (대한항공·아시아나)', '왕복 90-140만원', '경유편 70만원대~', '영국 비자 무필요 (6개월 무비자)']
       },
@@ -7431,8 +7431,8 @@
         },
         hotelTips: ['시내 호텔+데이투어 조합 추천', '탄중아루 리조트는 선셋뷰 필수', '건기(1-4월) 예약 서둘러야', '그랩(Grab) 택시 앱 필수'],
         cheapFlights: [
-          { label: '에어아시아 (직항)', desc: '인천-코타키나발루 직항 5시간', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bki/' },
-          { label: '진에어·대한항공 (직항)', desc: '직항 왕복 30만원대~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bki/' }
+          { label: '에어아시아 (직항)', desc: '5시간 · 왕복 30만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bki/' },
+          { label: '진에어·대한항공 (직항)', desc: '5시간 · 왕복 30만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bki/' }
         ],
         flightTips: ['직항 5시간', '왕복 25-45만원', '에어아시아 특가 주목', '시차 -1시간']
       },
@@ -7512,8 +7512,8 @@
         },
         hotelTips: ['올드타운 내 숙소 도보 관광 최적', '탁발 관람은 새벽 5시 기상 필요', '건기(11-3월) 방문 가장 좋음', '비어라오 1병 1천원 미만'],
         cheapFlights: [
-          { label: '비엣젯 (하노이 경유)', desc: '하노이 경유 · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/lpq/' },
-          { label: '방콕항공 (방콕 경유)', desc: '방콕 경유 · 매일 운항', link: 'https://www.skyscanner.co.kr/transport/flights/icn/lpq/' }
+          { label: '비엣젯 (하노이 경유)', desc: '약 6시간 · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/lpq/' },
+          { label: '방콕항공 (방콕 경유)', desc: '약 8시간 경유 · 왕복 30만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/lpq/' }
         ],
         flightTips: ['직항 없음 · 경유 7-12시간', '왕복 25-50만원', '방콕·하노이 경유 일반적', '비자: 도착 비자 무료 (15일)']
       },
@@ -7593,8 +7593,8 @@
         },
         hotelTips: ['솔·그란비아 주변 교통 최적', '프라도 무료 입장: 월-토 18-20시', '마드리드 카드 교통+입장 절약', '바르셀로나+마드리드 콤보 인기'],
         cheapFlights: [
-          { label: '이베리아·에어유로파 (직항/경유)', desc: '인천-마드리드 경유 14시간', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mad/' },
-          { label: '카타르·에미레이트 (경유)', desc: '중동 경유 · 더 저렴', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mad/' }
+          { label: '이베리아·에어유로파 (직항/경유)', desc: '14시간 · 왕복 70만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mad/' },
+          { label: '카타르·에미레이트 (경유)', desc: '약 14시간 · 왕복 65만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mad/' }
         ],
         flightTips: ['직항 없음 · 경유 14-18시간', '왕복 70-120만원', '바르셀로나 경유 콤보 추천', '쉥겐 비자 무필요 (90일 무비자)']
       },
@@ -7674,8 +7674,8 @@
         },
         hotelTips: ['차웽 해변 중심 편리', '보풋 피셔맨 빌리지 감성 숙소', '풀빌라 10만원대부터 가능', '그랩(Grab) 앱 사용 가능'],
         cheapFlights: [
-          { label: '방콕항공 (방콕 경유)', desc: '방콕 국내선 경유 · 1시간', link: 'https://www.skyscanner.co.kr/transport/flights/icn/usm/' },
-          { label: '타이항공+방콕항공', desc: '인천-방콕-사무이', link: 'https://www.skyscanner.co.kr/transport/flights/icn/usm/' }
+          { label: '방콕항공 (방콕 경유)', desc: '약 7시간 · 왕복 35만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/usm/' },
+          { label: '타이항공+방콕항공', desc: '약 8시간 · 왕복 40만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/usm/' }
         ],
         flightTips: ['직항 없음 · 방콕 경유 7-9시간', '왕복 35-60만원', '방콕항공 사무이 독점', '페리+버스 저가 옵션도 가능']
       },
@@ -7755,8 +7755,8 @@
         },
         hotelTips: ['인터라켄 오스트 역 주변 교통 편리', '스위스 트래블 패스 교통+관광 절약', '융프라우 VIP 패스 미리 구매', '여름(6-9월) 성수기 예약 서둘러야'],
         cheapFlights: [
-          { label: '대한항공 (취리히 직항)', desc: '인천-취리히 직항 12시간', link: 'https://www.skyscanner.co.kr/transport/flights/icn/zrh/' },
-          { label: '루프트한자·스위스 (경유)', desc: '프랑크푸르트 경유 저렴', link: 'https://www.skyscanner.co.kr/transport/flights/icn/zrh/' }
+          { label: '대한항공 (취리히 직항)', desc: '12시간 · 왕복 120만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/zrh/' },
+          { label: '루프트한자·스위스 (경유)', desc: '약 14시간 · 왕복 90만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/zrh/' }
         ],
         flightTips: ['취리히/제네바 공항 → 기차 2시간', '왕복 90-140만원', '경유편 70만원대~', '쉥겐 비자 무필요 (90일 무비자)']
       },
@@ -7836,8 +7836,8 @@
         },
         hotelTips: ['올드타운 내 숙소 분위기 최고 · 짐 운반 불편', '라파드/그루쥬 지역 해변+가성비', '두브로브니크 카드 교통+입장 절약', '여름 7-8월 극성수기 · 미리 예약'],
         cheapFlights: [
-          { label: '터키항공 (이스탄불 경유)', desc: '이스탄불 경유 · 왕복 70만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dbv/' },
-          { label: '루프트한자 (프랑크푸르트 경유)', desc: '유럽 경유 · 왕복 80만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dbv/' }
+          { label: '터키항공 (이스탄불 경유)', desc: '약 14시간 · 왕복 70만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dbv/' },
+          { label: '루프트한자 (프랑크푸르트 경유)', desc: '약 14시간 · 왕복 80만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dbv/' }
         ],
         flightTips: ['직항 없음 · 경유 14-18시간', '왕복 70-120만원', '자그레브/스플리트에서 국내선 연결', '쉥겐 비자 무필요 (90일 무비자)']
       },
@@ -7917,7 +7917,7 @@
         hotelTips: ['술탄아흐메트 지역 관광 최적', '탁심 지역 쇼핑·나이트라이프 최적', '이스탄불 카드 교통·박물관 할인', '그랜드 바자르 주변 숙소 소매치기 주의'],
         cheapFlights: [
           { label: '터키항공 (직항)', desc: '인천 직항 11시간 · 왕복 70만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/ist/' },
-          { label: '대한항공 (직항)', desc: '인천 직항 · 편안한 이동', link: 'https://www.skyscanner.co.kr/transport/flights/icn/ist/' }
+          { label: '대한항공 (직항)', desc: '11시간 직항 · 왕복 70만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/ist/' }
         ],
         flightTips: ['직항 11시간', '왕복 70-100만원', '터키항공 스탑오버 무료 호텔 프로그램', 'e-비자 온라인 신청 (약 3만원)']
       },
@@ -7997,8 +7997,8 @@
         },
         hotelTips: ['코타이 스트립 리조트 무료 셔틀 활용', '세나도 광장 근처 구시가 숙소 관광 편리', '홍콩-마카오 페리 터미널 근처도 편리', '주말·공휴일 숙박비 급등 주의'],
         cheapFlights: [
-          { label: '에어마카오 (직항)', desc: '인천 직항 3시간 30분', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mfm/' },
-          { label: '홍콩 경유', desc: '홍콩+마카오 동시 여행 가능', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mfm/' }
+          { label: '에어마카오 (직항)', desc: '3.5시간 · 왕복 30만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mfm/' },
+          { label: '홍콩 경유', desc: '4시간 · 왕복 33만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mfm/' }
         ],
         flightTips: ['직항 3시간 30분', '왕복 25-40만원', '홍콩 경유 페리 이동도 인기', '홍콩+마카오 콤보 추천']
       },
@@ -8079,7 +8079,7 @@
         hotelTips: ['왕푸징 지역 관광 최적', '후통 근처 부티크 호텔도 인기', '지하철 접근성 확인 필수', '겨울 난방 잘 되는 호텔 선택'],
         cheapFlights: [
           { label: '대한항공·아시아나 (직항)', desc: '인천 직항 2시간 · 왕복 20만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pek/' },
-          { label: 'LCC (직항)', desc: '인천 직항 · 제주항공·티웨이 등', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pek/' }
+          { label: 'LCC (직항)', desc: '2시간 직항 · 왕복 20만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pek/' }
         ],
         flightTips: ['직항 2시간', '왕복 20-35만원', 'LCC 초특가 빈번', '중국 비자 면제 여부 사전 확인']
       },
@@ -8160,7 +8160,7 @@
         hotelTips: ['잔교·구시가 근처 관광 최적', '해변 오션뷰 숙소 인기', '라오산 근처 리조트도 추천', '여름 성수기 조기 예약 필수'],
         cheapFlights: [
           { label: 'LCC 직항', desc: '인천 직항 1시간 30분 · 왕복 15만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/tao/' },
-          { label: '대한항공·아시아나', desc: '인천 직항 · 안정적 스케줄', link: 'https://www.skyscanner.co.kr/transport/flights/icn/tao/' }
+          { label: '대한항공·아시아나', desc: '1.5시간 직항 · 왕복 15만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/tao/' }
         ],
         flightTips: ['직항 1시간 30분', '왕복 15-25만원', '한국에서 가장 가까운 중국 도시 중 하나', 'LCC 초특가 수시 확인']
       },
@@ -8239,7 +8239,7 @@
         hotelTips: ['가라판 지역 숙소가 식당·쇼핑 접근 최적', '리조트 올인클루시브 패키지 비교 권장', '성수기(7-8월) 조기 예약 필수'],
         cheapFlights: [
           { label: '제주항공 (직항)', desc: '인천 직항 4시간 30분 · 왕복 35만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/spn/' },
-          { label: '티웨이항공 (직항)', desc: '인천 직항 · 비수기 왕복 25만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/spn/' }
+          { label: '티웨이항공 (직항)', desc: '4.5시간 · 왕복 25만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/spn/' }
         ],
         flightTips: ['직항 4시간 30분', '왕복 30-50만원', '비수기(3-5월, 10-11월) 특가 많음', '무비자 45일']
       },
@@ -8317,8 +8317,8 @@
         },
         hotelTips: ['엘니도·코론은 리조트 위주, 푸에르토 프린세사는 호텔·게스트하우스', '성수기(12-4월) 조기 예약 필수', 'WiFi 속도 제한적 — 디지털 디톡스 여행에 최적'],
         cheapFlights: [
-          { label: '세부퍼시픽 (마닐라 경유)', desc: '마닐라 환승 1회 · 총 7시간', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pps/' },
-          { label: '에어스위프트 (엘니도 직항)', desc: '마닐라→엘니도 직항 연결', link: 'https://www.skyscanner.co.kr/transport/flights/icn/eni/' }
+          { label: '세부퍼시픽 (마닐라 경유)', desc: '약 7시간 · 왕복 20만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pps/' },
+          { label: '에어스위프트 (엘니도 직항)', desc: '약 6시간 · 왕복 22만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/eni/' }
         ],
         flightTips: ['인천→마닐라 직항 4시간 + 국내선 1시간', '왕복 20-35만원', '엘니도 직행 소형기(Air Swift) 이용 가능', '세부퍼시픽·필리핀항공 특가 수시 확인']
       },
@@ -8397,7 +8397,7 @@
         hotelTips: ['야롱만·하이탕만 리조트가 해변 접근 최적', '면세점과 리조트가 밀집된 하이탕만 추천', '중국 앱(위챗페이) 사전 설정 필수'],
         cheapFlights: [
           { label: '중국남방항공 (직항)', desc: '인천 직항 4시간 · 왕복 20만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/syx/' },
-          { label: 'LCC (직항)', desc: '인천 직항 · 비수기 왕복 15만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/syx/' }
+          { label: 'LCC (직항)', desc: '4시간 · 왕복 15만원대', link: 'https://www.skyscanner.co.kr/transport/flights/icn/syx/' }
         ],
         flightTips: ['직항 4시간', '왕복 20-35만원', '무비자 30일 (하이난 특별 정책)', 'VPN 필수 — 출국 전 설치']
       },
@@ -9429,7 +9429,7 @@
           }
         }
 
-        function renderFlightList(elId, flights, tips, isVip) {
+        function renderFlightList(elId, flights, tips, isVip, destAirfare) {
           const el = document.getElementById(elId);
           if (!el) return;
           el.innerHTML = '';
@@ -9437,13 +9437,7 @@
           (flights || []).forEach((f, fi) => {
             const card = document.createElement('div');
             card.className = 'flight-card';
-            // 배지: 기존 스타일 유지 (디자인 변경 X)
-            if (fi === 0) {
-              const badge = document.createElement('span');
-              badge.style.cssText = 'display:inline-block;margin:0 0 5px;font-size:10px;font-weight:700;background:#e8f4ff;color:#0071e3;padding:2px 8px;border-radius:10px;letter-spacing:0.3px;';
-              badge.textContent = '최저가';
-              card.appendChild(badge);
-            }
+
             const labelEl = document.createElement('div');
             labelEl.className = 'flight-card-label';
             labelEl.textContent = f.label;
@@ -9451,7 +9445,24 @@
 
             const descEl = document.createElement('div');
             descEl.className = 'flight-card-desc';
-            descEl.textContent = f.desc;
+            // 서브텍스트: 'N시간 · 왕복 N만원대' 형식으로 통일
+            var _desc = f.desc || '';
+            var _parts = [];
+            // 시간 추출 (약 N시간, N.N시간, 비행 N시간 등)
+            var _time = _desc.match(/(?:비행\s+)?(?:약\s*)?(\d+(?:\.\d+)?)\s*시간/);
+            if (_time) _parts.push(_time[1] + '시간');
+            // 가격 추출 (왕복/편도 포함 여부 관계없이 숫자+만원 추출)
+            var _priceRaw = _desc.match(/([\d,\-]+)\s*만원[대~]*/);
+            if (_priceRaw) {
+              // 범위(35-45) 가격이면 앞 숫자만 사용하여 'N만원대' 형식
+              var _priceNum = _priceRaw[1].split('-')[0].replace(/,/g, '');
+              _parts.push('왕복 ' + _priceNum + '만원대');
+            } else if (destAirfare) {
+              // 여행지 기본 airfare fallback
+              var _af = destAirfare.replace(/[~만원대]+$/, '').replace(/,/g, '');
+              _parts.push('왕복 ' + _af + '만원대');
+            }
+            descEl.textContent = _parts.join(' · ');
             card.appendChild(descEl);
             if (f.link) {
               const linkEl = document.createElement('a');
@@ -9495,40 +9506,40 @@
         // ── VIP 항공 (300만원 이상) ──
         // 각 목적지별 비즈니스석 전용 스카이스캐너 링크 (cabin=business)
         const _vipAirlineMap = {
-          'lisbon':     { label: '대한항공 비즈니스 (인천→리스본)', desc: '직항 없음 · 두바이/파리 경유 비즈니스석 · 왕복 350만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/lis/?adults=1&cabinclass=business' },
-          'danang':     { label: '대한항공 · 아시아나 비즈니스', desc: '인천 직항 4.5시간 비즈니스석 · 왕복 120만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dad/?adults=1&cabinclass=business' },
-          'jeju':       { label: '대한항공 최고급 국내선', desc: '인천→제주 50분 · KE 최우수 클래스 · 왕복 30만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cju/?adults=1&cabinclass=business' },
-          'taipei':     { label: '중화항공 · 에바항공 비즈니스', desc: '직항 2.5시간 비즈니스석 · 왕복 110만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/tpe/?adults=1&cabinclass=business' },
-          'osaka':      { label: '대한항공 · 아시아나 비즈니스', desc: '직항 1.5시간 비즈니스석 · 왕복 70만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/kix/?adults=1&cabinclass=business' },
-          'tokyo':      { label: '대한항공 · ANA 비즈니스', desc: '직항 2.5시간 비즈니스석 · 왕복 90만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/nrt/?adults=1&cabinclass=business' },
-          'bangkok':    { label: '대한항공 · 타이항공 비즈니스', desc: '직항 6시간 비즈니스석 · 왕복 200만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bkk/?adults=1&cabinclass=business' },
-          'bali':       { label: '가루다인도네시아 비즈니스', desc: '직항 7시간 비즈니스석 · 왕복 250만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dps/?adults=1&cabinclass=business' },
-          'chiangmai':  { label: '타이항공 비즈니스 (방콕 경유)', desc: '방콕 경유 비즈니스석 · 왕복 200만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cnx/?adults=1&cabinclass=business' },
-          'singapore':  { label: '싱가포르항공 비즈니스', desc: '직항 6.5시간 비즈니스석 · 왕복 220만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/sin/?adults=1&cabinclass=business' },
-          'cebu':       { label: '필리핀항공 비즈니스', desc: '직항 4.5시간 비즈니스석 · 왕복 180만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/ceb/?adults=1&cabinclass=business' },
-          'nhatrang':   { label: '베트남항공 비즈니스', desc: '직항 5시간 비즈니스석 · 왕복 160만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cxr/?adults=1&cabinclass=business' },
-          'fukuoka':    { label: '대한항공 · 아시아나 비즈니스', desc: '직항 1.5시간 비즈니스석 · 왕복 60만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/fuk/?adults=1&cabinclass=business' },
-          'sapporo':    { label: '대한항공 · ANA 비즈니스', desc: '직항 2.5시간 비즈니스석 · 왕복 100만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cts/?adults=1&cabinclass=business' },
-          'okinawa':    { label: '대한항공 · ANA 비즈니스', desc: '직항 2시간 비즈니스석 · 왕복 80만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/oka/?adults=1&cabinclass=business' },
-          'kyoto':      { label: '대한항공 (오사카 경유) 비즈니스', desc: '간사이 공항 직항 · 비즈니스석 왕복 80만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/kix/?adults=1&cabinclass=business' },
-          'miyakojima': { label: '대한항공 (오키나와 경유) 비즈니스', desc: '오키나와 경유 비즈니스석 · 왕복 100만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/shi/?adults=1&cabinclass=business' },
-          'phuquoc':    { label: '베트남항공 비즈니스', desc: '직항 5시간 비즈니스석 · 왕복 160만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pqc/?adults=1&cabinclass=business' },
-          'hochiminh':  { label: '대한항공 · 아시아나 비즈니스', desc: '직항 5시간 비즈니스석 · 왕복 200만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/sgn/?adults=1&cabinclass=business' },
-          'hanoi':      { label: '대한항공 · 베트남항공 비즈니스', desc: '직항 5시간 비즈니스석 · 왕복 180만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/han/?adults=1&cabinclass=business' },
-          'boracay':    { label: '필리핀항공 비즈니스', desc: '직항 4.5시간 비즈니스석 · 왕복 180만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mph/?adults=1&cabinclass=business' },
-          'phuket':     { label: '방콕에어웨이즈 비즈니스 (방콕 경유)', desc: '방콕 경유 비즈니스석 · 왕복 220만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hkt/?adults=1&cabinclass=business' },
-          'hongkong':   { label: '캐세이퍼시픽 비즈니스', desc: '직항 3.5시간 비즈니스석 · 왕복 150만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hkg/?adults=1&cabinclass=business' },
-          'guam':       { label: '대한항공 · 유나이티드 비즈니스', desc: '직항 4시간 비즈니스석 · 왕복 200만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/gum/?adults=1&cabinclass=business' },
-          'hawaii':     { label: '대한항공 비즈니스 (직항)', desc: '직항 9.5시간 비즈니스석 · 왕복 400만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hnl/?adults=1&cabinclass=business' },
-          'paris':      { label: '대한항공 · 에어프랑스 비즈니스', desc: '직항 12시간 비즈니스석 · 왕복 450만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cdg/?adults=1&cabinclass=business' },
-          'kualalumpur':{ label: '말레이시아항공 비즈니스', desc: '직항 6시간 비즈니스석 · 왕복 200만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/kul/?adults=1&cabinclass=business' },
-          'maldives':   { label: '스리랑카항공 비즈니스 (콜롬보 경유)', desc: '경유 비즈니스석 · 왕복 350만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mle/?adults=1&cabinclass=business' },
-          'sydney':     { label: '대한항공 · 콴타스 비즈니스', desc: '직항 10시간 비즈니스석 · 왕복 500만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/syd/?adults=1&cabinclass=business' },
-          'shanghai':   { label: '대한항공 · 중국동방 비즈니스', desc: '직항 2시간 비즈니스석 · 왕복 80만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pvg/?adults=1&cabinclass=business' },
-          'barcelona':  { label: '대한항공 · 이베리아 비즈니스', desc: '경유 비즈니스석 · 왕복 400만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bcn/?adults=1&cabinclass=business' },
-          'saipan':     { label: '대한항공 · 유나이티드 비즈니스', desc: '직항 4.5시간 비즈니스석 · 왕복 180만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/spn/?adults=1&cabinclass=business' },
-          'palawan':    { label: '필리핀항공 비즈니스 (마닐라 경유)', desc: '마닐라 경유 비즈니스석 · 왕복 200만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pps/?adults=1&cabinclass=business' },
-          'sanya':      { label: '중국남방항공 비즈니스', desc: '직항 4시간 비즈니스석 · 왕복 150만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/syx/?adults=1&cabinclass=business' },
+          'lisbon':     { label: '대한항공 비즈니스 (인천→리스본)', desc: '약 16시간 · 왕복 350만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/lis/?adults=1&cabinclass=business' },
+          'danang':     { label: '대한항공 · 아시아나 비즈니스', desc: '4.5시간 · 왕복 120만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dad/?adults=1&cabinclass=business' },
+          'jeju':       { label: '대한항공 최고급 국내선', desc: '50분 · 왕복 30만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cju/?adults=1&cabinclass=business' },
+          'taipei':     { label: '중화항공 · 에바항공 비즈니스', desc: '2.5시간 · 왕복 110만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/tpe/?adults=1&cabinclass=business' },
+          'osaka':      { label: '대한항공 · 아시아나 비즈니스', desc: '1.5시간 · 왕복 70만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/kix/?adults=1&cabinclass=business' },
+          'tokyo':      { label: '대한항공 · ANA 비즈니스', desc: '2.5시간 · 왕복 90만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/nrt/?adults=1&cabinclass=business' },
+          'bangkok':    { label: '대한항공 · 타이항공 비즈니스', desc: '6시간 · 왕복 200만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bkk/?adults=1&cabinclass=business' },
+          'bali':       { label: '가루다인도네시야 비즈니스', desc: '7시간 · 왕복 250만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/dps/?adults=1&cabinclass=business' },
+          'chiangmai':  { label: '타이항공 비즈니스 (방콕 경유)', desc: '약 8시간 · 왕복 200만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cnx/?adults=1&cabinclass=business' },
+          'singapore':  { label: '싱가포르항공 비즈니스', desc: '6.5시간 · 왕복 220만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/sin/?adults=1&cabinclass=business' },
+          'cebu':       { label: '필리핀항공 비즈니스', desc: '4.5시간 · 왕복 180만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/ceb/?adults=1&cabinclass=business' },
+          'nhatrang':   { label: '베트남항공 비즈니스', desc: '5시간 · 왕복 160만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cxr/?adults=1&cabinclass=business' },
+          'fukuoka':    { label: '대한항공 · 아시아나 비즈니스', desc: '1.5시간 · 왕복 60만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/fuk/?adults=1&cabinclass=business' },
+          'sapporo':    { label: '대한항공 · ANA 비즈니스', desc: '2.5시간 · 왕복 100만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cts/?adults=1&cabinclass=business' },
+          'okinawa':    { label: '대한항공 · ANA 비즈니스', desc: '2시간 · 왕복 80만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/oka/?adults=1&cabinclass=business' },
+          'kyoto':      { label: '대한항공 (오사카 경유) 비즈니스', desc: '1.5시간 · 왕복 80만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/kix/?adults=1&cabinclass=business' },
+          'miyakojima': { label: '대한항공 (오키나와 경유) 비즈니스', desc: '약 4시간 · 왕복 100만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/shi/?adults=1&cabinclass=business' },
+          'phuquoc':    { label: '베트남항공 비즈니스', desc: '5시간 · 왕복 160만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pqc/?adults=1&cabinclass=business' },
+          'hochiminh':  { label: '대한항공 · 아시아나 비즈니스', desc: '5시간 · 왕복 200만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/sgn/?adults=1&cabinclass=business' },
+          'hanoi':      { label: '대한항공 · 베트남항공 비즈니스', desc: '5시간 · 왕복 180만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/han/?adults=1&cabinclass=business' },
+          'boracay':    { label: '필리핀항공 비즈니스', desc: '4.5시간 · 왕복 180만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mph/?adults=1&cabinclass=business' },
+          'phuket':     { label: '방콕에어웨이즈 비즈니스 (방콕 경유)', desc: '약 8시간 · 왕복 220만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hkt/?adults=1&cabinclass=business' },
+          'hongkong':   { label: '캐세이퍼시픽 비즈니스', desc: '3.5시간 · 왕복 150만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hkg/?adults=1&cabinclass=business' },
+          'guam':       { label: '대한항공 · 유나이티드 비즈니스', desc: '4시간 · 왕복 200만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/gum/?adults=1&cabinclass=business' },
+          'hawaii':     { label: '대한항공 비즈니스 (직항)', desc: '9.5시간 · 왕복 400만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/hnl/?adults=1&cabinclass=business' },
+          'paris':      { label: '대한항공 · 에어프랑스 비즈니스', desc: '12시간 · 왕복 450만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/cdg/?adults=1&cabinclass=business' },
+          'kualalumpur':{ label: '말레이시아항공 비즈니스', desc: '6시간 · 왕복 200만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/kul/?adults=1&cabinclass=business' },
+          'maldives':   { label: '스리랑카항공 비즈니스 (콜롬보 경유)', desc: '약 10시간 · 왕복 350만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/mle/?adults=1&cabinclass=business' },
+          'sydney':     { label: '대한항공 · 쿼타스 비즈니스', desc: '10시간 · 왕복 500만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/syd/?adults=1&cabinclass=business' },
+          'shanghai':   { label: '대한항공 · 중국동방 비즈니스', desc: '2시간 · 왕복 80만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pvg/?adults=1&cabinclass=business' },
+          'barcelona':  { label: '대한항공 · 이베리아 비즈니스', desc: '약 14시간 · 왕복 400만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/bcn/?adults=1&cabinclass=business' },
+          'saipan':     { label: '대한항공 · 유나이티드 비즈니스', desc: '4.5시간 · 왕복 180만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/spn/?adults=1&cabinclass=business' },
+          'palawan':    { label: '필리핀항공 비즈니스 (마닐라 경유)', desc: '약 6시간 · 왕복 200만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/pps/?adults=1&cabinclass=business' },
+          'sanya':      { label: '중국남방항공 비즈니스', desc: '4시간 · 왕복 150만원~', link: 'https://www.skyscanner.co.kr/transport/flights/icn/syx/?adults=1&cabinclass=business' },
         };
         const _vipFlightTips = [
           '✈️ 비즈니스석 예약은 출발 2~3개월 전 마일리지 좌석 우선 확인',
@@ -9542,7 +9553,7 @@
           : d.cheapFlights;
         const _vipTips = isVIP ? _vipFlightTips : d.flightTips;
 
-        renderFlightList('flightrec-' + col, _vipFlights, _vipTips, isVIP);
+        renderFlightList('flightrec-' + col, _vipFlights, _vipTips, isVIP, isVIP ? null : d.airfare);
         renderAppList('apps-' + col, d.id);
         renderEntryInfo('entry-' + col, d.id);
         renderFxTips('fxtip-' + col, d.id, d.fx, d.fxSub);
@@ -10039,7 +10050,7 @@
         }
         // Region: show "어디든지" if none selected
         var selectedReg = window.selectedRegion || '';
-        var regionLabel = selectedReg ? document.getElementById('region-display').textContent : '어디든지';
+        var regionLabel = selectedReg ? document.getElementById('region-display').textContent : '전체 지역';
 
         document.getElementById('home-view').style.display = 'none';
         document.getElementById('compare-view').style.display = 'block';
@@ -11591,8 +11602,8 @@
           var chk = o.querySelector('.sb-region-check');
           if (chk) chk.innerHTML = isActive ? checkSVG : '';
         });
-        var labels = {'':'어디든지','japan':'일본','sea':'동남아','europe':'유럽','east_asia':'동아시아','pacific':'괌·하와이·호주','domestic':'국내','resort':'휴양지'};
-        var labelText = labels[val] || '어디든지';
+        var labels = {'':'전체 지역','japan':'일본','sea':'동남아','europe':'유럽','east_asia':'동아시아','pacific':'괌·하와이·호주','domestic':'국내','resort':'휴양지'};
+        var labelText = labels[val] || '전체 지역';
         var disp = document.getElementById('region-display');
         var dispC = document.getElementById('region-display-c');
         if (disp) { disp.textContent = labelText; disp.classList.add('filled'); }
@@ -13166,7 +13177,7 @@
       function syncCvTabValues() {
         var regionSrc = document.getElementById('region-display');
         var el = document.getElementById('cvt-region-val');
-        if (el) el.textContent = (regionSrc ? regionSrc.textContent.trim() : '') || '어디든지';
+        if (el) el.textContent = (regionSrc ? regionSrc.textContent.trim() : '') || '전체 지역';
         var dateSrc = document.getElementById('sb-date-display');
         el = document.getElementById('cvt-date-val');
         if (el) el.textContent = (dateSrc ? dateSrc.textContent.trim() : '') || '날짜 선택';
@@ -13265,8 +13276,8 @@
           var check = el.querySelector('.cv-row-check');
           if (check) check.innerHTML = isActive ? checkSvg : '';
         });
-        var labels = { '': '어디든지', 'japan': '일본', 'sea': '동남아시아', 'europe': '유럽', 'east_asia': '동아시아', 'pacific': '괌·하와이·호주', 'resort': '휴양지' };
-        var txt = labels[val] || '어디든지';
+        var labels = { '': '전체 지역', 'japan': '일본', 'sea': '동남아시아', 'europe': '유럽', 'east_asia': '동아시아', 'pacific': '괌·하와이·호주', 'resort': '휴양지' };
+        var txt = labels[val] || '전체 지역';
         var el = document.getElementById('cvt-region-val'); if(el) el.textContent = txt;
         var src = document.getElementById('region-display'); if(src) src.textContent = txt;
         window.selectedRegion = val;
