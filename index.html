@@ -12366,8 +12366,12 @@
                   if (kEl) { kEl.textContent = '이코노미 · 인천 출발'; }
                 }
                 // flightrec-i 항공 카드 desc 실시간 업데이트
+                // VIP 모드(budget 300만원+)에선 비즈니스 카드가 표시 중 → 이코노미 가격으로 덮어쓰지 않음
                 var recEl = document.getElementById('flightrec-' + i);
-                if (recEl && d.cheapFlights) {
+                var _isVipNow = (window.wizardTierOverride === 'high') ||
+                  (recEl && recEl.querySelector('.flight-card-link') &&
+                   recEl.querySelector('.flight-card-link').textContent.indexOf('비즈니스') !== -1);
+                if (recEl && d.cheapFlights && !_isVipNow) {
                   recEl.querySelectorAll('.flight-card-desc').forEach(function(descEl, fi) {
                     if (d.cheapFlights[fi]) descEl.textContent = d.cheapFlights[fi].desc;
                   });
