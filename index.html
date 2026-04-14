@@ -9986,7 +9986,8 @@
 
         var hint = document.createElement('p');
         hint.style.cssText = 'color:rgba(255,255,255,0.55);font-size:13px;margin:0;text-align:center;';
-        hint.textContent = 'PDF에는 링크가 포함돼요';
+        var isMobileHint = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        hint.textContent = isMobileHint ? '이미지를 길게 눌러 저장할 수도 있어요' : 'PDF에는 링크가 포함돼요';
 
         var btnWrap = document.createElement('div');
         btnWrap.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;justify-content:center;';
@@ -9996,6 +9997,25 @@
         dlBtn.setAttribute('download', baseName + '.png');
         dlBtn.textContent = 'PNG 저장';
         dlBtn.style.cssText = 'background:rgba(255,255,255,0.15);color:#fff;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:600;text-decoration:none;font-family:inherit;cursor:pointer;';
+        dlBtn.onclick = function(e) {
+          // 모바일: <a download> 미지원 시 Web Share API 또는 새 탭 열기
+          var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+          if (!isMobile) return; // 데스크탑은 기본 download 동작
+          e.preventDefault();
+          // 시도 1: Web Share API (파일 공유 → 사진 앱 저장 가능)
+          if (navigator.share && navigator.canShare) {
+            var file = new File([blob], baseName + '.png', { type: 'image/png' });
+            if (navigator.canShare({ files: [file] })) {
+              navigator.share({ files: [file], title: baseName }).then(function() {
+                showToast('✅ 공유 완료!');
+              }).catch(function() {});
+              return;
+            }
+          }
+          // 시도 2: 새 탭에서 이미지 열기 (길게 눌러 저장 유도)
+          window.open(blobUrl, '_blank');
+          showToast('이미지를 길게 눌러 저장해주세요 📷');
+        };
 
         var pdfBtn = document.createElement('button');
         pdfBtn.textContent = 'PDF 저장 (링크 포함)';
