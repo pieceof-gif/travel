@@ -12,7 +12,7 @@
   </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>여행지 비교하기 — travi</title>
+  <title>여행지 비교하기 — odiga</title>
   <!-- Logo Font: Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3325,7 +3325,7 @@
   <!-- HOME VIEW -->
   <div id="home-view">
     <nav class="home-nav">
-      <span class="nav-brand"><span style="letter-spacing:0.1px">t</span>ravi</span>
+      <span class="nav-brand">odiga</span>
       <button class="nav-share-btn" id="nav-share-btn" onclick="handleShare()" aria-label="공유하기">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M13.9289 9.21468V4.92896L21 12L13.9289 19.0711V14.2392M13.9289 9.22304C13.2857 9.07708 12.6163 9.00002 11.9289 9.00002C6.95836 9.00002 2.92892 13.0295 2.92892 18C2.92892 18.8675 3.05165 19.7063 3.28069 20.5C4.36404 16.7457 7.82583 14 11.9289 14C12.6163 14 13.2857 14.0771 13.9289 14.223" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3525,7 +3525,7 @@
   <div id="compare-view" style="display: none;">
     <!-- NAV -->
     <nav class="nav">
-      <span class="nav-brand"><span style="letter-spacing:0.1px">t</span>ravi</span>
+      <span class="nav-brand">odiga</span>
       <div style="display:flex;align-items:center;gap:4px;">
         <!-- 모바일 전용 검색 아이콘: nav-actions 밖에 배치 -->
         <button id="cv-search-icon" onclick="openCvSearchSheet()" type="button" aria-label="검색 조건 수정">
@@ -4576,11 +4576,11 @@
     <footer>
       <div class="footer-inner">
         <p id="footer-date-note">* 항공권 가격은 최저가 기준이며 실시간 변동합니다. 안전도는 외교부 여행경보 기준이며, 현지 정보는 참고용입니다. 여행 전 반드시 <a href="https://www.0404.go.kr" target="_blank" rel="noopener" style="color:inherit;">외교부 해외안전여행</a>을 확인하세요.</p>
-        <p style="margin-top:16px" id="footer-copyright">© travi</p>
+        <p style="margin-top:16px" id="footer-copyright">© odiga</p>
         <script>
           (function() {
             const now = new Date();
-            document.getElementById('footer-copyright').textContent = `© ${now.getFullYear()} travi`;
+            document.getElementById('footer-copyright').textContent = `© ${now.getFullYear()} odiga`;
           })();
         </script>
       </div>
@@ -8718,7 +8718,6 @@
         const isCheapest = budgetRaw === 'cheapest';
         const budgetNum = budgetRaw === 'unlimited' ? 9999 : isCheapest ? 40 : (parseInt(budgetRaw) || 150);
         const filterBudget = isCheapest ? 9999 : budgetNum;
-
         const noResults = document.getElementById('no-results-cnt');
         const body = document.getElementById('comparison-body');
 
@@ -9930,7 +9929,7 @@
             var ds = today.getFullYear() + '' +
               String(today.getMonth()+1).padStart(2,'0') +
               String(today.getDate()).padStart(2,'0');
-            var baseName = 'travi-여행비교-' + ds;
+            var baseName = 'odiga-여행비교-' + ds;
 
             canvas.toBlob(function(blob) {
               if (!blob) { showToast('⚠️ 이미지 생성 실패'); return; }
@@ -10117,7 +10116,7 @@
 
       function shareKakao() {
         const url  = location.href;
-        const text = '여행지 비교는 travi에서!\n항공권·호텔·현지 비용을 한눈에 확인하세요.\n👉 ' + url;
+        const text = '여행지 비교는 odiga에서!\n항공권·호텔·현지 비용을 한눈에 확인하세요.\n👉 ' + url;
         const kakaoLink = 'kakaotalk://msg/send?text=' + encodeURIComponent(text);
         const opened = window.open(kakaoLink, '_blank');
         // 딥링크 실패 시 fallback: 웹 공유 or 복사
@@ -10144,8 +10143,8 @@
       function shareMore() {
         closeShareSheet();
         const url  = location.href;
-        const title = 'travi — 여행지 비교하기';
-        const text  = '여행지 비교는 travi에서! 항공권·호텔·현지 비용을 한눈에 확인하세요.';
+        const title = 'odiga — 여행지 비교하기';
+        const text  = '여행지 비교는 odiga에서! 항공권·호텔·현지 비용을 한눈에 확인하세요.';
         if (navigator.share) {
           navigator.share({ title, text, url }).catch(() => {});
         }
