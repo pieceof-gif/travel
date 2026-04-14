@@ -24,6 +24,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+  <!-- Kakao JS SDK -->
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js" integrity="sha384-DKYJZ8NLiK8MN4/C5P2vvhJBDi4FDGL1uf/KMiVJGni4OAoJMKSKz2Pi5SVmyVQ" crossorigin="anonymous"></script>
   <style>
     *,
     *::before,
@@ -117,6 +119,7 @@
       transition: background 0.15s ease;
       padding: 0;
       flex-shrink: 0;
+      position: relative;
     }
     .nav-share-btn:hover {
       background: rgba(0, 0, 0, 0.07);
@@ -124,6 +127,33 @@
     .nav-share-btn:active {
       background: rgba(0, 0, 0, 0.12);
       transform: scale(0.93);
+    }
+
+    /* ── SAVE BUTTON FILL ANIMATION ── */
+    #nav-save-btn .save-icon-bg {
+      stroke: #b0b0b0;
+      transition: stroke 0.3s;
+    }
+    #nav-save-btn .save-icon-fill {
+      stroke: #1d1d1f;
+      clip-path: inset(100% 0 0 0);
+      transition: clip-path 0s;
+    }
+    #nav-save-btn.saving .save-icon-fill {
+      clip-path: inset(0 0 0 0);
+      transition: clip-path 1.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+    #nav-save-btn.saving {
+      pointer-events: none;
+    }
+    #nav-save-btn.save-done .save-icon-fill {
+      clip-path: inset(0 0 0 0);
+      stroke: #34c759;
+      transition: stroke 0.3s;
+    }
+    #nav-save-btn.save-done .save-icon-bg {
+      stroke: transparent;
+      transition: stroke 0.3s;
     }
 
     /* ── SHARE SHEET ── */
@@ -3533,8 +3563,16 @@
         </button>
         <button class="nav-share-btn" id="nav-save-btn" onclick="handleSaveImage()" aria-label="이미지로 저장">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 14V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12 3V17M12 17L7 11.5555M12 17L17 11.5556" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- 배경 (회색) -->
+            <g class="save-icon-bg">
+              <path d="M3 14V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V14" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 3V17M12 17L7 11.5555M12 17L17 11.5556" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <!-- 채워지는 레이어 (검정 → 초록) -->
+            <g class="save-icon-fill">
+              <path d="M3 14V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V14" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 3V17M12 17L7 11.5555M12 17L17 11.5556" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
           </svg>
         </button>
         <button class="nav-share-btn" onclick="handleShare()" aria-label="공유하기">
@@ -9837,12 +9875,15 @@
           return;
         }
         var btn = document.getElementById('nav-save-btn');
-        if (btn) { btn.style.opacity = '0.4'; btn.style.pointerEvents = 'none'; }
-        showToast('📷 데이터 로딩 확인 중...');
+        // 채워지는 애니메이션 시작
+        if (btn) {
+          btn.classList.remove('save-done');
+          btn.classList.add('saving');
+        }
 
         var target = document.getElementById('compare-view');
         if (!target) {
-          if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
+          if (btn) { btn.classList.remove('saving'); }
           showToast('오류: 화면을 읽을 수 없어요');
           return;
         }
@@ -9909,7 +9950,7 @@
           });
 
           var captureWork = html2canvas(target, {
-            useCORS: false,
+            useCORS: true,
             allowTaint: false,
             scale: 1.5,
             backgroundColor: '#ffffff',
@@ -9917,18 +9958,29 @@
             windowWidth: target.scrollWidth,
             scrollX: 0,
             scrollY: -window.scrollY,
+            imageTimeout: 5000,
             onclone: function(doc) {
+              // 외부 이미지를 투명 placeholder로 교체 (CORS 에러 방지)
+              var placeholder = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
               doc.querySelectorAll('img').forEach(function(img) {
                 var src = img.getAttribute('src') || '';
-                if (src && !src.startsWith('data:') && !src.startsWith('/')) {
-                  img.removeAttribute('src');
-                  img.style.display = 'none';
+                if (!src || src.startsWith('data:')) return;
+                // 같은 도메인이 아닌 외부 이미지는 투명 placeholder로
+                try {
+                  var imgUrl = new URL(src, location.href);
+                  if (imgUrl.origin !== location.origin) {
+                    img.src = placeholder;
+                  }
+                } catch(e) {
+                  img.src = placeholder;
                 }
               });
               var cloneNav = doc.querySelector('#compare-view .nav');
               if (cloneNav) cloneNav.style.display = 'none';
               var cloneBanner = doc.getElementById('compare-top-banner');
               if (cloneBanner) cloneBanner.style.display = 'none';
+              var cloneSheet = doc.getElementById('cv-search-sheet');
+              if (cloneSheet) cloneSheet.style.display = 'none';
             }
           });
 
@@ -10013,7 +10065,11 @@
           showToast('⚠️ 저장 실패: ' + (e.message || '오류'));
         }).then(function() {
           // 항상 버튼 복원 (finally 대체)
-          if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
+          if (btn) {
+            btn.classList.remove('saving');
+            btn.classList.add('save-done');
+            setTimeout(function() { btn.classList.remove('save-done'); }, 2500);
+          }
         });
       }
 
@@ -10125,20 +10181,48 @@
       }
 
       function shareKakao() {
-        const url  = location.href;
-        const text = '여행지 비교는 odiga에서!\n항공권·호텔·현지 비용을 한눈에 확인하세요.\n👉 ' + url;
-        const kakaoLink = 'kakaotalk://msg/send?text=' + encodeURIComponent(text);
-        const opened = window.open(kakaoLink, '_blank');
-        // 딥링크 실패 시 fallback: 웹 공유 or 복사
-        setTimeout(() => {
-          try {
-            if (!opened || opened.closed) {
-              shareCopyLink();
-              showToast('카카오톡을 찾지 못했어요. 링크를 복사했어요 🔗');
-            }
-          } catch(e) {}
-        }, 1200);
         closeShareSheet();
+        var shareUrl = location.hostname ? location.href : 'https://odiga.kr';
+        var shareTitle = 'odiga — 여행지 비교하기';
+        var shareDesc = '항공권·호텔·현지 비용을 한눈에 비교하세요 ✈️';
+
+        // 1순위: 카카오 SDK (앱 키 등록 시)
+        if (typeof Kakao !== 'undefined' && window.KAKAO_JS_KEY) {
+          if (!Kakao.isInitialized()) {
+            try { Kakao.init(window.KAKAO_JS_KEY); } catch(e) {}
+          }
+          if (Kakao.isInitialized()) {
+            try {
+              Kakao.Share.sendDefault({
+                objectType: 'feed',
+                content: {
+                  title: shareTitle,
+                  description: shareDesc,
+                  imageUrl: 'https://odiga.kr/og-image.png',
+                  link: { mobileWebUrl: shareUrl, webUrl: shareUrl }
+                },
+                buttons: [{ title: '비교하러 가기', link: { mobileWebUrl: shareUrl, webUrl: shareUrl } }]
+              });
+              return;
+            } catch (e) {
+              console.warn('Kakao share failed:', e);
+            }
+          }
+        }
+
+        // 2순위: 모바일 Web Share API (카카오톡 포함 공유 메뉴 표시)
+        if (navigator.share) {
+          navigator.share({
+            title: shareTitle,
+            text: shareDesc,
+            url: shareUrl
+          }).catch(function() {});
+          return;
+        }
+
+        // 3순위: 링크 복사
+        shareCopyLink();
+        showToast('링크를 복사했어요! 카카오톡에 붙여넣기 해주세요 🔗');
       }
 
       function shareCopyLink() {
