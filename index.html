@@ -9903,12 +9903,20 @@
             });
           });
 
-          return html2canvas(target, {
+          // html2canvas에 타임아웃 래핑
+          var captureTimeout = new Promise(function(_, reject) {
+            setTimeout(function() { reject(new Error('캡쳐 시간 초과 (30초)')); }, 30000);
+          });
+
+          var captureWork = html2canvas(target, {
             useCORS: false,
             allowTaint: false,
             scale: 1.5,
             backgroundColor: '#ffffff',
             logging: false,
+            windowWidth: target.scrollWidth,
+            scrollX: 0,
+            scrollY: -window.scrollY,
             onclone: function(doc) {
               doc.querySelectorAll('img').forEach(function(img) {
                 var src = img.getAttribute('src') || '';
@@ -9922,9 +9930,9 @@
               var cloneBanner = doc.getElementById('compare-top-banner');
               if (cloneBanner) cloneBanner.style.display = 'none';
             }
-          }).then(function(canvas) {
-            if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
+          });
 
+          return Promise.race([captureWork, captureTimeout]).then(function(canvas) {
             var today = new Date();
             var ds = today.getFullYear() + '' +
               String(today.getMonth()+1).padStart(2,'0') +
@@ -10001,9 +10009,11 @@
             }, 'image/png');
           });
         }).catch(function(e) {
-          if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
           console.error('Save error:', e);
           showToast('⚠️ 저장 실패: ' + (e.message || '오류'));
+        }).then(function() {
+          // 항상 버튼 복원 (finally 대체)
+          if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
         });
       }
 
