@@ -9881,202 +9881,148 @@
           return;
         }
         var btn = document.getElementById('nav-save-btn');
-        // 채워지는 애니메이션 시작
-        if (btn) {
-          btn.classList.remove('save-done');
-          btn.classList.add('saving');
-        }
+        if (btn) { btn.classList.remove('save-done'); btn.classList.add('saving'); }
 
         var target = document.getElementById('compare-view');
-        if (!target) {
-          if (btn) { btn.classList.remove('saving'); }
-          showToast('오류: 화면을 읽을 수 없어요');
+        if (!target || target.style.display === 'none') {
+          if (btn) btn.classList.remove('saving');
+          showToast('비교 화면이 표시되지 않았어요');
           return;
         }
 
-        // 모든 이미지 로드 대기
-        function waitForImages() {
-          var imgs = target.querySelectorAll('img');
-          var promises = [];
-          imgs.forEach(function(img) {
-            if (img.complete) return;
-            promises.push(new Promise(function(resolve) {
-              img.addEventListener('load', resolve, { once: true });
-              img.addEventListener('error', resolve, { once: true });
-            }));
-          });
-          return Promise.all(promises);
-        }
+        showToast('📷 캡쳐 준비 중...');
 
-        // 데이터 렌더링 대기 (날씨·항공·호텔 셀이 채워질 때까지)
-        function waitForData(maxWait) {
-          return new Promise(function(resolve) {
-            var start = Date.now();
-            function check() {
-              var cells = target.querySelectorAll('[id^="weather-"], [id^="air-"], [id^="hotel-"]');
-              var allFilled = true;
-              cells.forEach(function(c) {
-                if (c.textContent.trim() === '' || c.textContent.trim() === '-') allFilled = false;
-              });
-              if (allFilled || Date.now() - start > maxWait) {
-                resolve();
-              } else {
-                setTimeout(check, 300);
-              }
-            }
-            check();
-          });
-        }
-
-        // 데이터 + 이미지 모두 로드된 후 캡쳐
-        Promise.all([waitForData(5000), waitForImages()]).then(function() {
-          showToast('📷 이미지 준비 중...');
-
-          // 링크 위치 수집 (PDF용)
-          var targetRect = target.getBoundingClientRect();
-          var scrollTop = target.scrollTop || 0;
-          var linkData = [];
-          target.querySelectorAll('a[href]').forEach(function(a) {
-            var href = a.getAttribute('href');
-            if (!href || href.startsWith('#') || href.startsWith('javascript')) return;
-            var r = a.getBoundingClientRect();
-            if (r.width === 0 || r.height === 0) return;
-            linkData.push({
-              url: href,
-              x: r.left - targetRect.left,
-              y: r.top - targetRect.top + scrollTop,
-              w: r.width,
-              h: r.height
+        // 2초만 대기 후 바로 캡쳐 시작 (데이터가 안 채워져도 진행)
+        setTimeout(function() {
+          try {
+            // 링크 위치 수집 (PDF용)
+            var targetRect = target.getBoundingClientRect();
+            var scrollTop = target.scrollTop || 0;
+            var linkData = [];
+            target.querySelectorAll('a[href]').forEach(function(a) {
+              var href = a.getAttribute('href');
+              if (!href || href.startsWith('#') || href.startsWith('javascript')) return;
+              var r = a.getBoundingClientRect();
+              if (r.width === 0 || r.height === 0) return;
+              linkData.push({ url: href, x: r.left - targetRect.left, y: r.top - targetRect.top + scrollTop, w: r.width, h: r.height });
             });
-          });
 
-          // html2canvas에 타임아웃 래핑
-          var captureTimeout = new Promise(function(_, reject) {
-            setTimeout(function() { reject(new Error('캡쳐 시간 초과 (30초)')); }, 30000);
-          });
+            var captureTimeout = new Promise(function(_, reject) {
+              setTimeout(function() { reject(new Error('시간 초과')); }, 45000);
+            });
 
-          var captureWork = html2canvas(target, {
-            useCORS: true,
-            allowTaint: false,
-            scale: 1.5,
-            backgroundColor: '#ffffff',
-            logging: false,
-            windowWidth: target.scrollWidth,
-            scrollX: 0,
-            scrollY: -window.scrollY,
-            imageTimeout: 5000,
-            onclone: function(doc) {
-              // 외부 이미지를 투명 placeholder로 교체 (CORS 에러 방지)
-              var placeholder = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-              doc.querySelectorAll('img').forEach(function(img) {
-                var src = img.getAttribute('src') || '';
-                if (!src || src.startsWith('data:')) return;
-                // 같은 도메인이 아닌 외부 이미지는 투명 placeholder로
-                try {
-                  var imgUrl = new URL(src, location.href);
-                  if (imgUrl.origin !== location.origin) {
-                    img.src = placeholder;
+            var captureWork = html2canvas(target, {
+              useCORS: false,
+              allowTaint: false,
+              scale: 1,
+              backgroundColor: '#ffffff',
+              logging: false,
+              windowWidth: target.scrollWidth,
+              scrollX: 0,
+              scrollY: -window.scrollY,
+              imageTimeout: 3000,
+              removeContainer: true,
+              onclone: function(doc) {
+                // 모든 img 태그 제거 (CORS 문제 원천 차단)
+                doc.querySelectorAll('img').forEach(function(img) {
+                  img.removeAttribute('src');
+                  img.style.visibility = 'hidden';
+                  img.style.width = img.offsetWidth + 'px';
+                  img.style.height = img.offsetHeight + 'px';
+                });
+                // 불필요한 요소 숨김
+                var hide = ['#compare-view .nav', '#compare-top-banner', '#cv-search-sheet', '#wiz-launcher', '#toast'];
+                hide.forEach(function(sel) {
+                  var el = doc.querySelector(sel);
+                  if (el) el.style.display = 'none';
+                });
+              }
+            });
+
+            Promise.race([captureWork, captureTimeout]).then(function(canvas) {
+              showToast('📷 이미지 생성 중...');
+              try {
+                canvas.toBlob(function(blob) {
+                  if (!blob) {
+                    showToast('⚠️ 이미지 변환 실패');
+                    if (btn) { btn.classList.remove('saving'); }
+                    return;
                   }
-                } catch(e) {
-                  img.src = placeholder;
-                }
-              });
-              var cloneNav = doc.querySelector('#compare-view .nav');
-              if (cloneNav) cloneNav.style.display = 'none';
-              var cloneBanner = doc.getElementById('compare-top-banner');
-              if (cloneBanner) cloneBanner.style.display = 'none';
-              var cloneSheet = doc.getElementById('cv-search-sheet');
-              if (cloneSheet) cloneSheet.style.display = 'none';
-            }
-          });
+                  showSaveModal(blob, canvas, linkData, target);
+                  if (btn) { btn.classList.remove('saving'); btn.classList.add('save-done'); setTimeout(function() { btn.classList.remove('save-done'); }, 2500); }
+                }, 'image/png');
+              } catch(blobErr) {
+                console.error('toBlob error:', blobErr);
+                showToast('⚠️ 이미지 변환 실패: ' + blobErr.message);
+                if (btn) { btn.classList.remove('saving'); }
+              }
+            }).catch(function(e) {
+              console.error('Capture error:', e);
+              showToast('⚠️ 캡쳐 실패: ' + (e.message || '알 수 없는 오류'));
+              if (btn) { btn.classList.remove('saving'); }
+            });
 
-          return Promise.race([captureWork, captureTimeout]).then(function(canvas) {
-            var today = new Date();
-            var ds = today.getFullYear() + '' +
-              String(today.getMonth()+1).padStart(2,'0') +
-              String(today.getDate()).padStart(2,'0');
-            var baseName = 'odiga-여행비교-' + ds;
-
-            canvas.toBlob(function(blob) {
-              if (!blob) { showToast('⚠️ 이미지 생성 실패'); return; }
-
-              var blobUrl = URL.createObjectURL(blob);
-
-              // 모달 오버레이
-              var overlay = document.createElement('div');
-              overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;box-sizing:border-box;';
-
-              var img = document.createElement('img');
-              img.src = blobUrl;
-              img.style.cssText = 'max-width:min(900px,90vw);max-height:65vh;object-fit:contain;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,0.5);';
-
-              var hint = document.createElement('p');
-              hint.style.cssText = 'color:rgba(255,255,255,0.55);font-size:13px;margin:0;text-align:center;';
-              hint.textContent = 'PDF에는 링크가 포함돼요';
-
-              var btnWrap = document.createElement('div');
-              btnWrap.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;justify-content:center;';
-
-              // PNG 다운로드 버튼
-              var dlBtn = document.createElement('a');
-              dlBtn.href = blobUrl;
-              dlBtn.setAttribute('download', baseName + '.png');
-              dlBtn.textContent = 'PNG 저장';
-              dlBtn.style.cssText = 'background:rgba(255,255,255,0.15);color:#fff;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:600;text-decoration:none;font-family:inherit;cursor:pointer;';
-
-              // PDF 다운로드 버튼
-              var pdfBtn = document.createElement('button');
-              pdfBtn.textContent = 'PDF 저장 (링크 포함)';
-              pdfBtn.style.cssText = 'background:#0071e3;color:#fff;border:none;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;letter-spacing:-0.2px;';
-              pdfBtn.onclick = function() {
-                pdfBtn.textContent = '생성 중...';
-                pdfBtn.style.opacity = '0.5';
-                pdfBtn.style.pointerEvents = 'none';
-                setTimeout(function() {
-                  try {
-                    buildPdf(canvas, linkData, baseName + '.pdf', target);
-                    showToast('✅ PDF 저장됐어요!');
-                  } catch(pe) {
-                    console.error('PDF error:', pe);
-                    showToast('⚠️ PDF 생성 실패');
-                  }
-                  pdfBtn.textContent = 'PDF 저장 (링크 포함)';
-                  pdfBtn.style.opacity = '';
-                  pdfBtn.style.pointerEvents = '';
-                }, 100);
-              };
-
-              // 우상단 X 닫기
-              var closeBtn = document.createElement('button');
-              closeBtn.innerHTML = '&times;';
-              closeBtn.style.cssText = 'position:absolute;top:18px;right:18px;background:rgba(255,255,255,0.15);color:#fff;border:none;width:36px;height:36px;border-radius:50%;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;padding:0;';
-              closeBtn.onclick = function() {
-                document.body.removeChild(overlay);
-                URL.revokeObjectURL(blobUrl);
-              };
-
-              btnWrap.appendChild(pdfBtn);
-              btnWrap.appendChild(dlBtn);
-              overlay.appendChild(closeBtn);
-              overlay.appendChild(img);
-              overlay.appendChild(hint);
-              overlay.appendChild(btnWrap);
-              overlay.onclick = function(e) { if (e.target === overlay) closeBtn.onclick(); };
-              document.body.appendChild(overlay);
-
-            }, 'image/png');
-          });
-        }).catch(function(e) {
-          console.error('Save error:', e);
-          showToast('⚠️ 저장 실패: ' + (e.message || '오류'));
-        }).then(function() {
-          // 항상 버튼 복원 (finally 대체)
-          if (btn) {
-            btn.classList.remove('saving');
-            btn.classList.add('save-done');
-            setTimeout(function() { btn.classList.remove('save-done'); }, 2500);
+          } catch(outerErr) {
+            console.error('Save outer error:', outerErr);
+            showToast('⚠️ 저장 실패: ' + outerErr.message);
+            if (btn) { btn.classList.remove('saving'); }
           }
-        });
+        }, 1500);
+      }
+
+      // 저장 모달 표시
+      function showSaveModal(blob, canvas, linkData, target) {
+        var today = new Date();
+        var ds = today.getFullYear() + '' + String(today.getMonth()+1).padStart(2,'0') + String(today.getDate()).padStart(2,'0');
+        var baseName = 'odiga-여행비교-' + ds;
+        var blobUrl = URL.createObjectURL(blob);
+
+        var overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;box-sizing:border-box;';
+
+        var img = document.createElement('img');
+        img.src = blobUrl;
+        img.style.cssText = 'max-width:min(900px,90vw);max-height:65vh;object-fit:contain;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,0.5);';
+
+        var hint = document.createElement('p');
+        hint.style.cssText = 'color:rgba(255,255,255,0.55);font-size:13px;margin:0;text-align:center;';
+        hint.textContent = 'PDF에는 링크가 포함돼요';
+
+        var btnWrap = document.createElement('div');
+        btnWrap.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;justify-content:center;';
+
+        var dlBtn = document.createElement('a');
+        dlBtn.href = blobUrl;
+        dlBtn.setAttribute('download', baseName + '.png');
+        dlBtn.textContent = 'PNG 저장';
+        dlBtn.style.cssText = 'background:rgba(255,255,255,0.15);color:#fff;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:600;text-decoration:none;font-family:inherit;cursor:pointer;';
+
+        var pdfBtn = document.createElement('button');
+        pdfBtn.textContent = 'PDF 저장 (링크 포함)';
+        pdfBtn.style.cssText = 'background:#0071e3;color:#fff;border:none;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;letter-spacing:-0.2px;';
+        pdfBtn.onclick = function() {
+          pdfBtn.textContent = '생성 중...'; pdfBtn.style.opacity = '0.5'; pdfBtn.style.pointerEvents = 'none';
+          setTimeout(function() {
+            try { buildPdf(canvas, linkData, baseName + '.pdf', target); showToast('✅ PDF 저장됐어요!'); }
+            catch(pe) { console.error('PDF error:', pe); showToast('⚠️ PDF 생성 실패'); }
+            pdfBtn.textContent = 'PDF 저장 (링크 포함)'; pdfBtn.style.opacity = ''; pdfBtn.style.pointerEvents = '';
+          }, 100);
+        };
+
+        var closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '&times;';
+        closeBtn.style.cssText = 'position:absolute;top:18px;right:18px;background:rgba(255,255,255,0.15);color:#fff;border:none;width:36px;height:36px;border-radius:50%;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;padding:0;';
+        closeBtn.onclick = function() { document.body.removeChild(overlay); URL.revokeObjectURL(blobUrl); };
+
+        btnWrap.appendChild(pdfBtn);
+        btnWrap.appendChild(dlBtn);
+        overlay.appendChild(closeBtn);
+        overlay.appendChild(img);
+        overlay.appendChild(hint);
+        overlay.appendChild(btnWrap);
+        overlay.onclick = function(e) { if (e.target === overlay) closeBtn.onclick(); };
+        document.body.appendChild(overlay);
+      }
       }
 
       // ── BUILD PDF WITH LINKS ──
