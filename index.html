@@ -131,21 +131,27 @@
 
     /* ── SAVE BUTTON FILL ANIMATION ── */
     #nav-save-btn .save-icon-bg {
-      stroke: #b0b0b0;
-      transition: stroke 0.3s;
+      stroke: #1d1d1f;
+      transition: stroke 0.2s;
     }
     #nav-save-btn .save-icon-fill {
       stroke: #1d1d1f;
       clip-path: inset(100% 0 0 0);
       transition: clip-path 0s;
     }
+    /* 저장 중: 배경 회색 → 채움 레이어가 아래에서 위로 검정으로 올라옴 */
+    #nav-save-btn.saving .save-icon-bg {
+      stroke: #ccc;
+      transition: stroke 0.15s;
+    }
     #nav-save-btn.saving .save-icon-fill {
       clip-path: inset(0 0 0 0);
-      transition: clip-path 1.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+      transition: clip-path 2s cubic-bezier(0.22, 0.61, 0.36, 1);
     }
     #nav-save-btn.saving {
       pointer-events: none;
     }
+    /* 저장 완료: 초록 */
     #nav-save-btn.save-done .save-icon-fill {
       clip-path: inset(0 0 0 0);
       stroke: #34c759;
