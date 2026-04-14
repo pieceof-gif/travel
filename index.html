@@ -9867,7 +9867,6 @@
           return new Promise(function(resolve) {
             var start = Date.now();
             function check() {
-              // 날씨, 항공, 호텔 셀이 비어있는지 확인
               var cells = target.querySelectorAll('[id^="weather-"], [id^="air-"], [id^="hotel-"]');
               var allFilled = true;
               cells.forEach(function(c) {
@@ -9905,109 +9904,108 @@
             });
           });
 
-        html2canvas(target, {
-          useCORS: false,
-          allowTaint: false,
-          scale: 1.5,
-          backgroundColor: '#ffffff',
-          logging: false,
-          onclone: function(doc) {
-            doc.querySelectorAll('img').forEach(function(img) {
-              var src = img.getAttribute('src') || '';
-              if (src && !src.startsWith('data:') && !src.startsWith('/')) {
-                img.removeAttribute('src');
-                img.style.display = 'none';
-              }
-            });
-            var cloneNav = doc.querySelector('#compare-view .nav');
-            if (cloneNav) cloneNav.style.display = 'none';
-            var cloneBanner = doc.getElementById('compare-top-banner');
-            if (cloneBanner) cloneBanner.style.display = 'none';
-          }
-        }).then(function(canvas) {
-          if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
-
-          var today = new Date();
-          var ds = today.getFullYear() + '' +
-            String(today.getMonth()+1).padStart(2,'0') +
-            String(today.getDate()).padStart(2,'0');
-          var baseName = 'travi-여행비교-' + ds;
-
-          canvas.toBlob(function(blob) {
-            if (!blob) { showToast('⚠️ 이미지 생성 실패'); return; }
-
-            var blobUrl = URL.createObjectURL(blob);
-
-            // 모달 오버레이
-            var overlay = document.createElement('div');
-            overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;box-sizing:border-box;';
-
-            var img = document.createElement('img');
-            img.src = blobUrl;
-            img.style.cssText = 'max-width:min(900px,90vw);max-height:65vh;object-fit:contain;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,0.5);';
-
-            var hint = document.createElement('p');
-            hint.style.cssText = 'color:rgba(255,255,255,0.55);font-size:13px;margin:0;text-align:center;';
-            hint.textContent = 'PDF에는 링크가 포함돼요';
-
-            var btnWrap = document.createElement('div');
-            btnWrap.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;justify-content:center;';
-
-            // PNG 다운로드 버튼
-            var dlBtn = document.createElement('a');
-            dlBtn.href = blobUrl;
-            dlBtn.setAttribute('download', baseName + '.png');
-            dlBtn.textContent = 'PNG 저장';
-            dlBtn.style.cssText = 'background:rgba(255,255,255,0.15);color:#fff;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:600;text-decoration:none;font-family:inherit;cursor:pointer;';
-
-            // PDF 다운로드 버튼
-            var pdfBtn = document.createElement('button');
-            pdfBtn.textContent = 'PDF 저장 (링크 포함)';
-            pdfBtn.style.cssText = 'background:#0071e3;color:#fff;border:none;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;letter-spacing:-0.2px;';
-            pdfBtn.onclick = function() {
-              pdfBtn.textContent = '⏳ 생성 중...';
-              pdfBtn.style.opacity = '0.5';
-              pdfBtn.style.pointerEvents = 'none';
-              setTimeout(function() {
-                try {
-                  buildPdf(canvas, linkData, baseName + '.pdf', target);
-                  showToast('✅ PDF 저장됐어요!');
-                } catch(pe) {
-                  console.error('PDF error:', pe);
-                  showToast('⚠️ PDF 생성 실패');
+          return html2canvas(target, {
+            useCORS: false,
+            allowTaint: false,
+            scale: 1.5,
+            backgroundColor: '#ffffff',
+            logging: false,
+            onclone: function(doc) {
+              doc.querySelectorAll('img').forEach(function(img) {
+                var src = img.getAttribute('src') || '';
+                if (src && !src.startsWith('data:') && !src.startsWith('/')) {
+                  img.removeAttribute('src');
+                  img.style.display = 'none';
                 }
-                pdfBtn.textContent = 'PDF 저장 (링크 포함)';
-                pdfBtn.style.opacity = '';
-                pdfBtn.style.pointerEvents = '';
-              }, 100);
-            };
+              });
+              var cloneNav = doc.querySelector('#compare-view .nav');
+              if (cloneNav) cloneNav.style.display = 'none';
+              var cloneBanner = doc.getElementById('compare-top-banner');
+              if (cloneBanner) cloneBanner.style.display = 'none';
+            }
+          }).then(function(canvas) {
+            if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
 
-            // 우상단 X 닫기
-            var closeBtn = document.createElement('button');
-            closeBtn.innerHTML = '&times;';
-            closeBtn.style.cssText = 'position:absolute;top:18px;right:18px;background:rgba(255,255,255,0.15);color:#fff;border:none;width:36px;height:36px;border-radius:50%;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;padding:0;';
-            closeBtn.onclick = function() {
-              document.body.removeChild(overlay);
-              URL.revokeObjectURL(blobUrl);
-            };
+            var today = new Date();
+            var ds = today.getFullYear() + '' +
+              String(today.getMonth()+1).padStart(2,'0') +
+              String(today.getDate()).padStart(2,'0');
+            var baseName = 'travi-여행비교-' + ds;
 
-            btnWrap.appendChild(pdfBtn);
-            btnWrap.appendChild(dlBtn);
-            overlay.appendChild(closeBtn);
-            overlay.appendChild(img);
-            overlay.appendChild(hint);
-            overlay.appendChild(btnWrap);
-            overlay.onclick = function(e) { if (e.target === overlay) closeBtn.onclick(); };
-            document.body.appendChild(overlay);
+            canvas.toBlob(function(blob) {
+              if (!blob) { showToast('⚠️ 이미지 생성 실패'); return; }
 
-          }, 'image/png');
+              var blobUrl = URL.createObjectURL(blob);
 
+              // 모달 오버레이
+              var overlay = document.createElement('div');
+              overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;box-sizing:border-box;';
+
+              var img = document.createElement('img');
+              img.src = blobUrl;
+              img.style.cssText = 'max-width:min(900px,90vw);max-height:65vh;object-fit:contain;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,0.5);';
+
+              var hint = document.createElement('p');
+              hint.style.cssText = 'color:rgba(255,255,255,0.55);font-size:13px;margin:0;text-align:center;';
+              hint.textContent = 'PDF에는 링크가 포함돼요';
+
+              var btnWrap = document.createElement('div');
+              btnWrap.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;justify-content:center;';
+
+              // PNG 다운로드 버튼
+              var dlBtn = document.createElement('a');
+              dlBtn.href = blobUrl;
+              dlBtn.setAttribute('download', baseName + '.png');
+              dlBtn.textContent = 'PNG 저장';
+              dlBtn.style.cssText = 'background:rgba(255,255,255,0.15);color:#fff;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:600;text-decoration:none;font-family:inherit;cursor:pointer;';
+
+              // PDF 다운로드 버튼
+              var pdfBtn = document.createElement('button');
+              pdfBtn.textContent = 'PDF 저장 (링크 포함)';
+              pdfBtn.style.cssText = 'background:#0071e3;color:#fff;border:none;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;letter-spacing:-0.2px;';
+              pdfBtn.onclick = function() {
+                pdfBtn.textContent = '생성 중...';
+                pdfBtn.style.opacity = '0.5';
+                pdfBtn.style.pointerEvents = 'none';
+                setTimeout(function() {
+                  try {
+                    buildPdf(canvas, linkData, baseName + '.pdf', target);
+                    showToast('✅ PDF 저장됐어요!');
+                  } catch(pe) {
+                    console.error('PDF error:', pe);
+                    showToast('⚠️ PDF 생성 실패');
+                  }
+                  pdfBtn.textContent = 'PDF 저장 (링크 포함)';
+                  pdfBtn.style.opacity = '';
+                  pdfBtn.style.pointerEvents = '';
+                }, 100);
+              };
+
+              // 우상단 X 닫기
+              var closeBtn = document.createElement('button');
+              closeBtn.innerHTML = '&times;';
+              closeBtn.style.cssText = 'position:absolute;top:18px;right:18px;background:rgba(255,255,255,0.15);color:#fff;border:none;width:36px;height:36px;border-radius:50%;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;padding:0;';
+              closeBtn.onclick = function() {
+                document.body.removeChild(overlay);
+                URL.revokeObjectURL(blobUrl);
+              };
+
+              btnWrap.appendChild(pdfBtn);
+              btnWrap.appendChild(dlBtn);
+              overlay.appendChild(closeBtn);
+              overlay.appendChild(img);
+              overlay.appendChild(hint);
+              overlay.appendChild(btnWrap);
+              overlay.onclick = function(e) { if (e.target === overlay) closeBtn.onclick(); };
+              document.body.appendChild(overlay);
+
+            }, 'image/png');
+          });
         }).catch(function(e) {
           if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
-          console.error('html2canvas error:', e);
+          console.error('Save error:', e);
           showToast('⚠️ 저장 실패: ' + (e.message || '오류'));
         });
-        }); // Promise.all
       }
 
       // ── BUILD PDF WITH LINKS ──
