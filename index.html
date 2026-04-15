@@ -161,6 +161,13 @@
       transition: stroke 0.3s;
     }
 
+    /* ── PRINT ── */
+    @media print {
+      #share-overlay, #share-modal-overlay, #wiz-launcher, #wiz-panel,
+      #toast, .nav, .home-nav, #compare-top-banner, #cv-search-sheet { display: none !important; }
+      body { background: #fff !important; }
+    }
+
     /* ── SHARE SHEET ── */
     #share-overlay {
       position: fixed;
@@ -9936,7 +9943,7 @@
               // canvas 요소 제거 (taint 원인)
               doc.querySelectorAll('canvas').forEach(function(c) { c.remove(); });
               // 불필요한 요소 숨김
-              var hide = ['#compare-view .nav', '#compare-top-banner', '#cv-search-sheet', '#wiz-launcher', '#toast'];
+              var hide = ['#compare-view .nav', '#compare-top-banner', '#cv-search-sheet', '#wiz-launcher', '#toast', '#share-modal-overlay', '#share-overlay', '#wiz-panel'];
               hide.forEach(function(sel) {
                 var el = doc.querySelector(sel);
                 if (el) el.style.display = 'none';
@@ -10044,11 +10051,41 @@
         pdfBtn.style.cssText = 'background:#0071e3;color:#fff;border:none;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;letter-spacing:-0.2px;';
         pdfBtn.onclick = function() {
           pdfBtn.textContent = '생성 중...'; pdfBtn.style.opacity = '0.5'; pdfBtn.style.pointerEvents = 'none';
-          setTimeout(function() {
+
+          var reset = function() {
+            pdfBtn.textContent = 'PDF 저장 (링크 포함)';
+            pdfBtn.style.opacity = '';
+            pdfBtn.style.pointerEvents = '';
+          };
+
+          var tryBuild = function() {
             try { buildPdf(blob, canvas, linkData, baseName + '.pdf', target); }
-            catch(pe) { console.error('PDF error:', pe); showToast('PDF 생성 실패: ' + pe.message); }
-            pdfBtn.textContent = 'PDF 저장 (링크 포함)'; pdfBtn.style.opacity = ''; pdfBtn.style.pointerEvents = '';
-          }, 100);
+            catch(pe) {
+              console.error('PDF error:', pe);
+              showToast('PDF 생성 실패 — 인쇄 창으로 대신 저장할게요');
+              setTimeout(function() { window.print(); }, 400);
+            }
+            setTimeout(reset, 300);
+          };
+
+          // jsPDF가 이미 로드돼 있으면 바로 실행
+          if (window.jspdf && window.jspdf.jsPDF) {
+            setTimeout(tryBuild, 100);
+            return;
+          }
+
+          // 없으면 동적으로 CDN 로드
+          showToast('PDF 라이브러리 불러오는 중...');
+          var s = document.createElement('script');
+          s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js';
+          s.onload = function() { setTimeout(tryBuild, 100); };
+          s.onerror = function() {
+            // CDN 실패 → 인쇄 창으로 PDF 저장 안내
+            showToast('PDF 라이브러리 로드 실패 — 인쇄(Ctrl+P)로 PDF 저장하세요');
+            window.print();
+            reset();
+          };
+          document.head.appendChild(s);
         };
 
         var closeBtn = document.createElement('button');
@@ -10091,8 +10128,7 @@
             var pdfH = (cH / cW) * pdfW;
             var maxPageH = 297; // A4 세로 최대
 
-            if (pdfH <= maxPageH) {
-              // 한 페이지에 들어감
+            // 항상 1페이지 — 이미지 비율에 맞춘 커스텀 페이지 크기
               var pdf = new jsPDF({
                 orientation: pdfH > pdfW ? 'portrait' : 'landscape',
                 unit: 'mm',
@@ -10115,37 +10151,6 @@
               });
 
               pdf.save(fileName);
-            } else {
-              // 여러 페이지로 분할
-              var totalPages = Math.ceil(pdfH / maxPageH);
-              var pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
-              for (var p = 0; p < totalPages; p++) {
-                if (p > 0) pdf.addPage('a4', 'portrait');
-                var yOffset = -(p * maxPageH);
-                pdf.addImage(imgData, 'PNG', 0, yOffset, pdfW, pdfH);
-
-                // 해당 페이지 범위 링크만 추가
-                var xScale2 = pdfW / domW;
-                var yScale2 = pdfH / domH;
-                var pageTop = p * maxPageH;
-                var pageBottom = (p + 1) * maxPageH;
-                linkData.forEach(function(link) {
-                  var lx = link.x * xScale2;
-                  var ly = link.y * yScale2;
-                  var lw = link.w * xScale2;
-                  var lh = link.h * yScale2;
-                  if (ly + lh > pageTop && ly < pageBottom) {
-                    var adjY = ly - pageTop;
-                    if (adjY >= 0 && adjY + lh <= maxPageH && lx >= 0 && lx + lw <= pdfW) {
-                      try { pdf.link(lx, adjY, lw, lh, { url: link.url }); } catch(e) {}
-                    }
-                  }
-                });
-              }
-
-              pdf.save(fileName);
-            }
             showToast('PDF 저장됐어요');
           } catch(pdfErr) {
             console.error('PDF build error:', pdfErr);
@@ -14158,31 +14163,127 @@
   </div>
 
 
+<style>
+#share-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9999;
+  align-items: flex-end;
+  justify-content: center;
+}
+#share-modal-overlay.open {
+  display: flex;
+}
+#share-modal {
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-width: 480px;
+  padding: 0 0 env(safe-area-inset-bottom, 0);
+  box-shadow: 0 -4px 32px rgba(0,0,0,0.12);
+  animation: shareModalIn 0.28s cubic-bezier(.32,1.01,.5,1) both;
+}
+@keyframes shareModalIn {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.share-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 0;
+}
+.share-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+}
+.share-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #888;
+  font-size: 22px;
+  line-height: 1;
+}
+.share-modal-url-box {
+  margin: 14px 20px 0;
+  background: #f5f5f7;
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.share-modal-url-text {
+  flex: 1;
+  font-size: 13px;
+  color: #444;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.share-modal-copy-btn {
+  flex-shrink: 0;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.share-modal-copy-btn:hover { background: #333; }
+.share-modal-copy-btn.copied { background: #34c759; }
+
+</style>
+
+<!-- 공유 모달 -->
+<div id="share-modal-overlay" onclick="if(event.target===this)closeShareModal()">
+  <div id="share-modal">
+    <div class="share-modal-header">
+      <span class="share-modal-title">공유하기</span>
+      <button class="share-modal-close" onclick="closeShareModal()">×</button>
+    </div>
+    <div class="share-modal-url-box" style="margin-bottom:20px">
+      <span class="share-modal-url-text" id="share-modal-url-text"></span>
+      <button class="share-modal-copy-btn" id="share-modal-copy-btn" onclick="copyShareUrl()">복사</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function handleShare() {
   var url = location.href;
   try {
-    var idx = window._currentDestIdx;
-    if (idx) {
-      var valid = idx.filter(function(v){ return v >= 0; });
-      if (valid.length) url = location.origin + location.pathname + '?d=' + idx.join(',');
+    var base = location.origin + location.pathname;
+    var indices = [];
+    for (var i = 0; i < 3; i++) {
+      var sel = document.getElementById('sel' + i);
+      if (sel && sel.value !== '' && sel.value !== '-1') indices.push(sel.value);
     }
+    if (indices.length === 0 && window._currentDestIdx) {
+      indices = window._currentDestIdx.filter(function(v){ return v >= 0; });
+    }
+    if (indices.length > 0) url = base + '?d=' + indices.join(',');
   } catch(e) {}
 
-  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  if (isMobile && navigator.share) {
-    navigator.share({ title: 'odiga', url: url }).catch(function(){});
-    return;
-  }
-
+  // 복사
   var ta = document.createElement('textarea');
   ta.value = url;
-  ta.setAttribute('readonly', '');
+  ta.setAttribute('readonly','');
   ta.style.cssText = 'position:fixed;left:-9999px';
   document.body.appendChild(ta);
   ta.select();
-  document.execCommand('copy');
+  try { document.execCommand('copy'); } catch(e) {}
   document.body.removeChild(ta);
+
+  // 알림
   if (typeof showToast === 'function') {
     showToast('링크가 복사되었어요');
   } else {
