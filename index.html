@@ -9937,18 +9937,48 @@
             return;
           }
 
-          // comparison-body만 캡쳐 (전체 compare-view보다 훨씬 작음)
-          var captureTarget = document.getElementById('comparison-body') || target;
-          captureTarget.scrollTop = 0;
+          // 캡쳐용 임시 컨테이너: 검색 조건 + 비교 본문
+          var compBody = document.getElementById('comparison-body');
+          if (!compBody) { showToast('비교 결과가 없어요'); closeModal(); return; }
+
+          // 검색 조건 텍스트 수집
+          var regionText = (document.getElementById('region-display-c') || {}).textContent || '전체 지역';
+          var dateText = (document.getElementById('sb-date-display-c') || {}).textContent || '날짜 선택';
+          var budgetText = (document.getElementById('sb-budget-display-c') || {}).textContent || '상관없음';
+
+          // 임시 캡쳐 래퍼 생성
+          var captureWrap = document.createElement('div');
+          captureWrap.style.cssText = 'position:absolute;left:-9999px;top:0;width:' + compBody.offsetWidth + 'px;background:#fff;';
+          
+          // 검색 조건 헤더
+          var header = document.createElement('div');
+          header.style.cssText = 'display:flex;justify-content:center;padding:24px 16px 16px;';
+          header.innerHTML = '<div style="display:flex;background:#fff;border-radius:980px;box-shadow:0 2px 12px rgba(0,0,0,0.08),0 0 0 1px rgba(0,0,0,0.08);padding:12px 24px;gap:24px;font-family:inherit;">'
+            + '<div><div style="font-size:11px;color:#86868b;font-weight:600;">여행 지역</div><div style="font-size:14px;font-weight:500;color:#1d1d1f;">' + regionText + '</div></div>'
+            + '<div style="width:1px;background:#e5e5e5;"></div>'
+            + '<div><div style="font-size:11px;color:#86868b;font-weight:600;">날짜</div><div style="font-size:14px;font-weight:500;color:#1d1d1f;">' + dateText + '</div></div>'
+            + '<div style="width:1px;background:#e5e5e5;"></div>'
+            + '<div><div style="font-size:11px;color:#86868b;font-weight:600;">예산</div><div style="font-size:14px;font-weight:500;color:#1d1d1f;">' + budgetText + '</div></div>'
+            + '</div>';
+          captureWrap.appendChild(header);
+
+          // 비교 본문 복제
+          var bodyClone = compBody.cloneNode(true);
+          bodyClone.style.display = 'block';
+          captureWrap.appendChild(bodyClone);
+
+          document.body.appendChild(captureWrap);
+
           setTimeout(function() {
             var timedOut = false;
             var timer = setTimeout(function() {
               timedOut = true;
+              captureWrap.remove();
               showToast('캡쳐 시간 초과. PDF로 저장해보세요.');
               closeModal();
             }, 20000);
 
-            html2canvas(captureTarget, {
+            html2canvas(captureWrap, {
               useCORS: true,
               allowTaint: false,
               scale: 1,
@@ -9958,6 +9988,7 @@
               removeContainer: true
             }).then(function(canvas) {
               clearTimeout(timer);
+              captureWrap.remove();
               if (timedOut) return;
               canvas.toBlob(function(blob) {
                 if (!blob) { showToast('이미지 변환 실패'); closeModal(); return; }
@@ -9965,7 +9996,6 @@
                 var ds = today.getFullYear() + String(today.getMonth()+1).padStart(2,'0') + String(today.getDate()).padStart(2,'0');
                 var fileName = 'odiga-비교-' + ds + '.png';
 
-                // 모바일: Web Share API
                 var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
                 if (isMobile && navigator.share && navigator.canShare) {
                   var file = new File([blob], fileName, { type: 'image/png' });
@@ -9976,7 +10006,6 @@
                   }
                 }
 
-                // 데스크탑: 다운로드
                 var url = URL.createObjectURL(blob);
                 var a = document.createElement('a');
                 a.href = url;
@@ -9988,6 +10017,7 @@
               }, 'image/png');
             }).catch(function(e) {
               clearTimeout(timer);
+              captureWrap.remove();
               if (timedOut) return;
               console.error('Capture error:', e);
               showToast('캡쳐 실패: ' + e.message);
