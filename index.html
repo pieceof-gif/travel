@@ -10151,21 +10151,30 @@
         if (sheet)   sheet.classList.remove('open');
       }
 
+      // 현재 선택된 여행지가 포함된 공유 URL 생성
+      function getShareUrl() {
+        var base = location.origin + location.pathname;
+        if (!location.hostname) base = 'https://odiga.kr';
+        var idxArr = (typeof _currentDestIdx !== 'undefined') ? _currentDestIdx : [];
+        var validIdx = idxArr.filter(function(v) { return v >= 0; });
+        if (validIdx.length > 0) {
+          return base + '?d=' + idxArr.join(',');
+        }
+        return base;
+      }
+
       function shareKakao() {
         closeShareSheet();
-        var shareUrl = location.hostname ? location.href : 'https://odiga.kr';
-        var shareText = '여행지 비교는 odiga에서!\n항공권·호텔·현지 비용을 한눈에 확인하세요.\n👉 ' + shareUrl;
+        var shareUrl = getShareUrl();
+        var destNames = (window._lastTop3 || []).filter(Boolean).join(', ');
+        var shareText = (destNames ? destNames + ' 비교결과!\n' : '') + '여행지 비교는 odiga에서!\n항공권·호텔·현지 비용을 한눈에 확인하세요.\n👉 ' + shareUrl;
 
-        // 모바일: 카카오톡 공유 URL (채팅방 선택까지 바로 이동)
         var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         if (isMobile) {
-          // 카카오톡 딥링크: 텍스트+링크를 클립보드에 복사 후 카카오톡 열기
           navigator.clipboard.writeText(shareText).then(function() {
             showToast('메시지가 복사됐어요. 카카오톡에서 붙여넣기 하세요 💬');
-            // 카카오톡 열기
             location.href = 'kakaotalk://';
           }).catch(function() {
-            // 클립보드 실패 시 Web Share API
             if (navigator.share) {
               navigator.share({ title: 'odiga — 여행지 비교하기', text: shareText }).catch(function() {});
             } else {
@@ -10175,27 +10184,27 @@
           return;
         }
 
-        // 데스크탑: 링크 복사
         shareCopyLink();
-        showToast('링크를 복사했어요! 카카오톡에 붙여넣기 해주세요 🔗');
       }
 
       function shareCopyLink() {
         closeShareSheet();
-        navigator.clipboard.writeText(location.href).then(() => {
+        var shareUrl = getShareUrl();
+        navigator.clipboard.writeText(shareUrl).then(() => {
           showToast('🔗 링크가 복사되었어요');
         }).catch(() => {
-          showToast('링크: ' + location.href);
+          showToast('링크: ' + shareUrl);
         });
       }
 
       function shareMore() {
         closeShareSheet();
-        const url  = location.href;
-        const title = 'odiga — 여행지 비교하기';
+        var shareUrl = getShareUrl();
+        var destNames = (window._lastTop3 || []).filter(Boolean).join(', ');
+        const title = destNames ? destNames + ' — odiga 비교결과' : 'odiga — 여행지 비교하기';
         const text  = '여행지 비교는 odiga에서! 항공권·호텔·현지 비용을 한눈에 확인하세요.';
         if (navigator.share) {
-          navigator.share({ title, text, url }).catch(() => {});
+          navigator.share({ title, text, url: shareUrl }).catch(() => {});
         }
       }
 
@@ -10720,6 +10729,35 @@
       }
 
       refreshButtonStates();
+      // URL 파라미터 ?d=로 공유된 여행지 자동 표시
+      (function loadSharedDestinations() {
+        var params = new URLSearchParams(location.search);
+        var dParam = params.get('d');
+        if (!dParam) return;
+        var idxArr = dParam.split(',').map(function(v) { return parseInt(v, 10); });
+        if (idxArr.length === 0 || idxArr.some(isNaN)) return;
+
+        // 비교뷰 표시
+        var hv = document.getElementById('home-view');
+        var cv = document.getElementById('compare-view');
+        if (hv) hv.style.display = 'none';
+        if (cv) cv.style.display = 'block';
+
+        var budget = 150, days = 5;
+        for (var ci = 0; ci < Math.min(idxArr.length, 3); ci++) {
+          if (idxArr[ci] >= 0 && typeof v1_0_9_DEST_DATA !== 'undefined' && v1_0_9_DEST_DATA[idxArr[ci]]) {
+            try {
+              updateColumn(ci, idxArr[ci], budget, days);
+              // 드롭다운 동기화
+              var sel = document.getElementById('sel' + ci);
+              var selF = document.getElementById('sel' + ci + '-fixed');
+              if (sel) sel.value = String(idxArr[ci]);
+              if (selF) selF.value = String(idxArr[ci]);
+            } catch(e) { console.error('[Share] updateColumn error col=' + ci, e); }
+          }
+        }
+      })();
+
       // Do NOT call updateResultsByFilters() on page load — only run it after user clicks Search
 
       // ── 지역 필터 & 국가 다양성 데이터 ──
