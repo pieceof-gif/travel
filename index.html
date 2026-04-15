@@ -9434,7 +9434,10 @@
           console.warn('[narrative 누락] 다음 여행지에 전용 설명이 없습니다:', missingNarr.join(', '), '\n→ narratives 객체에 추가해주세요.');
         }
 
-        const randomIdx = Math.floor(Math.random() * 3);
+        // 결정적 설명 선택: 목적지 ID 해시 기반 (공유 시 동일 결과)
+        var _narrativeHash = 0;
+        for (var _ni = 0; _ni < d.id.length; _ni++) _narrativeHash += d.id.charCodeAt(_ni);
+        const randomIdx = _narrativeHash % 3;
         let rawNarrative;
         if (narratives[d.id]) {
           rawNarrative = narratives[d.id][randomIdx];
@@ -10607,6 +10610,79 @@
             }
           }
           if (typeof syncAllDestDdLabels === 'function') syncAllDestDdLabels();
+
+          // 실시간 가격 오버라이드 (TP Worker 데이터 적용)
+          var _isVipShare = budget >= 300 && budget < 9000;
+          setTimeout(function() {
+            for (var ci = 0; ci < Math.min(idxArr.length, 3); ci++) {
+              var dest = v1_0_9_DEST_DATA[idxArr[ci]];
+              if (!dest) continue;
+              // 항공 오버라이드
+              var _ap = _isVipShare ? (dest._vipAirfare || dest.airfare) : dest.airfare;
+              var _as = _isVipShare ? '실시간 비즈니스 (왕복)' : '실시간 최저가 (왕복)';
+              var _ak = _isVipShare ? '비즈니스 · 인천 출발' : '이코노미 · 인천 출발';
+              if (dest._tpLink && _ap) {
+                var airEl = document.getElementById('air-' + ci);
+                if (airEl) {
+                  var am = airEl.querySelector('.main'); if (am) am.textContent = _ap;
+                  var as2 = airEl.querySelector('.sub'); if (as2) as2.textContent = _as;
+                  var ak2 = airEl.querySelector('.kicker'); if (ak2) ak2.textContent = _ak;
+                }
+              }
+              // 숙박 오버라이드
+              var _hp = _isVipShare ? (dest._vipHotelPrice || dest._hotelPrice) : dest._hotelPrice;
+              var _hl = _isVipShare ? (dest._vipHotelLink || dest._hotelLink) : dest._hotelLink;
+              var _hs = _isVipShare ? '실시간 프리미엄 (1박)' : '실시간 최저가 (1박)';
+              if (_hp && _hl) {
+                var htlEl = document.getElementById('hotel-' + ci);
+                if (htlEl) {
+                  var hm = htlEl.querySelector('.main'); if (hm) hm.textContent = _hp;
+                  var hs2 = htlEl.querySelector('.sub'); if (hs2) hs2.textContent = _hs;
+                }
+              }
+            }
+            // 뱃지 재계산
+            var visibleCols = [0,1,2].filter(function(i) {
+              var c = document.getElementById('col-' + i);
+              return c && c.style.display !== 'none';
+            });
+            // 추천 뱃지: score 기반
+            var scores = visibleCols.map(function(i) {
+              var el = document.getElementById('dscore' + i);
+              return el ? (parseInt(el.textContent) || 0) : 0;
+            });
+            var maxSc = Math.max.apply(null, scores);
+            for (var i = 0; i < 3; i++) {
+              var bb = document.getElementById('best-badge-' + i);
+              if (bb) bb.classList.remove('visible');
+            }
+            for (var k = 0; k < visibleCols.length; k++) {
+              if (scores[k] === maxSc) {
+                var bb2 = document.getElementById('best-badge-' + visibleCols[k]);
+                if (bb2) bb2.classList.add('visible');
+                break;
+              }
+            }
+            // 최저가 뱃지: total cost 기반
+            var costs = visibleCols.map(function(i) {
+              var te = document.getElementById('total-' + i);
+              var me = te ? te.querySelector('.main') : null;
+              var rt = me ? me.textContent.replace(/[^0-9]/g, '') : '';
+              return rt ? parseInt(rt) : 9999999;
+            });
+            var minC = Math.min.apply(null, costs);
+            for (var i2 = 0; i2 < 3; i2++) {
+              var lb = document.getElementById('low-badge-' + i2);
+              if (lb) lb.classList.remove('visible');
+            }
+            for (var k2 = 0; k2 < visibleCols.length; k2++) {
+              if (costs[k2] === minC) {
+                var lb2 = document.getElementById('low-badge-' + visibleCols[k2]);
+                if (lb2) lb2.classList.add('visible');
+                break;
+              }
+            }
+          }, 300);
         }, 500);
       })();
 
