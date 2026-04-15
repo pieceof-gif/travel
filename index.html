@@ -10154,44 +10154,28 @@
       function shareKakao() {
         closeShareSheet();
         var shareUrl = location.hostname ? location.href : 'https://odiga.kr';
-        var shareTitle = 'odiga — 여행지 비교하기';
-        var shareDesc = '항공권·호텔·현지 비용을 한눈에 비교하세요 ✈️';
+        var shareText = '여행지 비교는 odiga에서!\n항공권·호텔·현지 비용을 한눈에 확인하세요.\n👉 ' + shareUrl;
 
-        // 1순위: 카카오 SDK (앱 키 등록 시)
-        if (typeof Kakao !== 'undefined' && window.KAKAO_JS_KEY) {
-          if (!Kakao.isInitialized()) {
-            try { Kakao.init(window.KAKAO_JS_KEY); } catch(e) {}
-          }
-          if (Kakao.isInitialized()) {
-            try {
-              Kakao.Share.sendDefault({
-                objectType: 'feed',
-                content: {
-                  title: shareTitle,
-                  description: shareDesc,
-                  imageUrl: 'https://odiga.kr/og-image.png',
-                  link: { mobileWebUrl: shareUrl, webUrl: shareUrl }
-                },
-                buttons: [{ title: '비교하러 가기', link: { mobileWebUrl: shareUrl, webUrl: shareUrl } }]
-              });
-              return;
-            } catch (e) {
-              console.warn('Kakao share failed:', e);
+        // 모바일: 카카오톡 공유 URL (채팅방 선택까지 바로 이동)
+        var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+          // 카카오톡 딥링크: 텍스트+링크를 클립보드에 복사 후 카카오톡 열기
+          navigator.clipboard.writeText(shareText).then(function() {
+            showToast('메시지가 복사됐어요. 카카오톡에서 붙여넣기 하세요 💬');
+            // 카카오톡 열기
+            location.href = 'kakaotalk://';
+          }).catch(function() {
+            // 클립보드 실패 시 Web Share API
+            if (navigator.share) {
+              navigator.share({ title: 'odiga — 여행지 비교하기', text: shareText }).catch(function() {});
+            } else {
+              shareCopyLink();
             }
-          }
-        }
-
-        // 2순위: 모바일 Web Share API (카카오톡 포함 공유 메뉴 표시)
-        if (navigator.share) {
-          navigator.share({
-            title: shareTitle,
-            text: shareDesc,
-            url: shareUrl
-          }).catch(function() {});
+          });
           return;
         }
 
-        // 3순위: 링크 복사
+        // 데스크탑: 링크 복사
         shareCopyLink();
         showToast('링크를 복사했어요! 카카오톡에 붙여넣기 해주세요 🔗');
       }
