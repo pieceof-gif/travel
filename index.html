@@ -24,8 +24,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
-  <!-- Kakao JS SDK -->
-  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js" integrity="sha384-DKYJZ8NLiK8MN4/C5P2vvhJBDi4FDGL1uf/KMiVJGni4OAoJMKSKz2Pi5SVmyVQ" crossorigin="anonymous"></script>
+
   <style>
     *,
     *::before,
@@ -244,9 +243,7 @@
       font-weight: 500;
       color: #3a3a3c;
     }
-    .share-opt-icon.kakao {
-      background: #FEE500;
-    }
+
     .share-opt-icon.copy {
       background: #f2f2f7;
     }
@@ -10178,14 +10175,7 @@
             <div class="share-sheet-handle"></div>
             <div class="share-sheet-title">공유하기</div>
             <div class="share-options">
-              <button class="share-opt" onclick="shareKakao()">
-                <div class="share-opt-icon kakao">
-                  <svg width="28" height="26" viewBox="0 0 28 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14 0C6.268 0 0 4.925 0 11c0 3.999 2.576 7.514 6.468 9.588L4.8 26l6.304-4.18C11.677 21.94 12.826 22 14 22c7.732 0 14-4.925 14-11S21.732 0 14 0z" fill="#3B1E1E"/>
-                  </svg>
-                </div>
-                <span class="share-opt-label">카카오톡</span>
-              </button>
+
               <button class="share-opt" onclick="shareCopyLink()">
                 <div class="share-opt-icon copy">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -10241,29 +10231,7 @@
         return base;
       }
 
-      function shareKakao() {
-        closeShareSheet();
-        var shareUrl = getShareUrl();
-        var destNames = (window._lastTop3 || []).filter(Boolean).join(', ');
-        var shareText = (destNames ? destNames + ' 비교결과!\n' : '') + '여행지 비교는 odiga에서!\n항공권·호텔·현지 비용을 한눈에 확인하세요.\n👉 ' + shareUrl;
 
-        var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        if (isMobile) {
-          navigator.clipboard.writeText(shareText).then(function() {
-            showToast('메시지가 복사됐어요. 카카오톡에서 붙여넣기 하세요 💬');
-            location.href = 'kakaotalk://';
-          }).catch(function() {
-            if (navigator.share) {
-              navigator.share({ title: 'odiga — 여행지 비교하기', text: shareText }).catch(function() {});
-            } else {
-              shareCopyLink();
-            }
-          });
-          return;
-        }
-
-        shareCopyLink();
-      }
 
       function shareCopyLink() {
         closeShareSheet();
