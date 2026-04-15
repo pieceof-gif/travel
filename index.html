@@ -10658,6 +10658,7 @@
           var snapParam = params.get('snap');
           var badgesParam = params.get('badges');
           if (snapParam) {
+            window._sharedSnapApplied = true;
             var colSnaps = decodeURIComponent(snapParam).split('~');
             for (var si = 0; si < Math.min(colSnaps.length, 3); si++) {
               var parts = colSnaps[si].split('|');
@@ -12768,6 +12769,8 @@
               dest._hotelLink = entry.bookingLink ||
                 _makeBookingComLink(dest.id);
             });
+            // 공유 스냅샷 적용 상태에선 덮어쓰지 않음
+            if (window._sharedSnapApplied) return;
             // 비교화면이 이미 열려있으면 즉시 업데이트
             if (document.getElementById('compare-view') &&
                 document.getElementById('compare-view').style.display === 'block') {
@@ -12946,7 +12949,9 @@
                 });
               }
             });
-            // 현재 보이는 카드 업데이트
+            // 공유 스냅샷이 적용된 상태에선 TP Worker가 DOM을 덮어쓰지 않음
+            // (변경 감지는 별도 setInterval에서 알림으로 처리)
+            if (window._sharedSnapApplied) return;
             if (document.getElementById('compare-view') &&
                 document.getElementById('compare-view').style.display === 'block') {
               for (var i = 0; i < 3; i++) {
