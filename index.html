@@ -10458,8 +10458,19 @@
         var params = new URLSearchParams(location.search);
         var dParam = params.get('d');
         if (!dParam) return;
-        var idxArr = dParam.split(',').map(function(v) { return parseInt(v, 10); });
-        if (idxArr.length === 0 || idxArr.some(isNaN)) return;
+
+        // ID 문자열 또는 숫자 인덱스 모두 지원
+        var keys = dParam.split(',');
+        var idxArr = keys.map(function(k) {
+          // 숫자면 기존 인덱스 방식
+          if (/^\d+$/.test(k)) return parseInt(k, 10);
+          // 문자열이면 ID로 검색
+          for (var i = 0; i < v1_0_9_DEST_DATA.length; i++) {
+            if (v1_0_9_DEST_DATA[i].id === k) return i;
+          }
+          return -1;
+        }).filter(function(v) { return v >= 0; });
+        if (idxArr.length === 0) return;
 
         // 비교뷰 표시
         var hv = document.getElementById('home-view');
@@ -14030,15 +14041,13 @@ function handleShare() {
   var base = location.origin + location.pathname;
   var indices = [];
 
-  // 1순위: _currentDestIdx (가장 신뢰)
-  if (window._currentDestIdx) {
-    indices = window._currentDestIdx.filter(function(v){ return v >= 0; });
-  }
-  // 2순위: 드롭다운 셀렉트
-  if (indices.length === 0) {
-    for (var i = 0; i < 3; i++) {
-      var sel = document.getElementById('sel' + i);
-      if (sel && sel.value !== '' && sel.value !== '-1') indices.push(parseInt(sel.value, 10));
+  // _currentDestIdx → 목적지 ID로 변환
+  if (window._currentDestIdx && typeof v1_0_9_DEST_DATA !== 'undefined') {
+    for (var i = 0; i < window._currentDestIdx.length; i++) {
+      var idx = window._currentDestIdx[i];
+      if (idx >= 0 && v1_0_9_DEST_DATA[idx] && v1_0_9_DEST_DATA[idx].id) {
+        indices.push(v1_0_9_DEST_DATA[idx].id);
+      }
     }
   }
 
