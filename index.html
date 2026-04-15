@@ -167,12 +167,14 @@
       #toast, .nav, .home-nav, #compare-top-banner, #cv-search-sheet,
       #compare-view > .nav, .compare-nav, footer,
       .home-overlay, .wiz-launcher-badge,
-      .nav-share-btn, .nav-save-btn { display: none !important; }
+      .nav-share-btn, .nav-save-btn,
+      .sb-panel, .sticky-sel, .dest-dd-menu,
+      .dest-select, #no-results-cnt { display: none !important; }
 
-      @page { size: A4 portrait; margin: 6mm; }
+      @page { size: A4 landscape; margin: 6mm; }
 
       html {
-        zoom: 0.7 !important;
+        zoom: 0.55 !important;
       }
 
       body {
@@ -187,6 +189,25 @@
         overflow: visible !important;
         background: #fff !important;
       }
+
+      #comparison-body { display: block !important; }
+
+      /* 검색바 표시 */
+      #compare-sb-wrap {
+        display: flex !important;
+        margin: 20px auto 24px !important;
+      }
+      .sb-btn { display: none !important; }
+
+      /* 3열 그리드 강제 */
+      .dest-images, .grp, .info-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr 1fr !important;
+        gap: 16px !important;
+      }
+
+      /* 페이지 나뉨 방지 */
+      .sec-hd, .grp, .dest-images { break-inside: avoid; }
     }
 
     /* ── SHARE SHEET ── */
