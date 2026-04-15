@@ -9937,26 +9937,25 @@
             return;
           }
 
-          target.scrollTop = 0;
+          // comparison-body만 캡쳐 (전체 compare-view보다 훨씬 작음)
+          var captureTarget = document.getElementById('comparison-body') || target;
+          captureTarget.scrollTop = 0;
           setTimeout(function() {
             var timedOut = false;
             var timer = setTimeout(function() {
               timedOut = true;
               showToast('캡쳐 시간 초과. PDF로 저장해보세요.');
               closeModal();
-            }, 30000);
+            }, 20000);
 
-            html2canvas(target, {
+            html2canvas(captureTarget, {
               useCORS: true,
               allowTaint: false,
-              scale: 2,
+              scale: 1,
               backgroundColor: '#ffffff',
               logging: false,
-              imageTimeout: 0,
-              removeContainer: true,
-              onclone: function(doc) {
-                doc.querySelectorAll('#save-modal-overlay, #toast, #wiz-panel, #wiz-launcher, footer, .footer').forEach(function(el) { if(el) el.remove(); });
-              }
+              imageTimeout: 3000,
+              removeContainer: true
             }).then(function(canvas) {
               clearTimeout(timer);
               if (timedOut) return;
@@ -9994,7 +9993,7 @@
               showToast('캡쳐 실패: ' + e.message);
               closeModal();
             });
-          }, 500);
+          }, 300);
         };
 
         // PDF 저장 버튼
