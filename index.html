@@ -166,27 +166,40 @@
       /* 불필요한 요소 전부 숨김 */
       #home-view, #share-overlay, #share-modal-overlay, #wiz-launcher, #wiz-panel,
       #toast, .nav, .home-nav, #compare-top-banner, #cv-search-sheet,
-      #compare-view > .nav, .compare-nav, footer, #nav-save-btn, #nav-share-btn,
-      .home-overlay, .wiz-launcher-badge { display: none !important; visibility: hidden !important; }
+      #compare-view > .nav, .compare-nav, footer,
+      .home-overlay, .wiz-launcher-badge,
+      .nav-share-btn, .nav-save-btn { display: none !important; visibility: hidden !important; }
 
-      @page { size: A4 portrait; margin: 8mm; }
+      @page { size: A4 portrait; margin: 10mm; }
 
       html, body {
         background: #fff !important;
         margin: 0 !important;
         padding: 0 !important;
-        height: 280mm !important;
-        overflow: hidden !important;
+        width: 100% !important;
+        height: auto !important;
       }
 
       #compare-view {
         display: block !important;
-        position: absolute !important;
-        top: 0; left: 0;
-        width: 100vw !important;
-        overflow: hidden !important;
-        max-height: 280mm !important;
-        zoom: 0.5 !important;
+        position: static !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        margin: 0 auto !important;
+        padding: 16px !important;
+        box-sizing: border-box !important;
+        background: #fff !important;
+      }
+
+      /* 비교 컬럼을 페이지 너비에 맞춤 */
+      #compare-view .compare-body,
+      #compare-view .compare-columns {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
       }
     }
 
@@ -9910,6 +9923,9 @@
           showToast('비교 화면이 표시되지 않았어요');
           return;
         }
+        // 인쇄 전 맨 위로 스크롤
+        target.scrollTop = 0;
+        window.scrollTo(0, 0);
         window.print();
       }
       // ── DESTINATION DROPDOWN SHARED CONSTANTS ──
