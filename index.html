@@ -10172,12 +10172,37 @@
           return;
         }
 
-        // 데스크탑: 바로 링크 복사
-        navigator.clipboard.writeText(shareUrl).then(function() {
+        // 데스크탑: 링크 복사
+        copyToClipboard(shareUrl);
+      }
+
+      function copyToClipboard(text) {
+        // 1차: Clipboard API
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function() {
+            showToast('링크가 복사되었어요');
+          }).catch(function() {
+            fallbackCopy(text);
+          });
+          return;
+        }
+        // 2차: fallback
+        fallbackCopy(text);
+      }
+
+      function fallbackCopy(text) {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
           showToast('링크가 복사되었어요');
-        }).catch(function() {
-          showToast('링크: ' + shareUrl);
-        });
+        } catch(e) {
+          prompt('링크를 직접 복사해주세요:', text);
+        }
       }
 
       // 현재 선택된 여행지가 포함된 공유 URL 생성
