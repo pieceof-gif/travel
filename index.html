@@ -166,25 +166,27 @@
       /* 불필요한 요소 전부 숨김 */
       #home-view, #share-overlay, #share-modal-overlay, #wiz-launcher, #wiz-panel,
       #toast, .nav, .home-nav, #compare-top-banner, #cv-search-sheet,
-      #compare-view > .nav, .compare-nav, footer, #nav-save-btn, #nav-share-btn { display: none !important; }
+      #compare-view > .nav, .compare-nav, footer, #nav-save-btn, #nav-share-btn,
+      .home-overlay, .wiz-launcher-badge { display: none !important; visibility: hidden !important; }
 
-      /* 페이지 설정 */
-      @page { size: A4 portrait; margin: 10mm; }
+      @page { size: A4 portrait; margin: 8mm; }
 
-      /* body 초기화 */
-      body { background: #fff !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
+      html, body {
+        background: #fff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 280mm !important;
+        overflow: hidden !important;
+      }
 
-      /* compare-view를 1페이지에 맞춤 */
       #compare-view {
         display: block !important;
-        position: static !important;
-        overflow: visible !important;
-        height: auto !important;
-        max-height: none !important;
-        width: 100% !important;
-        transform: scale(0.65);
-        transform-origin: top left;
-        page-break-inside: avoid;
+        position: absolute !important;
+        top: 0; left: 0;
+        width: 100vw !important;
+        overflow: hidden !important;
+        max-height: 280mm !important;
+        zoom: 0.5 !important;
       }
     }
 
