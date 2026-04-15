@@ -9939,25 +9939,41 @@
 
           target.scrollTop = 0;
           setTimeout(function() {
+            // 타임아웃 설정 (15초)
+            var timedOut = false;
+            var timer = setTimeout(function() {
+              timedOut = true;
+              showToast('캡쳐 시간이 초과됐어요. PDF로 저장해보세요.');
+              closeModal();
+            }, 15000);
+
             html2canvas(target, {
               useCORS: false,
               allowTaint: false,
               scale: 1,
               backgroundColor: '#ffffff',
               logging: false,
-              imageTimeout: 5000,
+              imageTimeout: 3000,
               removeContainer: true,
+              height: Math.min(target.scrollHeight, 4000),
               onclone: function(doc) {
-                doc.querySelectorAll('img').forEach(function(img) {
-                  img.removeAttribute('src');
-                  img.removeAttribute('srcset');
-                  img.style.visibility = 'hidden';
+                // 모든 이미지 제거
+                doc.querySelectorAll('img').forEach(function(img) { img.remove(); });
+                // 모든 background-image 제거
+                doc.querySelectorAll('*').forEach(function(el) {
+                  try {
+                    el.style.backgroundImage = 'none';
+                  } catch(e) {}
                 });
-                doc.querySelectorAll('canvas').forEach(function(c) { c.remove(); });
+                // canvas, iframe, video 제거
+                doc.querySelectorAll('canvas, iframe, video, svg').forEach(function(el) { el.remove(); });
+                // UI 요소 숨김
                 var hide = ['.nav', '#compare-top-banner', '#cv-search-sheet', '#wiz-launcher', '#toast', '#save-modal-overlay', '#wiz-panel'];
                 hide.forEach(function(sel) { var el = doc.querySelector(sel); if (el) el.style.display = 'none'; });
               }
             }).then(function(canvas) {
+              clearTimeout(timer);
+              if (timedOut) return;
               canvas.toBlob(function(blob) {
                 if (!blob) { showToast('이미지 변환 실패'); closeModal(); return; }
                 var today = new Date();
@@ -9986,6 +10002,8 @@
                 closeModal();
               }, 'image/png');
             }).catch(function(e) {
+              clearTimeout(timer);
+              if (timedOut) return;
               console.error('Capture error:', e);
               showToast('캡쳐 실패: ' + e.message);
               closeModal();
