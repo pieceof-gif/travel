@@ -10158,65 +10158,25 @@
         reader.readAsDataURL(blob);
       }
 
-      // ── SHARE SHEET ──
+      // ── SHARE ──
       function handleShare() {
-        let overlay = document.getElementById('share-overlay');
-        let sheet   = document.getElementById('share-sheet');
-        if (!overlay) {
-          // 오버레이
-          overlay = document.createElement('div');
-          overlay.id = 'share-overlay';
-          overlay.onclick = closeShareSheet;
-          document.body.appendChild(overlay);
-          // 시트
-          sheet = document.createElement('div');
-          sheet.id = 'share-sheet';
-          sheet.innerHTML = `
-            <div class="share-sheet-handle"></div>
-            <div class="share-sheet-title">공유하기</div>
-            <div class="share-options">
+        var shareUrl = getShareUrl();
+        var destNames = (window._lastTop3 || []).filter(Boolean).join(', ');
+        var title = destNames ? destNames + ' — odiga 비교결과' : 'odiga — 여행지 비교하기';
+        var text = '여행지 비교는 odiga에서! 항공권·호텔·현지 비용을 한눈에 확인하세요.';
 
-              <button class="share-opt" onclick="shareCopyLink()">
-                <div class="share-opt-icon copy">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="#1d1d1f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="#1d1d1f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-                <span class="share-opt-label">링크 복사</span>
-              </button>
-              <button class="share-opt" id="share-more-btn" onclick="shareMore()">
-                <div class="share-opt-icon more">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="5" r="1.5" fill="#1d1d1f"/>
-                    <circle cx="12" cy="12" r="1.5" fill="#1d1d1f"/>
-                    <circle cx="12" cy="19" r="1.5" fill="#1d1d1f"/>
-                  </svg>
-                </div>
-                <span class="share-opt-label">더보기</span>
-              </button>
-            </div>
-            <hr class="share-divider">
-            <button class="share-cancel" onclick="closeShareSheet()">취소</button>
-          `;
-          document.body.appendChild(sheet);
-          // '더보기' 없으면 숨김
-          if (!navigator.share) {
-            const moreBtn = sheet.querySelector('#share-more-btn');
-            if (moreBtn) moreBtn.style.display = 'none';
-          }
+        // 모바일: Web Share API 지원 시 네이티브 공유
+        if (navigator.share) {
+          navigator.share({ title: title, text: text, url: shareUrl }).catch(function() {});
+          return;
         }
-        requestAnimationFrame(() => {
-          overlay.classList.add('open');
-          sheet.classList.add('open');
-        });
-      }
 
-      function closeShareSheet() {
-        const overlay = document.getElementById('share-overlay');
-        const sheet   = document.getElementById('share-sheet');
-        if (overlay) overlay.classList.remove('open');
-        if (sheet)   sheet.classList.remove('open');
+        // 데스크탑: 바로 링크 복사
+        navigator.clipboard.writeText(shareUrl).then(function() {
+          showToast('🔗 링크가 복사되었어요');
+        }).catch(function() {
+          showToast('링크: ' + shareUrl);
+        });
       }
 
       // 현재 선택된 여행지가 포함된 공유 URL 생성
@@ -10229,29 +10189,6 @@
           return base + '?d=' + idxArr.join(',');
         }
         return base;
-      }
-
-
-
-      function shareCopyLink() {
-        closeShareSheet();
-        var shareUrl = getShareUrl();
-        navigator.clipboard.writeText(shareUrl).then(() => {
-          showToast('🔗 링크가 복사되었어요');
-        }).catch(() => {
-          showToast('링크: ' + shareUrl);
-        });
-      }
-
-      function shareMore() {
-        closeShareSheet();
-        var shareUrl = getShareUrl();
-        var destNames = (window._lastTop3 || []).filter(Boolean).join(', ');
-        const title = destNames ? destNames + ' — odiga 비교결과' : 'odiga — 여행지 비교하기';
-        const text  = '여행지 비교는 odiga에서! 항공권·호텔·현지 비용을 한눈에 확인하세요.';
-        if (navigator.share) {
-          navigator.share({ title, text, url: shareUrl }).catch(() => {});
-        }
       }
 
       // ── DESTINATION DROPDOWN SHARED CONSTANTS ──
