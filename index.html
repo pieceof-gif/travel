@@ -9947,22 +9947,16 @@
             }, 30000);
 
             html2canvas(target, {
-              useCORS: false,
+              useCORS: true,
               allowTaint: false,
-              scale: 1,
+              scale: 2,
               backgroundColor: '#ffffff',
               logging: false,
-              imageTimeout: 0,
+              imageTimeout: 5000,
               removeContainer: true,
               onclone: function(doc) {
-                var pixel = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-                doc.querySelectorAll('img').forEach(function(img) {
-                  img.removeAttribute('srcset');
-                  img.setAttribute('src', pixel);
-                  img.style.opacity = '0';
-                });
-                doc.querySelectorAll('canvas, iframe, video').forEach(function(el) { el.remove(); });
-                doc.querySelectorAll('.nav, #compare-top-banner, #cv-search-sheet, #wiz-launcher, #toast, #save-modal-overlay, #wiz-panel, footer, .footer, #footer, .home-search, .search-bar, #home-view').forEach(function(el) { if(el) el.remove(); });
+                // 모달/토스트만 제거 (나머지는 그대로)
+                doc.querySelectorAll('#save-modal-overlay, #toast, #wiz-panel, footer, .footer').forEach(function(el) { if(el) el.remove(); });
               }
             }).then(function(canvas) {
               clearTimeout(timer);
