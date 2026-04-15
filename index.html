@@ -129,8 +129,8 @@
     }
 
     /* ── SAVE BUTTON FILL ANIMATION ── */
-    /* 모바일에서 저장(인쇄) 버튼 숨김 — URL 공유로 대체 */
-    @media (max-width: 1068px) {
+    /* 모바일에서만 저장(인쇄) 버튼 숨김 — URL 공유로 대체 */
+    @media screen and (max-width: 743px) {
       #nav-save-btn { display: none !important; }
     }
 
@@ -9922,13 +9922,12 @@
       // ── SAVE (PRINT/PDF) ──
       function handleSaveImage() {
         var target = document.getElementById('compare-view');
-        if (!target || target.style.display === 'none') {
+        if (!target || getComputedStyle(target).display === 'none') {
           showToast('비교 화면이 표시되지 않았어요');
           return;
         }
-        target.scrollTop = 0;
         window.scrollTo(0, 0);
-        setTimeout(function() { window.print(); }, 200);
+        window.print();
       }
       // ── DESTINATION DROPDOWN SHARED CONSTANTS ──
       const DEST_COUNTRY_KR = {
