@@ -9955,8 +9955,14 @@
               imageTimeout: 0,
               removeContainer: true,
               onclone: function(doc) {
-                doc.querySelectorAll('img, canvas, iframe, video').forEach(function(el) { el.remove(); });
-                doc.querySelectorAll('.nav, #compare-top-banner, #cv-search-sheet, #wiz-launcher, #toast, #save-modal-overlay, #wiz-panel, footer, .footer, #footer').forEach(function(el) { if(el) el.remove(); });
+                var pixel = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                doc.querySelectorAll('img').forEach(function(img) {
+                  img.removeAttribute('srcset');
+                  img.setAttribute('src', pixel);
+                  img.style.opacity = '0';
+                });
+                doc.querySelectorAll('canvas, iframe, video').forEach(function(el) { el.remove(); });
+                doc.querySelectorAll('.nav, #compare-top-banner, #cv-search-sheet, #wiz-launcher, #toast, #save-modal-overlay, #wiz-panel, footer, .footer, #footer, .home-search, .search-bar, #home-view').forEach(function(el) { if(el) el.remove(); });
               }
             }).then(function(canvas) {
               clearTimeout(timer);
