@@ -9926,11 +9926,7 @@
 
       // ── SAVE (PRINT/PDF) ──
       function handleSaveImage() {
-        var target = document.getElementById('compare-view');
-        if (!target || getComputedStyle(target).display === 'none') {
-          showToast('비교 화면이 표시되지 않았어요');
-          return;
-        }
+        console.log('[SAVE] handleSaveImage called');
         window.scrollTo(0, 0);
         window.print();
       }
