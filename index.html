@@ -9484,14 +9484,55 @@
         const dpriceEl = document.getElementById('dprice' + col);
         if (dpriceEl) dpriceEl.textContent = grandTotal + '만원~';
 
-        // 4. TOTAL COST ROW
-        setCell('total-' + col, grandTotal + '만원~', '총 예상 비용 (항공+숙박+현지)', `${days}일 기준`);
-
-        // 5. DETAIL CARDS
-        // Fix: pass correct (main, static-sub, dynamic-kicker) to setCell
+        // 4. REAL-TIME DATA PRIORITY — 실시간 데이터가 있으면 우선 사용
+        // 항공: 실시간 API → 하드코딩 fallback
+        let _liveAirPrice = null, _liveAirLabel = '', _liveAirKicker = '', _liveAirSub = '';
+        if (isVIP && d._vipAirfare) {
+          _liveAirPrice = d._vipAirfare;
+          _liveAirKicker = '비즈니스 · 인천 출발';
+          _liveAirSub = '실시간 비즈니스 (왕복)';
+        } else if (d.airfare && d._tpLink) {
+          _liveAirPrice = d.airfare;
+          _liveAirKicker = '이코노미 · 인천 출발';
+          _liveAirSub = '실시간 최저가 (왕복)';
+        }
+        const _displayAirPrice = _liveAirPrice || (airPrice + '만원');
+        const _displayAirSub = _liveAirPrice ? _liveAirSub : '왕복 항공권';
         const mainAirline = d.cheapFlights && d.cheapFlights[0] ? d.cheapFlights[0].label.split('(')[0].trim() : '';
-        setCell('air-' + col, airPrice + '만원', '왕복 항공권', mainAirline ? mainAirline + ' · ' + airType : airType);
-        setCell('hotel-' + col, hotelPrice + '만원', `${hotelType} (${days - 1}박)`, `1박 평균 ${hotelPerNight}만원`);
+        const _displayAirKicker = _liveAirPrice ? _liveAirKicker : (mainAirline ? mainAirline + ' · ' + airType : airType);
+
+        // 숙박: 실시간 API → 하드코딩 fallback
+        let _liveHotelPrice = null, _liveHotelKicker = '', _liveHotelSub = '';
+        if (isVIP && d._vipHotelPrice) {
+          _liveHotelPrice = d._vipHotelPrice;
+          _liveHotelKicker = '프리미엄 숙소';
+          _liveHotelSub = '실시간 프리미엄 (1박)';
+        } else if (d._hotelPrice) {
+          _liveHotelPrice = d._hotelPrice;
+          _liveHotelKicker = 'Booking.com 기준';
+          _liveHotelSub = '실시간 최저가 (1박)';
+        }
+        const _displayHotelPrice = _liveHotelPrice || (hotelPrice + '만원');
+        const _displayHotelSub = _liveHotelPrice ? _liveHotelSub : `${hotelType} (${days - 1}박)`;
+        const _displayHotelKicker = _liveHotelPrice ? _liveHotelKicker : `1박 평균 ${hotelPerNight}만원`;
+
+        // 총 예상 비용: 실시간 가격이 있으면 파싱해서 재계산
+        let _recalcGrand = grandTotal;
+        if (_liveAirPrice || _liveHotelPrice) {
+          const _parsedAir = _liveAirPrice ? parseInt(String(_liveAirPrice).replace(/[^0-9]/g, '')) || airPrice : airPrice;
+          const _parsedHotel = _liveHotelPrice ? parseInt(String(_liveHotelPrice).replace(/[^0-9]/g, '')) || hotelPrice : hotelPrice;
+          // 실시간 호텔은 1박 기준 → 총 숙박비 = 1박가격 × (days-1)
+          const _hotelTotal = _liveHotelPrice ? _parsedHotel * (days - 1) : _parsedHotel;
+          _recalcGrand = _parsedAir + _hotelTotal + dailyTotal;
+          if (!isUnlimited && budget < 9000 && budget !== 40 && _recalcGrand > budget) {
+            _recalcGrand = budget;
+          }
+        }
+
+        // 5. UI UPDATE — TOTAL / AIR / HOTEL / DAILY
+        setCell('total-' + col, _recalcGrand + '만원~', '총 예상 비용 (항공+숙박+현지)', `${days}일 기준`);
+        setCell('air-' + col, _displayAirPrice, _displayAirSub, _displayAirKicker);
+        setCell('hotel-' + col, _displayHotelPrice, _displayHotelSub, _displayHotelKicker);
         setCell('daily-' + col, dailySpend + '만원', '하루 지출 (식사+교통+관광)', d.dailySub);
         var alertSafe = (d.alert === '경보 없음' || d.alert === '-');
         setCell('alert-' + col, alertSafe ? '안전' : d.alert, '외교부 여행경보', alertSafe ? '안전한 여행지' : (d.alertSub || '\u00a0'));
