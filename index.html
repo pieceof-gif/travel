@@ -178,10 +178,15 @@
       .dest-select, #no-results-cnt,
       .sb-btn, .dest-col-actions { display: none !important; }
 
-      @page { size: A4 landscape; margin: 4mm; }
+      @page { size: A4 landscape; margin: 8mm 10mm; }
 
-      html { zoom: 0.42 !important; }
-      body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+      html, body {
+        background: #fff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
 
       /* compare-view 표시 */
       #compare-view {
