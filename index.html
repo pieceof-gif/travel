@@ -9952,17 +9952,10 @@
               scale: 2,
               backgroundColor: '#ffffff',
               logging: false,
-              imageTimeout: 5000,
+              imageTimeout: 0,
               removeContainer: true,
               onclone: function(doc) {
                 doc.querySelectorAll('#save-modal-overlay, #toast, #wiz-panel, #wiz-launcher, footer, .footer').forEach(function(el) { if(el) el.remove(); });
-                // fixed/sticky 요소 → static (캡쳐 위치 보정)
-                doc.querySelectorAll('*').forEach(function(el) {
-                  var pos = getComputedStyle(el).position;
-                  if (pos === 'fixed' || pos === 'sticky') {
-                    el.style.position = 'relative';
-                  }
-                });
               }
             }).then(function(canvas) {
               clearTimeout(timer);
