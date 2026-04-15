@@ -9955,8 +9955,14 @@
               imageTimeout: 5000,
               removeContainer: true,
               onclone: function(doc) {
-                // 모달/토스트만 제거 (나머지는 그대로)
-                doc.querySelectorAll('#save-modal-overlay, #toast, #wiz-panel, footer, .footer').forEach(function(el) { if(el) el.remove(); });
+                doc.querySelectorAll('#save-modal-overlay, #toast, #wiz-panel, #wiz-launcher, footer, .footer').forEach(function(el) { if(el) el.remove(); });
+                // fixed/sticky 요소 → static (캡쳐 위치 보정)
+                doc.querySelectorAll('*').forEach(function(el) {
+                  var pos = getComputedStyle(el).position;
+                  if (pos === 'fixed' || pos === 'sticky') {
+                    el.style.position = 'relative';
+                  }
+                });
               }
             }).then(function(canvas) {
               clearTimeout(timer);
