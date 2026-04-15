@@ -10610,6 +10610,8 @@
             }
           }
           if (typeof syncAllDestDdLabels === 'function') syncAllDestDdLabels();
+          // 날씨 데이터 fetch
+          if (typeof fetchWeatherDebounced === 'function') fetchWeatherDebounced();
 
           // 실시간 가격 오버라이드 (TP Worker 데이터 적용)
           var _isVipShare = budget >= 300 && budget < 9000;
