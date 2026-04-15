@@ -2052,8 +2052,9 @@
         border-radius: 30px;
         font-size: 14px;
         z-index: 2000;
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s, visibility 0s 0.4s;
         opacity: 0;
+        visibility: hidden;
         pointer-events: none;
         max-width: calc(100vw - 32px);
         text-align: center;
@@ -2062,6 +2063,8 @@
       #toast.show {
         transform: translateX(-50%) translateY(0);
         opacity: 1;
+        visibility: visible;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s, visibility 0s;
       }
 
       /* 배너 모바일 컴팩트 */
