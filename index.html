@@ -9910,13 +9910,49 @@
               linkData.push({ url: href, x: r.left - targetRect.left, y: r.top - targetRect.top + scrollTop, w: r.width, h: r.height });
             });
 
+            // 외부 리소스를 모두 제거하는 onclone 핸들러
+            function cleanClone(doc) {
+              // 모든 img 태그의 src 제거 (CORS 문제 원천 차단)
+              doc.querySelectorAll('img').forEach(function(img) {
+                var w = img.offsetWidth || img.width || 50;
+                var h = img.offsetHeight || img.height || 50;
+                img.removeAttribute('src');
+                img.removeAttribute('srcset');
+                img.style.visibility = 'hidden';
+                img.style.width = w + 'px';
+                img.style.height = h + 'px';
+              });
+              // 외부 URL background-image 제거 (data: URI는 유지)
+              doc.querySelectorAll('*').forEach(function(el) {
+                try {
+                  var bg = el.style.backgroundImage || '';
+                  var computed = getComputedStyle(el).backgroundImage || '';
+                  var check = bg || computed;
+                  if (check && check !== 'none' && check.indexOf('url(') !== -1) {
+                    // data: URI는 안전하므로 유지
+                    if (check.indexOf('data:') === -1) {
+                      el.style.backgroundImage = 'none';
+                    }
+                  }
+                } catch(e) {}
+              });
+              // canvas 요소 제거 (taint 원인)
+              doc.querySelectorAll('canvas').forEach(function(c) { c.remove(); });
+              // 불필요한 요소 숨김
+              var hide = ['#compare-view .nav', '#compare-top-banner', '#cv-search-sheet', '#wiz-launcher', '#toast'];
+              hide.forEach(function(sel) {
+                var el = doc.querySelector(sel);
+                if (el) el.style.display = 'none';
+              });
+            }
+
             var captureTimeout = new Promise(function(_, reject) {
               setTimeout(function() { reject(new Error('시간 초과')); }, 45000);
             });
 
             var captureWork = html2canvas(target, {
-              useCORS: true,
-              allowTaint: true,
+              useCORS: false,
+              allowTaint: false,
               scale: 1,
               backgroundColor: '#ffffff',
               logging: false,
@@ -9925,28 +9961,7 @@
               scrollY: -window.scrollY,
               imageTimeout: 5000,
               removeContainer: true,
-              onclone: function(doc) {
-                // 모든 img 태그 제거 (CORS 문제 원천 차단)
-                doc.querySelectorAll('img').forEach(function(img) {
-                  img.removeAttribute('src');
-                  img.style.visibility = 'hidden';
-                  img.style.width = img.offsetWidth + 'px';
-                  img.style.height = img.offsetHeight + 'px';
-                });
-                // 외부 background-image 제거 (tainted canvas 방지)
-                doc.querySelectorAll('*').forEach(function(el) {
-                  var bg = getComputedStyle(el).backgroundImage;
-                  if (bg && bg !== 'none' && bg.indexOf('url(') !== -1 && !bg.indexOf('data:') !== -1) {
-                    el.style.backgroundImage = 'none';
-                  }
-                });
-                // 불필요한 요소 숨김
-                var hide = ['#compare-view .nav', '#compare-top-banner', '#cv-search-sheet', '#wiz-launcher', '#toast'];
-                hide.forEach(function(sel) {
-                  var el = doc.querySelector(sel);
-                  if (el) el.style.display = 'none';
-                });
-              }
+              onclone: cleanClone
             });
 
             Promise.race([captureWork, captureTimeout]).then(function(canvas) {
