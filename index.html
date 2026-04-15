@@ -9924,7 +9924,7 @@
 
         // PNG 저장 버튼
         var pngBtn = document.createElement('button');
-        pngBtn.innerHTML = '📸 현재 화면 이미지 저장';
+        pngBtn.innerHTML = '📸 이미지(PNG)로 저장';
         pngBtn.style.cssText = 'width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;background:#007aff;color:#fff;font-family:inherit;';
         pngBtn.onclick = function() {
           pngBtn.textContent = '캡쳐 중...';
@@ -9944,21 +9944,19 @@
               timedOut = true;
               showToast('캡쳐 시간 초과. PDF로 저장해보세요.');
               closeModal();
-            }, 10000);
+            }, 30000);
 
             html2canvas(target, {
               useCORS: false,
               allowTaint: false,
-              scale: 2,
+              scale: 1,
               backgroundColor: '#ffffff',
               logging: false,
-              imageTimeout: 1000,
+              imageTimeout: 0,
               removeContainer: true,
-              width: target.clientWidth,
-              height: Math.min(target.scrollHeight, window.innerHeight * 1.2),
               onclone: function(doc) {
                 doc.querySelectorAll('img, canvas, iframe, video').forEach(function(el) { el.remove(); });
-                doc.querySelectorAll('.nav, #compare-top-banner, #cv-search-sheet, #wiz-launcher, #toast, #save-modal-overlay, #wiz-panel').forEach(function(el) { el.style.display = 'none'; });
+                doc.querySelectorAll('.nav, #compare-top-banner, #cv-search-sheet, #wiz-launcher, #toast, #save-modal-overlay, #wiz-panel, footer, .footer, #footer').forEach(function(el) { if(el) el.remove(); });
               }
             }).then(function(canvas) {
               clearTimeout(timer);
