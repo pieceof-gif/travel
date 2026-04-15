@@ -10748,11 +10748,18 @@
                 }
               }
               if (changed) {
-                // 업데이트 알림 토스트
+                // 업데이트 알림 — Apple 스타일 센터 카드
+                var toastOverlay = document.createElement('div');
+                toastOverlay.style.cssText = 'position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;';
                 var toastEl = document.createElement('div');
-                toastEl.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:99999;background:#1d1d1f;color:#fff;padding:14px 20px;border-radius:14px;font-size:14px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.25);max-width:90vw;';
-                toastEl.innerHTML = '<span>✈️ 실시간 항공·숙박 가격이 업데이트되었습니다</span><button style="background:#0071e3;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">최신 가격 보기</button><button style="background:transparent;color:#999;border:none;padding:8px;font-size:18px;cursor:pointer;line-height:1">✕</button>';
-                document.body.appendChild(toastEl);
+                toastEl.style.cssText = 'background:#fff;color:#1d1d1f;border-radius:16px;padding:28px 24px 20px;text-align:center;max-width:280px;width:90vw;box-shadow:0 8px 40px rgba(0,0,0,.15);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;';
+                toastEl.innerHTML = '<div style="font-size:32px;margin-bottom:12px">✈️</div>' +
+                  '<div style="font-size:15px;font-weight:600;line-height:1.4;margin-bottom:4px">실시간 가격이 업데이트되었습니다</div>' +
+                  '<div style="font-size:13px;color:#86868b;line-height:1.4;margin-bottom:20px">항공·숙박 최신 가격을 확인하세요</div>' +
+                  '<button id="toast-apply-btn" style="display:block;width:100%;background:#0071e3;color:#fff;border:none;padding:12px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:8px">최신 가격 보기</button>' +
+                  '<button id="toast-close-btn" style="display:block;width:100%;background:transparent;color:#86868b;border:none;padding:10px;border-radius:10px;font-size:15px;cursor:pointer">닫기</button>';
+                toastOverlay.appendChild(toastEl);
+                document.body.appendChild(toastOverlay);
                 // 최신 가격 보기 버튼
                 toastEl.querySelectorAll('button')[0].onclick = function() {
                   for (var u = 0; u < Math.min(idxArr.length, 3); u++) {
@@ -10779,13 +10786,15 @@
                       }
                     }
                   }
-                  toastEl.remove();
+                  toastOverlay.remove();
                   if (typeof showToast === 'function') showToast('최신 가격으로 업데이트되었습니다');
                 };
                 // 닫기 버튼
-                toastEl.querySelectorAll('button')[1].onclick = function() { toastEl.remove(); };
+                toastEl.querySelectorAll('button')[1].onclick = function() { toastOverlay.remove(); };
+                // 오버레이 클릭 시 닫기
+                toastOverlay.onclick = function(e) { if (e.target === toastOverlay) toastOverlay.remove(); };
                 // 15초 후 자동 닫기
-                setTimeout(function() { if (toastEl.parentNode) toastEl.remove(); }, 15000);
+                setTimeout(function() { if (toastOverlay.parentNode) toastOverlay.remove(); }, 15000);
               }
             }, 1000);
           }
