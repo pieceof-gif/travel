@@ -9966,20 +9966,42 @@
         if (b1 && b1.value && b1.value !== 'unlimited') {
           params.push('budget=' + encodeURIComponent(b1.value));
         }
+        // 4.5 일수 (항상 포함 — 자동 날짜든 수동이든 동일 계산 보장)
+        var _shareDateVal = (document.getElementById('home-date-value') || {}).textContent || '';
+        var _shareDays = 5;
+        if (_shareDateVal.includes(' – ')) {
+          try {
+            var _sp = _shareDateVal.split(' – ');
+            var _sd1 = _sp[0].split('월 '), _sd2 = _sp[1].split('월 ');
+            var _sy = new Date().getFullYear();
+            var _sm1 = parseInt(_sd1[0]) - 1, _sm2 = parseInt(_sd2[0]) - 1;
+            var _sdt1 = new Date(_sy, _sm1, parseInt(_sd1[1].replace('일', '')));
+            var _sdt2 = new Date(_sm2 < _sm1 ? _sy + 1 : _sy, _sm2, parseInt(_sd2[1].replace('일', '')));
+            _shareDays = Math.ceil((_sdt2 - _sdt1) / (1000*60*60*24)) + 1;
+            if (_shareDays <= 0) _shareDays = 5;
+          } catch(e) {}
+        }
+        params.push('days=' + _shareDays);
         // 5. 현재 화면의 실제 가격 스냅샷 (공유 시 동일 표시)
         var snap = [];
         for (var si = 0; si < ids.length; si++) {
           var totalEl = document.getElementById('total-' + si);
           var airEl = document.getElementById('air-' + si);
           var hotelEl = document.getElementById('hotel-' + si);
+          var dailyEl = document.getElementById('daily-' + si);
           var t = totalEl ? (totalEl.querySelector('.main') || {}).textContent || '' : '';
+          var tk = totalEl ? (totalEl.querySelector('.kicker') || {}).textContent || '' : '';
+          var ts = totalEl ? (totalEl.querySelector('.sub') || {}).textContent || '' : '';
           var a = airEl ? (airEl.querySelector('.main') || {}).textContent || '' : '';
           var ak = airEl ? (airEl.querySelector('.kicker') || {}).textContent || '' : '';
           var as2 = airEl ? (airEl.querySelector('.sub') || {}).textContent || '' : '';
           var h = hotelEl ? (hotelEl.querySelector('.main') || {}).textContent || '' : '';
           var hk = hotelEl ? (hotelEl.querySelector('.kicker') || {}).textContent || '' : '';
           var hs2 = hotelEl ? (hotelEl.querySelector('.sub') || {}).textContent || '' : '';
-          snap.push([t, a, ak, as2, h, hk, hs2].join('|'));
+          var d = dailyEl ? (dailyEl.querySelector('.main') || {}).textContent || '' : '';
+          var dk = dailyEl ? (dailyEl.querySelector('.kicker') || {}).textContent || '' : '';
+          var ds = dailyEl ? (dailyEl.querySelector('.sub') || {}).textContent || '' : '';
+          snap.push([t, a, ak, as2, h, hk, hs2, d, dk, ds, tk, ts].join('|'));
         }
         if (snap.length > 0) params.push('snap=' + encodeURIComponent(snap.join('~')));
         // 6. 뱃지 상태
@@ -10601,8 +10623,9 @@
 
           // 여행지 적용
           var budget = budgetParam ? (budgetParam === 'unlimited' ? 9999 : budgetParam === 'cheapest' ? 40 : (parseInt(budgetParam) || 150)) : 150;
-          var days = 5;
-          if (datesParam && datesParam.includes(' – ')) {
+          var daysParam = params.get('days');
+          var days = daysParam ? parseInt(daysParam) : 5;
+          if (!daysParam && datesParam && datesParam.includes(' – ')) {
             try {
               var parts = datesParam.split(' – ');
               var d1p = parts[0].split('월 ');
@@ -10638,10 +10661,14 @@
             var colSnaps = decodeURIComponent(snapParam).split('~');
             for (var si = 0; si < Math.min(colSnaps.length, 3); si++) {
               var parts = colSnaps[si].split('|');
-              // parts: [total, air, airKicker, airSub, hotel, hotelKicker, hotelSub]
+              // parts: [0:total, 1:air, 2:airKicker, 3:airSub, 4:hotel, 5:hotelKicker, 6:hotelSub, 7:daily, 8:dailyKicker, 9:dailySub, 10:totalKicker, 11:totalSub]
               if (parts[0]) {
                 var te = document.getElementById('total-' + si);
-                if (te) { var tm = te.querySelector('.main'); if (tm) tm.textContent = parts[0]; }
+                if (te) {
+                  var tm = te.querySelector('.main'); if (tm) tm.textContent = parts[0];
+                  if (parts[10]) { var tkE = te.querySelector('.kicker'); if (tkE) tkE.textContent = parts[10]; }
+                  if (parts[11]) { var tsE = te.querySelector('.sub'); if (tsE) tsE.textContent = parts[11]; }
+                }
               }
               if (parts[1]) {
                 var ae = document.getElementById('air-' + si);
@@ -10657,6 +10684,14 @@
                   var hm = he.querySelector('.main'); if (hm) hm.textContent = parts[4];
                   if (parts[5]) { var hk = he.querySelector('.kicker'); if (hk) hk.textContent = parts[5]; }
                   if (parts[6]) { var hsb = he.querySelector('.sub'); if (hsb) hsb.textContent = parts[6]; }
+                }
+              }
+              if (parts[7]) {
+                var de = document.getElementById('daily-' + si);
+                if (de) {
+                  var dm = de.querySelector('.main'); if (dm) dm.textContent = parts[7];
+                  if (parts[8]) { var dkE = de.querySelector('.kicker'); if (dkE) dkE.textContent = parts[8]; }
+                  if (parts[9]) { var dsE = de.querySelector('.sub'); if (dsE) dsE.textContent = parts[9]; }
                 }
               }
             }
