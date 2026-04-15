@@ -10003,7 +10003,7 @@
           var ds = dailyEl ? (dailyEl.querySelector('.sub') || {}).textContent || '' : '';
           snap.push([t, a, ak, as2, h, hk, hs2, d, dk, ds, tk, ts].join('|'));
         }
-        if (snap.length > 0) params.push('snap=' + encodeURIComponent(snap.join('~')));
+        if (snap.length > 0) params.push('snap=' + encodeURIComponent(snap.join(';;')));
         // 6. 뱃지 상태
         var badges = [];
         for (var bi = 0; bi < ids.length; bi++) {
@@ -10659,7 +10659,7 @@
           var badgesParam = params.get('badges');
           if (snapParam) {
             window._sharedSnapApplied = true;
-            var colSnaps = decodeURIComponent(snapParam).split('~');
+            var colSnaps = decodeURIComponent(snapParam).split(';;');
             for (var si = 0; si < Math.min(colSnaps.length, 3); si++) {
               var parts = colSnaps[si].split('|');
               // parts: [0:total, 1:air, 2:airKicker, 3:airSub, 4:hotel, 5:hotelKicker, 6:hotelSub, 7:daily, 8:dailyKicker, 9:dailySub, 10:totalKicker, 11:totalSub]
