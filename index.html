@@ -8803,6 +8803,11 @@
 
 
       function updateResultsByFilters() {
+        // 공유 URL로 로드된 여행지가 있으면 첫 호출 시 건너뛰기
+        if (_sharedLoaded) {
+          _sharedLoaded = false; // 이후 사용자 검색은 정상 동작
+          return;
+        }
         // 함수 호출 전 Top3 저장 (updateColumn 역시 비동기 가능하므로 전역 _lastTop3 기준)
         var _savedTop3 = (window._lastTop3 || []).slice();
 
@@ -10492,6 +10497,7 @@
 
       refreshButtonStates();
       // URL 파라미터 ?d=로 공유된 여행지 자동 표시
+      var _sharedLoaded = false;
       (function loadSharedDestinations() {
         var params = new URLSearchParams(location.search);
         var dParam = params.get('d');
@@ -10500,9 +10506,7 @@
         // ID 문자열 또는 숫자 인덱스 모두 지원
         var keys = dParam.split(',');
         var idxArr = keys.map(function(k) {
-          // 숫자면 기존 인덱스 방식
           if (/^\d+$/.test(k)) return parseInt(k, 10);
-          // 문자열이면 ID로 검색
           for (var i = 0; i < v1_0_9_DEST_DATA.length; i++) {
             if (v1_0_9_DEST_DATA[i].id === k) return i;
           }
@@ -10510,22 +10514,26 @@
         }).filter(function(v) { return v >= 0; });
         if (idxArr.length === 0) return;
 
+        _sharedLoaded = true;
+
         // 비교뷰 표시
         var hv = document.getElementById('home-view');
         var cv = document.getElementById('compare-view');
         if (hv) hv.style.display = 'none';
         if (cv) cv.style.display = 'block';
+        var cb = document.getElementById('comparison-body');
+        if (cb) cb.style.display = 'block';
 
         var budget = 150, days = 5;
         for (var ci = 0; ci < Math.min(idxArr.length, 3); ci++) {
-          if (idxArr[ci] >= 0 && typeof v1_0_9_DEST_DATA !== 'undefined' && v1_0_9_DEST_DATA[idxArr[ci]]) {
+          if (idxArr[ci] >= 0 && v1_0_9_DEST_DATA[idxArr[ci]]) {
             try {
               updateColumn(ci, idxArr[ci], budget, days);
-              // 드롭다운 동기화
               var sel = document.getElementById('sel' + ci);
               var selF = document.getElementById('sel' + ci + '-fixed');
               if (sel) sel.value = String(idxArr[ci]);
               if (selF) selF.value = String(idxArr[ci]);
+              console.log('[Share] col', ci, '→', v1_0_9_DEST_DATA[idxArr[ci]].id, 'idx=', idxArr[ci]);
             } catch(e) { console.error('[Share] updateColumn error col=' + ci, e); }
           }
         }
@@ -13563,7 +13571,7 @@
         document.body.style.width = '100%';
 
         // 모바일 첫 오픈 시 — 팝업 뒤 배경에 기본 여행지 2개 미리 렌더
-        if (!_cvSheetOpenedOnce && window.innerWidth < 744) {
+        if (!_cvSheetOpenedOnce && !_sharedLoaded && window.innerWidth < 744) {
           _cvSheetOpenedOnce = true;
           var cv = document.getElementById('compare-view');
           var hv = document.getElementById('home-view');
@@ -13591,7 +13599,7 @@
         document.body.style.width = '';
 
         // 모바일: 닫혔을 때 비교뷰가 비어있으면 기본 여행지 렌더
-        if (window.innerWidth < 744) {
+        if (window.innerWidth < 744 && !_sharedLoaded) {
           var body = document.getElementById('comparison-body');
           if (body && body.style.display === 'none') {
             var bInput = document.getElementById('budget-input-home');
