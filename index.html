@@ -9915,15 +9915,15 @@
             });
 
             var captureWork = html2canvas(target, {
-              useCORS: false,
-              allowTaint: false,
+              useCORS: true,
+              allowTaint: true,
               scale: 1,
               backgroundColor: '#ffffff',
               logging: false,
               windowWidth: target.scrollWidth,
               scrollX: 0,
               scrollY: -window.scrollY,
-              imageTimeout: 3000,
+              imageTimeout: 5000,
               removeContainer: true,
               onclone: function(doc) {
                 // 모든 img 태그 제거 (CORS 문제 원천 차단)
@@ -9932,6 +9932,13 @@
                   img.style.visibility = 'hidden';
                   img.style.width = img.offsetWidth + 'px';
                   img.style.height = img.offsetHeight + 'px';
+                });
+                // 외부 background-image 제거 (tainted canvas 방지)
+                doc.querySelectorAll('*').forEach(function(el) {
+                  var bg = getComputedStyle(el).backgroundImage;
+                  if (bg && bg !== 'none' && bg.indexOf('url(') !== -1 && !bg.indexOf('data:') !== -1) {
+                    el.style.backgroundImage = 'none';
+                  }
                 });
                 // 불필요한 요소 숨김
                 var hide = ['#compare-view .nav', '#compare-top-banner', '#cv-search-sheet', '#wiz-launcher', '#toast'];
@@ -10026,8 +10033,8 @@
         pdfBtn.onclick = function() {
           pdfBtn.textContent = '생성 중...'; pdfBtn.style.opacity = '0.5'; pdfBtn.style.pointerEvents = 'none';
           setTimeout(function() {
-            try { buildPdf(canvas, linkData, baseName + '.pdf', target); showToast('✅ PDF 저장됐어요!'); }
-            catch(pe) { console.error('PDF error:', pe); showToast('⚠️ PDF 생성 실패'); }
+            try { buildPdf(blob, canvas, linkData, baseName + '.pdf', target); }
+            catch(pe) { console.error('PDF error:', pe); showToast('⚠️ PDF 생성 실패: ' + pe.message); }
             pdfBtn.textContent = 'PDF 저장 (링크 포함)'; pdfBtn.style.opacity = ''; pdfBtn.style.pointerEvents = '';
           }, 100);
         };
@@ -10048,7 +10055,7 @@
       }
 
       // ── BUILD PDF WITH LINKS ──
-      function buildPdf(canvas, linkData, fileName, target) {
+      function buildPdf(blob, canvas, linkData, fileName, target) {
         // jsPDF 로드 확인
         if (!window.jspdf || !window.jspdf.jsPDF) {
           showToast('⚠️ PDF 라이브러리가 아직 로드되지 않았어요');
@@ -10056,53 +10063,87 @@
         }
         var jsPDF = window.jspdf.jsPDF;
 
-        // canvas → 이미지 변환 (tainted canvas 에러 방어)
-        var imgData;
-        try {
-          imgData = canvas.toDataURL('image/jpeg', 0.92);
-        } catch(e) {
-          console.error('toDataURL failed:', e);
-          // fallback: PNG로 시도
-          try {
-            imgData = canvas.toDataURL('image/png');
-          } catch(e2) {
-            showToast('⚠️ 이미지 변환에 실패했어요. PNG로 저장해주세요.');
-            return;
-          }
-        }
-
         var cW = canvas.width;
         var cH = canvas.height;
         var domW = target.offsetWidth;
         var domH = target.scrollHeight;
 
-        // A4 가로 or 세로 — 비율에 따라 결정
-        var pdfW = 210; // mm (A4 width)
-        var pdfH = (cH / cW) * pdfW;
+        // blob → base64 data URL 변환 (tainted canvas 우회)
+        var reader = new FileReader();
+        reader.onload = function() {
+          try {
+            var imgData = reader.result; // data:image/png;base64,...
 
-        var pdf = new jsPDF({
-          orientation: pdfH > pdfW ? 'portrait' : 'landscape',
-          unit: 'mm',
-          format: [pdfW, pdfH]
-        });
+            // A4 가로 or 세로 — 비율에 따라 결정
+            var pdfW = 210; // mm (A4 width)
+            var pdfH = (cH / cW) * pdfW;
+            var maxPageH = 297; // A4 세로 최대
 
-        pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, pdfH);
+            if (pdfH <= maxPageH) {
+              // 한 페이지에 들어감
+              var pdf = new jsPDF({
+                orientation: pdfH > pdfW ? 'portrait' : 'landscape',
+                unit: 'mm',
+                format: [pdfW, pdfH]
+              });
 
-        // 링크 어노테이션 추가
-        var xScale = pdfW / domW;
-        var yScale = pdfH / domH;
+              pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
 
-        linkData.forEach(function(link) {
-          var lx = link.x * xScale;
-          var ly = link.y * yScale;
-          var lw = link.w * xScale;
-          var lh = link.h * yScale;
-          if (lx >= 0 && ly >= 0 && lx + lw <= pdfW && ly + lh <= pdfH) {
-            try { pdf.link(lx, ly, lw, lh, { url: link.url }); } catch(e) {}
+              // 링크 어노테이션 추가
+              var xScale = pdfW / domW;
+              var yScale = pdfH / domH;
+              linkData.forEach(function(link) {
+                var lx = link.x * xScale;
+                var ly = link.y * yScale;
+                var lw = link.w * xScale;
+                var lh = link.h * yScale;
+                if (lx >= 0 && ly >= 0 && lx + lw <= pdfW && ly + lh <= pdfH) {
+                  try { pdf.link(lx, ly, lw, lh, { url: link.url }); } catch(e) {}
+                }
+              });
+
+              pdf.save(fileName);
+            } else {
+              // 여러 페이지로 분할
+              var totalPages = Math.ceil(pdfH / maxPageH);
+              var pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+              for (var p = 0; p < totalPages; p++) {
+                if (p > 0) pdf.addPage('a4', 'portrait');
+                var yOffset = -(p * maxPageH);
+                pdf.addImage(imgData, 'PNG', 0, yOffset, pdfW, pdfH);
+
+                // 해당 페이지 범위 링크만 추가
+                var xScale2 = pdfW / domW;
+                var yScale2 = pdfH / domH;
+                var pageTop = p * maxPageH;
+                var pageBottom = (p + 1) * maxPageH;
+                linkData.forEach(function(link) {
+                  var lx = link.x * xScale2;
+                  var ly = link.y * yScale2;
+                  var lw = link.w * xScale2;
+                  var lh = link.h * yScale2;
+                  if (ly + lh > pageTop && ly < pageBottom) {
+                    var adjY = ly - pageTop;
+                    if (adjY >= 0 && adjY + lh <= maxPageH && lx >= 0 && lx + lw <= pdfW) {
+                      try { pdf.link(lx, adjY, lw, lh, { url: link.url }); } catch(e) {}
+                    }
+                  }
+                });
+              }
+
+              pdf.save(fileName);
+            }
+            showToast('✅ PDF 저장됐어요!');
+          } catch(pdfErr) {
+            console.error('PDF build error:', pdfErr);
+            showToast('⚠️ PDF 생성 실패: ' + pdfErr.message);
           }
-        });
-
-        pdf.save(fileName);
+        };
+        reader.onerror = function() {
+          showToast('⚠️ 이미지 데이터 읽기 실패');
+        };
+        reader.readAsDataURL(blob);
       }
 
       // ── SHARE SHEET ──
