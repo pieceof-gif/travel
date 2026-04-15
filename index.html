@@ -10160,48 +10160,32 @@
 
       // ── SHARE ──
       function handleShare() {
-        var shareUrl = getShareUrl();
-        var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-        // 모바일: Web Share API 지원 시 네이티브 공유
-        if (isMobile && navigator.share) {
-          var destNames = (window._lastTop3 || []).filter(Boolean).join(', ');
-          var title = destNames ? destNames + ' — odiga 비교결과' : 'odiga — 여행지 비교하기';
-          var text = '여행지 비교는 odiga에서! 항공권·호텔·현지 비용을 한눈에 확인하세요.';
-          navigator.share({ title: title, text: text, url: shareUrl }).catch(function() {});
-          return;
-        }
-
-        // 데스크탑: 링크 복사
-        copyToClipboard(shareUrl);
-      }
-
-      function copyToClipboard(text) {
-        // 1차: Clipboard API
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(function() {
-            showToast('링크가 복사되었어요');
-          }).catch(function() {
-            fallbackCopy(text);
-          });
-          return;
-        }
-        // 2차: fallback
-        fallbackCopy(text);
-      }
-
-      function fallbackCopy(text) {
         try {
+          var shareUrl = getShareUrl();
+          var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+          // 모바일: Web Share API 지원 시 네이티브 공유
+          if (isMobile && navigator.share) {
+            var destNames = (window._lastTop3 || []).filter(Boolean).join(', ');
+            var title = destNames ? destNames + ' — odiga 비교결과' : 'odiga — 여행지 비교하기';
+            var text = '여행지 비교는 odiga에서! 항공권·호텔·현지 비용을 한눈에 확인하세요.';
+            navigator.share({ title: title, text: text, url: shareUrl }).catch(function() {});
+            return;
+          }
+
+          // 데스크탑: 클립보드 복사 (동기 방식)
           var ta = document.createElement('textarea');
-          ta.value = text;
+          ta.value = shareUrl;
           ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
           document.body.appendChild(ta);
+          ta.focus();
           ta.select();
           document.execCommand('copy');
           document.body.removeChild(ta);
           showToast('링크가 복사되었어요');
         } catch(e) {
-          prompt('링크를 직접 복사해주세요:', text);
+          console.error('handleShare error:', e);
+          showToast('공유 실패');
         }
       }
 
