@@ -9934,6 +9934,42 @@
         window.scrollTo(0, 0);
         window.print();
       }
+
+      // ── SHARE (LINK COPY) ──
+      function handleShare() {
+        var base = location.origin + location.pathname;
+        var ids = [];
+        // _currentDestIdx → 목적지 ID로 변환
+        if (_currentDestIdx) {
+          for (var i = 0; i < _currentDestIdx.length; i++) {
+            var idx = _currentDestIdx[i];
+            if (idx >= 0 && v1_0_9_DEST_DATA[idx] && v1_0_9_DEST_DATA[idx].id) {
+              ids.push(v1_0_9_DEST_DATA[idx].id);
+            }
+          }
+        }
+        var url = ids.length > 0 ? base + '?d=' + ids.join(',') : location.href;
+        // 클립보드 복사
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(function() {
+            showToast('링크가 복사되었어요');
+          }).catch(function() { _fallbackCopy(url); });
+        } else {
+          _fallbackCopy(url);
+        }
+      }
+      function _fallbackCopy(url) {
+        var ta = document.createElement('textarea');
+        ta.value = url;
+        ta.setAttribute('readonly','');
+        ta.style.cssText = 'position:fixed;left:-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch(e) {}
+        document.body.removeChild(ta);
+        showToast('링크가 복사되었어요');
+      }
+
       // ── DESTINATION DROPDOWN SHARED CONSTANTS ──
       const DEST_COUNTRY_KR = {
         japan:'일본', vietnam:'베트남', korea:'국내', taiwan:'대만',
@@ -14038,48 +14074,7 @@
   </div>
 </div>
 
-<script>
-function handleShare() {
-  var base = location.origin + location.pathname;
-  var indices = [];
-
-  // _currentDestIdx → 목적지 ID로 변환
-  if (window._currentDestIdx && typeof v1_0_9_DEST_DATA !== 'undefined') {
-    for (var i = 0; i < window._currentDestIdx.length; i++) {
-      var idx = window._currentDestIdx[i];
-      if (idx >= 0 && v1_0_9_DEST_DATA[idx] && v1_0_9_DEST_DATA[idx].id) {
-        indices.push(v1_0_9_DEST_DATA[idx].id);
-      }
-    }
-  }
-
-  var url = indices.length > 0 ? base + '?d=' + indices.join(',') : location.href;
-
-  // 클립보드 복사 (modern API 우선)
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(url).then(function() {
-      if (typeof showToast === 'function') showToast('링크가 복사되었어요');
-      else alert('링크가 복사되었어요');
-    }).catch(function() {
-      fallbackCopy(url);
-    });
-  } else {
-    fallbackCopy(url);
-  }
-}
-function fallbackCopy(url) {
-  var ta = document.createElement('textarea');
-  ta.value = url;
-  ta.setAttribute('readonly','');
-  ta.style.cssText = 'position:fixed;left:-9999px';
-  document.body.appendChild(ta);
-  ta.select();
-  try { document.execCommand('copy'); } catch(e) {}
-  document.body.removeChild(ta);
-  if (typeof showToast === 'function') showToast('링크가 복사되었어요');
-  else alert('링크가 복사되었어요');
-}
-</script>
+<!-- handleShare is now in the main script block -->
 
 </body>
 
