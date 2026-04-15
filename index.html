@@ -9956,14 +9956,16 @@
         }
         if (ids.length > 0) params.push('d=' + ids.join(','));
         // 2. 검색 조건: 지역
-        var regionEl = document.getElementById('sb-region-display');
+        var regionEl = document.getElementById('region-display');
         if (regionEl && regionEl.textContent && regionEl.textContent !== '전체 지역') {
           params.push('region=' + encodeURIComponent(regionEl.textContent));
         }
-        // 3. 검색 조건: 날짜
-        var dateEl = document.getElementById('home-date-value');
-        if (dateEl && dateEl.textContent && dateEl.textContent !== '날짜선택') {
-          params.push('dates=' + encodeURIComponent(dateEl.textContent));
+        // 3. 검색 조건: 날짜 (사용자가 직접 선택한 경우만)
+        if (!window._isAutoDate) {
+          var dateEl = document.getElementById('home-date-value');
+          if (dateEl && dateEl.textContent && dateEl.textContent !== '날짜선택' && dateEl.textContent.includes(' – ')) {
+            params.push('dates=' + encodeURIComponent(dateEl.textContent));
+          }
         }
         // 4. 검색 조건: 예산
         var b1 = document.getElementById('budget-input-home');
@@ -10549,8 +10551,8 @@
 
           // 검색 조건 UI 복원
           if (regionParam) {
-            var rd = document.getElementById('sb-region-display');
-            var rdc = document.getElementById('sb-region-display-c');
+            var rd = document.getElementById('region-display');
+            var rdc = document.getElementById('region-display-c');
             if (rd) { rd.textContent = regionParam; rd.classList.add('filled'); }
             if (rdc) { rdc.textContent = regionParam; rdc.classList.add('filled'); }
           }
@@ -10561,6 +10563,7 @@
             if (dd) { dd.textContent = datesParam; dd.classList.add('filled'); }
             if (ddc) { ddc.textContent = datesParam; ddc.classList.add('filled'); }
             if (hdv) hdv.textContent = datesParam;
+            window._isAutoDate = false;
           }
           if (budgetParam) {
             var b1 = document.getElementById('budget-input-home');
