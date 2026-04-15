@@ -10158,48 +10158,6 @@
         reader.readAsDataURL(blob);
       }
 
-      // ── SHARE ──
-      function handleShare() {
-        try {
-          var shareUrl = getShareUrl();
-          var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-          // 모바일: Web Share API 지원 시 네이티브 공유
-          if (isMobile && navigator.share) {
-            var destNames = (window._lastTop3 || []).filter(Boolean).join(', ');
-            var title = destNames ? destNames + ' — odiga 비교결과' : 'odiga — 여행지 비교하기';
-            var text = '여행지 비교는 odiga에서! 항공권·호텔·현지 비용을 한눈에 확인하세요.';
-            navigator.share({ title: title, text: text, url: shareUrl }).catch(function() {});
-            return;
-          }
-
-          // 데스크탑: 클립보드 복사 (동기 방식)
-          var ta = document.createElement('textarea');
-          ta.value = shareUrl;
-          ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
-          document.body.appendChild(ta);
-          ta.focus();
-          ta.select();
-          document.execCommand('copy');
-          document.body.removeChild(ta);
-          showToast('링크가 복사되었어요');
-        } catch(e) {
-          console.error('handleShare error:', e);
-          showToast('공유 실패');
-        }
-      }
-
-      // 현재 선택된 여행지가 포함된 공유 URL 생성
-      function getShareUrl() {
-        var base = location.origin + location.pathname;
-        if (!location.hostname) base = 'https://odiga.kr';
-        var idxArr = (typeof _currentDestIdx !== 'undefined') ? _currentDestIdx : [];
-        var validIdx = idxArr.filter(function(v) { return v >= 0; });
-        if (validIdx.length > 0) {
-          return base + '?d=' + idxArr.join(',');
-        }
-        return base;
-      }
 
       // ── DESTINATION DROPDOWN SHARED CONSTANTS ──
       const DEST_COUNTRY_KR = {
@@ -14198,6 +14156,40 @@
       <button class="wiz-footer-link" onclick="resetWizard()">다시 설정</button>
     </div>
   </div>
+
+
+<script>
+function handleShare() {
+  var url = location.href;
+  try {
+    var idx = window._currentDestIdx;
+    if (idx) {
+      var valid = idx.filter(function(v){ return v >= 0; });
+      if (valid.length) url = location.origin + location.pathname + '?d=' + idx.join(',');
+    }
+  } catch(e) {}
+
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile && navigator.share) {
+    navigator.share({ title: 'odiga', url: url }).catch(function(){});
+    return;
+  }
+
+  var ta = document.createElement('textarea');
+  ta.value = url;
+  ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;left:-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+  if (typeof showToast === 'function') {
+    showToast('링크가 복사되었어요');
+  } else {
+    alert('링크가 복사되었어요');
+  }
+}
+</script>
 
 </body>
 
