@@ -176,9 +176,9 @@
       .sb-panel, .sticky-sel, .dest-dd-menu,
       .dest-select, #no-results-cnt { display: none !important; }
 
-      @page { size: A4 landscape; margin: 6mm; }
+      @page { size: A4 landscape; margin: 4mm; }
 
-      html { zoom: 0.5 !important; }
+      html { zoom: 0.45 !important; }
 
       body {
         background: #fff !important;
@@ -191,25 +191,27 @@
         position: static !important;
         overflow: visible !important;
         background: #fff !important;
+        padding: 0 !important;
       }
 
       #comparison-body {
         display: block !important;
         overflow: visible !important;
+        padding: 0 !important;
       }
 
-      /* 검색바 표시 */
+      /* 검색바 */
       #compare-sb-wrap {
         display: flex !important;
-        margin: 20px auto 24px !important;
+        margin: 12px auto 16px !important;
       }
       .sb-btn { display: none !important; }
 
-      /* ★ 3번째 컬럼 강제 표시 (모바일 2열 규칙 무시) */
+      /* ★ 3번째 컬럼 강제 표시 */
       #col-2, .dest-col:nth-child(3),
       .sel-grid .sel-card:nth-child(3) { display: block !important; }
 
-      /* ★ 3열 그리드 강제 */
+      /* ★ 3열 레이아웃 */
       .dest-images {
         display: flex !important;
         width: 100% !important;
@@ -220,7 +222,7 @@
         flex: 1 1 33.33% !important;
         width: 33.33% !important;
         min-width: 0 !important;
-        padding: 0 12px !important;
+        padding: 0 8px !important;
         box-sizing: border-box !important;
       }
 
@@ -234,11 +236,20 @@
       .grp, .info-grid {
         display: grid !important;
         grid-template-columns: 1fr 1fr 1fr !important;
-        gap: 16px !important;
+        gap: 8px !important;
       }
 
+      /* 섹션 여백 축소 */
+      .sec-hd { margin: 20px 0 8px !important; padding: 0 !important; }
+      .sec-hd-inner { padding: 8px 0 !important; }
+      .grp { margin-bottom: 8px !important; padding: 8px 0 !important; }
+      .data-row { padding: 4px 0 !important; margin: 0 !important; }
+      .dest-images { padding: 8px 0 !important; margin: 0 !important; }
+      #compare-content-wrapper { padding: 0 !important; }
+
       /* 페이지 나뉨 방지 */
-      .sec-hd, .grp, .dest-images, .data-row { break-inside: avoid; }
+      .sec-hd { break-after: avoid; }
+      .grp, .dest-images, .data-row { break-inside: avoid; }
     }
 
     /* ── SHARE SHEET ── */
