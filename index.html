@@ -168,84 +168,33 @@
 
     /* ── PRINT ── */
     @media print {
+      /* 숨길 요소 */
       #home-view, #share-overlay, #share-modal-overlay, #wiz-launcher, #wiz-panel,
       #toast, .nav, .home-nav, #compare-top-banner, #cv-search-sheet,
       #compare-view > .nav, .compare-nav, footer,
       .home-overlay, .wiz-launcher-badge,
       .nav-share-btn, .nav-save-btn,
       .sb-panel, .sticky-sel, .dest-dd-menu,
-      .dest-select, #no-results-cnt { display: none !important; }
+      .dest-select, #no-results-cnt,
+      .sb-btn { display: none !important; }
 
       @page { size: A4 landscape; margin: 4mm; }
 
-      html { zoom: 0.45 !important; }
+      html { zoom: 0.42 !important; }
+      body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
 
-      body {
-        background: #fff !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-
+      /* compare-view 표시 */
       #compare-view {
         display: block !important;
         position: static !important;
         overflow: visible !important;
         background: #fff !important;
-        padding: 0 !important;
       }
+      #comparison-body { display: block !important; overflow: visible !important; }
 
-      #comparison-body {
-        display: block !important;
-        overflow: visible !important;
-        padding: 0 !important;
-      }
-
-      /* 검색바 */
-      #compare-sb-wrap {
-        display: flex !important;
-        margin: 12px auto 16px !important;
-      }
-      .sb-btn { display: none !important; }
-
-      /* ★ 3번째 컬럼 강제 표시 */
+      /* 3번째 컬럼 강제 표시 */
       #col-2, .dest-col:nth-child(3),
-      .sel-grid .sel-card:nth-child(3) { display: block !important; }
-
-      /* ★ 3열 레이아웃 */
-      .dest-images {
-        display: flex !important;
-        width: 100% !important;
-        max-width: none !important;
-        gap: 0 !important;
-      }
-      .dest-col {
-        flex: 1 1 33.33% !important;
-        width: 33.33% !important;
-        min-width: 0 !important;
-        padding: 0 8px !important;
-        box-sizing: border-box !important;
-      }
-
-      .data-row {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        width: 100% !important;
-      }
       .data-row .dc:nth-child(3) { display: block !important; }
-
-      .grp, .info-grid {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr 1fr !important;
-        gap: 8px !important;
-      }
-
-      /* 섹션 여백 축소 */
-      .sec-hd { margin: 20px 0 8px !important; padding: 0 !important; }
-      .sec-hd-inner { padding: 8px 0 !important; }
-      .grp { margin-bottom: 8px !important; padding: 8px 0 !important; }
-      .data-row { padding: 4px 0 !important; margin: 0 !important; }
-      .dest-images { padding: 8px 0 !important; margin: 0 !important; }
-      #compare-content-wrapper { padding: 0 !important; }
 
       /* 페이지 나뉨 방지 */
       .sec-hd { break-after: avoid; }
