@@ -9905,14 +9905,123 @@
       // ── SAVE AS IMAGE / PDF ──
       function handleSaveImage() {
         var target = document.getElementById('compare-view');
-        if (!target || target.style.display === 'none') {
+        if (!target || (target.style.display === 'none' && !target.offsetParent)) {
           showToast('비교 화면이 표시되지 않았어요');
           return;
         }
-        // 인쇄 전 맨 위로 스크롤
-        target.scrollTop = 0;
-        window.scrollTo(0, 0);
-        window.print();
+
+        // 저장 옵션 모달 표시
+        var overlay = document.createElement('div');
+        overlay.id = 'save-modal-overlay';
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;';
+
+        var modal = document.createElement('div');
+        modal.style.cssText = 'background:#fff;border-radius:20px;padding:32px 28px;max-width:340px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);';
+
+        var title = document.createElement('div');
+        title.textContent = '저장하기';
+        title.style.cssText = 'font-size:18px;font-weight:700;margin-bottom:20px;color:#1d1d1f;';
+
+        // PNG 저장 버튼
+        var pngBtn = document.createElement('button');
+        pngBtn.innerHTML = '📸 이미지(PNG)로 저장';
+        pngBtn.style.cssText = 'width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;background:#007aff;color:#fff;font-family:inherit;';
+        pngBtn.onclick = function() {
+          pngBtn.textContent = '캡쳐 중...';
+          pngBtn.style.opacity = '0.6';
+          pngBtn.style.pointerEvents = 'none';
+
+          if (typeof html2canvas === 'undefined') {
+            showToast('이미지 라이브러리 로딩 중... 잠시 후 다시 시도해주세요');
+            closeModal();
+            return;
+          }
+
+          target.scrollTop = 0;
+          setTimeout(function() {
+            html2canvas(target, {
+              useCORS: false,
+              allowTaint: false,
+              scale: 1,
+              backgroundColor: '#ffffff',
+              logging: false,
+              imageTimeout: 5000,
+              removeContainer: true,
+              onclone: function(doc) {
+                doc.querySelectorAll('img').forEach(function(img) {
+                  img.removeAttribute('src');
+                  img.removeAttribute('srcset');
+                  img.style.visibility = 'hidden';
+                });
+                doc.querySelectorAll('canvas').forEach(function(c) { c.remove(); });
+                var hide = ['.nav', '#compare-top-banner', '#cv-search-sheet', '#wiz-launcher', '#toast', '#save-modal-overlay', '#wiz-panel'];
+                hide.forEach(function(sel) { var el = doc.querySelector(sel); if (el) el.style.display = 'none'; });
+              }
+            }).then(function(canvas) {
+              canvas.toBlob(function(blob) {
+                if (!blob) { showToast('이미지 변환 실패'); closeModal(); return; }
+                var today = new Date();
+                var ds = today.getFullYear() + String(today.getMonth()+1).padStart(2,'0') + String(today.getDate()).padStart(2,'0');
+                var fileName = 'odiga-비교-' + ds + '.png';
+
+                // 모바일: Web Share API
+                var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                if (isMobile && navigator.share && navigator.canShare) {
+                  var file = new File([blob], fileName, { type: 'image/png' });
+                  if (navigator.canShare({ files: [file] })) {
+                    navigator.share({ files: [file], title: fileName }).catch(function(){});
+                    closeModal();
+                    return;
+                  }
+                }
+
+                // 데스크탑: 다운로드
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                a.click();
+                setTimeout(function() { URL.revokeObjectURL(url); }, 3000);
+                showToast('PNG 저장됐어요');
+                closeModal();
+              }, 'image/png');
+            }).catch(function(e) {
+              console.error('Capture error:', e);
+              showToast('캡쳐 실패: ' + e.message);
+              closeModal();
+            });
+          }, 500);
+        };
+
+        // PDF 저장 버튼
+        var pdfBtn = document.createElement('button');
+        pdfBtn.innerHTML = '📄 PDF로 저장';
+        pdfBtn.style.cssText = 'width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;background:#f5f5f7;color:#1d1d1f;font-family:inherit;';
+        pdfBtn.onclick = function() {
+          closeModal();
+          target.scrollTop = 0;
+          window.scrollTo(0, 0);
+          setTimeout(function() { window.print(); }, 300);
+        };
+
+        // 닫기 버튼
+        var cancelBtn = document.createElement('button');
+        cancelBtn.textContent = '취소';
+        cancelBtn.style.cssText = 'width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:500;cursor:pointer;background:transparent;color:#888;font-family:inherit;';
+        cancelBtn.onclick = function() { closeModal(); };
+
+        function closeModal() {
+          var m = document.getElementById('save-modal-overlay');
+          if (m) m.remove();
+        }
+
+        modal.appendChild(title);
+        modal.appendChild(pngBtn);
+        modal.appendChild(pdfBtn);
+        modal.appendChild(cancelBtn);
+        overlay.appendChild(modal);
+        overlay.onclick = function(e) { if (e.target === overlay) closeModal(); };
+        document.body.appendChild(overlay);
       }
       // ── DESTINATION DROPDOWN SHARED CONSTANTS ──
       const DEST_COUNTRY_KR = {
