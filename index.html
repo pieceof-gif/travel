@@ -9961,9 +9961,9 @@
             params.push('dates=' + encodeURIComponent(dateEl.textContent));
           }
         }
-        // 4. 검색 조건: 예산
+        // 4. 검색 조건: 예산 (항상 포함 — unlimited도 포함해야 동일 tier 보장)
         var b1 = document.getElementById('budget-input-home');
-        if (b1 && b1.value && b1.value !== 'unlimited') {
+        if (b1 && b1.value) {
           params.push('budget=' + encodeURIComponent(b1.value));
         }
         // 4.5 일수 (항상 포함 — 자동 날짜든 수동이든 동일 계산 보장)
@@ -10613,7 +10613,7 @@
             var b2 = document.getElementById('budget-input-compare');
             if (b1) b1.value = budgetParam;
             if (b2) b2.value = budgetParam;
-            var budgetLabels = {'100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'VIP','cheapest':'최저가'};
+            var budgetLabels = {'100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'VIP','cheapest':'최저가','unlimited':'상관없음'};
             var bl = budgetLabels[budgetParam] || budgetParam + '만원 이내';
             var bd = document.getElementById('sb-budget-display');
             var bdc = document.getElementById('sb-budget-display-c');
