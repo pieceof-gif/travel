@@ -10049,11 +10049,30 @@
 
       // ── BUILD PDF WITH LINKS ──
       function buildPdf(canvas, linkData, fileName, target) {
+        // jsPDF 로드 확인
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+          showToast('⚠️ PDF 라이브러리가 아직 로드되지 않았어요');
+          return;
+        }
         var jsPDF = window.jspdf.jsPDF;
-        var imgData = canvas.toDataURL('image/jpeg', 0.92);
+
+        // canvas → 이미지 변환 (tainted canvas 에러 방어)
+        var imgData;
+        try {
+          imgData = canvas.toDataURL('image/jpeg', 0.92);
+        } catch(e) {
+          console.error('toDataURL failed:', e);
+          // fallback: PNG로 시도
+          try {
+            imgData = canvas.toDataURL('image/png');
+          } catch(e2) {
+            showToast('⚠️ 이미지 변환에 실패했어요. PNG로 저장해주세요.');
+            return;
+          }
+        }
+
         var cW = canvas.width;
         var cH = canvas.height;
-        var scale = 1.5; // html2canvas scale
         var domW = target.offsetWidth;
         var domH = target.scrollHeight;
 
@@ -10079,7 +10098,7 @@
           var lw = link.w * xScale;
           var lh = link.h * yScale;
           if (lx >= 0 && ly >= 0 && lx + lw <= pdfW && ly + lh <= pdfH) {
-            pdf.link(lx, ly, lw, lh, { url: link.url });
+            try { pdf.link(lx, ly, lw, lh, { url: link.url }); } catch(e) {}
           }
         });
 
