@@ -128,6 +128,33 @@
       transform: scale(0.93);
     }
 
+    /* ── TOAST NOTIFICATION (GLOBAL) ── */
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 14px;
+      z-index: 2000;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s, visibility 0s 0.4s;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      max-width: calc(100vw - 32px);
+      text-align: center;
+      word-break: keep-all;
+    }
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      visibility: visible;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s, visibility 0s;
+    }
+
     /* ── SAVE BUTTON FILL ANIMATION ── */
     /* 모바일에서만 저장(인쇄) 버튼 숨김 — URL 공유로 대체 */
     @media screen and (max-width: 743px) {
@@ -2087,32 +2114,7 @@
       /* 드롭다운 메뉴 overflow 보장 */
       .dest-dd { overflow: visible !important; }
 
-      /* Toast notification */
-      #toast {
-        position: fixed;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%) translateY(100px);
-        background: rgba(0,0,0,0.8);
-        color: #fff;
-        padding: 12px 24px;
-        border-radius: 30px;
-        font-size: 14px;
-        z-index: 2000;
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s, visibility 0s 0.4s;
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        max-width: calc(100vw - 32px);
-        text-align: center;
-        word-break: keep-all;
-      }
-      #toast.show {
-        transform: translateX(-50%) translateY(0);
-        opacity: 1;
-        visibility: visible;
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s, visibility 0s;
-      }
+      /* Toast notification — 모바일 위치만 여기서 조정 (기본 스타일은 글로벌) */
 
       /* 배너 모바일 컴팩트 */
       #compare-view .top-banner {
@@ -14025,21 +14027,36 @@
 
 <script>
 function handleShare() {
-  var url = location.href;
-  try {
-    var base = location.origin + location.pathname;
-    var indices = [];
+  var base = location.origin + location.pathname;
+  var indices = [];
+
+  // 1순위: _currentDestIdx (가장 신뢰)
+  if (window._currentDestIdx) {
+    indices = window._currentDestIdx.filter(function(v){ return v >= 0; });
+  }
+  // 2순위: 드롭다운 셀렉트
+  if (indices.length === 0) {
     for (var i = 0; i < 3; i++) {
       var sel = document.getElementById('sel' + i);
-      if (sel && sel.value !== '' && sel.value !== '-1') indices.push(sel.value);
+      if (sel && sel.value !== '' && sel.value !== '-1') indices.push(parseInt(sel.value, 10));
     }
-    if (indices.length === 0 && window._currentDestIdx) {
-      indices = window._currentDestIdx.filter(function(v){ return v >= 0; });
-    }
-    if (indices.length > 0) url = base + '?d=' + indices.join(',');
-  } catch(e) {}
+  }
 
-  // 복사
+  var url = indices.length > 0 ? base + '?d=' + indices.join(',') : location.href;
+
+  // 클립보드 복사 (modern API 우선)
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(function() {
+      if (typeof showToast === 'function') showToast('링크가 복사되었어요');
+      else alert('링크가 복사되었어요');
+    }).catch(function() {
+      fallbackCopy(url);
+    });
+  } else {
+    fallbackCopy(url);
+  }
+}
+function fallbackCopy(url) {
   var ta = document.createElement('textarea');
   ta.value = url;
   ta.setAttribute('readonly','');
@@ -14048,13 +14065,8 @@ function handleShare() {
   ta.select();
   try { document.execCommand('copy'); } catch(e) {}
   document.body.removeChild(ta);
-
-  // 알림
-  if (typeof showToast === 'function') {
-    showToast('링크가 복사되었어요');
-  } else {
-    alert('링크가 복사되었어요');
-  }
+  if (typeof showToast === 'function') showToast('링크가 복사되었어요');
+  else alert('링크가 복사되었어요');
 }
 </script>
 
