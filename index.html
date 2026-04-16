@@ -9517,19 +9517,26 @@
         const _displayHotelSub = _liveHotelPrice ? _liveHotelSub : `${hotelType} (${days - 1}박)`;
         const _displayHotelKicker = _liveHotelPrice ? _liveHotelKicker : `1박 평균 ${hotelPerNight}만원`;
 
-        // 총 예상 비용: 실시간 항공 기반 재계산
+        // 총 예상 비용: 실시간 항공/숙박 기반 재계산
         let _recalcGrand = grandTotal;
-        if (_liveAirPrice) {
-          const _parsedAir = parseInt(String(_liveAirPrice).replace(/[^0-9]/g, '')) || airPrice;
-          const _parsedHotel = _liveHotelPrice ? parseInt(String(_liveHotelPrice).replace(/[^0-9]/g, '')) : hotelPerNight;
-          const _hotelTotal = _parsedHotel * (days - 1);
+        if (_liveAirPrice || _liveHotelPrice) {
+          // 항공: 실시간 있으면 파싱, 없으면 기존 예상가
+          const _parsedAir = _liveAirPrice
+            ? (parseInt(String(_liveAirPrice).replace(/[^0-9]/g, '')) || airPrice)
+            : airPrice;
+          // 숙박: 실시간 있으면 파싱 (1박 가격), 없으면 기존 예상 1박가
+          const _parsedHotelPerNight = _liveHotelPrice
+            ? (parseInt(String(_liveHotelPrice).replace(/[^0-9]/g, '')) || hotelPerNight)
+            : hotelPerNight;
+          const _hotelTotal = _parsedHotelPerNight * (days - 1);
           _recalcGrand = _parsedAir + _hotelTotal + dailyTotal;
           if (!isUnlimited && budget < 9000 && budget !== 40 && _recalcGrand > budget) {
             _recalcGrand = budget;
           }
         }
         const _displayGrand = _recalcGrand + '만원~';
-        const _displayGrandSub = _liveAirPrice ? '총 예상 비용 (항공+숙박+현지)' : '예상 비용 (항공+숙박+현지)';
+        const _hasLiveData = _liveAirPrice || _liveHotelPrice;
+        const _displayGrandSub = _hasLiveData ? '총 예상 비용 (항공+숙박+현지)' : '예상 비용 (항공+숙박+현지)';
 
         // 5. UI UPDATE — TOTAL / AIR / HOTEL / DAILY
         setCell('total-' + col, _displayGrand, _displayGrandSub, `${days}일 기준`);
