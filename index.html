@@ -9093,6 +9093,64 @@
         }, 250);
       }
 
+      // 실시간 데이터 도착 시 총 비용 재계산 함수
+      function recalcTotalForColumn(col) {
+        var sel = document.getElementById('sel' + col);
+        if (!sel) return;
+        var idx = parseInt(sel.value);
+        var d = v1_0_9_DEST_DATA[idx];
+        if (!d) return;
+        var budget = parseInt(document.getElementById('currency-select') ? document.getElementById('currency-select').value : '150') || 150;
+        var isVIP = budget >= 300 && budget < 9000;
+        var isUnlimited = budget >= 9000 || budget === 40;
+        var days = parseInt(document.getElementById('days-select') ? document.getElementById('days-select').value : '6') || 6;
+
+        // 실시간 항공가
+        var liveAir = isVIP ? (d._vipAirfare || d.airfare) : d.airfare;
+        var parsedAir = liveAir ? parseInt(String(liveAir).replace(/[^0-9]/g, '')) : 0;
+        if (!parsedAir) return; // 항공 데이터 없으면 재계산 불가
+
+        // 실시간 숙박가 (1박)
+        var liveHotel = isVIP ? (d._vipHotelPrice || d._hotelPrice) : d._hotelPrice;
+        var parsedHotelPerNight = liveHotel ? parseInt(String(liveHotel).replace(/[^0-9]/g, '')) : 0;
+        // 숙박 실시간 없으면 기존 예상가 사용
+        if (!parsedHotelPerNight) {
+          var hotelPerNightEl = document.getElementById('hotel-' + col);
+          if (hotelPerNightEl) {
+            var kickerEl = hotelPerNightEl.querySelector('.kicker');
+            if (kickerEl) {
+              var kickerMatch = kickerEl.textContent.match(/(\d+)만원/);
+              if (kickerMatch) parsedHotelPerNight = parseInt(kickerMatch[1]);
+            }
+          }
+        }
+        if (!parsedHotelPerNight) return;
+
+        var hotelTotal = parsedHotelPerNight * (days - 1);
+        // 현지 비용
+        var dailyEl = document.getElementById('daily-' + col);
+        var dailyPerDay = 0;
+        if (dailyEl) {
+          var dailyMain = dailyEl.querySelector('.main');
+          if (dailyMain) dailyPerDay = parseInt(String(dailyMain.textContent).replace(/[^0-9]/g, '')) || 0;
+        }
+        var dailyTotal = dailyPerDay * days;
+
+        var grandTotal = parsedAir + hotelTotal + dailyTotal;
+        if (!isUnlimited && budget < 9000 && budget !== 40 && grandTotal > budget) {
+          grandTotal = budget;
+        }
+
+        // UI 업데이트
+        var totalEl = document.getElementById('total-' + col);
+        if (totalEl) {
+          var tm = totalEl.querySelector('.main');
+          var ts = totalEl.querySelector('.sub');
+          if (tm) tm.textContent = grandTotal + '만원~';
+          if (ts) ts.textContent = '총 예상 비용 (항공+숙박+현지)';
+        }
+      }
+
       function updateColumn(col, destIdx, budgetLimit, duration) {
         const d = v1_0_9_DEST_DATA[destIdx];
         if (!d) return;
@@ -12937,7 +12995,10 @@
                   hBtn.textContent = '숙소 예약하기 ›';
                   hotelEl.appendChild(hBtn);
                 }
+                }
               }
+              // 실시간 숙박 데이터 반영 후 총 비용 재계산
+              for (var rhi = 0; rhi < 3; rhi++) recalcTotalForColumn(rhi);
             }
           })
           .catch(function() { /* API 실패 시 기존 데이터 유지 */ });
@@ -13141,7 +13202,10 @@
                     if (d.cheapFlights[fi]) descEl.textContent = d.cheapFlights[fi].desc;
                   });
                 }
+                }
               }
+              // 실시간 데이터 반영 후 총 비용 재계산
+              for (var ri = 0; ri < 3; ri++) recalcTotalForColumn(ri);
             }
           })
           .catch(function(e) { console.log('TP flight API error:', e); });
