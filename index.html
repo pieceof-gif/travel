@@ -13000,15 +13000,21 @@
         // 제휴 예약 링크 생성 — Skyscanner 검색 (한국어 UI)
         var makeBookingLink = function(iata) {
           var dep = window.DEPARTURE_AIRPORT || 'ICN';
-          var today = new Date();
-          // 다음 달 15일 출발, 22일 귀국으로 기본 세팅
-          var d1 = new Date(today.getFullYear(), today.getMonth() + 1, 15);
-          var d2 = new Date(today.getFullYear(), today.getMonth() + 1, 22);
           var fmt = function(d) {
             return String(d.getFullYear()).slice(2) +
               String(d.getMonth() + 1).padStart(2, '0') +
               String(d.getDate()).padStart(2, '0');
           };
+          // 사용자 선택 날짜 우선, 없으면 다음 달 15~22일
+          var d1, d2;
+          if (window.selectedDates && window.selectedDates.length === 2) {
+            d1 = window.selectedDates[0];
+            d2 = window.selectedDates[1];
+          } else {
+            var today = new Date();
+            d1 = new Date(today.getFullYear(), today.getMonth() + 1, 15);
+            d2 = new Date(today.getFullYear(), today.getMonth() + 1, 22);
+          }
           return 'https://www.skyscanner.co.kr/transport/flights/' +
             dep.toLowerCase() + '/' + iata.toLowerCase() + '/' +
             fmt(d1) + '/' + fmt(d2) + '/?adults=1';
