@@ -114,6 +114,7 @@ export default {
       const checkin = url.searchParams.get('checkin') || '';
       const checkout = url.searchParams.get('checkout') || '';
       const minStars = parseInt(url.searchParams.get('stars') || '0');
+      const destFilter = url.searchParams.get('dest') || ''; // 특정 도시만 조회
 
       // 날짜 없으면 기본값: 내일~모레
       const tomorrow = new Date();
@@ -124,8 +125,17 @@ export default {
       const ci = checkin || fmtDate(tomorrow);
       const co = checkout || fmtDate(dayAfter);
 
+      // 숙박일수 계산 (1박 가격 산출용)
+      const nights = Math.max(1, Math.round((new Date(co) - new Date(ci)) / 86400000));
+
       const results = {};
-      const entries = Object.entries(DEST_IDS);
+      let entries = Object.entries(DEST_IDS);
+
+      // dest 필터: 특정 도시만 요청 시 해당 도시만 조회 (API 할당량 절약)
+      if (destFilter) {
+        const wanted = destFilter.split(',').map(s => s.trim().toUpperCase());
+        entries = entries.filter(([iata]) => wanted.includes(iata));
+      }
 
       // 8개씩 병렬 처리
       const chunks = [];
@@ -155,13 +165,16 @@ export default {
               if (withPrice.length === 0) return;
 
               const best = withPrice[0]; // 이미 가격 낮은 순 정렬됨
-              const pricePerNight = Math.round(best.min_total_price);
+              const totalPrice = best.min_total_price;
+              const pricePerNight = Math.round(totalPrice / nights);
               const hotelName = best.hotel_name || '';
               const stars = best.class || 0;
               const reviewScore = best.review_score || 0;
 
               results[iata] = {
                 priceKRW: pricePerNight,
+                priceTotal: Math.round(totalPrice),
+                nights: nights,
                 priceLabel: Math.round(pricePerNight / 10000) + '만원~/박',
                 hotelName: hotelName,
                 stars: stars,

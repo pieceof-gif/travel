@@ -12808,12 +12808,36 @@
           saipan: 'SPN', palawan: 'PPS', sanya: 'SYX'
         };
 
-        // 호텔 API도 사용자 선택 날짜 전달
-        var _hotelApiUrl = 'https://travel.le2jy.workers.dev/api/hotels/all';
+        // 비교화면에 보이는 도시들의 IATA 코드 수집
+        var _visibleIatas = [];
+        v1_0_9_DEST_DATA.forEach(function(dest) {
+          var iata = HOTEL_IATA[dest.id];
+          if (iata) _visibleIatas.push(iata);
+        });
+        // 현재 비교화면에 선택된 3개 도시만 조회 (API 할당량 절약)
+        var _selectedIatas = [];
+        for (var _si = 0; _si < 3; _si++) {
+          var _selEl = document.getElementById('sel' + _si);
+          if (_selEl) {
+            var _selIdx = parseInt(_selEl.value);
+            var _selDest = v1_0_9_DEST_DATA[_selIdx];
+            if (_selDest && HOTEL_IATA[_selDest.id]) {
+              _selectedIatas.push(HOTEL_IATA[_selDest.id]);
+            }
+          }
+        }
+        // 비교화면이 아직 안 열렸으면 기본 3개만
+        if (_selectedIatas.length === 0) {
+          _selectedIatas = _visibleIatas.slice(0, 3);
+        }
+        var _destParam = _selectedIatas.join(',');
+
+        // 호텔 API: 선택 도시 + 선택 날짜
+        var _hotelApiUrl = 'https://travel.le2jy.workers.dev/api/hotels/all?dest=' + _destParam;
         if (window.selectedDates && window.selectedDates.length === 2) {
           var _hDep = window.selectedDates[0], _hRet = window.selectedDates[1];
           var _hFmt = function(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
-          _hotelApiUrl += '?checkin=' + _hFmt(_hDep) + '&checkout=' + _hFmt(_hRet);
+          _hotelApiUrl += '&checkin=' + _hFmt(_hDep) + '&checkout=' + _hFmt(_hRet);
         }
         fetch(_hotelApiUrl)
           .then(function(r) { return r.json(); })
@@ -12858,11 +12882,10 @@
               }
             }
           })
-          .catch(function() { /* Hotellook API 실패 시 하드코딩 데이터 유지 */ });
+          .catch(function() { /* API 실패 시 기존 데이터 유지 */ });
 
-        // VIP용 5성급 호텔 데이터도 미리 가져오기
-        // VIP 호텔도 날짜 전달
-        var _vipHotelUrl = 'https://travel.le2jy.workers.dev/api/hotels/all?stars=5';
+        // VIP용 5성급 호텔 (선택된 도시만)
+        var _vipHotelUrl = 'https://travel.le2jy.workers.dev/api/hotels/all?stars=5&dest=' + _destParam;
         if (window.selectedDates && window.selectedDates.length === 2) {
           var _vhDep = window.selectedDates[0], _vhRet = window.selectedDates[1];
           var _vhFmt = function(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
