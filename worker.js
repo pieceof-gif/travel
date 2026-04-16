@@ -179,7 +179,7 @@ export default {
                 hotelName: hotelName,
                 stars: stars,
                 reviewScore: reviewScore,
-                bookingLink: `https://www.booking.com/hotel/${best.cc1}/${(best.hotel_name_trans || best.hotel_name || '').toLowerCase().replace(/\s+/g, '-')}.ko.html?checkin=${ci}&checkout=${co}`,
+                bookingLink: `https://www.booking.com/searchresults.ko.html?dest_id=${destId}&dest_type=city&checkin=${ci}&checkout=${co}&group_adults=2&no_rooms=1&order=price`,
               };
             }
           } catch (_) {}
