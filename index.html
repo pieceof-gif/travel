@@ -9484,9 +9484,9 @@
         const dpriceEl = document.getElementById('dprice' + col);
         if (dpriceEl) dpriceEl.textContent = grandTotal + '만원~';
 
-        // 4. REAL-TIME DATA PRIORITY — 실시간 데이터가 있으면 우선 사용
-        // 항공: 실시간 API → 하드코딩 fallback
-        let _liveAirPrice = null, _liveAirLabel = '', _liveAirKicker = '', _liveAirSub = '';
+        // 4. REAL-TIME DATA PRIORITY — 실시간 데이터 우선, 없으면 예상가 표시
+        // 항공: 실시간 API 데이터 우선
+        let _liveAirPrice = null, _liveAirKicker = '', _liveAirSub = '';
         if (isVIP && d._vipAirfare) {
           _liveAirPrice = d._vipAirfare;
           _liveAirKicker = '비즈니스 · 인천 출발';
@@ -9496,12 +9496,13 @@
           _liveAirKicker = '이코노미 · 인천 출발';
           _liveAirSub = '실시간 최저가 (왕복)';
         }
-        const _displayAirPrice = _liveAirPrice || (airPrice + '만원');
-        const _displayAirSub = _liveAirPrice ? _liveAirSub : '왕복 항공권';
+        // 실시간 없으면 예상 가격 (명확히 "예상" 표기)
         const mainAirline = d.cheapFlights && d.cheapFlights[0] ? d.cheapFlights[0].label.split('(')[0].trim() : '';
+        const _displayAirPrice = _liveAirPrice || (airPrice + '만원~');
+        const _displayAirSub = _liveAirPrice ? _liveAirSub : '예상 가격 (왕복)';
         const _displayAirKicker = _liveAirPrice ? _liveAirKicker : (mainAirline ? mainAirline + ' · ' + airType : airType);
 
-        // 숙박: 실시간 API → 하드코딩 fallback
+        // 숙박: 실시간 API 우선, 없으면 예상 가격
         let _liveHotelPrice = null, _liveHotelKicker = '', _liveHotelSub = '';
         if (isVIP && d._vipHotelPrice) {
           _liveHotelPrice = d._vipHotelPrice;
@@ -9516,21 +9517,22 @@
         const _displayHotelSub = _liveHotelPrice ? _liveHotelSub : `${hotelType} (${days - 1}박)`;
         const _displayHotelKicker = _liveHotelPrice ? _liveHotelKicker : `1박 평균 ${hotelPerNight}만원`;
 
-        // 총 예상 비용: 실시간 가격이 있으면 파싱해서 재계산
+        // 총 예상 비용: 실시간 항공 기반 재계산
         let _recalcGrand = grandTotal;
-        if (_liveAirPrice || _liveHotelPrice) {
-          const _parsedAir = _liveAirPrice ? parseInt(String(_liveAirPrice).replace(/[^0-9]/g, '')) || airPrice : airPrice;
-          const _parsedHotel = _liveHotelPrice ? parseInt(String(_liveHotelPrice).replace(/[^0-9]/g, '')) || hotelPrice : hotelPrice;
-          // 실시간 호텔은 1박 기준 → 총 숙박비 = 1박가격 × (days-1)
-          const _hotelTotal = _liveHotelPrice ? _parsedHotel * (days - 1) : _parsedHotel;
+        if (_liveAirPrice) {
+          const _parsedAir = parseInt(String(_liveAirPrice).replace(/[^0-9]/g, '')) || airPrice;
+          const _parsedHotel = _liveHotelPrice ? parseInt(String(_liveHotelPrice).replace(/[^0-9]/g, '')) : hotelPerNight;
+          const _hotelTotal = _parsedHotel * (days - 1);
           _recalcGrand = _parsedAir + _hotelTotal + dailyTotal;
           if (!isUnlimited && budget < 9000 && budget !== 40 && _recalcGrand > budget) {
             _recalcGrand = budget;
           }
         }
+        const _displayGrand = _recalcGrand + '만원~';
+        const _displayGrandSub = _liveAirPrice ? '총 예상 비용 (항공+숙박+현지)' : '예상 비용 (항공+숙박+현지)';
 
         // 5. UI UPDATE — TOTAL / AIR / HOTEL / DAILY
-        setCell('total-' + col, _recalcGrand + '만원~', '총 예상 비용 (항공+숙박+현지)', `${days}일 기준`);
+        setCell('total-' + col, _displayGrand, _displayGrandSub, `${days}일 기준`);
         setCell('air-' + col, _displayAirPrice, _displayAirSub, _displayAirKicker);
         setCell('hotel-' + col, _displayHotelPrice, _displayHotelSub, _displayHotelKicker);
         setCell('daily-' + col, dailySpend + '만원', '하루 지출 (식사+교통+관광)', d.dailySub);
@@ -12975,8 +12977,14 @@
             fmt(d1) + '/' + fmt(d2) + '/?adults=1';
         };
 
-        // 최저가 API 호출 (Worker 프록시)
-        fetch('https://travel.le2jy.workers.dev/api/flights/all')
+        // 최저가 API 호출 (Worker 프록시) — 사용자 선택 날짜 반영
+        var _flightApiUrl = 'https://travel.le2jy.workers.dev/api/flights/all';
+        if (window.selectedDates && window.selectedDates.length === 2) {
+          var _dep = window.selectedDates[0], _ret = window.selectedDates[1];
+          var _fmtMonth = function(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0'); };
+          _flightApiUrl += '?depart=' + _fmtMonth(_dep) + '&return=' + _fmtMonth(_ret);
+        }
+        fetch(_flightApiUrl)
           .then(function(r) { return r.json(); })
           .then(function(data) {
             if (!data || !data.data) return;
@@ -13038,7 +13046,13 @@
           .catch(function(e) { console.log('TP flight API error:', e); });
 
         // VIP용 비즈니스 클래스 항공 데이터도 미리 가져오기
-        fetch('https://travel.le2jy.workers.dev/api/flights/all?trip_class=1')
+        var _vipFlightUrl = 'https://travel.le2jy.workers.dev/api/flights/all?trip_class=1';
+        if (window.selectedDates && window.selectedDates.length === 2) {
+          var _depV = window.selectedDates[0], _retV = window.selectedDates[1];
+          var _fmtV = function(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0'); };
+          _vipFlightUrl += '&depart=' + _fmtV(_depV) + '&return=' + _fmtV(_retV);
+        }
+        fetch(_vipFlightUrl)
           .then(function(r) { return r.json(); })
           .then(function(data) {
             if (!data || !data.data) return;
