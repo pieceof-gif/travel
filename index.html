@@ -12808,7 +12808,14 @@
           saipan: 'SPN', palawan: 'PPS', sanya: 'SYX'
         };
 
-        fetch('https://travel.le2jy.workers.dev/api/hotels/all')
+        // 호텔 API도 사용자 선택 날짜 전달
+        var _hotelApiUrl = 'https://travel.le2jy.workers.dev/api/hotels/all';
+        if (window.selectedDates && window.selectedDates.length === 2) {
+          var _hDep = window.selectedDates[0], _hRet = window.selectedDates[1];
+          var _hFmt = function(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+          _hotelApiUrl += '?checkin=' + _hFmt(_hDep) + '&checkout=' + _hFmt(_hRet);
+        }
+        fetch(_hotelApiUrl)
           .then(function(r) { return r.json(); })
           .then(function(data) {
             if (!data || !data.data) return;
@@ -12854,7 +12861,14 @@
           .catch(function() { /* Hotellook API 실패 시 하드코딩 데이터 유지 */ });
 
         // VIP용 5성급 호텔 데이터도 미리 가져오기
-        fetch('https://travel.le2jy.workers.dev/api/hotels/all?stars=5')
+        // VIP 호텔도 날짜 전달
+        var _vipHotelUrl = 'https://travel.le2jy.workers.dev/api/hotels/all?stars=5';
+        if (window.selectedDates && window.selectedDates.length === 2) {
+          var _vhDep = window.selectedDates[0], _vhRet = window.selectedDates[1];
+          var _vhFmt = function(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+          _vipHotelUrl += '&checkin=' + _vhFmt(_vhDep) + '&checkout=' + _vhFmt(_vhRet);
+        }
+        fetch(_vipHotelUrl)
           .then(function(r) { return r.json(); })
           .then(function(data) {
             if (!data || !data.data) return;
