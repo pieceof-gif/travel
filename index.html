@@ -10414,6 +10414,57 @@
           }
         }
 
+        // 여행지 변경 시 호텔 데이터 없으면 실시간 조회
+        var _chgHotelIata = window.DEST_CITY_IATA && window.DEST_CITY_IATA[d.id];
+        if (_chgHotelIata && !d._hotelPrice) {
+          var _chgHotelUrl = 'https://travel.le2jy.workers.dev/api/hotels/all?dest=' + _chgHotelIata;
+          if (window.selectedDates && window.selectedDates.length === 2) {
+            var _chFmt = function(dt) { return dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0'); };
+            _chgHotelUrl += '&checkin=' + _chFmt(window.selectedDates[0]) + '&checkout=' + _chFmt(window.selectedDates[1]);
+          }
+          fetch(_chgHotelUrl)
+            .then(function(r) { return r.json(); })
+            .then(function(hData) {
+              if (!hData || !hData.data || !hData.data[_chgHotelIata]) return;
+              var hEntry = hData.data[_chgHotelIata];
+              d._hotelPrice = hEntry.priceLabel;
+              d._hotelLink = hEntry.bookingLink;
+              // UI 업데이트
+              var hEl = document.getElementById('hotel-' + col);
+              if (hEl) {
+                var hm = hEl.querySelector('.main');
+                var hs = hEl.querySelector('.sub');
+                var hk = hEl.querySelector('.kicker');
+                if (hm) hm.textContent = hEntry.priceLabel;
+                if (hs) hs.textContent = '실시간 최저가 (1박)';
+                if (hk) hk.textContent = 'Booking.com 기준';
+              }
+            }).catch(function() {});
+          // VIP 호텔도 조회
+          if (_isVipInChange && !d._vipHotelPrice) {
+            var _chgVipUrl = 'https://travel.le2jy.workers.dev/api/hotels/all?stars=5&dest=' + _chgHotelIata;
+            if (window.selectedDates && window.selectedDates.length === 2) {
+              var _cvFmt = function(dt) { return dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0'); };
+              _chgVipUrl += '&checkin=' + _cvFmt(window.selectedDates[0]) + '&checkout=' + _cvFmt(window.selectedDates[1]);
+            }
+            fetch(_chgVipUrl)
+              .then(function(r) { return r.json(); })
+              .then(function(vData) {
+                if (!vData || !vData.data || !vData.data[_chgHotelIata]) return;
+                var vEntry = vData.data[_chgHotelIata];
+                d._vipHotelPrice = vEntry.priceLabel;
+                d._vipHotelLink = vEntry.bookingLink;
+                var vhEl = document.getElementById('hotel-' + col);
+                if (vhEl) {
+                  var vm = vhEl.querySelector('.main');
+                  var vs = vhEl.querySelector('.sub');
+                  if (vm) vm.textContent = vEntry.priceLabel;
+                  if (vs) vs.textContent = '실시간 프리미엄 (1박)';
+                }
+              }).catch(function() {});
+          }
+        }
+
         // 여행지 변경 시 날씨 실시간 갱신 (디바운스로 중복 호출 방지)
         if (typeof fetchWeatherDebounced === 'function') fetchWeatherDebounced();
       }
