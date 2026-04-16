@@ -146,9 +146,23 @@ export default {
         chunks.push(entries.slice(i, i + 8));
       }
 
+      // Cloudflare Cache API — 도시별 24시간 캐시
+      const cache = caches.default;
+      const CACHE_TTL = 86400; // 24시간
+
       for (const chunk of chunks) {
         await Promise.all(chunk.map(async ([iata, destId]) => {
           try {
+            // 캐시 키: 도시+날짜+별급 조합
+            const cacheKey = new Request(`https://hotel-cache.internal/${iata}/${ci}/${co}/${minStars}`);
+            const cached = await cache.match(cacheKey);
+            if (cached) {
+              const cachedData = await cached.json();
+              results[iata] = cachedData;
+              return;
+            }
+
+            // 캐시 미스 → Booking.com API 호출
             const starFilter = minStars > 0 ? `&class=${minStars}` : '';
             const searchUrl = `https://booking-com.p.rapidapi.com/v1/hotels/search?checkin_date=${ci}&checkout_date=${co}&dest_type=city&dest_id=${destId}&adults_number=2&room_number=1&units=metric&filter_by_currency=KRW&locale=ko&order_by=price&page_number=0${starFilter}`;
 
@@ -163,18 +177,17 @@ export default {
             const data = await res.json();
 
             if (data.result && data.result.length > 0) {
-              // 가격이 있는 결과만 필터
               const withPrice = data.result.filter(h => h.min_total_price > 0);
               if (withPrice.length === 0) return;
 
-              const best = withPrice[0]; // 이미 가격 낮은 순 정렬됨
+              const best = withPrice[0];
               const totalPrice = best.min_total_price;
               const pricePerNight = Math.round(totalPrice / nights);
               const hotelName = best.hotel_name || '';
               const stars = best.class || 0;
               const reviewScore = best.review_score || 0;
 
-              results[iata] = {
+              const result = {
                 priceKRW: pricePerNight,
                 priceTotal: Math.round(totalPrice),
                 nights: nights,
@@ -184,6 +197,12 @@ export default {
                 reviewScore: reviewScore,
                 bookingLink: `https://www.booking.com/searchresults.ko.html?dest_id=${destId}&dest_type=city&checkin=${ci}&checkout=${co}&group_adults=2&no_rooms=1&order=price`,
               };
+              results[iata] = result;
+
+              // 24시간 캐시 저장
+              await cache.put(cacheKey, new Response(JSON.stringify(result), {
+                headers: { 'Content-Type': 'application/json', 'Cache-Control': `s-maxage=${CACHE_TTL}` }
+              }));
             }
           } catch (_) {}
         }));
@@ -194,6 +213,7 @@ export default {
         checkin: ci,
         checkout: co,
         source: 'booking.com',
+        cached: Object.keys(results).length > 0,
       }), { headers: CORS_HEADERS });
     }
 
