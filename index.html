@@ -10089,7 +10089,8 @@
 
       // ── SHARE (LINK COPY) ──
       function handleShare() {
-        var base = location.origin + location.pathname;
+        // 항상 canonical URL(https://odiga.kr)로 고정 — Kakao OG 캐시 분리 방지
+        var base = 'https://odiga.kr/';
         var params = [];
         // 1. 목적지 ID
         var ids = [];
