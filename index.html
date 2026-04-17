@@ -10116,22 +10116,7 @@
         if (b1 && b1.value && b1.value !== 'unlimited') {
           params.push('budget=' + encodeURIComponent(b1.value));
         }
-        // 5. 현재 화면의 실제 가격 스냅샷 (공유 시 동일 표시)
-        var snap = [];
-        for (var si = 0; si < ids.length; si++) {
-          var totalEl = document.getElementById('total-' + si);
-          var airEl = document.getElementById('air-' + si);
-          var hotelEl = document.getElementById('hotel-' + si);
-          var t = totalEl ? (totalEl.querySelector('.main') || {}).textContent || '' : '';
-          var a = airEl ? (airEl.querySelector('.main') || {}).textContent || '' : '';
-          var ak = airEl ? (airEl.querySelector('.kicker') || {}).textContent || '' : '';
-          var as2 = airEl ? (airEl.querySelector('.sub') || {}).textContent || '' : '';
-          var h = hotelEl ? (hotelEl.querySelector('.main') || {}).textContent || '' : '';
-          var hk = hotelEl ? (hotelEl.querySelector('.kicker') || {}).textContent || '' : '';
-          var hs2 = hotelEl ? (hotelEl.querySelector('.sub') || {}).textContent || '' : '';
-          snap.push([t, a, ak, as2, h, hk, hs2].join('|'));
-        }
-        if (snap.length > 0) params.push('snap=' + encodeURIComponent(snap.join(';;')));
+        // 5. snap 파라미터 제거 — URL 길이 문제로 공유 URL에서 제외
         // 6. 뱃지 상태
         var badges = [];
         for (var bi = 0; bi < ids.length; bi++) {
