@@ -13413,10 +13413,12 @@
             dateEl.textContent = d1 + " \u2013 " + d2;
             window._isAutoDate = true; // 자동 세팅
           }
-          var s0 = document.getElementById("sel0"), s1 = document.getElementById("sel1");
-          var sf0 = document.getElementById("sel0-fixed"), sf1 = document.getElementById("sel1-fixed");
-          if (s0) s0.value = "3"; if (sf0) sf0.value = "3";
-          if (s1) s1.value = "4"; if (sf1) sf1.value = "4";
+          var s0 = document.getElementById("sel0"), s1 = document.getElementById("sel1"), s2 = document.getElementById("sel2");
+          var sf0 = document.getElementById("sel0-fixed"), sf1 = document.getElementById("sel1-fixed"), sf2 = document.getElementById("sel2-fixed");
+          // 기본 여행지: 한국인 인기 순 (오사카, 타이베이, 방콕)
+          if (s0) s0.value = "4"; if (sf0) sf0.value = "4";  // 오사카
+          if (s1) s1.value = "3"; if (sf1) sf1.value = "3";  // 타이베이
+          if (s2) s2.value = "6"; if (sf2) sf2.value = "6";  // 방콕
           updateResultsByFilters();
           _cvSheetOpenedOnce = true;
           // wiz-launcher 텍스트 변경 (모바일/태블릿만)
