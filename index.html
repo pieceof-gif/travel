@@ -9981,7 +9981,7 @@
           var hs2 = hotelEl ? (hotelEl.querySelector('.sub') || {}).textContent || '' : '';
           snap.push([t, a, ak, as2, h, hk, hs2].join('|'));
         }
-        if (snap.length > 0) params.push('snap=' + encodeURIComponent(snap.join('~')));
+        if (snap.length > 0) params.push('snap=' + encodeURIComponent(snap.join(';;')));
         // 6. 뱃지 상태
         var badges = [];
         for (var bi = 0; bi < ids.length; bi++) {
@@ -10635,7 +10635,7 @@
           var snapParam = params.get('snap');
           var badgesParam = params.get('badges');
           if (snapParam) {
-            var colSnaps = decodeURIComponent(snapParam).split('~');
+            var colSnaps = decodeURIComponent(snapParam).split(';;');
             for (var si = 0; si < Math.min(colSnaps.length, 3); si++) {
               var parts = colSnaps[si].split('|');
               // parts: [total, air, airKicker, airSub, hotel, hotelKicker, hotelSub]
