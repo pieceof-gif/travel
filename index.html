@@ -8998,7 +8998,10 @@
         const _erb = window.exchangeRateBonus || {};
         const _selRegion = window.selectedRegion || '';
         console.log('[Filter] region=' + _selRegion + ', budget=' + filterBudget + ', duration=' + duration);
+        // 랜덤 추천에서 제외할 여행지
+        const RANDOM_EXCLUDE = new Set(['siemreap']);
         const allCandidates = [...v1_0_9_DEST_DATA].filter(d => {
+          if (RANDOM_EXCLUDE.has(d.id)) return false;
           const baseMin = d.minBudget || 40;
           // unlimited/cheapest 예산일 때는 duration 페널티 없이 모든 여행지 노출
           const adjustedMin = (filterBudget >= 9000)
