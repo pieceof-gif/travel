@@ -14535,7 +14535,7 @@
           var footerTop = footer.getBoundingClientRect().top;
           var viewH = window.innerHeight;
 
-          if (footerTop < viewH) {
+          if (footerTop > 0 && footerTop < viewH) {
             // 푸터가 화면 안에 들어옴 → 푸터 상단 기준 30px 위
             launcher.style.setProperty('bottom', (viewH - footerTop + 30) + 'px', 'important');
           } else {
