@@ -14519,6 +14519,33 @@
 <!-- handleShare is now in the main script block -->
 
 
+
+    <script>
+      // ── 여행 검색 버튼: 푸터 30px 위에서 멈추기 (모바일/태블릿) ──
+      (function() {
+        function adjustWizLauncher() {
+          if (window.innerWidth > 1068) return;
+          var launcher = document.getElementById('wiz-launcher');
+          var footer = document.querySelector('footer');
+          if (!launcher || !footer) return;
+
+          var footerTop = footer.getBoundingClientRect().top;
+          var viewH = window.innerHeight;
+
+          if (footerTop < viewH) {
+            // 푸터가 화면 안에 들어옴 → 푸터 상단 기준 30px 위
+            launcher.style.bottom = (viewH - footerTop + 30) + 'px';
+          } else {
+            launcher.style.bottom = '20px';
+          }
+        }
+
+        window.addEventListener('scroll', adjustWizLauncher, { passive: true });
+        window.addEventListener('resize', adjustWizLauncher, { passive: true });
+        adjustWizLauncher();
+      })();
+    </script>
+
     <!-- ── 이용약관 모달 ── -->
     <div class="footer-modal-overlay" id="modal-terms" onclick="if(event.target===this)this.classList.remove('open')">
       <div class="footer-modal">
