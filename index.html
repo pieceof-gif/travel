@@ -2,7 +2,6 @@
 <html lang="ko">
 
 <head>
-  <meta name="agd-partner-manual-verification" />
   <script data-noptimize="1" data-cfasync="false" data-wpfc-render="false">
     (function () {
         var script = document.createElement("script");
@@ -3404,7 +3403,7 @@
       }
       #wiz-launcher { bottom: 20px; left: 20px; transform: none; }
     }
-    @media (min-width: 1069px) {
+    @media (min-width: 781px) {
       #wiz-launcher { display: none !important; }
     }
   </style>
@@ -9094,85 +9093,6 @@
         }, 250);
       }
 
-      // 실시간 데이터 도착 시 총 비용 재계산 함수
-      function recalcTotalForColumn(col) {
-        var sel = document.getElementById('sel' + col);
-        if (!sel) return;
-        var idx = parseInt(sel.value);
-        var d = v1_0_9_DEST_DATA[idx];
-        if (!d) return;
-        var budget = parseInt(document.getElementById('currency-select') ? document.getElementById('currency-select').value : '150') || 150;
-        var isVIP = budget >= 300 && budget < 9000;
-        var isUnlimited = budget >= 9000 || budget === 40;
-
-        // 여행일수: selectedDates에서 계산, 없으면 date-value에서 추출
-        var days = 5;
-        if (window.selectedDates && window.selectedDates.length === 2) {
-          days = Math.ceil((window.selectedDates[1] - window.selectedDates[0]) / 86400000) + 1;
-          if (days <= 0) days = 5;
-        } else {
-          var dateVal = '';
-          var hdv = document.getElementById('home-date-value');
-          if (hdv) dateVal = hdv.textContent;
-          if (dateVal && dateVal.includes(' – ')) {
-            try {
-              var parts = dateVal.split(' – ');
-              var p1 = parts[0].split('월 '), p2 = parts[1].split('월 ');
-              var yr = new Date().getFullYear();
-              var m1 = parseInt(p1[0]) - 1, m2 = parseInt(p2[0]) - 1;
-              var dt1 = new Date(yr, m1, parseInt(p1[1]));
-              var dt2 = new Date(m2 < m1 ? yr+1 : yr, m2, parseInt(p2[1]));
-              days = Math.ceil((dt2 - dt1) / 86400000) + 1;
-              if (days <= 0) days = 5;
-            } catch(e) { days = 5; }
-          }
-        }
-
-        // 실시간 항공가
-        var liveAir = isVIP ? (d._vipAirfare || d.airfare) : d.airfare;
-        var parsedAir = liveAir ? parseInt(String(liveAir).replace(/[^0-9]/g, '')) : 0;
-        if (!parsedAir) return;
-
-        // 실시간 숙박가 (1박)
-        var liveHotel = isVIP ? (d._vipHotelPrice || d._hotelPrice) : d._hotelPrice;
-        var parsedHotelPerNight = liveHotel ? parseInt(String(liveHotel).replace(/[^0-9]/g, '')) : 0;
-        if (!parsedHotelPerNight) {
-          var hotelPerNightEl = document.getElementById('hotel-' + col);
-          if (hotelPerNightEl) {
-            var kickerEl = hotelPerNightEl.querySelector('.kicker');
-            if (kickerEl) {
-              var kickerMatch = kickerEl.textContent.match(/(\d+)만원/);
-              if (kickerMatch) parsedHotelPerNight = parseInt(kickerMatch[1]);
-            }
-          }
-        }
-        if (!parsedHotelPerNight) return;
-
-        var hotelTotal = parsedHotelPerNight * (days - 1);
-        var dailyEl = document.getElementById('daily-' + col);
-        var dailyPerDay = 0;
-        if (dailyEl) {
-          var dailyMain = dailyEl.querySelector('.main');
-          if (dailyMain) dailyPerDay = parseInt(String(dailyMain.textContent).replace(/[^0-9]/g, '')) || 0;
-        }
-        var dailyTotal = dailyPerDay * days;
-
-        var grandTotal = parsedAir + hotelTotal + dailyTotal;
-        if (!isUnlimited && budget < 9000 && budget !== 40 && grandTotal > budget) {
-          grandTotal = budget;
-        }
-
-        var totalEl = document.getElementById('total-' + col);
-        if (totalEl) {
-          var tm = totalEl.querySelector('.main');
-          var ts = totalEl.querySelector('.sub');
-          var tk = totalEl.querySelector('.kicker');
-          if (tm) tm.textContent = grandTotal + '만원~';
-          if (ts) ts.textContent = '총 예상 비용 (항공+숙박+현지)';
-          if (tk) tk.textContent = days + '일 기준';
-        }
-      }
-
       function updateColumn(col, destIdx, budgetLimit, duration) {
         const d = v1_0_9_DEST_DATA[destIdx];
         if (!d) return;
@@ -9564,64 +9484,14 @@
         const dpriceEl = document.getElementById('dprice' + col);
         if (dpriceEl) dpriceEl.textContent = grandTotal + '만원~';
 
-        // 4. REAL-TIME DATA PRIORITY — 실시간 데이터 우선, 없으면 예상가 표시
-        // 항공: 실시간 API 데이터 우선
-        let _liveAirPrice = null, _liveAirKicker = '', _liveAirSub = '';
-        if (isVIP && d._vipAirfare) {
-          _liveAirPrice = d._vipAirfare;
-          _liveAirKicker = '비즈니스 · 인천 출발';
-          _liveAirSub = '실시간 비즈니스 (왕복)';
-        } else if (d.airfare && d._tpLink) {
-          _liveAirPrice = d.airfare;
-          _liveAirKicker = '이코노미 · 인천 출발';
-          _liveAirSub = '실시간 최저가 (왕복)';
-        }
-        // 실시간 없으면 예상 가격 (명확히 "예상" 표기)
+        // 4. TOTAL COST ROW
+        setCell('total-' + col, grandTotal + '만원~', '총 예상 비용 (항공+숙박+현지)', `${days}일 기준`);
+
+        // 5. DETAIL CARDS
+        // Fix: pass correct (main, static-sub, dynamic-kicker) to setCell
         const mainAirline = d.cheapFlights && d.cheapFlights[0] ? d.cheapFlights[0].label.split('(')[0].trim() : '';
-        const _displayAirPrice = _liveAirPrice || (airPrice + '만원~');
-        const _displayAirSub = _liveAirPrice ? _liveAirSub : '예상 가격 (왕복)';
-        const _displayAirKicker = _liveAirPrice ? _liveAirKicker : (mainAirline ? mainAirline + ' · ' + airType : airType);
-
-        // 숙박: 실시간 API 우선, 없으면 예상 가격
-        let _liveHotelPrice = null, _liveHotelKicker = '', _liveHotelSub = '';
-        if (isVIP && d._vipHotelPrice) {
-          _liveHotelPrice = d._vipHotelPrice;
-          _liveHotelKicker = '프리미엄 숙소';
-          _liveHotelSub = '실시간 프리미엄 (1박)';
-        } else if (d._hotelPrice) {
-          _liveHotelPrice = d._hotelPrice;
-          _liveHotelKicker = 'Booking.com 기준';
-          _liveHotelSub = '실시간 최저가 (1박)';
-        }
-        const _displayHotelPrice = _liveHotelPrice || (hotelPrice + '만원');
-        const _displayHotelSub = _liveHotelPrice ? _liveHotelSub : `${hotelType} (${days - 1}박)`;
-        const _displayHotelKicker = _liveHotelPrice ? _liveHotelKicker : `1박 평균 ${hotelPerNight}만원`;
-
-        // 총 예상 비용: 실시간 항공/숙박 기반 재계산
-        let _recalcGrand = grandTotal;
-        if (_liveAirPrice || _liveHotelPrice) {
-          // 항공: 실시간 있으면 파싱, 없으면 기존 예상가
-          const _parsedAir = _liveAirPrice
-            ? (parseInt(String(_liveAirPrice).replace(/[^0-9]/g, '')) || airPrice)
-            : airPrice;
-          // 숙박: 실시간 있으면 파싱 (1박 가격), 없으면 기존 예상 1박가
-          const _parsedHotelPerNight = _liveHotelPrice
-            ? (parseInt(String(_liveHotelPrice).replace(/[^0-9]/g, '')) || hotelPerNight)
-            : hotelPerNight;
-          const _hotelTotal = _parsedHotelPerNight * (days - 1);
-          _recalcGrand = _parsedAir + _hotelTotal + dailyTotal;
-          if (!isUnlimited && budget < 9000 && budget !== 40 && _recalcGrand > budget) {
-            _recalcGrand = budget;
-          }
-        }
-        const _displayGrand = _recalcGrand + '만원~';
-        const _hasLiveData = _liveAirPrice || _liveHotelPrice;
-        const _displayGrandSub = _hasLiveData ? '총 예상 비용 (항공+숙박+현지)' : '예상 비용 (항공+숙박+현지)';
-
-        // 5. UI UPDATE — TOTAL / AIR / HOTEL / DAILY
-        setCell('total-' + col, _displayGrand, _displayGrandSub, `${days}일 기준`);
-        setCell('air-' + col, _displayAirPrice, _displayAirSub, _displayAirKicker);
-        setCell('hotel-' + col, _displayHotelPrice, _displayHotelSub, _displayHotelKicker);
+        setCell('air-' + col, airPrice + '만원', '왕복 항공권', mainAirline ? mainAirline + ' · ' + airType : airType);
+        setCell('hotel-' + col, hotelPrice + '만원', `${hotelType} (${days - 1}박)`, `1박 평균 ${hotelPerNight}만원`);
         setCell('daily-' + col, dailySpend + '만원', '하루 지출 (식사+교통+관광)', d.dailySub);
         var alertSafe = (d.alert === '경보 없음' || d.alert === '-');
         setCell('alert-' + col, alertSafe ? '안전' : d.alert, '외교부 여행경보', alertSafe ? '안전한 여행지' : (d.alertSub || '\u00a0'));
@@ -10091,49 +9961,27 @@
             params.push('dates=' + encodeURIComponent(dateEl.textContent));
           }
         }
-        // 4. 검색 조건: 예산 (항상 포함 — unlimited도 포함해야 동일 tier 보장)
+        // 4. 검색 조건: 예산
         var b1 = document.getElementById('budget-input-home');
-        if (b1 && b1.value) {
+        if (b1 && b1.value && b1.value !== 'unlimited') {
           params.push('budget=' + encodeURIComponent(b1.value));
         }
-        // 4.5 일수 (항상 포함 — 자동 날짜든 수동이든 동일 계산 보장)
-        var _shareDateVal = (document.getElementById('home-date-value') || {}).textContent || '';
-        var _shareDays = 5;
-        if (_shareDateVal.includes(' – ')) {
-          try {
-            var _sp = _shareDateVal.split(' – ');
-            var _sd1 = _sp[0].split('월 '), _sd2 = _sp[1].split('월 ');
-            var _sy = new Date().getFullYear();
-            var _sm1 = parseInt(_sd1[0]) - 1, _sm2 = parseInt(_sd2[0]) - 1;
-            var _sdt1 = new Date(_sy, _sm1, parseInt(_sd1[1].replace('일', '')));
-            var _sdt2 = new Date(_sm2 < _sm1 ? _sy + 1 : _sy, _sm2, parseInt(_sd2[1].replace('일', '')));
-            _shareDays = Math.ceil((_sdt2 - _sdt1) / (1000*60*60*24)) + 1;
-            if (_shareDays <= 0) _shareDays = 5;
-          } catch(e) {}
-        }
-        params.push('days=' + _shareDays);
         // 5. 현재 화면의 실제 가격 스냅샷 (공유 시 동일 표시)
         var snap = [];
         for (var si = 0; si < ids.length; si++) {
           var totalEl = document.getElementById('total-' + si);
           var airEl = document.getElementById('air-' + si);
           var hotelEl = document.getElementById('hotel-' + si);
-          var dailyEl = document.getElementById('daily-' + si);
           var t = totalEl ? (totalEl.querySelector('.main') || {}).textContent || '' : '';
-          var tk = totalEl ? (totalEl.querySelector('.kicker') || {}).textContent || '' : '';
-          var ts = totalEl ? (totalEl.querySelector('.sub') || {}).textContent || '' : '';
           var a = airEl ? (airEl.querySelector('.main') || {}).textContent || '' : '';
           var ak = airEl ? (airEl.querySelector('.kicker') || {}).textContent || '' : '';
           var as2 = airEl ? (airEl.querySelector('.sub') || {}).textContent || '' : '';
           var h = hotelEl ? (hotelEl.querySelector('.main') || {}).textContent || '' : '';
           var hk = hotelEl ? (hotelEl.querySelector('.kicker') || {}).textContent || '' : '';
           var hs2 = hotelEl ? (hotelEl.querySelector('.sub') || {}).textContent || '' : '';
-          var d = dailyEl ? (dailyEl.querySelector('.main') || {}).textContent || '' : '';
-          var dk = dailyEl ? (dailyEl.querySelector('.kicker') || {}).textContent || '' : '';
-          var ds = dailyEl ? (dailyEl.querySelector('.sub') || {}).textContent || '' : '';
-          snap.push([t, a, ak, as2, h, hk, hs2, d, dk, ds, tk, ts].join('|'));
+          snap.push([t, a, ak, as2, h, hk, hs2].join('|'));
         }
-        if (snap.length > 0) params.push('snap=' + encodeURIComponent(snap.join(';;')));
+        if (snap.length > 0) params.push('snap=' + encodeURIComponent(snap.join('~')));
         // 6. 뱃지 상태
         var badges = [];
         for (var bi = 0; bi < ids.length; bi++) {
@@ -10494,59 +10342,6 @@
           }
         }
 
-        // 여행지 변경 시 호텔 데이터 없으면 실시간 조회
-        var _chgHotelIata = window.DEST_CITY_IATA && window.DEST_CITY_IATA[d.id];
-        if (_chgHotelIata && !d._hotelPrice) {
-          var _chgHotelUrl = 'https://travel.le2jy.workers.dev/api/hotels/all?dest=' + _chgHotelIata;
-          if (window.selectedDates && window.selectedDates.length === 2) {
-            var _chFmt = function(dt) { return dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0'); };
-            _chgHotelUrl += '&checkin=' + _chFmt(window.selectedDates[0]) + '&checkout=' + _chFmt(window.selectedDates[1]);
-          }
-          fetch(_chgHotelUrl)
-            .then(function(r) { return r.json(); })
-            .then(function(hData) {
-              if (!hData || !hData.data || !hData.data[_chgHotelIata]) return;
-              var hEntry = hData.data[_chgHotelIata];
-              d._hotelPrice = hEntry.priceLabel;
-              d._hotelLink = hEntry.bookingLink;
-              // UI 업데이트
-              var hEl = document.getElementById('hotel-' + col);
-              if (hEl) {
-                var hm = hEl.querySelector('.main');
-                var hs = hEl.querySelector('.sub');
-                var hk = hEl.querySelector('.kicker');
-                if (hm) hm.textContent = hEntry.priceLabel;
-                if (hs) hs.textContent = '실시간 최저가 (1박)';
-                if (hk) hk.textContent = 'Booking.com 기준';
-              }
-              recalcTotalForColumn(col);
-            }).catch(function() {});
-          // VIP 호텔도 조회
-          if (_isVipInChange && !d._vipHotelPrice) {
-            var _chgVipUrl = 'https://travel.le2jy.workers.dev/api/hotels/all?stars=5&dest=' + _chgHotelIata;
-            if (window.selectedDates && window.selectedDates.length === 2) {
-              var _cvFmt = function(dt) { return dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0'); };
-              _chgVipUrl += '&checkin=' + _cvFmt(window.selectedDates[0]) + '&checkout=' + _cvFmt(window.selectedDates[1]);
-            }
-            fetch(_chgVipUrl)
-              .then(function(r) { return r.json(); })
-              .then(function(vData) {
-                if (!vData || !vData.data || !vData.data[_chgHotelIata]) return;
-                var vEntry = vData.data[_chgHotelIata];
-                d._vipHotelPrice = vEntry.priceLabel;
-                d._vipHotelLink = vEntry.bookingLink;
-                var vhEl = document.getElementById('hotel-' + col);
-                if (vhEl) {
-                  var vm = vhEl.querySelector('.main');
-                  var vs = vhEl.querySelector('.sub');
-                  if (vm) vm.textContent = vEntry.priceLabel;
-                  if (vs) vs.textContent = '실시간 프리미엄 (1박)';
-                }
-                recalcTotalForColumn(col);
-              }).catch(function() {});
-          }
-        }
-
         // 여행지 변경 시 날씨 실시간 갱신 (디바운스로 중복 호출 방지)
         if (typeof fetchWeatherDebounced === 'function') fetchWeatherDebounced();
       }
@@ -10796,7 +10591,7 @@
             var b2 = document.getElementById('budget-input-compare');
             if (b1) b1.value = budgetParam;
             if (b2) b2.value = budgetParam;
-            var budgetLabels = {'100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'VIP','cheapest':'최저가','unlimited':'상관없음'};
+            var budgetLabels = {'100':'100만원 이내','150':'150만원 이내','200':'200만원 이내','300':'VIP','cheapest':'최저가'};
             var bl = budgetLabels[budgetParam] || budgetParam + '만원 이내';
             var bd = document.getElementById('sb-budget-display');
             var bdc = document.getElementById('sb-budget-display-c');
@@ -10806,9 +10601,8 @@
 
           // 여행지 적용
           var budget = budgetParam ? (budgetParam === 'unlimited' ? 9999 : budgetParam === 'cheapest' ? 40 : (parseInt(budgetParam) || 150)) : 150;
-          var daysParam = params.get('days');
-          var days = daysParam ? parseInt(daysParam) : 5;
-          if (!daysParam && datesParam && datesParam.includes(' – ')) {
+          var days = 5;
+          if (datesParam && datesParam.includes(' – ')) {
             try {
               var parts = datesParam.split(' – ');
               var d1p = parts[0].split('월 ');
@@ -10841,18 +10635,13 @@
           var snapParam = params.get('snap');
           var badgesParam = params.get('badges');
           if (snapParam) {
-            window._sharedSnapApplied = true;
-            var colSnaps = decodeURIComponent(snapParam).split(';;');
+            var colSnaps = decodeURIComponent(snapParam).split('~');
             for (var si = 0; si < Math.min(colSnaps.length, 3); si++) {
               var parts = colSnaps[si].split('|');
-              // parts: [0:total, 1:air, 2:airKicker, 3:airSub, 4:hotel, 5:hotelKicker, 6:hotelSub, 7:daily, 8:dailyKicker, 9:dailySub, 10:totalKicker, 11:totalSub]
+              // parts: [total, air, airKicker, airSub, hotel, hotelKicker, hotelSub]
               if (parts[0]) {
                 var te = document.getElementById('total-' + si);
-                if (te) {
-                  var tm = te.querySelector('.main'); if (tm) tm.textContent = parts[0];
-                  if (parts[10]) { var tkE = te.querySelector('.kicker'); if (tkE) tkE.textContent = parts[10]; }
-                  if (parts[11]) { var tsE = te.querySelector('.sub'); if (tsE) tsE.textContent = parts[11]; }
-                }
+                if (te) { var tm = te.querySelector('.main'); if (tm) tm.textContent = parts[0]; }
               }
               if (parts[1]) {
                 var ae = document.getElementById('air-' + si);
@@ -10868,14 +10657,6 @@
                   var hm = he.querySelector('.main'); if (hm) hm.textContent = parts[4];
                   if (parts[5]) { var hk = he.querySelector('.kicker'); if (hk) hk.textContent = parts[5]; }
                   if (parts[6]) { var hsb = he.querySelector('.sub'); if (hsb) hsb.textContent = parts[6]; }
-                }
-              }
-              if (parts[7]) {
-                var de = document.getElementById('daily-' + si);
-                if (de) {
-                  var dm = de.querySelector('.main'); if (dm) dm.textContent = parts[7];
-                  if (parts[8]) { var dkE = de.querySelector('.kicker'); if (dkE) dkE.textContent = parts[8]; }
-                  if (parts[9]) { var dsE = de.querySelector('.sub'); if (dsE) dsE.textContent = parts[9]; }
                 }
               }
             }
@@ -10931,18 +10712,11 @@
                 }
               }
               if (changed) {
-                // 업데이트 알림 — Apple 스타일 센터 카드
-                var toastOverlay = document.createElement('div');
-                toastOverlay.style.cssText = 'position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;';
+                // 업데이트 알림 토스트
                 var toastEl = document.createElement('div');
-                toastEl.style.cssText = 'background:#fff;color:#1d1d1f;border-radius:16px;padding:28px 24px 20px;text-align:center;max-width:280px;width:90vw;box-shadow:0 8px 40px rgba(0,0,0,.15);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;';
-                toastEl.innerHTML = '<div style="font-size:32px;margin-bottom:12px">✈️</div>' +
-                  '<div style="font-size:15px;font-weight:600;line-height:1.4;margin-bottom:4px">실시간 가격이 업데이트되었습니다</div>' +
-                  '<div style="font-size:13px;color:#86868b;line-height:1.4;margin-bottom:20px">항공·숙박 최신 가격을 확인하세요</div>' +
-                  '<button id="toast-apply-btn" style="display:block;width:100%;background:#0071e3;color:#fff;border:none;padding:12px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:8px">최신 가격 보기</button>' +
-                  '<button id="toast-close-btn" style="display:block;width:100%;background:transparent;color:#86868b;border:none;padding:10px;border-radius:10px;font-size:15px;cursor:pointer">닫기</button>';
-                toastOverlay.appendChild(toastEl);
-                document.body.appendChild(toastOverlay);
+                toastEl.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:99999;background:#1d1d1f;color:#fff;padding:14px 20px;border-radius:14px;font-size:14px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.25);max-width:90vw;';
+                toastEl.innerHTML = '<span>✈️ 실시간 항공·숙박 가격이 업데이트되었습니다</span><button style="background:#4CAF50;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">최신 가격 보기</button><button style="background:transparent;color:#999;border:none;padding:8px;font-size:18px;cursor:pointer;line-height:1">✕</button>';
+                document.body.appendChild(toastEl);
                 // 최신 가격 보기 버튼
                 toastEl.querySelectorAll('button')[0].onclick = function() {
                   for (var u = 0; u < Math.min(idxArr.length, 3); u++) {
@@ -10969,15 +10743,13 @@
                       }
                     }
                   }
-                  toastOverlay.remove();
+                  toastEl.remove();
                   if (typeof showToast === 'function') showToast('최신 가격으로 업데이트되었습니다');
                 };
                 // 닫기 버튼
-                toastEl.querySelectorAll('button')[1].onclick = function() { toastOverlay.remove(); };
-                // 오버레이 클릭 시 닫기
-                toastOverlay.onclick = function(e) { if (e.target === toastOverlay) toastOverlay.remove(); };
+                toastEl.querySelectorAll('button')[1].onclick = function() { toastEl.remove(); };
                 // 15초 후 자동 닫기
-                setTimeout(function() { if (toastOverlay.parentNode) toastOverlay.remove(); }, 15000);
+                setTimeout(function() { if (toastEl.parentNode) toastEl.remove(); }, 15000);
               }
             }, 1000);
           }
@@ -12948,38 +12720,7 @@
           saipan: 'SPN', palawan: 'PPS', sanya: 'SYX'
         };
 
-        // 비교화면에 보이는 도시들의 IATA 코드 수집
-        var _visibleIatas = [];
-        v1_0_9_DEST_DATA.forEach(function(dest) {
-          var iata = HOTEL_IATA[dest.id];
-          if (iata) _visibleIatas.push(iata);
-        });
-        // 현재 비교화면에 선택된 3개 도시만 조회 (API 할당량 절약)
-        var _selectedIatas = [];
-        for (var _si = 0; _si < 3; _si++) {
-          var _selEl = document.getElementById('sel' + _si);
-          if (_selEl) {
-            var _selIdx = parseInt(_selEl.value);
-            var _selDest = v1_0_9_DEST_DATA[_selIdx];
-            if (_selDest && HOTEL_IATA[_selDest.id]) {
-              _selectedIatas.push(HOTEL_IATA[_selDest.id]);
-            }
-          }
-        }
-        // 비교화면이 아직 안 열렸으면 기본 3개만
-        if (_selectedIatas.length === 0) {
-          _selectedIatas = _visibleIatas.slice(0, 3);
-        }
-        var _destParam = _selectedIatas.join(',');
-
-        // 호텔 API: 선택 도시 + 선택 날짜
-        var _hotelApiUrl = 'https://travel.le2jy.workers.dev/api/hotels/all?dest=' + _destParam;
-        if (window.selectedDates && window.selectedDates.length === 2) {
-          var _hDep = window.selectedDates[0], _hRet = window.selectedDates[1];
-          var _hFmt = function(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
-          _hotelApiUrl += '&checkin=' + _hFmt(_hDep) + '&checkout=' + _hFmt(_hRet);
-        }
-        fetch(_hotelApiUrl)
+        fetch('https://travel.le2jy.workers.dev/api/hotels/all')
           .then(function(r) { return r.json(); })
           .then(function(data) {
             if (!data || !data.data) return;
@@ -12992,8 +12733,6 @@
               dest._hotelLink = entry.bookingLink ||
                 _makeBookingComLink(dest.id);
             });
-            // 공유 스냅샷 적용 상태에선 덮어쓰지 않음
-            if (window._sharedSnapApplied) return;
             // 비교화면이 이미 열려있으면 즉시 업데이트
             if (document.getElementById('compare-view') &&
                 document.getElementById('compare-view').style.display === 'block') {
@@ -13019,22 +12758,13 @@
                   hBtn.textContent = '숙소 예약하기 ›';
                   hotelEl.appendChild(hBtn);
                 }
-                }
               }
-              // 실시간 숙박 데이터 반영 후 총 비용 재계산
-              for (var rhi = 0; rhi < 3; rhi++) recalcTotalForColumn(rhi);
             }
           })
-          .catch(function() { /* API 실패 시 기존 데이터 유지 */ });
+          .catch(function() { /* Hotellook API 실패 시 하드코딩 데이터 유지 */ });
 
-        // VIP용 5성급 호텔 (선택된 도시만)
-        var _vipHotelUrl = 'https://travel.le2jy.workers.dev/api/hotels/all?stars=5&dest=' + _destParam;
-        if (window.selectedDates && window.selectedDates.length === 2) {
-          var _vhDep = window.selectedDates[0], _vhRet = window.selectedDates[1];
-          var _vhFmt = function(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
-          _vipHotelUrl += '&checkin=' + _vhFmt(_vhDep) + '&checkout=' + _vhFmt(_vhRet);
-        }
-        fetch(_vipHotelUrl)
+        // VIP용 5성급 호텔 데이터도 미리 가져오기
+        fetch('https://travel.le2jy.workers.dev/api/hotels/all?stars=5')
           .then(function(r) { return r.json(); })
           .then(function(data) {
             if (!data || !data.data) return;
@@ -13143,34 +12873,22 @@
         // 제휴 예약 링크 생성 — Skyscanner 검색 (한국어 UI)
         var makeBookingLink = function(iata) {
           var dep = window.DEPARTURE_AIRPORT || 'ICN';
+          var today = new Date();
+          // 다음 달 15일 출발, 22일 귀국으로 기본 세팅
+          var d1 = new Date(today.getFullYear(), today.getMonth() + 1, 15);
+          var d2 = new Date(today.getFullYear(), today.getMonth() + 1, 22);
           var fmt = function(d) {
             return String(d.getFullYear()).slice(2) +
               String(d.getMonth() + 1).padStart(2, '0') +
               String(d.getDate()).padStart(2, '0');
           };
-          // 사용자 선택 날짜 우선, 없으면 다음 달 15~22일
-          var d1, d2;
-          if (window.selectedDates && window.selectedDates.length === 2) {
-            d1 = window.selectedDates[0];
-            d2 = window.selectedDates[1];
-          } else {
-            var today = new Date();
-            d1 = new Date(today.getFullYear(), today.getMonth() + 1, 15);
-            d2 = new Date(today.getFullYear(), today.getMonth() + 1, 22);
-          }
           return 'https://www.skyscanner.co.kr/transport/flights/' +
             dep.toLowerCase() + '/' + iata.toLowerCase() + '/' +
             fmt(d1) + '/' + fmt(d2) + '/?adults=1';
         };
 
-        // 최저가 API 호출 (Worker 프록시) — 사용자 선택 날짜 반영
-        var _flightApiUrl = 'https://travel.le2jy.workers.dev/api/flights/all';
-        if (window.selectedDates && window.selectedDates.length === 2) {
-          var _dep = window.selectedDates[0], _ret = window.selectedDates[1];
-          var _fmtMonth = function(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0'); };
-          _flightApiUrl += '?depart=' + _fmtMonth(_dep) + '&return=' + _fmtMonth(_ret);
-        }
-        fetch(_flightApiUrl)
+        // 최저가 API 호출 (Worker 프록시)
+        fetch('https://travel.le2jy.workers.dev/api/flights/all')
           .then(function(r) { return r.json(); })
           .then(function(data) {
             if (!data || !data.data) return;
@@ -13193,9 +12911,7 @@
                 });
               }
             });
-            // 공유 스냅샷이 적용된 상태에선 TP Worker가 DOM을 덮어쓰지 않음
-            // (변경 감지는 별도 setInterval에서 알림으로 처리)
-            if (window._sharedSnapApplied) return;
+            // 현재 보이는 카드 업데이트
             if (document.getElementById('compare-view') &&
                 document.getElementById('compare-view').style.display === 'block') {
               for (var i = 0; i < 3; i++) {
@@ -13226,22 +12942,13 @@
                     if (d.cheapFlights[fi]) descEl.textContent = d.cheapFlights[fi].desc;
                   });
                 }
-                }
               }
-              // 실시간 데이터 반영 후 총 비용 재계산
-              for (var ri = 0; ri < 3; ri++) recalcTotalForColumn(ri);
             }
           })
           .catch(function(e) { console.log('TP flight API error:', e); });
 
         // VIP용 비즈니스 클래스 항공 데이터도 미리 가져오기
-        var _vipFlightUrl = 'https://travel.le2jy.workers.dev/api/flights/all?trip_class=1';
-        if (window.selectedDates && window.selectedDates.length === 2) {
-          var _depV = window.selectedDates[0], _retV = window.selectedDates[1];
-          var _fmtV = function(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0'); };
-          _vipFlightUrl += '&depart=' + _fmtV(_depV) + '&return=' + _fmtV(_retV);
-        }
-        fetch(_vipFlightUrl)
+        fetch('https://travel.le2jy.workers.dev/api/flights/all?trip_class=1')
           .then(function(r) { return r.json(); })
           .then(function(data) {
             if (!data || !data.data) return;

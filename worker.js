@@ -35,16 +35,10 @@ export default {
       return new Response(null, { status: 204, headers: CORS_HEADERS });
     }
 
-    // ── /api/flights/all — 항공 최저가 전체 (날짜 지정 가능) ──────────────
+    // ── /api/flights/all — 항공 최저가 전체 ──────────────
     if (url.pathname === '/api/flights/all') {
       const tripClass = url.searchParams.get('trip_class') || '0'; // 0=이코노미, 1=비즈니스, 2=퍼스트
-      const departDate = url.searchParams.get('depart') || ''; // YYYY-MM or YYYY-MM-DD
-      const returnDate = url.searchParams.get('return') || ''; // YYYY-MM or YYYY-MM-DD
-
-      // 날짜가 있으면 v1에 depart_date/return_date 추가
-      let apiUrl = `https://api.travelpayouts.com/v1/prices/cheap?origin=${ORIGIN_IATA}&token=${TP_TOKEN}&currency=KRW&limit=1000&trip_class=${tripClass}`;
-      if (departDate) apiUrl += `&depart_date=${departDate}`;
-      if (returnDate) apiUrl += `&return_date=${returnDate}`;
+      const apiUrl = `https://api.travelpayouts.com/v1/prices/cheap?origin=${ORIGIN_IATA}&token=${TP_TOKEN}&currency=KRW&limit=1000&trip_class=${tripClass}`;
 
       try {
         const res = await fetch(apiUrl, { headers: { 'X-Access-Token': TP_TOKEN } });
@@ -59,19 +53,12 @@ export default {
                 priceKRW: sorted[0].price,
                 priceLabel: Math.round(sorted[0].price / 10000) + '만원~',
                 airline: sorted[0].airline,
-                departureAt: sorted[0].departure_at || '',
-                returnAt: sorted[0].return_at || '',
               };
             }
           }
         }
 
-        return new Response(JSON.stringify({
-          data: results,
-          dateFiltered: !!(departDate || returnDate),
-          depart: departDate,
-          return: returnDate,
-        }), { headers: CORS_HEADERS });
+        return new Response(JSON.stringify({ data: results }), { headers: CORS_HEADERS });
       } catch (e) {
         return new Response(JSON.stringify({ error: e.message }), {
           status: 500, headers: CORS_HEADERS
@@ -79,142 +66,74 @@ export default {
       }
     }
 
-    // ── /api/hotels/all — 숙박 최저가 (Booking.com via RapidAPI) ──────────────
+    // ── /api/hotels/all — 숙박 최저가 전체 ──────────────
     if (url.pathname === '/api/hotels/all') {
-      const RAPIDAPI_KEY = '43638f1facmshb20a1efe9df3b5ep15727djsnc67fec4b5de4';
-      const RAPIDAPI_HOST = 'booking-com.p.rapidapi.com';
-
-      // Booking.com dest_id 매핑 (도시)
-      const DEST_IDS = {
-        'TYO': '-246227',   // 도쿄
-        'KIX': '-240905',   // 오사카
-        'OSA': '-240905',   // 오사카 (프론트엔드 별칭)
-        'FUK': '900047908', // 후쿠오카
-        'BKK': '-3414440',  // 방콕
-        'DAD': '-3712125',  // 다낭
-        'TPE': '-2637882',  // 타이베이
-        'HKG': '-1353149',  // 홍콩
-        'SIN': '-73635',    // 싱가포르
-        'GUM': '-585621',   // 괌
-        'CEB': '-2421883',  // 세부
-        'DPS': '900040134', // 발리
-        'CTS': '-242395',   // 삿포로
-        'SPK': '-242395',   // 삿포로 (프론트엔드 별칭)
-        'OKA': '136937',    // 오키나와
-        'HAN': '-3714993',  // 하노이
-        'SGN': '-3730078',  // 호치민
-        'KUL': '-2403010',  // 쿠알라룸푸르
-        'MFM': '-1204094',  // 마카오
-        'PEK': '-1898541',  // 베이징
-        'PVG': '-1924465',  // 상하이
-        'SHA': '-1924465',  // 상하이 (프론트엔드 별칭)
-        'TAO': '-1922199',  // 칭다오
-        'SYX': '-1924026',  // 싼야
-        'IST': '-755070',   // 이스탄불
-        'BKI': '-2404760',  // 코타키나발루
-      };
-
-      const checkin = url.searchParams.get('checkin') || '';
-      const checkout = url.searchParams.get('checkout') || '';
-      const minStars = parseInt(url.searchParams.get('stars') || '0');
-      const destFilter = url.searchParams.get('dest') || ''; // 특정 도시만 조회
-
-      // 날짜 없으면 기본값: 내일~모레
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const dayAfter = new Date(tomorrow);
-      dayAfter.setDate(dayAfter.getDate() + 1);
-      const fmtDate = (d) => d.toISOString().split('T')[0];
-      const ci = checkin || fmtDate(tomorrow);
-      const co = checkout || fmtDate(dayAfter);
-
-      // 숙박일수 계산 (1박 가격 산출용)
-      const nights = Math.max(1, Math.round((new Date(co) - new Date(ci)) / 86400000));
-
       const results = {};
-      let entries = Object.entries(DEST_IDS);
+      const cityList = Object.entries(DEST_CITY);
 
-      // dest 필터: 특정 도시만 요청 시 해당 도시만 조회 (API 할당량 절약)
-      if (destFilter) {
-        const wanted = destFilter.split(',').map(s => s.trim().toUpperCase());
-        entries = entries.filter(([iata]) => wanted.includes(iata));
-      }
-
-      // 8개씩 병렬 처리
+      // Hotellook lookup: 도시명으로 location_id 조회 후 가격 조회
+      // 병렬 처리 (최대 10개씩)
       const chunks = [];
-      for (let i = 0; i < entries.length; i += 8) {
-        chunks.push(entries.slice(i, i + 8));
+      for (let i = 0; i < cityList.length; i += 8) {
+        chunks.push(cityList.slice(i, i + 8));
       }
-
-      // Cloudflare Cache API — 도시별 24시간 캐시
-      const cache = caches.default;
-      const CACHE_TTL = 86400; // 24시간
 
       for (const chunk of chunks) {
-        await Promise.all(chunk.map(async ([iata, destId]) => {
+        await Promise.all(chunk.map(async ([iata, cityName]) => {
           try {
-            // 캐시 키: 도시+날짜+별급 조합
-            const cacheKey = new Request(`https://hotel-cache.internal/${iata}/${ci}/${co}/${minStars}`);
-            const cached = await cache.match(cacheKey);
-            if (cached) {
-              const cachedData = await cached.json();
-              results[iata] = cachedData;
-              return;
-            }
+            // Step 1: lookup city
+            const lookupUrl = `https://engine.hotellook.com/api/v2/lookup.json?query=${encodeURIComponent(cityName)}&lang=en&lookFor=city&limit=1&token=${TP_TOKEN}`;
+            const lookupRes = await fetch(lookupUrl);
+            if (!lookupRes.ok) return;
+            const lookupData = await lookupRes.json();
 
-            // 캐시 미스 → Booking.com API 호출
-            const starFilter = minStars > 0 ? `&class=${minStars}` : '';
-            const searchUrl = `https://booking-com.p.rapidapi.com/v1/hotels/search?checkin_date=${ci}&checkout_date=${co}&dest_type=city&dest_id=${destId}&adults_number=2&room_number=1&units=metric&filter_by_currency=KRW&locale=ko&order_by=price&page_number=0${starFilter}`;
+            const cityResult = lookupData?.results?.cities?.[0];
+            if (!cityResult) return;
+            const locationId = cityResult.id || cityResult.cityId;
+            if (!locationId) return;
 
-            const res = await fetch(searchUrl, {
-              headers: {
-                'Content-Type': 'application/json',
-                'x-rapidapi-host': RAPIDAPI_HOST,
-                'x-rapidapi-key': RAPIDAPI_KEY,
+            // Step 2: get hotel prices for this city (limit 늘려서 고급 호텔도 포함)
+            const minStars = parseInt(url.searchParams.get('stars') || '0');
+            const fetchLimit = minStars >= 4 ? 30 : 3; // 고급 필터 시 더 많이 가져와서 필터링
+            const priceUrl = `https://engine.hotellook.com/api/v2/cache.json?location=${locationId}&currency=krw&token=${TP_TOKEN}&period=7&adults=1&limit=${fetchLimit}`;
+            const priceRes = await fetch(priceUrl);
+            if (!priceRes.ok) return;
+            const priceData = await priceRes.json();
+
+            if (Array.isArray(priceData) && priceData.length > 0) {
+              let filtered = priceData.filter(h => h.priceFrom > 0);
+              // stars 필터: 4성급 이상만 (VIP용)
+              if (minStars > 0) {
+                const starFiltered = filtered.filter(h => (h.stars || 0) >= minStars);
+                if (starFiltered.length > 0) filtered = starFiltered;
+                // 5성급이 없으면 4성급까지 폴백
+                else if (minStars >= 5) {
+                  const fallback = filtered.filter(h => (h.stars || 0) >= 4);
+                  if (fallback.length > 0) filtered = fallback;
+                }
               }
-            });
-            if (!res.ok) return;
-            const data = await res.json();
-
-            if (data.result && data.result.length > 0) {
-              const withPrice = data.result.filter(h => h.min_total_price > 0);
-              if (withPrice.length === 0) return;
-
-              const best = withPrice[0];
-              const totalPrice = best.min_total_price;
-              const pricePerNight = Math.round(totalPrice / nights);
-              const hotelName = best.hotel_name || '';
-              const stars = best.class || 0;
-              const reviewScore = best.review_score || 0;
-
-              const result = {
-                priceKRW: pricePerNight,
-                priceTotal: Math.round(totalPrice),
-                nights: nights,
-                priceLabel: Math.round(pricePerNight / 10000) + '만원~/박',
-                hotelName: hotelName,
-                stars: stars,
-                reviewScore: reviewScore,
-                bookingLink: `https://www.booking.com/searchresults.ko.html?dest_id=${destId}&dest_type=city&checkin=${ci}&checkout=${co}&group_adults=2&no_rooms=1&order=price`,
-              };
-              results[iata] = result;
-
-              // 24시간 캐시 저장
-              await cache.put(cacheKey, new Response(JSON.stringify(result), {
-                headers: { 'Content-Type': 'application/json', 'Cache-Control': `s-maxage=${CACHE_TTL}` }
-              }));
+              // 고급 호텔은 가격이 높은 순 (프리미엄), 일반은 낮은 순 (최저가)
+              const sorted = minStars > 0
+                ? filtered.sort((a, b) => (b.stars || 0) - (a.stars || 0) || (b.priceFrom || 0) - (a.priceFrom || 0))
+                : filtered.sort((a, b) => (a.priceFrom || 9e9) - (b.priceFrom || 9e9));
+              if (sorted.length > 0) {
+                const best = sorted[0];
+                const pricePerNight = best.priceFrom;
+                results[iata] = {
+                  priceKRW: pricePerNight,
+                  priceLabel: Math.round(pricePerNight / 10000) + '만원~/박',
+                  hotelName: best.hotelName || best.name || '',
+                  stars: best.stars || 0,
+                  bookingLink: `https://tp.media/r?marker=${TP_MARKER}&trs=1&p=4114&u=` +
+                    encodeURIComponent(`https://hotellook.com/cities/${encodeURIComponent(cityName)}/`),
+                };
+              }
             }
           } catch (_) {}
         }));
       }
 
-      return new Response(JSON.stringify({
-        data: results,
-        checkin: ci,
-        checkout: co,
-        source: 'booking.com',
-        cached: Object.keys(results).length > 0,
-      }), { headers: CORS_HEADERS });
+      return new Response(JSON.stringify({ data: results }), { headers: CORS_HEADERS });
     }
 
     // ── /api/flights?dest=TPE (단건) ──────────────────────
