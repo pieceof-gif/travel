@@ -10747,6 +10747,8 @@
                 document.body.appendChild(toastEl);
                 // 최신 가격 보기 버튼
                 toastEl.querySelectorAll('button')[0].onclick = function() {
+                  // 실시간 API 데이터 있으면 DOM 업데이트
+                  var updated = false;
                   for (var u = 0; u < Math.min(idxArr.length, 3); u++) {
                     var d = v1_0_9_DEST_DATA[idxArr[u]];
                     if (!d || !d._tpLink) continue;
@@ -10770,9 +10772,10 @@
                         var hs = hel.querySelector('.sub'); if (hs) hs.textContent = _isVip ? '실시간 프리미엄 (1박)' : '실시간 최저가 (1박)';
                       }
                     }
+                    updated = true;
                   }
+                  // 실시간 데이터 없어도 항상 토스트 닫기
                   toastEl.remove();
-                  if (typeof showToast === 'function') showToast('최신 가격으로 업데이트되었습니다');
                 };
                 // 닫기 버튼
                 toastEl.querySelectorAll('button')[1].onclick = function() { toastEl.remove(); };
