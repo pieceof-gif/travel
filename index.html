@@ -13428,6 +13428,16 @@
         var compareView = document.getElementById("compare-view");
         if (homeView) homeView.style.display = "none";
         if (compareView) compareView.style.display = "block";
+        // ── 스켈레톤 표시 (데이터 렌더 전) ──
+        var _skelIds = [
+          'total-0','air-0','hotel-0','daily-0',
+          'total-1','air-1','hotel-1','daily-1',
+          'total-2','air-2','hotel-2','daily-2'
+        ];
+        _skelIds.forEach(function(id) {
+          var el = document.getElementById(id);
+          if (el) el.classList.add('sk');
+        });
         setTimeout(function() {
           var bInput = document.getElementById("budget-input-home");
           if (bInput && !bInput.value) bInput.value = "150";
@@ -13455,6 +13465,13 @@
           if (s1) s1.value = _d1; if (sf1) sf1.value = _d1;
           if (s2) s2.value = _d2; if (sf2) sf2.value = _d2;
           updateResultsByFilters();
+          // ── 스켈레톤 제거 ──
+          requestAnimationFrame(function() {
+            _skelIds.forEach(function(id) {
+              var el = document.getElementById(id);
+              if (el) el.classList.remove('sk');
+            });
+          });
           _cvSheetOpenedOnce = true;
           // wiz-launcher 텍스트 변경 (모바일/태블릿만)
           if (window.innerWidth <= 1068) {
@@ -14327,6 +14344,30 @@
 .share-modal-copy-btn:hover { background: #333; }
 .share-modal-copy-btn.copied { background: #34c759; }
 
+
+      /* ── 스켈레톤 로딩 (Apple/Google 스타일) ── */
+      @keyframes _skelShimmer {
+        0%   { background-position: -600px 0; }
+        100% { background-position:  600px 0; }
+      }
+      .dc.sk .main,
+      .dc.sk .kicker,
+      .dc.sk .sub {
+        color: transparent !important;
+        background: linear-gradient(
+          90deg,
+          #f2f2f7 25%,
+          #e5e5ea 50%,
+          #f2f2f7 75%
+        );
+        background-size: 1200px 100%;
+        animation: _skelShimmer 1.5s ease-in-out infinite;
+        border-radius: 8px;
+        min-height: 1em;
+        pointer-events: none;
+        user-select: none;
+        display: block;
+      }
 </style>
 
 <!-- 공유 모달 -->
