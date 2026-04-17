@@ -2013,21 +2013,142 @@
     footer {
       margin-top: 100px;
       background: #f5f5f7;
-      padding: 60px 22px;
+      padding: 72px 22px 56px;
       width: 100%;
       max-width: none;
       text-align: center;
     }
 
     .footer-inner {
-      max-width: 980px;
+      max-width: 900px;
       margin: 0 auto;
     }
 
     footer p {
       font-size: 12px;
-      color: var(--light-gray);
+      color: #86868b;
       line-height: 1.8;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .footer-link-btn {
+      background: none;
+      border: none;
+      font-size: 13px;
+      color: #1d1d1f;
+      cursor: pointer;
+      padding: 4px 10px;
+      font-family: inherit;
+      text-decoration: none;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+
+    .footer-link-btn:hover { background: rgba(0,0,0,0.06); }
+
+    .footer-link-sep {
+      color: #d2d2d7;
+      font-size: 13px;
+      user-select: none;
+    }
+
+    .footer-email {
+      font-size: 12px;
+      color: #86868b;
+      margin-bottom: 28px;
+    }
+
+    .footer-copyright {
+      font-size: 12px;
+      color: #86868b;
+      margin-top: 20px;
+    }
+
+    /* ── 약관/개인정보 모달 ── */
+    .footer-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 99998;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .footer-modal-overlay.open {
+      display: flex;
+    }
+
+    .footer-modal {
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      padding: 32px 28px 48px;
+      max-width: 640px;
+      width: 100%;
+      max-height: 78vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 -4px 40px rgba(0,0,0,0.12);
+    }
+
+    .footer-modal-handle {
+      width: 36px;
+      height: 4px;
+      background: #d2d2d7;
+      border-radius: 2px;
+      margin: 0 auto 24px;
+    }
+
+    .footer-modal h2 {
+      font-size: 19px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #1d1d1f;
+    }
+
+    .footer-modal h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 20px 0 6px;
+      color: #1d1d1f;
+    }
+
+    .footer-modal p, .footer-modal li {
+      font-size: 13px;
+      color: #515154;
+      line-height: 1.7;
+    }
+
+    .footer-modal ul {
+      padding-left: 18px;
+      margin: 6px 0;
+    }
+
+    .footer-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #f5f5f7;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 14px;
+      cursor: pointer;
+      color: #515154;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     /* ── RESPONSIVE: Tablet + Mobile (Apple compare style — 2-col scroll) ── */
@@ -4664,12 +4785,24 @@
 
     <footer>
       <div class="footer-inner">
+        <!-- 링크 모음 -->
+        <div class="footer-links">
+          <button class="footer-link-btn" onclick="document.getElementById('modal-terms').classList.add('open')">이용약관</button>
+          <span class="footer-link-sep">|</span>
+          <button class="footer-link-btn" onclick="document.getElementById('modal-privacy').classList.add('open')">개인정보처리방침</button>
+          <span class="footer-link-sep">|</span>
+          <a class="footer-link-btn" href="mailto:pieceof@kakao.com">광고/제휴 문의</a>
+        </div>
+        <!-- 이메일 -->
+        <p class="footer-email">이메일: pieceof@kakao.com</p>
+        <!-- 면책 고지 -->
         <p id="footer-date-note">* 항공권 가격은 최저가 기준이며 실시간 변동합니다. 안전도는 외교부 여행경보 기준이며, 현지 정보는 참고용입니다. 여행 전 반드시 <a href="https://www.0404.go.kr" target="_blank" rel="noopener" style="color:inherit;">외교부 해외안전여행</a>을 확인하세요.</p>
-        <p style="margin-top:16px" id="footer-copyright">© odiga</p>
+        <!-- 저작권 -->
+        <p class="footer-copyright" id="footer-copyright">© 2026 odiga · All rights reserved.</p>
         <script>
           (function() {
             const now = new Date();
-            document.getElementById('footer-copyright').textContent = `© ${now.getFullYear()} odiga`;
+            document.getElementById('footer-copyright').textContent = '© ' + now.getFullYear() + ' odiga · All rights reserved.';
           })();
         </script>
       </div>
@@ -14386,6 +14519,51 @@
 
 <!-- handleShare is now in the main script block -->
 
+
+    <!-- ── 이용약관 모달 ── -->
+    <div class="footer-modal-overlay" id="modal-terms" onclick="if(event.target===this)this.classList.remove('open')">
+      <div class="footer-modal">
+        <div class="footer-modal-handle"></div>
+        <button class="footer-modal-close" onclick="document.getElementById('modal-terms').classList.remove('open')">✕</button>
+        <h2>이용약관</h2>
+        <h3>제1조 (목적)</h3>
+        <p>본 약관은 odiga(이하 "서비스")가 제공하는 여행 정보 비교 서비스의 이용에 관한 조건 및 절차를 규정함을 목적으로 합니다.</p>
+        <h3>제2조 (정보의 정확성)</h3>
+        <ul>
+          <li>항공권·숙박 가격은 최저가 기준의 참고 정보이며, 실시간으로 변동될 수 있습니다.</li>
+          <li>제공되는 정보는 참고용으로, 실제 예약 시 해당 플랫폼에서 최종 가격을 확인하시기 바랍니다.</li>
+          <li>안전 정보는 외교부 여행경보 기준이며, 여행 전 반드시 최신 정보를 확인하세요.</li>
+        </ul>
+        <h3>제3조 (외부 링크)</h3>
+        <p>서비스 내 제휴 링크(Agoda 등) 클릭 후 이루어지는 예약 및 거래에 대해 odiga는 책임을 지지 않습니다. 해당 서비스의 이용약관을 별도로 확인하세요.</p>
+        <h3>제4조 (서비스 변경)</h3>
+        <p>서비스 내용은 사전 고지 없이 변경되거나 종료될 수 있습니다.</p>
+        <h3>제5조 (문의)</h3>
+        <p>서비스 이용 관련 문의: pieceof@kakao.com</p>
+      </div>
+    </div>
+
+    <!-- ── 개인정보처리방침 모달 ── -->
+    <div class="footer-modal-overlay" id="modal-privacy" onclick="if(event.target===this)this.classList.remove('open')">
+      <div class="footer-modal">
+        <div class="footer-modal-handle"></div>
+        <button class="footer-modal-close" onclick="document.getElementById('modal-privacy').classList.remove('open')">✕</button>
+        <h2>개인정보처리방침</h2>
+        <p>odiga는 사용자의 개인정보를 소중히 여기며, 다음과 같이 처리합니다.</p>
+        <h3>수집하는 정보</h3>
+        <ul>
+          <li><strong>위치 정보 (선택적)</strong>: 사용자 동의 시 현재 위치를 이용해 가장 가까운 출발 공항(인천/김포/김해 등)을 자동 선택합니다. 위치 정보는 서버에 전송되거나 저장되지 않으며, 기기 내에서만 일시적으로 처리됩니다.</li>
+          <li><strong>여행지 선택 기록 (자동)</strong>: 최근 선택한 여행지를 브라우저 localStorage에 저장합니다. 서버로 전송되지 않으며, 브라우저 설정에서 언제든 삭제 가능합니다.</li>
+        </ul>
+        <h3>수집하지 않는 정보</h3>
+        <p>odiga는 별도의 회원가입 없이 이용 가능하며, 이름·이메일·전화번호 등 식별 가능한 개인정보를 수집하지 않습니다.</p>
+        <h3>제3자 서비스</h3>
+        <p>외부 제휴 링크(Agoda 등) 클릭 시 해당 사이트의 개인정보처리방침이 적용됩니다.</p>
+        <h3>문의</h3>
+        <p>개인정보 관련 문의: pieceof@kakao.com</p>
+        <p style="margin-top:16px;font-size:11px;color:#aeaeb2;">최초 시행일: 2026년 1월 1일</p>
+      </div>
+    </div>
 </body>
 
 <script>
