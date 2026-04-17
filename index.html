@@ -10222,9 +10222,37 @@
         if (!e.target.closest || !e.target.closest('.dest-dd')) closeAllDestDds();
       });
 
+      // ── 목적지 인기 클릭 추적 (localStorage) ──
+      function _trackDestClick(destId) {
+        try {
+          var raw = localStorage.getItem('odiga_dest_clicks');
+          var counts = raw ? JSON.parse(raw) : {};
+          counts[destId] = (counts[destId] || 0) + 1;
+          localStorage.setItem('odiga_dest_clicks', JSON.stringify(counts));
+        } catch(e) {} // localStorage 오류 시 조용히 무시
+      }
+
+      function _getTopDests(n) {
+        try {
+          var raw = localStorage.getItem('odiga_dest_clicks');
+          if (!raw) return null;
+          var counts = JSON.parse(raw);
+          // v1_0_9_DEST_DATA의 인덱스 기준으로 정렬
+          var ranked = [];
+          v1_0_9_DEST_DATA.forEach(function(d, i) {
+            if (counts[d.id]) ranked.push({ idx: i, count: counts[d.id] });
+          });
+          ranked.sort(function(a, b) { return b.count - a.count; });
+          if (ranked.length < n) return null; // 데이터 부족 시 기본값 사용
+          return ranked.slice(0, n).map(function(r) { return String(r.idx); });
+        } catch(e) { return null; }
+      }
+
       function changeDest(col, idx) {
         const idxInt = parseInt(idx);
         const d = v1_0_9_DEST_DATA[idxInt];
+        // 유저가 직접 선택한 목적지 기록
+        if (d && d.id) _trackDestClick(d.id);
         
         const b1 = document.getElementById('budget-input-home');
         const b2 = document.getElementById('budget-input-compare');
@@ -13415,10 +13443,14 @@
           }
           var s0 = document.getElementById("sel0"), s1 = document.getElementById("sel1"), s2 = document.getElementById("sel2");
           var sf0 = document.getElementById("sel0-fixed"), sf1 = document.getElementById("sel1-fixed"), sf2 = document.getElementById("sel2-fixed");
-          // 기본 여행지: 한국인 인기 순 (오사카, 타이베이, 방콕)
-          if (s0) s0.value = "4"; if (sf0) sf0.value = "4";  // 오사카
-          if (s1) s1.value = "3"; if (sf1) sf1.value = "3";  // 타이베이
-          if (s2) s2.value = "6"; if (sf2) sf2.value = "6";  // 방콕
+          // 기본 여행지: 누적 클릭 인기순 → 없으면 한국인 인기 하드코딩 fallback
+          var _topDests = _getTopDests(3);
+          var _d0 = (_topDests && _topDests[0]) || "4"; // 오사카
+          var _d1 = (_topDests && _topDests[1]) || "3"; // 타이베이
+          var _d2 = (_topDests && _topDests[2]) || "6"; // 방콕
+          if (s0) s0.value = _d0; if (sf0) sf0.value = _d0;
+          if (s1) s1.value = _d1; if (sf1) sf1.value = _d1;
+          if (s2) s2.value = _d2; if (sf2) sf2.value = _d2;
           updateResultsByFilters();
           _cvSheetOpenedOnce = true;
           // wiz-launcher 텍스트 변경 (모바일/태블릿만)
