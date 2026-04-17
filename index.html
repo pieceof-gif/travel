@@ -14534,9 +14534,9 @@
 
           if (footerTop < viewH) {
             // 푸터가 화면 안에 들어옴 → 푸터 상단 기준 30px 위
-            launcher.style.bottom = (viewH - footerTop + 30) + 'px';
+            launcher.style.setProperty('bottom', (viewH - footerTop + 30) + 'px', 'important');
           } else {
-            launcher.style.bottom = '20px';
+            launcher.style.setProperty('bottom', '20px', 'important');
           }
         }
 
