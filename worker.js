@@ -1,6 +1,6 @@
 // ── 최고의 여행 — Cloudflare Worker API 프록시 ──
 
-const TP_TOKEN = '6a6084c8f32d44f563ba4baa66f11975';
+// TP_TOKEN은 Cloudflare Secrets에서 주입됩니다 (env.TP_TOKEN)
 const TP_MARKER = '510036';
 const ORIGIN_IATA = 'ICN';
 
@@ -28,7 +28,7 @@ const DEST_CITY = {
 };
 
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const url = new URL(request.url);
 
     if (request.method === 'OPTIONS') {
@@ -38,10 +38,10 @@ export default {
     // ── /api/flights/all — 항공 최저가 전체 ──────────────
     if (url.pathname === '/api/flights/all') {
       const tripClass = url.searchParams.get('trip_class') || '0'; // 0=이코노미, 1=비즈니스, 2=퍼스트
-      const apiUrl = `https://api.travelpayouts.com/v1/prices/cheap?origin=${ORIGIN_IATA}&token=${TP_TOKEN}&currency=KRW&limit=1000&trip_class=${tripClass}`;
+      const apiUrl = `https://api.travelpayouts.com/v1/prices/cheap?origin=${ORIGIN_IATA}&token=${env.TP_TOKEN}&currency=KRW&limit=1000&trip_class=${tripClass}`;
 
       try {
-        const res = await fetch(apiUrl, { headers: { 'X-Access-Token': TP_TOKEN } });
+        const res = await fetch(apiUrl, { headers: { 'X-Access-Token': env.TP_TOKEN } });
         const data = await res.json();
 
         const results = {};
@@ -82,7 +82,7 @@ export default {
         await Promise.all(chunk.map(async ([iata, cityName]) => {
           try {
             // Step 1: lookup city
-            const lookupUrl = `https://engine.hotellook.com/api/v2/lookup.json?query=${encodeURIComponent(cityName)}&lang=en&lookFor=city&limit=1&token=${TP_TOKEN}`;
+            const lookupUrl = `https://engine.hotellook.com/api/v2/lookup.json?query=${encodeURIComponent(cityName)}&lang=en&lookFor=city&limit=1&token=${env.TP_TOKEN}`;
             const lookupRes = await fetch(lookupUrl);
             if (!lookupRes.ok) return;
             const lookupData = await lookupRes.json();
@@ -95,7 +95,7 @@ export default {
             // Step 2: get hotel prices for this city (limit 늘려서 고급 호텔도 포함)
             const minStars = parseInt(url.searchParams.get('stars') || '0');
             const fetchLimit = minStars >= 4 ? 30 : 3; // 고급 필터 시 더 많이 가져와서 필터링
-            const priceUrl = `https://engine.hotellook.com/api/v2/cache.json?location=${locationId}&currency=krw&token=${TP_TOKEN}&period=7&adults=1&limit=${fetchLimit}`;
+            const priceUrl = `https://engine.hotellook.com/api/v2/cache.json?location=${locationId}&currency=krw&token=${env.TP_TOKEN}&period=7&adults=1&limit=${fetchLimit}`;
             const priceRes = await fetch(priceUrl);
             if (!priceRes.ok) return;
             const priceData = await priceRes.json();
@@ -139,9 +139,9 @@ export default {
     // ── /api/flights?dest=TPE (단건) ──────────────────────
     if (url.pathname === '/api/flights') {
       const dest = url.searchParams.get('dest') || '';
-      const apiUrl = `https://api.travelpayouts.com/v1/prices/cheap?origin=${ORIGIN_IATA}&destination=${dest}&token=${TP_TOKEN}&currency=KRW`;
+      const apiUrl = `https://api.travelpayouts.com/v1/prices/cheap?origin=${ORIGIN_IATA}&destination=${dest}&token=${env.TP_TOKEN}&currency=KRW`;
       try {
-        const res = await fetch(apiUrl, { headers: { 'X-Access-Token': TP_TOKEN } });
+        const res = await fetch(apiUrl, { headers: { 'X-Access-Token': env.TP_TOKEN } });
         const data = await res.json();
         let minPrice = null, airline = null;
         if (data?.data?.[dest]) {
