@@ -288,6 +288,7 @@ export default {
           }
 
           const result = makeResult(iso2Map);
+          if (Object.keys(result).length === 0) throw new Error('MOFA 데이터 없음 (IP 차단 가능성)');
           return new Response(JSON.stringify({ data: result, updated: new Date().toISOString(), source: 'mofa' }), {
             headers: { ...CORS_HEADERS, 'Cache-Control': 'public, max-age=43200' } // 12시간 캐싱
           });

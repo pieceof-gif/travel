@@ -9966,7 +9966,7 @@
 
         renderFlightList('flightrec-' + col, _vipFlights, _vipTips, isVIP, isVIP ? null : d.airfare);
         renderAppList('apps-' + col, d.id);
-        renderEntryInfo('entry-' + col, d.id);
+        renderEntryInfo('entry-' + col, d.id, d._visaLabel || null);
         renderFxTips('fxtip-' + col, d.id, d.fx, d.fxSub);
         renderTravelInfo('travelinfo-' + col, d.id);
 
@@ -12129,16 +12129,17 @@
 
 
 
-      function renderEntryInfo(containerId, destId) {
+      function renderEntryInfo(containerId, destId, visaOverride) {
         var el = document.getElementById(containerId);
         if (!el) return;
         // 나라 코드 기반으로 조회 (같은 나라는 동일한 출입국 정보)
         var countryCode = (typeof DEST_COUNTRY !== 'undefined' && DEST_COUNTRY[destId]) || destId;
         var e = DEST_ENTRY[countryCode] || DEST_ENTRY[destId];
         if (!e) { el.innerHTML = ''; return; }
-        // Apple MacBook compare style — bold label rows, no colors
+        // API 비자 데이터 우선, 없으면 하드코딩 fallback
+        var visaLabel = visaOverride || e.visa;
         var rows = [];
-        rows.push(_appleRow('비자', e.visa));
+        rows.push(_appleRow('비자', visaLabel));
         e.docs.forEach(function(d) {
           if (d.sub) {
             rows.push(_appleRow(d.text, d.sub));
@@ -13173,9 +13174,9 @@
           .catch(function() {});
       })();
 
-      // 비자 정보를 수입국 준비(entry-N) 섹션에 반영
+      // API 비자 데이터가 나중에 도착했을 때 entry 섹션을 재렌더링
       function _applyVisaToEntry(col, dest) {
-        // 출입국 준비 섹션에 이미 비자 정보가 있으므로 중복 추가 안 함
+        renderEntryInfo('entry-' + col, dest.id, dest._visaLabel || null);
       }
 
       // ── 위자드 스크롤 트리거 ──
