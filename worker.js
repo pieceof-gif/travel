@@ -215,19 +215,97 @@ export default {
       }
     }
 
-    // ── /api/visa — 한국 여권 비자 요건 (GitHub passport-index-dataset) ──
+    // ── /api/visa — 한국 여권 비자 요건 (외교부 공공데이터 API 우선) ──
     if (url.pathname === '/api/visa') {
-      // GitHub ilyankou/passport-index-dataset (MIT License) - 한국여권(KR) 기준
+
+      // 우리 목적지 국가 목록 (ISO2 → IATA 매핑)
+      const ISO2_TO_IATAS = {
+        JP: ['OSA','TYO','FUK','SPK','OKA'],
+        TH: ['BKK','CNX','HKT'],
+        VN: ['DAD','SGN','HAN','PQC','NHA'],
+        ID: ['DPS'],
+        SG: ['SIN'],
+        PH: ['CEB','MPH','PPS'],
+        HK: ['HKG'],
+        TW: ['TPE'],
+        MY: ['KUL'],
+        MV: ['MLE'],
+        AU: ['SYD'],
+        FR: ['PAR'],
+        ES: ['BCN'],
+        PT: ['LIS'],
+        US: ['GUM','HNL'],
+        CN: ['SHA','PEK','TAO','SYX'],
+        MP: ['SPN'],  // 사이판 (미국령 북마리아나)
+      };
+
+      // 결과 포맷 통일 헬퍼
+      function makeResult(iso2Map) {
+        const result = {};
+        for (const [iso2, iatas] of Object.entries(ISO2_TO_IATAS)) {
+          const info = iso2Map[iso2];
+          if (!info) continue;
+          for (const iata of iatas) {
+            result[iata] = info;
+          }
+        }
+        return result;
+      }
+
+      // ── 1차: 외교부 공공데이터 API ──
+      if (env.MOFA_API_KEY) {
+        try {
+          const mofaUrl = `https://apis.data.go.kr/1262000/EntranceVisaService2/getEntranceVisaList2?serviceKey=${env.MOFA_API_KEY}&type=JSON&pageNo=1&numOfRows=300`;
+          const mofaRes = await fetch(mofaUrl);
+          if (!mofaRes.ok) throw new Error('MOFA ' + mofaRes.status);
+
+          const mofaJson = await mofaRes.json();
+          const items = mofaJson?.response?.body?.items?.item;
+          if (!items || !Array.isArray(items)) throw new Error('MOFA 응답 형식 오류');
+
+          // 일반여권 + ISO2 기준으로 매핑
+          const iso2Map = {};
+          for (const item of items) {
+            if (item.passport_nm !== '일반') continue;
+            const iso2 = item.isoalp2_cd;
+            if (!iso2 || iso2Map[iso2]) continue;
+
+            const rawDays = parseInt(item.allow_period);
+            const days = isNaN(rawDays) ? null : rawDays;
+            let label, badge;
+
+            if (item.allow_yn === 'Y' || days > 0) {
+              label = days ? `무비자 ${days}일` : '무비자';
+              badge = 'visa-free';
+            } else if (item.allow_yn === 'VOA' || String(item.allow_yn).includes('도착')) {
+              label = '도착비자'; badge = 'on-arrival';
+            } else if (String(item.allow_yn).includes('E-Visa') || String(item.allow_yn).includes('전자')) {
+              label = '전자비자(e-Visa)'; badge = 'e-visa';
+            } else {
+              label = '비자 필요'; badge = 'required';
+            }
+            iso2Map[iso2] = { label, badge, days };
+          }
+
+          const result = makeResult(iso2Map);
+          return new Response(JSON.stringify({ data: result, updated: new Date().toISOString(), source: 'mofa' }), {
+            headers: { ...CORS_HEADERS, 'Cache-Control': 'public, max-age=43200' } // 12시간 캐싱
+          });
+        } catch (mofaErr) {
+          // 외교부 API 실패 → 2차 fallback
+          console.error('MOFA API 오류, fallback 사용:', mofaErr.message);
+        }
+      }
+
+      // ── 2차 fallback: GitHub passport-index-dataset ──
       const csvUrl = 'https://raw.githubusercontent.com/ilyankou/passport-index-dataset/master/passport-index-tidy-iso2.csv';
       try {
         const res = await fetch(csvUrl);
         if (!res.ok) throw new Error('CSV fetch failed: ' + res.status);
         const text = await res.text();
 
-        // KR 행만 필터링
-        const lines = text.split('\n');
         const krData = {};
-        for (const line of lines) {
+        for (const line of text.split('\n')) {
           const parts = line.trim().split(',');
           if (parts.length < 3) continue;
           const [passport, destination, requirement] = parts;
@@ -235,27 +313,12 @@ export default {
           krData[destination] = requirement;
         }
 
-        // 목적지 IATA → ISO2 매핑 (우리 사이트 목적지 기준)
-        const iataToIso2 = {
-          LIS: 'PT', DAD: 'VN', TPE: 'TW',
-          OSA: 'JP', TYO: 'JP', BKK: 'TH', DPS: 'ID',
-          CNX: 'TH', SIN: 'SG', CEB: 'PH',
-          FUK: 'JP', SPK: 'JP', OKA: 'JP',
-          PQC: 'VN', SGN: 'VN', HAN: 'VN', MPH: 'PH',
-          HKT: 'TH', HKG: 'HK', GUM: 'US', HNL: 'US',
-          PAR: 'FR', KUL: 'MY', MLE: 'MV',
-          SYD: 'AU', SHA: 'CN', BCN: 'ES',
-        };
-
-        // 우리 목적지별 비자 요건 정리
-        const result = {};
-        for (const [iata, iso2] of Object.entries(iataToIso2)) {
+        const iso2Map = {};
+        for (const iso2 of Object.keys(ISO2_TO_IATAS)) {
           const req = krData[iso2];
           if (!req) continue;
-
-          // 요건 한국어 변환
-          let label, badge;
           const days = parseInt(req);
+          let label, badge;
           if (!isNaN(days)) {
             label = `무비자 ${days}일`; badge = 'visa-free';
           } else if (req === 'visa free') {
@@ -269,10 +332,12 @@ export default {
           } else {
             label = '비자 필요'; badge = 'required';
           }
-          result[iata] = { req, label, badge };
+          iso2Map[iso2] = { label, badge, days: isNaN(days) ? null : days };
         }
 
-        return new Response(JSON.stringify({ data: result, updated: new Date().toISOString() }), { headers: CORS_HEADERS });
+        return new Response(JSON.stringify({ data: makeResult(iso2Map), updated: new Date().toISOString(), source: 'github' }), {
+          headers: { ...CORS_HEADERS, 'Cache-Control': 'public, max-age=43200' }
+        });
       } catch (e) {
         return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: CORS_HEADERS });
       }
