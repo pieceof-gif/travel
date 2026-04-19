@@ -14511,12 +14511,10 @@
       /* 스켈레톤 전용 요소 — 기본 숨김 */
       .sk-kicker, .sk-main, .sk-sub { display: none; }
 
-      /* sk 활성화: 실제 콘텐츠 숨김 */
+      /* sk 활성화: 실제 콘텐츠 숨김 (sk-* 요소는 제외) */
       .dc.sk > .kicker,
       .dc.sk > .main,
-      .dc.sk > .sub,
-      .dc.sk > [class*="main"],
-      .dc.sk > [class*="sub"] { display: none !important; }
+      .dc.sk > .sub { display: none !important; }
 
       /* sk 활성화: 스켈레톤 블록 표시 */
       .dc.sk .sk-kicker,
