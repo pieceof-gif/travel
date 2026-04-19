@@ -9,9 +9,10 @@
 import subprocess, sys, re, os
 
 html  = open('index.html', encoding='utf-8').read()
-# data.js 있으면 통합해서 검증
+# data.js, app.js 있으면 통합해서 검증
 data_js = open('data.js', encoding='utf-8').read() if os.path.exists('data.js') else ''
-combined_src = html + '\n' + data_js  # 두 파일 합쳐서 중복/존재 체크
+app_js  = open('app.js',  encoding='utf-8').read() if os.path.exists('app.js')  else ''
+combined_src = html + '\n' + data_js + '\n' + app_js
 
 errors = []
 
@@ -33,12 +34,13 @@ for varname, display in [
         loc = 'data.js' if data_js and varname in data_js else 'index.html'
         print(f'✅ {display}... — 1개 ({loc})')
 
-# ── 2. 핵심 함수 — index.html에 존재 ──
+# ── 2. 핵심 함수 — index.html 또는 app.js에 존재 ──
 for fn in ['function updateColumn', 'function renderEntryInfo', 'function fetchWeather']:
-    if fn not in html:
+    if fn not in combined_src:
         errors.append(f'❌ {fn} 함수가 없음')
     else:
-        print(f'✅ {fn}')
+        loc = 'app.js' if app_js and fn in app_js else 'index.html'
+        print(f'✅ {fn} ({loc})')
 
 # ── 3. compare-view 인라인 style 금지 ──
 if 'id="compare-view" style="display: none;"' in html:
