@@ -4658,17 +4658,17 @@
 
       <!-- 날씨 통합 표시 -->
       <div class="data-row" style="margin-top: 44px;">
-        <div class="dc" id="cur-temp-0">
+        <div class="dc sk" id="cur-temp-0">
           <div class="kicker">&nbsp;</div>
           <div class="v-xl main" style="color:var(--gray);">—</div>
           <div class="v-sm sub">현재 기온 · 시즌 평균</div>
         </div>
-        <div class="dc" id="cur-temp-1">
+        <div class="dc sk" id="cur-temp-1">
           <div class="kicker">&nbsp;</div>
           <div class="v-xl main" style="color:var(--gray);">—</div>
           <div class="v-sm sub">현재 기온 · 시즌 평균</div>
         </div>
-        <div class="dc" id="cur-temp-2">
+        <div class="dc sk" id="cur-temp-2">
           <div class="kicker">&nbsp;</div>
           <div class="v-xl main" style="color:var(--gray);">—</div>
           <div class="v-sm sub">현재 기온 · 시즌 평균</div>
@@ -4677,17 +4677,17 @@
 
       <!-- 주간 예보 -->
       <div class="data-row" style="margin-top: 44px;">
-        <div class="dc" id="weekly-forecast-0">
+        <div class="dc sk" id="weekly-forecast-0">
           <div class="kicker">&nbsp;</div>
           <div class="v-xl main" style="color:var(--gray);">—</div>
           <div class="v-sm sub">이번 주 예보</div>
         </div>
-        <div class="dc" id="weekly-forecast-1">
+        <div class="dc sk" id="weekly-forecast-1">
           <div class="kicker">&nbsp;</div>
           <div class="v-xl main" style="color:var(--gray);">—</div>
           <div class="v-sm sub">이번 주 예보</div>
         </div>
-        <div class="dc" id="weekly-forecast-2">
+        <div class="dc sk" id="weekly-forecast-2">
           <div class="kicker">&nbsp;</div>
           <div class="v-xl main" style="color:var(--gray);">—</div>
           <div class="v-sm sub">이번 주 예보</div>
@@ -9247,10 +9247,11 @@
       function updateColumn(col, destIdx, budgetLimit, duration) {
         const d = v1_0_9_DEST_DATA[destIdx];
         if (!d) return;
-        // ── 스켈레톤: 여행지 변경 시 가격 셀 로딩 표시 ──
-        ['air-','hotel-','total-'].forEach(function(p){var e=document.getElementById(p+col);if(e)e.classList.add('sk');});
-        // 3초 후 강제 제거 (비동기 타이밍 안전장치)
-        setTimeout(function(){['air-','hotel-','total-'].forEach(function(p){var e=document.getElementById(p+col);if(e)e.classList.remove('sk');});},3000);
+        // ── 스켈레톤: 여행지 변경 시 모든 비동기 셀 로딩 표시 ──
+        var _skIds=['air-','hotel-','total-','cur-temp-','weekly-forecast-'];
+        _skIds.forEach(function(p){var e=document.getElementById(p+col);if(e)e.classList.add('sk');});
+        // 5초 후 강제 제거 (날씨 API 느릴 때 대비)
+        setTimeout(function(){_skIds.forEach(function(p){var e=document.getElementById(p+col);if(e)e.classList.remove('sk');});},5000);
         // 현재 컬럼에 표시 중인 destIdx 저장 (날씨 API에서 참조)
         if (typeof _currentDestIdx !== 'undefined') _currentDestIdx[col] = destIdx;
         const colEl = document.getElementById('col-' + col); // Fix: colEl must be defined here, not from outer scope
@@ -12783,6 +12784,7 @@
         var mEl = ctEl.querySelector('.main');
         var sEl = ctEl.querySelector('.sub');
         if (kEl) kEl.textContent = '낮(최고기온)';
+        ctEl.classList.remove('sk'); // 스켈레톤 제거
         if (mEl) {
           var emoji = getWeatherEmoji(d._weatherCode);
           mEl.innerHTML = '<span style="font-size:36px;vertical-align:middle;margin-right:6px;line-height:1;position:relative;top:-4px;">' + emoji + '</span>' + d._todayMax + '°';
@@ -12808,6 +12810,7 @@
         var mEl = el.querySelector('.main');
         var sEl = el.querySelector('.sub');
         if (kEl) kEl.textContent = '밤(최저기온)';
+        el.classList.remove('sk'); // 스켈레톤 제거
         if (mEl) {
           var emoji = getWeatherEmoji(d._weatherCode);
           mEl.innerHTML = '<span style="font-size:36px;vertical-align:middle;margin-right:6px;line-height:1;position:relative;top:-4px;">' + emoji + '</span>' + d._todayMin + '°';
