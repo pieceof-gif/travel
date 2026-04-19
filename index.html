@@ -102,11 +102,7 @@
 
     /* ── HOME VIEW ── */
     #home-view {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      background: #ffffff;
-      overflow: visible;
+      display: none !important;
     }
 
     .home-nav {
@@ -3751,7 +3747,7 @@
   </div>
 
   <!-- COMPARE VIEW -->
-  <div id="compare-view" style="display: none;">
+  <div id="compare-view">
     <!-- NAV -->
     <nav class="nav">
       <span class="nav-brand">odiga</span>
@@ -10514,14 +10510,9 @@
       }
 
       function goHome() {
-        // 모바일에서는 홈화면 대신 비교뷰에서 검색 시트 재오픈
-        if (window.innerWidth < 744) {
-          openCvSearchSheet();
-          return;
-        }
-        document.getElementById('compare-view').style.display = 'none';
-        document.getElementById('home-view').style.display = 'block';
-        window.scrollTo(0, 0);
+        // 홈화면 없음 — 모든 환경에서 검색 시트 오픈
+        if (typeof openCvSearchSheet === 'function') openCvSearchSheet();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
       function startSearch() {
