@@ -4497,17 +4497,17 @@
 
       <!-- 총 예상 비용 -->
       <div class="data-row" style="margin-top: 44px;">
-        <div class="dc" id="total-0">
+        <div class="dc sk" id="total-0">
           <div class="kicker">&nbsp;</div>
           <div class="v-xl main">-</div>
           <div class="v-sm sub">총 예상 비용 (항공+숙박+현지)</div>
         </div>
-        <div class="dc" id="total-1">
+        <div class="dc sk" id="total-1">
           <div class="kicker">&nbsp;</div>
           <div class="v-xl main">-</div>
           <div class="v-sm sub">총 예상 비용 (항공+숙박+현지)</div>
         </div>
-        <div class="dc" id="total-2">
+        <div class="dc sk" id="total-2">
           <div class="kicker">&nbsp;</div>
           <div class="v-xl main">-</div>
           <div class="v-sm sub">총 예상 비용 (항공+숙박+현지)</div>
@@ -4516,17 +4516,17 @@
 
       <!-- 항공권 -->
       <div class="data-row" style="margin-top: 44px;">
-        <div class="dc" id="air-0">
+        <div class="dc sk" id="air-0">
           <div class="kicker">이코노미 · 인천 출발</div>
           <div class="v-xl main">41만원</div>
           <div class="v-sm sub">왕복 항공권</div>
         </div>
-        <div class="dc" id="air-1">
+        <div class="dc sk" id="air-1">
           <div class="kicker">이코노미 · 인천 출발</div>
           <div class="v-xl main">28만원</div>
           <div class="v-sm sub">왕복 항공권</div>
         </div>
-        <div class="dc" id="air-2">
+        <div class="dc sk" id="air-2">
           <div class="kicker">이코노미 · 김포 출발</div>
           <div class="v-xl main">9만원</div>
           <div class="v-sm sub">왕복 항공권</div>
@@ -4535,17 +4535,17 @@
 
       <!-- 호텔 -->
       <div class="data-row" style="margin-top: 44px;">
-        <div class="dc" id="hotel-0">
+        <div class="dc sk" id="hotel-0">
           <div class="kicker">1박 평균 9.6만원</div>
           <div class="v-xl main">48만원</div>
           <div class="v-sm sub">3성급 호텔 (1인)</div>
         </div>
-        <div class="dc" id="hotel-1">
+        <div class="dc sk" id="hotel-1">
           <div class="kicker">1박 평균 6.8만원</div>
           <div class="v-xl main">34만원</div>
           <div class="v-sm sub">3성급 호텔 (1인)</div>
         </div>
-        <div class="dc" id="hotel-2">
+        <div class="dc sk" id="hotel-2">
           <div class="kicker">1박 평균 7.8만원</div>
           <div class="v-xl main">39만원</div>
           <div class="v-sm sub">3성급 호텔 (1인)</div>
@@ -9115,6 +9115,7 @@
                   if (mEl) mEl.textContent = _airPrice;
                   if (sEl) sEl.textContent = _airSub;
                   if (kEl) kEl.textContent = _airKicker;
+                  airEl.classList.remove('sk');
                 }
               }
               // 숙박 오버라이드 — VIP: 5성급 프리미엄, 일반: 최저가
@@ -9132,6 +9133,7 @@
                   if (hmEl) hmEl.textContent = _htlPrice;
                   if (hsEl) hsEl.textContent = _htlSub;
                   if (hkEl) hkEl.textContent = _htlKicker;
+                  hotelEl.classList.remove('sk');
                   if (!hotelEl.querySelector('.tp-hotel-btn')) {
                     var hBtn = document.createElement('a');
                     hBtn.href = _htlLink; hBtn.target = '_blank';
@@ -9245,6 +9247,10 @@
       function updateColumn(col, destIdx, budgetLimit, duration) {
         const d = v1_0_9_DEST_DATA[destIdx];
         if (!d) return;
+        // ── 스켈레톤: 여행지 변경 시 가격 셀 로딩 표시 ──
+        ['air-','hotel-','total-'].forEach(function(p){var e=document.getElementById(p+col);if(e)e.classList.add('sk');});
+        // 3초 후 강제 제거 (비동기 타이밍 안전장치)
+        setTimeout(function(){['air-','hotel-','total-'].forEach(function(p){var e=document.getElementById(p+col);if(e)e.classList.remove('sk');});},3000);
         // 현재 컬럼에 표시 중인 destIdx 저장 (날씨 API에서 참조)
         if (typeof _currentDestIdx !== 'undefined') _currentDestIdx[col] = destIdx;
         const colEl = document.getElementById('col-' + col); // Fix: colEl must be defined here, not from outer scope
@@ -10024,6 +10030,7 @@
       function setCell(id, main, sub, kicker) {
         const el = document.getElementById(id);
         if (!el) return;
+        el.classList.remove('sk'); // 스켈레톤 제거
         const mainEl = el.querySelector('.main');
         if (mainEl) mainEl.textContent = main;
         const subEl = el.querySelector('.sub');
@@ -10799,7 +10806,7 @@
               // parts: [total, air, airKicker, airSub, hotel, hotelKicker, hotelSub]
               if (parts[0]) {
                 var te = document.getElementById('total-' + si);
-                if (te) { var tm = te.querySelector('.main'); if (tm) tm.textContent = parts[0]; }
+                if (te) { var tm = te.querySelector('.main'); if (tm) { tm.textContent = parts[0]; te.classList.remove('sk'); } }
               }
               if (parts[1]) {
                 var ae = document.getElementById('air-' + si);
