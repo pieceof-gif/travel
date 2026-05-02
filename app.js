@@ -38,9 +38,13 @@
             end   = new Date(today); end.setDate(today.getDate() + 18);
           }
         } else {
-          // 날짜 미선택: 오늘 기준 +14일 출발, +18일 귀국
-          start = new Date(today); start.setDate(today.getDate() + 14);
-          end   = new Date(today); end.setDate(today.getDate() + 18);
+          // 날짜 미선택: 다음 주말 금요일 출발 → 월요일 귀국 (금토일월 4일)
+          // 현재 요일 기준 최소 3일 이후 가장 가까운 금요일 탐색
+          var _day = today.getDay(); // 0=일, 1=월, ..., 5=금, 6=토
+          var _daysToFri = (5 - _day + 7) % 7; // 이번 금요일까지 남은 일수
+          if (_daysToFri < 3) _daysToFri += 7;  // 너무 가까우면 다음 주 금요일로
+          start = new Date(today); start.setDate(today.getDate() + _daysToFri);
+          end   = new Date(start);  end.setDate(start.getDate() + 3); // 금+3 = 월요일
         }
         return {
           start: start, end: end,
