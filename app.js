@@ -1100,19 +1100,14 @@
                   linkEl.href = '#';
                   linkEl.addEventListener('click', function(e) {
                     e.preventDefault();
+                    var hd = _getSearchDates();
                     var base = this.dataset.hotelBase;
                     var params = this.dataset.hotelParams;
-                    var _hasDate = (window._isAutoDate === false && window.selectedDates && window.selectedDates.length >= 2);
-                    if (_hasDate) {
-                      var hd = _getSearchDates();
-                      var sep = params ? '&' : '';
-                      var dateParam = this.dataset.hotelType === 'agoda'
-                        ? 'checkIn=' + hd.skyStart + '&checkOut=' + hd.skyEnd
-                        : 'checkin=' + hd.skyStart + '&checkout=' + hd.skyEnd;
-                      window.open(base + '?' + params + sep + dateParam, '_blank', 'noopener');
-                    } else {
-                      window.open(base + (params ? '?' + params : ''), '_blank', 'noopener');
-                    }
+                    var sep = params ? '&' : '';
+                    var dateParam = this.dataset.hotelType === 'agoda'
+                      ? 'checkIn=' + hd.skyStart + '&checkOut=' + hd.skyEnd
+                      : 'checkin=' + hd.skyStart + '&checkout=' + hd.skyEnd;
+                    window.open(base + '?' + params + sep + dateParam, '_blank', 'noopener');
                   });
                 } else {
                   linkEl.href = _hLink;
@@ -1200,16 +1195,10 @@
                 linkEl.href = '#';
                 linkEl.addEventListener('click', function(e) {
                   e.preventDefault();
+                  var d = _getSearchDates();
                   var b = _getCurrentBudget();
                   var c = b >= 300 ? '&cabinclass=business' : '&cabinclass=economy';
-                  var _hasDate = (window._isAutoDate === false && window.selectedDates && window.selectedDates.length >= 2);
-                  var url;
-                  if (_hasDate) {
-                    var d = _getSearchDates();
-                    url = this.dataset.skyRoute + '/' + d.shortStart + '/' + d.shortEnd + '/?adultsv2=1&currency=KRW' + c;
-                  } else {
-                    url = this.dataset.skyRoute + '/?adultsv2=1&currency=KRW' + c;
-                  }
+                  var url = this.dataset.skyRoute + '/' + d.shortStart + '/' + d.shortEnd + '/?adultsv2=1&currency=KRW' + c;
                   window.open(url, '_blank', 'noopener');
                 });
               } else {
@@ -1336,29 +1325,20 @@
             btnGhost.parentNode.replaceChild(_newBtn, btnGhost);
             _newBtn.addEventListener('click', function(e) {
               e.preventDefault();
+              var d2 = _getSearchDates();
               var b2 = _getCurrentBudget();
               var vip = this.dataset.isVip === '1' || b2 >= 300;
               var c2 = vip ? '&cabinclass=business' : '&cabinclass=economy';
               var route = this.dataset.skyRoute;
               var dep = (window.DEPARTURE_AIRPORT || 'ICN').toLowerCase();
               var base = 'https://www.skyscanner.co.kr/transport/flights';
-              var _hasDate = (window._isAutoDate === false && window.selectedDates && window.selectedDates.length >= 2);
               var url;
-              if (_hasDate) {
-                var d2 = _getSearchDates();
-                if (route === '__jeju__') {
-                  url = dep === 'cju'
-                    ? base+'/cju/gmp/'+d2.shortStart+'/'+d2.shortEnd+'/?adultsv2=1&currency=KRW'+c2
-                    : base+'/gmp/cju/'+d2.shortStart+'/'+d2.shortEnd+'/?adultsv2=1&currency=KRW'+c2;
-                } else {
-                  url = base+'/'+route+'/'+d2.shortStart+'/'+d2.shortEnd+'/?adultsv2=1&currency=KRW'+c2;
-                }
+              if (route === '__jeju__') {
+                url = dep === 'cju'
+                  ? base+'/cju/gmp/'+d2.shortStart+'/'+d2.shortEnd+'/?adultsv2=1&currency=KRW'+c2
+                  : base+'/gmp/cju/'+d2.shortStart+'/'+d2.shortEnd+'/?adultsv2=1&currency=KRW'+c2;
               } else {
-                if (route === '__jeju__') {
-                  url = dep === 'cju' ? base+'/cju/gmp/?adultsv2=1&currency=KRW'+c2 : base+'/gmp/cju/?adultsv2=1&currency=KRW'+c2;
-                } else {
-                  url = base+'/'+route+'/?adultsv2=1&currency=KRW'+c2;
-                }
+                url = base+'/'+route+'/'+d2.shortStart+'/'+d2.shortEnd+'/?adultsv2=1&currency=KRW'+c2;
               }
               window.open(url, '_blank', 'noopener');
             });
