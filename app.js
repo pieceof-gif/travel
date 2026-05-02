@@ -1078,23 +1078,36 @@
               footer.appendChild(priceEl);
               if (h.link) {
                 const linkEl = document.createElement('a');
-                // booking.com / agoda 링크에 체크인·체크아웃 날짜 동적 추가
                 var _hLink = h.link;
-                if (_hLink.includes('booking.com')) {
-                  // 이미 날짜 파라미터 없으면 추가
-                  if (!_hLink.includes('checkin') && !_hLink.includes('checkout')) {
-                    var _sep = _hLink.includes('?') ? '&' : '?';
-                    _hLink += _sep + 'checkin=' + _checkin + '&checkout=' + _checkout;
-                  }
-                } else if (_hLink.includes('agoda.com')) {
-                  if (!_hLink.includes('checkIn') && !_hLink.includes('CheckIn')) {
-                    var _sep2 = _hLink.includes('?') ? '&' : '?';
-                    _hLink += _sep2 + 'checkIn=' + _checkin + '&checkOut=' + _checkout;
-                  }
+                if (_hLink.includes('booking.com') || _hLink.includes('agoda.com')) {
+                  // 클릭 시 실시간으로 날짜 반영 (날짜 변경 시에도 항상 최신 날짜 사용)
+                  var _baseLink = _hLink.split('?')[0];  // ? 이전 기본 URL
+                  var _existingParams = _hLink.includes('?') ? _hLink.split('?')[1] : '';
+                  // checkin/checkout 파라미터 제거 후 저장
+                  _existingParams = _existingParams
+                    .split('&')
+                    .filter(function(p) { return !p.match(/^check(in|out|In|Out)/i); })
+                    .join('&');
+                  linkEl.dataset.hotelBase = _baseLink;
+                  linkEl.dataset.hotelParams = _existingParams;
+                  linkEl.dataset.hotelType = _hLink.includes('agoda') ? 'agoda' : 'booking';
+                  linkEl.href = '#';
+                  linkEl.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var hd = _getSearchDates();
+                    var base = this.dataset.hotelBase;
+                    var params = this.dataset.hotelParams;
+                    var sep = params ? '&' : '';
+                    var dateParam = this.dataset.hotelType === 'agoda'
+                      ? 'checkIn=' + hd.skyStart + '&checkOut=' + hd.skyEnd
+                      : 'checkin=' + hd.skyStart + '&checkout=' + hd.skyEnd;
+                    window.open(base + '?' + params + sep + dateParam, '_blank', 'noopener');
+                  });
+                } else {
+                  linkEl.href = _hLink;
+                  linkEl.target = '_blank';
+                  linkEl.rel = 'noopener';
                 }
-                linkEl.href = _hLink;
-                linkEl.target = '_blank';
-                linkEl.rel = 'noopener';
                 linkEl.className = 'hotel-card-link';
                 linkEl.textContent = '더 알아보기 ›';
                 footer.appendChild(linkEl);
@@ -1168,33 +1181,25 @@
             card.appendChild(descEl);
             if (f.link) {
               const linkEl = document.createElement('a');
-              // Skyscanner URL에 날짜 동적 삽입
-              // URL 구조: /flights/icn/lis/[날짜/날짜/]?params
-              // - 날짜 없는 URL: /icn/lis/ or /icn/lis/?adults=1&cabinclass=business
-              // - 날짜 있는 URL: /icn/lis/YYYY-MM-DD/YYYY-MM-DD/?params
               var _href = f.link;
+              // Skyscanner URL: 경로(출발-도착)만 data 속성에 저장 → 클릭 시 실시간 날짜+예산 반영
               if (_href.includes('skyscanner')) {
-                var _urlParts = _href.split('?');
-                var _path = _urlParts[0];  // 경로 부분
-                // 경로에 날짜(YYMMDD 6자리)가 없으면 날짜 삽입
-                if (!_path.match(/\/\d{6}(\/|$)/)) {
-                  // 경로 끝 슬래시 제거 후 날짜 삽입 (YYMMDD 형식)
-                  _path = _path.replace(/\/$/, '') + '/' + _dates.shortStart + '/' + _dates.shortEnd + '/';
-                  // 쿼리스트링 재조립: adultsv2=1 + currency + cabinclass (실제 Skyscanner 검색 URL 포맷)
-                  var _query = 'adultsv2=1&currency=KRW';
-                  if (_isVipBudget) _query += '&cabinclass=business';
-                  else _query += '&cabinclass=economy';
-                  _href = _path + '?' + _query;
-                } else {
-                  // 날짜 있는 URL: cabinclass만 추가 (중복 방지)
-                  if (_isVipBudget && !_href.includes('cabinclass')) {
-                    _href += (_href.includes('?') ? '&' : '?') + 'cabinclass=business';
-                  }
-                }
+                var _basePath = _href.split('?')[0].replace(/\/\d{6}.*$/, '').replace(/\/$/, '');
+                linkEl.dataset.skyRoute = _basePath;  // ex: /transport/flights/icn/lis
+                linkEl.href = '#';
+                linkEl.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  var d = _getSearchDates();
+                  var b = _getCurrentBudget();
+                  var c = b >= 300 ? '&cabinclass=business' : '&cabinclass=economy';
+                  var url = this.dataset.skyRoute + '/' + d.shortStart + '/' + d.shortEnd + '/?adultsv2=1&currency=KRW' + c;
+                  window.open(url, '_blank', 'noopener');
+                });
+              } else {
+                linkEl.href = _href;
+                linkEl.target = '_blank';
+                linkEl.rel = 'noopener';
               }
-              linkEl.href = _href;
-              linkEl.target = '_blank';
-              linkEl.rel = 'noopener';
               linkEl.className = 'flight-card-link';
               linkEl.textContent = isVip ? '비즈니스석 검색 ›' : '더 알아보기 ›';
               card.appendChild(linkEl);
@@ -1304,8 +1309,34 @@
         if (colEl) {
           const btnGhost = colEl.querySelector('.btn-ghost');
           if (btnGhost) {
-            btnGhost.href = link;
-            btnGhost.textContent = isVIP
+            // 클릭 시 실시간 날짜+예산 반영 — 경로 정보를 data 속성에 저장
+            var _routeKey = d.id === 'jeju' ? '__jeju__' : `${_fromCode}/${_skyCode}`;
+            btnGhost.dataset.skyRoute = _routeKey;
+            btnGhost.dataset.isVip = isVIP ? '1' : '0';
+            btnGhost.href = '#';
+            // 기존 리스너 제거 후 재등록 (중복 방지)
+            var _newBtn = btnGhost.cloneNode(true);
+            btnGhost.parentNode.replaceChild(_newBtn, btnGhost);
+            _newBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              var d2 = _getSearchDates();
+              var b2 = _getCurrentBudget();
+              var vip = this.dataset.isVip === '1' || b2 >= 300;
+              var c2 = vip ? '&cabinclass=business' : '&cabinclass=economy';
+              var route = this.dataset.skyRoute;
+              var dep = (window.DEPARTURE_AIRPORT || 'ICN').toLowerCase();
+              var base = 'https://www.skyscanner.co.kr/transport/flights';
+              var url;
+              if (route === '__jeju__') {
+                url = dep === 'cju'
+                  ? `${base}/cju/gmp/${d2.shortStart}/${d2.shortEnd}/?adultsv2=1&currency=KRW${c2}`
+                  : `${base}/gmp/cju/${d2.shortStart}/${d2.shortEnd}/?adultsv2=1&currency=KRW${c2}`;
+              } else {
+                url = `${base}/${route}/${d2.shortStart}/${d2.shortEnd}/?adultsv2=1&currency=KRW${c2}`;
+              }
+              window.open(url, '_blank', 'noopener');
+            });
+            _newBtn.textContent = isVIP
               ? `${d.name.split(' · ')[1] || d.name} 비즈니스석 보기 ›`
               : `${d.name.split(' · ')[1] || d.name} 항공권 보기 ›`;
           }
