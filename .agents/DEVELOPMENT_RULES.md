@@ -48,6 +48,14 @@ API(호텔/항공 등) 실시간 데이터를 붙일 때:
 
 ---
 
+## 🚫 AI 금지 행동
+
+- **`git push` 제안 금지** — push는 항상 사용자가 직접 한다. 커밋 후 push 여부를 묻거나 제안하지 않는다.
+- **사용자에게 검증 요청 금지** — 브라우저·API 검증은 AI가 직접 한다.
+- **이미 완료된 작업 재확인 요청 금지** — 사용자가 "했어"라고 하면 그대로 믿는다.
+
+---
+
 ## 🔁 복구 방법 (버그 발생 시)
 
 ```bash
@@ -75,3 +83,52 @@ git commit -m "revert: <이유>"
 | `updateColumn(col, idx, budget, days)` | 개별 컬럼 데이터 렌더링 | API 추가 시 이후 오버라이드 |
 | `updateResultsByFilters()` | 필터/랭킹 재계산 | 단독 호출로는 컬럼 데이터 안 채워짐 |
 | `refreshSelectOptions()` | 드롭다운 옵션 생성 | updateColumn 전에 먼저 호출해야 함 |
+| `_getSearchDates()` | 항공·숙박 링크용 날짜 계산 | 아래 규칙 참고 |
+| `_getCurrentBudget()` | 현재 예산값 읽기 | budget-input-home 기준 |
+
+---
+
+## ✈️ 항공·숙박 링크 생성 규칙 (2026-05-02 확정)
+
+### 핵심 원칙
+- **모든 링크는 클릭 시점에 URL을 생성**한다 (렌더링 시점 고정 금지)
+- **항공·숙박 링크는 항상 동일한 날짜**를 사용한다
+
+### 날짜 판별 로직 (`_getSearchDates()`)
+```js
+// 1. 사용자가 직접 선택한 경우
+if (window._isAutoDate === false && window.selectedDates?.length >= 2) {
+  → window.selectedDates[0], [1] 사용
+}
+// 2. 날짜 미선택 (자동/기본값)
+else {
+  → 오늘 기준 +14일 출발, +21일 귀국 (7박)
+  → 클릭하는 그 순간의 today 기준 (동적 계산)
+}
+```
+
+### `window.selectedDates` 설정 시점
+- flatpickr `onChange` → `window.selectedDates = [dep, ret]` + `window._isAutoDate = false`
+- dc 달력 선택 → `window.selectedDates = [...]` + `window._isAutoDate = false`
+- compare 달력 선택 → `window.selectedDates = [...]` + `window._isAutoDate = false`
+- 앱 자동 날짜 세팅 → `window._isAutoDate = true` (selectedDates 설정 안 함)
+
+### Skyscanner URL 포맷
+```
+/transport/flights/{출발코드}/{도착코드}/{YYMMDD}/{YYMMDD}/?adultsv2=1&currency=KRW&cabinclass=economy|business
+```
+- 날짜 포맷: `YYMMDD` (예: 260516)
+- 예산 300만원 이상 → `cabinclass=business`
+- 예산 300만원 미만 → `cabinclass=economy`
+
+### Booking.com / Agoda URL 포맷
+```
+checkin=YYYY-MM-DD&checkout=YYYY-MM-DD  (Booking.com)
+checkIn=YYYY-MM-DD&checkOut=YYYY-MM-DD  (Agoda)
+```
+
+### 금지사항
+- `linkEl.href = 'https://...'` 형태로 렌더링 시점에 URL 고정 금지
+- `_checkin`, `_checkout` 변수를 렌더링 시점에 계산해서 주입 금지
+- `home-date-value` DOM 파싱으로 날짜 읽기 금지 (→ `window.selectedDates` 사용)
+
