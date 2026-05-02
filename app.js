@@ -44,12 +44,9 @@
         }
 
         if (!start) {
-          // 날짜 미선택(자동): 다음 주말 금요일 출발 → 월요일 귀국 (금토일월 4일)
-          var _day = today.getDay(); // 0=일, 1=월, ..., 5=금, 6=토
-          var _daysToFri = (5 - _day + 7) % 7;
-          if (_daysToFri < 3) _daysToFri += 7;
-          start = new Date(today); start.setDate(today.getDate() + _daysToFri);
-          end   = new Date(start);  end.setDate(start.getDate() + 3); // 금+3 = 월요일
+          // 날짜 미선택: +14일 출발, +21일 귀국 (7박 — 모든 목적지 동일 기간 비교)
+          start = new Date(today); start.setDate(today.getDate() + 14);
+          end   = new Date(today); end.setDate(today.getDate() + 21);
         }
 
         return {
