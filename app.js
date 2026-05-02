@@ -3,6 +3,61 @@
 
 
       localStorage.clear(); // Clear any old state
+
+      // ── 공통: 사용자 선택 날짜 파싱 ──
+      // 반환: { start: Date, end: Date, skyStart: 'YYYY-MM-DD', skyEnd: 'YYYY-MM-DD', fmtShort: fn(Date)→'YYMMDD' }
+      function _getSearchDates() {
+        var today = new Date();
+        var _toSkyFmt = function(dt) {
+          return dt.getFullYear() + '-' +
+            String(dt.getMonth() + 1).padStart(2, '0') + '-' +
+            String(dt.getDate()).padStart(2, '0');
+        };
+        var _toShortFmt = function(dt) {
+          return String(dt.getFullYear()).slice(2) +
+            String(dt.getMonth() + 1).padStart(2, '0') +
+            String(dt.getDate()).padStart(2, '0');
+        };
+        var start, end;
+        var dateEl = document.getElementById('home-date-value');
+        var dateVal = dateEl ? dateEl.textContent : '';
+        if (dateVal && dateVal.includes(' – ')) {
+          try {
+            var _year = today.getFullYear();
+            var parts = dateVal.split(' – ');
+            var d1 = parts[0].split('월 ');
+            var d2 = parts[1].split('월 ');
+            var fm1 = parseInt(d1[0]) - 1, fm2 = parseInt(d2[0]) - 1;
+            var day1 = parseInt(d1[1].replace('일', ''));
+            var day2 = parseInt(d2[1].replace('일', ''));
+            var _endYear = fm2 < fm1 ? _year + 1 : _year;
+            start = new Date(_year, fm1, day1);
+            end   = new Date(_endYear, fm2, day2);
+          } catch(e) {
+            start = new Date(today); start.setDate(today.getDate() + 14);
+            end   = new Date(today); end.setDate(today.getDate() + 18);
+          }
+        } else {
+          // 날짜 미선택: 오늘 기준 +14일 출발, +18일 귀국
+          start = new Date(today); start.setDate(today.getDate() + 14);
+          end   = new Date(today); end.setDate(today.getDate() + 18);
+        }
+        return {
+          start: start, end: end,
+          skyStart: _toSkyFmt(start), skyEnd: _toSkyFmt(end),
+          shortStart: _toShortFmt(start), shortEnd: _toShortFmt(end)
+        };
+      }
+
+      // ── 공통: 현재 예산값 읽기 ──
+      function _getCurrentBudget() {
+        var b1 = document.getElementById('budget-input-home');
+        var b2 = document.getElementById('budget-input-compare');
+        var raw = (b2 && b2.value) ? b2.value : (b1 ? b1.value : '150');
+        if (raw === 'unlimited') return 9999;
+        if (raw === 'cheapest') return 40;
+        return parseInt(raw) || 150;
+      }
       var fpHome = null, fpCompare = null;
 
       function openDatePicker(which) {
@@ -988,6 +1043,12 @@
           if (!el) return;
           el.innerHTML = '';
           el.style.alignItems = 'flex-start';
+
+          // 날짜 취득 — 숙박 링크에 체크인/체크아웃 반영
+          var _hDates = _getSearchDates();
+          var _checkin  = _hDates.skyStart;  // YYYY-MM-DD
+          var _checkout = _hDates.skyEnd;    // YYYY-MM-DD
+
           (hotels || []).forEach(h => {
             const card = document.createElement('div');
             card.className = 'hotel-card';
@@ -1017,7 +1078,21 @@
               footer.appendChild(priceEl);
               if (h.link) {
                 const linkEl = document.createElement('a');
-                linkEl.href = h.link;
+                // booking.com / agoda 링크에 체크인·체크아웃 날짜 동적 추가
+                var _hLink = h.link;
+                if (_hLink.includes('booking.com')) {
+                  // 이미 날짜 파라미터 없으면 추가
+                  if (!_hLink.includes('checkin') && !_hLink.includes('checkout')) {
+                    var _sep = _hLink.includes('?') ? '&' : '?';
+                    _hLink += _sep + 'checkin=' + _checkin + '&checkout=' + _checkout;
+                  }
+                } else if (_hLink.includes('agoda.com')) {
+                  if (!_hLink.includes('checkIn') && !_hLink.includes('CheckIn')) {
+                    var _sep2 = _hLink.includes('?') ? '&' : '?';
+                    _hLink += _sep2 + 'checkIn=' + _checkin + '&checkOut=' + _checkout;
+                  }
+                }
+                linkEl.href = _hLink;
                 linkEl.target = '_blank';
                 linkEl.rel = 'noopener';
                 linkEl.className = 'hotel-card-link';
@@ -1054,6 +1129,13 @@
           if (!el) return;
           el.innerHTML = '';
           el.style.alignItems = 'flex-start';
+
+          // 현재 날짜/예산 취득 — 링크에 동적 파라미터 반영
+          var _dates = _getSearchDates();
+          var _budget  = _getCurrentBudget();
+          var _isVipBudget = _budget >= 300;
+          var _cabinParam = _isVipBudget ? '&cabinclass=business' : '';
+
           (flights || []).forEach((f, fi) => {
             const card = document.createElement('div');
             card.className = 'flight-card';
@@ -1086,7 +1168,31 @@
             card.appendChild(descEl);
             if (f.link) {
               const linkEl = document.createElement('a');
-              linkEl.href = f.link;
+              // Skyscanner URL에 날짜 동적 삽입
+              // URL 구조: /flights/icn/lis/[날짜/날짜/]?params
+              // - 날짜 없는 URL: /icn/lis/ or /icn/lis/?adults=1&cabinclass=business
+              // - 날짜 있는 URL: /icn/lis/YYYY-MM-DD/YYYY-MM-DD/?params
+              var _href = f.link;
+              if (_href.includes('skyscanner')) {
+                var _urlParts = _href.split('?');
+                var _path = _urlParts[0];  // 경로 부분
+                // 경로에 날짜(YYMMDD 6자리)가 없으면 날짜 삽입
+                if (!_path.match(/\/\d{6}(\/|$)/)) {
+                  // 경로 끝 슬래시 제거 후 날짜 삽입 (YYMMDD 형식)
+                  _path = _path.replace(/\/$/, '') + '/' + _dates.shortStart + '/' + _dates.shortEnd + '/';
+                  // 쿼리스트링 재조립: adultsv2=1 + currency + cabinclass (실제 Skyscanner 검색 URL 포맷)
+                  var _query = 'adultsv2=1&currency=KRW';
+                  if (_isVipBudget) _query += '&cabinclass=business';
+                  else _query += '&cabinclass=economy';
+                  _href = _path + '?' + _query;
+                } else {
+                  // 날짜 있는 URL: cabinclass만 추가 (중복 방지)
+                  if (_isVipBudget && !_href.includes('cabinclass')) {
+                    _href += (_href.includes('?') ? '&' : '?') + 'cabinclass=business';
+                  }
+                }
+              }
+              linkEl.href = _href;
               linkEl.target = '_blank';
               linkEl.rel = 'noopener';
               linkEl.className = 'flight-card-link';
@@ -1179,40 +1285,26 @@
         renderFxTips('fxtip-' + col, d.id, d.fx, d.fxSub);
         renderTravelInfo('travelinfo-' + col, d.id);
 
-        // 6. EXTERNAL LINKS (Naver Flights)
-        const dateVal = document.getElementById('home-date-value').textContent;
-        const year = new Date().getFullYear();
-        let start = `${year}0410`, end = `${year}0414`;
-        if (dateVal.includes(' – ')) {
-          try {
-            const parts = dateVal.split(' – ');
-            const d1 = parts[0].split('월 ');
-            const d2 = parts[1].split('월 ');
-            const fm1 = parseInt(d1[0]) - 1, fm2 = parseInt(d2[0]) - 1;
-            const startYear = year;
-            const endYear = fm2 < fm1 ? year + 1 : year;
-            start = `${startYear}${d1[0].padStart(2, '0')}${d1[1].replace('일', '').padStart(2, '0')}`;
-            end = `${endYear}${d2[0].padStart(2, '0')}${d2[1].replace('일', '').padStart(2, '0')}`;
-          } catch (e) {}
-        }
-        const codes = { 'lisbon': 'LIS', 'danang': 'DAD', 'jeju': 'CJU', 'taipei': 'TPE', 'osaka': 'KIX', 'tokyo': 'NRT', 'bangkok': 'BKK', 'bali': 'DPS', 'chiangmai': 'CNX', 'singapore': 'SIN', 'cebu': 'CEB', 'nhatrang': 'CXR', 'fukuoka': 'FUK', 'sapporo': 'CTS', 'okinawa': 'OKA', 'kyoto': 'KIX', 'miyakojima': 'SHI', 'phuquoc': 'PQC', 'hochiminh': 'SGN', 'hanoi': 'HAN', 'boracay': 'MPH', 'phuket': 'HKT', 'hongkong': 'HKG', 'guam': 'GUM', 'hawaii': 'HNL', 'paris': 'CDG', 'kualalumpur': 'KUL', 'maldives': 'MLE', 'sydney': 'SYD', 'shanghai': 'PVG', 'barcelona': 'BCN', 'sanya': 'SYX', 'saipan': 'SPN', 'palawan': 'PPS' };
-        const code = codes[d.id] || 'ANY';
-        const isInternational = d.id !== 'jeju';
-        const link = isInternational
-          ? `https://m-flight.naver.com/flights/international/${window.DEPARTURE_AIRPORT||'ICN'}-${code}-${start}/${end}?adult=1&isDirect=true`
-          : d.id === 'jeju'
-            ? (window.DEPARTURE_AIRPORT === 'CJU'
-                ? `https://m-flight.naver.com/flights/domestic/CJU-GMP-${start}/${end}?adult=1`
-                : `https://m-flight.naver.com/flights/domestic/GMP-CJU-${start}/${end}?adult=1`)
-            : `https://m-flight.naver.com/flights/domestic/${window.DEPARTURE_AIRPORT||'GMP'}-CJU-${start}/${end}?adult=1`;
+        // 6. EXTERNAL LINKS (Skyscanner — YYMMDD 포맷 사용)
+        const _dates = _getSearchDates();
+        const _skyStart = _dates.shortStart;  // YYMMDD (ex: 260516)
+        const _skyEnd   = _dates.shortEnd;
+        const codes = { 'lisbon': 'lis', 'danang': 'dad', 'jeju': 'cju', 'taipei': 'tpe', 'osaka': 'kix', 'tokyo': 'nrt', 'bangkok': 'bkk', 'bali': 'dps', 'chiangmai': 'cnx', 'singapore': 'sin', 'cebu': 'ceb', 'nhatrang': 'cxr', 'fukuoka': 'fuk', 'sapporo': 'cts', 'okinawa': 'oka', 'kyoto': 'kix', 'miyakojima': 'mmj', 'phuquoc': 'pqc', 'hochiminh': 'sgn', 'hanoi': 'han', 'boracay': 'mph', 'phuket': 'hkt', 'hongkong': 'hkg', 'guam': 'gum', 'hawaii': 'hnl', 'paris': 'cdg', 'kualalumpur': 'kul', 'maldives': 'mle', 'sydney': 'syd', 'shanghai': 'pvg', 'barcelona': 'bcn', 'sanya': 'syx', 'saipan': 'spn', 'palawan': 'pps' };
+        const _skyCode = codes[d.id] || 'any';
+        const _fromCode = (window.DEPARTURE_AIRPORT || 'ICN').toLowerCase();
+        const _skyBase = 'https://www.skyscanner.co.kr/transport/flights';
+        const _cabinSuffix = isVIP ? '&cabinclass=business' : '&cabinclass=economy';
+        const _skyParams = 'adultsv2=1&currency=KRW' + _cabinSuffix;
+        const link = d.id === 'jeju'
+          ? (window.DEPARTURE_AIRPORT === 'CJU'
+              ? `${_skyBase}/cju/gmp/${_skyStart}/${_skyEnd}/?${_skyParams}`
+              : `${_skyBase}/gmp/cju/${_skyStart}/${_skyEnd}/?${_skyParams}`)
+          : `${_skyBase}/${_fromCode}/${_skyCode}/${_skyStart}/${_skyEnd}/?${_skyParams}`;
 
-        // Fix: colEl is now defined at top of this function
         if (colEl) {
           const btnGhost = colEl.querySelector('.btn-ghost');
           if (btnGhost) {
-            // VIP 시 비즈니스 클래스 파라미터 포함
-            const vipLink = isVIP ? link.replace('isDirect=true', 'isDirect=true&cabin=business') + (link.includes('?') ? '&cabin=business' : '?cabin=business') : link;
-            btnGhost.href = isVIP ? link + (link.includes('?') ? '&cabin=business' : '?cabin=business') : link;
+            btnGhost.href = link;
             btnGhost.textContent = isVIP
               ? `${d.name.split(' · ')[1] || d.name} 비즈니스석 보기 ›`
               : `${d.name.split(' · ')[1] || d.name} 항공권 보기 ›`;
@@ -3982,21 +4074,15 @@
         // 목적지별 IATA 도시코드 — 전역 공유 상수 참조
         var DEST_IATA = window.DEST_CITY_IATA;
 
-        // 제휴 예약 링크 생성 — Skyscanner 검색 (한국어 UI)
+        // 제휴 예약 링크 생성 — 사용자 선택 날짜 + 예산 반영 (Skyscanner YYMMDD 포맷)
         var makeBookingLink = function(iata) {
           var dep = window.DEPARTURE_AIRPORT || 'ICN';
-          var today = new Date();
-          // 다음 달 15일 출발, 22일 귀국으로 기본 세팅
-          var d1 = new Date(today.getFullYear(), today.getMonth() + 1, 15);
-          var d2 = new Date(today.getFullYear(), today.getMonth() + 1, 22);
-          var fmt = function(d) {
-            return String(d.getFullYear()).slice(2) +
-              String(d.getMonth() + 1).padStart(2, '0') +
-              String(d.getDate()).padStart(2, '0');
-          };
+          var _dates = _getSearchDates();
+          var _budget = _getCurrentBudget();
+          var _cabin = _budget >= 300 ? '&cabinclass=business' : '&cabinclass=economy';
           return 'https://www.skyscanner.co.kr/transport/flights/' +
             dep.toLowerCase() + '/' + iata.toLowerCase() + '/' +
-            fmt(d1) + '/' + fmt(d2) + '/?adults=1';
+            _dates.shortStart + '/' + _dates.shortEnd + '/?adultsv2=1&currency=KRW' + _cabin;
         };
 
         // 최저가 API 호출 (Worker 프록시)
