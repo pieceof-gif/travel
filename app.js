@@ -1,6 +1,41 @@
 // app.js — 앱 로직 (index.html 블록 3에서 자동 추출)
 // 주의: 직접 편집하지 마세요. extract_js.py로 재생성하세요.
 
+      // ── 여행지 좌표 매핑 ──
+      var DEST_COORDS = {
+        lisbon: [38.7223, -9.1393], danang: [16.0544, 108.2022], jeju: [33.4996, 126.5312],
+        taipei: [25.0330, 121.5654], osaka: [34.6937, 135.5023], tokyo: [35.6762, 139.6503],
+        bangkok: [13.7563, 100.5018], bali: [-8.3405, 115.0920], chiangmai: [18.7061, 98.9817],
+        singapore: [1.3521, 103.8198], cebu: [10.3157, 123.8854], nhatrang: [12.2388, 109.1967],
+        fukuoka: [33.5904, 130.4017], sapporo: [43.0618, 141.3545], okinawa: [26.3344, 127.8056],
+        kyoto: [35.0116, 135.7681], miyakojima: [24.7915, 125.2814], phuquoc: [10.2270, 103.9615],
+        hochiminh: [10.8231, 106.6297], hanoi: [21.0285, 105.8542], boracay: [11.9674, 121.9248],
+        phuket: [7.8804, 98.3923], hongkong: [22.3193, 114.1694], guam: [13.4443, 144.7937],
+        hawaii: [21.3069, -157.8583], paris: [48.8566, 2.3522], kualalumpur: [3.1390, 101.6869],
+        maldives: [4.1755, 73.5093], sydney: [-33.8688, 151.2093], shanghai: [31.2304, 121.4737],
+        barcelona: [41.3874, 2.1686], nagoya: [35.1815, 136.9066], siemreap: [13.3633, 103.8564],
+        rome: [41.9028, 12.4964], london: [51.5074, -0.1278], kotakinabalu: [5.9804, 116.0735],
+        luangprabang: [19.8563, 102.1350], madrid: [40.4168, -3.7038], kohsamui: [9.5120, 100.0136],
+        interlaken: [46.6863, 7.8632], dubrovnik: [42.6507, 18.0944], istanbul: [41.0082, 28.9784],
+        macau: [22.1987, 113.5439], beijing: [39.9042, 116.4074], qingdao: [36.0671, 120.3826],
+        saipan: [15.1850, 145.7504], palawan: [9.8349, 118.7384], sanya: [18.2528, 109.5119]
+      };
+
+      // ── 지도 관리 (Google Maps Embed — 무료, 한글 지원) ──
+      function updateDestMap(colIdx, destId) {
+        var coords = DEST_COORDS[destId];
+        if (!coords) return;
+        var container = document.getElementById('dest-map-' + colIdx);
+        if (!container) return;
+
+        var src = 'https://www.google.com/maps?q=' + coords[0] + ',' + coords[1] +
+          '&z=12&output=embed&hl=ko';
+        container.innerHTML = '<iframe src="' + src +
+          '" style="width:100%;height:100%;border:0;border-radius:12px;" ' +
+          'loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
+      }
+
+
 
       localStorage.clear(); // Clear any old state
 
@@ -510,6 +545,8 @@
         setTimeout(function(){_skIds.forEach(function(p){var e=document.getElementById(p+col);if(e)e.classList.remove('sk');});},5000);
         // 현재 컬럼에 표시 중인 destIdx 저장 (날씨 API에서 참조)
         if (typeof _currentDestIdx !== 'undefined') _currentDestIdx[col] = destIdx;
+        // 지도 업데이트
+        if (typeof updateDestMap === 'function') updateDestMap(col, d.id);
         const colEl = document.getElementById('col-' + col); // Fix: colEl must be defined here, not from outer scope
         const budget = budgetLimit || 150;
         const days = duration || 5;
