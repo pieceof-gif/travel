@@ -4106,8 +4106,11 @@
             _dates.shortStart + '/' + _dates.shortEnd + '/?adultsv2=1&currency=KRW' + _cabin;
         };
 
-        // 최저가 API 호출 (Worker 프록시)
-        fetch('https://travel.le2jy.workers.dev/api/flights/all')
+        // 최저가 API 호출 (Worker 프록시) — 선택 날짜 월 전달
+        var _fDates = _getSearchDates();
+        var _fDepart = _fDates.skyStart.slice(0, 7); // YYYY-MM
+        var _fReturn = _fDates.skyEnd.slice(0, 7);   // YYYY-MM
+        fetch('https://travel.le2jy.workers.dev/api/flights/all?depart=' + _fDepart + '&return=' + _fReturn)
           .then(function(r) { return r.json(); })
           .then(function(data) {
             if (!data || !data.data) return;
@@ -4167,7 +4170,7 @@
           .catch(function(e) { console.log('TP flight API error:', e); });
 
         // VIP용 비즈니스 클래스 항공 데이터도 미리 가져오기
-        fetch('https://travel.le2jy.workers.dev/api/flights/all?trip_class=1')
+        fetch('https://travel.le2jy.workers.dev/api/flights/all?trip_class=1&depart=' + _fDepart + '&return=' + _fReturn)
           .then(function(r) { return r.json(); })
           .then(function(data) {
             if (!data || !data.data) return;

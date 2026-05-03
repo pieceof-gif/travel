@@ -38,7 +38,12 @@ export default {
     // ── /api/flights/all — 항공 최저가 전체 ──────────────
     if (url.pathname === '/api/flights/all') {
       const tripClass = url.searchParams.get('trip_class') || '0'; // 0=이코노미, 1=비즈니스, 2=퍼스트
-      const apiUrl = `https://api.travelpayouts.com/v1/prices/cheap?origin=${ORIGIN_IATA}&token=${env.TP_TOKEN}&currency=KRW&limit=1000&trip_class=${tripClass}`;
+      const depart   = url.searchParams.get('depart') || '';  // YYYY-MM
+      const returnD  = url.searchParams.get('return') || '';  // YYYY-MM
+
+      let apiUrl = `https://api.travelpayouts.com/v1/prices/cheap?origin=${ORIGIN_IATA}&token=${env.TP_TOKEN}&currency=KRW&limit=1000&trip_class=${tripClass}`;
+      if (depart)  apiUrl += `&depart_date=${depart}`;
+      if (returnD) apiUrl += `&return_date=${returnD}`;
 
       try {
         const res = await fetch(apiUrl, { headers: { 'X-Access-Token': env.TP_TOKEN } });
@@ -65,6 +70,7 @@ export default {
         });
       }
     }
+
 
     // ── /api/hotels/all — 숙박 최저가 전체 ──────────────
     if (url.pathname === '/api/hotels/all') {
