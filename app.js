@@ -31,7 +31,7 @@
         var src = 'https://www.google.com/maps?q=' + coords[0] + ',' + coords[1] +
           '&z=12&output=embed&hl=ko';
         container.innerHTML = '<iframe src="' + src +
-          '" style="width:100%;height:100%;border:0;border-radius:12px;" ' +
+          '" style="width:100%;height:100%;border:0;border-radius:6px;" ' +
           'loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
       }
 
