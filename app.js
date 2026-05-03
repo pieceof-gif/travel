@@ -114,6 +114,8 @@
         window.selectedDates = [dep, ret]; // 링크 클릭 시 참조용
         refreshButtonStates();
         if (typeof updateSearchBadge === 'function') updateSearchBadge();
+        // 선택 날짜 월 기준으로 항공 가격 재조회
+        if (typeof window._fetchFlightPrices === 'function') window._fetchFlightPrices();
       }
 
       function initFlatpickr(which) {
@@ -4087,10 +4089,11 @@
       };
 
       // ── Travelpayouts 실시간 항공 가격 연동 ──
-      (function fetchTpFlightPrices() {
+      window._fetchFlightPrices = function fetchTpFlightPrices() {
         // TP_TOKEN은 Cloudflare Worker에서 처리됩니다
         var TP_MARKER = '510036';
         var ORIGIN = window.DEPARTURE_AIRPORT || 'ICN';
+
 
         // 목적지별 IATA 도시코드 — 전역 공유 상수 참조
         var DEST_IATA = window.DEST_CITY_IATA;
@@ -4185,7 +4188,8 @@
             console.log('[VIP] 비즈니스 항공 데이터 로드 완료');
           })
           .catch(function(e) { console.log('VIP flight API error:', e); });
-      })();
+      }; // end _fetchFlightPrices
+      window._fetchFlightPrices(); // 초기 실행
 
       // ── GitHub passport-index-dataset: 한국여권 비자 요건 연동 ──
       (function fetchVisaInfo() {
