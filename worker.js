@@ -37,30 +37,57 @@ export default {
 
     // ── /api/flights/all — 항공 최저가 전체 ──────────────
     if (url.pathname === '/api/flights/all') {
-      const tripClass = url.searchParams.get('trip_class') || '0'; // 0=이코노미, 1=비즈니스, 2=퍼스트
-      const depart   = url.searchParams.get('depart') || '';  // YYYY-MM
-      const returnD  = url.searchParams.get('return') || '';  // YYYY-MM
+      const tripClass = url.searchParams.get('trip_class') || '0';
+      const depart   = url.searchParams.get('depart') || '';
+      const returnD  = url.searchParams.get('return') || '';
 
-      let apiUrl = `https://api.travelpayouts.com/v1/prices/cheap?origin=${ORIGIN_IATA}&token=${env.TP_TOKEN}&currency=KRW&limit=1000&trip_class=${tripClass}`;
-      if (depart)  apiUrl += `&depart_date=${depart}`;
-      if (returnD) apiUrl += `&return_date=${returnD}`;
+      // v2/prices/latest: 최근 48시간 내 실제 검색 결과 (actual=true)
+      let apiUrl = `https://api.travelpayouts.com/v2/prices/latest?origin=${ORIGIN_IATA}&token=${env.TP_TOKEN}&currency=KRW&limit=1000&period_type=month&show_to_affiliates=true&sorting=price&trip_class=${tripClass}&one_way=false`;
+      if (depart) apiUrl += `&beginning_of_period=${depart}-01`;
 
       try {
         const res = await fetch(apiUrl, { headers: { 'X-Access-Token': env.TP_TOKEN } });
         const data = await res.json();
 
         const results = {};
-        if (data && data.data) {
-          for (const [iata, entries] of Object.entries(data.data)) {
-            const sorted = Object.values(entries).sort((a, b) => a.price - b.price);
-            if (sorted.length > 0 && sorted[0].price > 0) {
+        // v2 응답: { data: [ { destination, price, airline, actual, ... }, ... ] }
+        if (data && Array.isArray(data.data)) {
+          for (const item of data.data) {
+            const iata = item.destination;
+            if (!iata || item.price <= 0) continue;
+            // 목적지별 최저가만 유지
+            if (!results[iata] || item.price < results[iata].priceKRW) {
               results[iata] = {
-                priceKRW: sorted[0].price,
-                priceLabel: Math.round(sorted[0].price / 10000) + '만원~',
-                airline: sorted[0].airline,
+                priceKRW: item.price,
+                priceLabel: Math.round(item.price / 10000) + '만원~',
+                airline: item.airline,
               };
             }
           }
+        }
+
+        // v2에서 결과가 부족하면 v1/prices/cheap fallback
+        if (Object.keys(results).length < 10) {
+          let fallbackUrl = `https://api.travelpayouts.com/v1/prices/cheap?origin=${ORIGIN_IATA}&token=${env.TP_TOKEN}&currency=KRW&limit=1000&trip_class=${tripClass}`;
+          if (depart) fallbackUrl += `&depart_date=${depart}`;
+          if (returnD) fallbackUrl += `&return_date=${returnD}`;
+          try {
+            const fbRes = await fetch(fallbackUrl, { headers: { 'X-Access-Token': env.TP_TOKEN } });
+            const fbData = await fbRes.json();
+            if (fbData && fbData.data) {
+              for (const [iata, entries] of Object.entries(fbData.data)) {
+                if (results[iata]) continue; // v2 데이터 우선
+                const sorted = Object.values(entries).sort((a, b) => a.price - b.price);
+                if (sorted.length > 0 && sorted[0].price > 0) {
+                  results[iata] = {
+                    priceKRW: sorted[0].price,
+                    priceLabel: Math.round(sorted[0].price / 10000) + '만원~',
+                    airline: sorted[0].airline,
+                  };
+                }
+              }
+            }
+          } catch (_) {}
         }
 
         return new Response(JSON.stringify({ data: results }), { headers: CORS_HEADERS });
@@ -70,6 +97,7 @@ export default {
         });
       }
     }
+
 
 
     // ── /api/hotels/all — 숙박 최저가 전체 ──────────────
