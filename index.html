@@ -88,9 +88,9 @@
             <div class="sb-label">여행자</div>
             <div class="sb-val" id="sb-traveler-display">1명</div>
           </div>
-          <div class="sb-div"></div>
-          <!-- 4. 예산 -->
-          <div class="sb-seg" id="budget-seg" onclick="toggleSbPanel('budget-panel',event,this)">
+          <div class="sb-div" style="display:none"></div>
+          <!-- 4. 예산 (비표시) -->
+          <div class="sb-seg" id="budget-seg" onclick="toggleSbPanel('budget-panel',event,this)" style="display:none">
             <div class="sb-label">예산</div>
             <div class="sb-val" id="sb-budget-display">상관없음</div>
           </div>
@@ -298,7 +298,7 @@
         <button class="cv-tab active" id="cv-tab-region" onclick="switchCvTab('region')" type="button">지역</button>
         <button class="cv-tab" id="cv-tab-date"     onclick="switchCvTab('date')"     type="button">날짜</button>
         <button class="cv-tab" id="cv-tab-traveler"  onclick="switchCvTab('traveler')" type="button">여행자</button>
-        <button class="cv-tab" id="cv-tab-budget"    onclick="switchCvTab('budget')"   type="button">예산</button>
+        <button class="cv-tab" id="cv-tab-budget"    onclick="switchCvTab('budget')"   type="button" style="display:none">예산</button>
       </div>
 
       <!-- 지역 콘텐츠 -->
@@ -637,9 +637,9 @@
             <div class="sb-label">여행자</div>
             <div class="sb-val" id="sb-traveler-display-c">1명</div>
           </div>
-          <div class="sb-div"></div>
-          <!-- 4. 예산 -->
-          <div class="sb-seg" id="budget-seg-c" onclick="toggleSbPanel('budget-panel-c',event,this)">
+          <div class="sb-div" style="display:none"></div>
+          <!-- 4. 예산 (비표시) -->
+          <div class="sb-seg" id="budget-seg-c" onclick="toggleSbPanel('budget-panel-c',event,this)" style="display:none">
             <div class="sb-label">예산</div>
             <div class="sb-val" id="sb-budget-display-c">상관없음</div>
           </div>
@@ -991,10 +991,12 @@
         </div>
       </div>
 
-      <!-- ═══ SECTION: 가격 ═══ -->
+      <!-- ═══ SECTION: 가격 (비표시) ═══ -->
+      <div id="price-section-wrap" style="display:none;">
       <div class="sec-hd">
         <div class="sec-hd-inner">
-          <div class="sec-title">가격</div>
+          <div class="sec-title">참고 가격</div>
+          <p style="font-size:13px;color:var(--gray);margin-bottom:8px;">예상 참고가이며 시기, 환율, 유류할증료에 따라 실제 가격은 다를 수 있습니다.</p>
         </div>
       </div>
 
@@ -1004,24 +1006,24 @@
           <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
           <div class="kicker">&nbsp;</div>
           <div class="v-xl main">-</div>
-          <div class="v-sm sub">총 예상 비용 (항공+숙박+현지)</div>
+          <div class="v-sm sub">숙박+현지 비용 (항공 별도)</div>
         </div>
         <div class="dc sk" id="total-1">
           <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
           <div class="kicker">&nbsp;</div>
           <div class="v-xl main">-</div>
-          <div class="v-sm sub">총 예상 비용 (항공+숙박+현지)</div>
+          <div class="v-sm sub">숙박+현지 비용 (항공 별도)</div>
         </div>
         <div class="dc sk" id="total-2">
           <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
           <div class="kicker">&nbsp;</div>
           <div class="v-xl main">-</div>
-          <div class="v-sm sub">총 예상 비용 (항공+숙박+현지)</div>
+          <div class="v-sm sub">숙박+현지 비용 (항공 별도)</div>
         </div>
       </div>
 
-      <!-- 항공권 -->
-      <div class="data-row" style="margin-top: 44px;">
+      <!-- 항공권 (가격 정확도 한계로 비표시) -->
+      <div class="data-row" style="display:none;margin-top: 44px;">
         <div class="dc sk" id="air-0">
           <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
           <div class="kicker">이코노미 · 인천 출발</div>
@@ -1082,18 +1084,128 @@
           <div class="v-sm sub">하루 지출 (식사+교통+관광)</div>
         </div>
       </div>
+      </div><!-- /price-section-wrap -->
 
-      <!-- ═══ SECTION: 환전 ═══ -->
+      <!-- ═══ SECTION: 숙소 ═══ -->
       <div class="sec-hd">
         <div class="sec-hd-inner">
-          <div class="sec-title">환전</div>
+          <div class="sec-title">숙소</div>
         </div>
       </div>
-      <!-- 환전 가이드 팁 (환율 + 상세 통합) -->
       <div class="data-row" style="margin-top: 44px;">
-        <div class="dc" id="fxtip-0" style="padding-top:0;text-align:left;"></div>
-        <div class="dc" id="fxtip-1" style="padding-top:0;text-align:left;"></div>
-        <div class="dc" id="fxtip-2" style="padding-top:0;text-align:left;"></div>
+        <div class="dc" id="hotelrec-0"></div>
+        <div class="dc" id="hotelrec-1"></div>
+        <div class="dc" id="hotelrec-2"></div>
+      </div>
+
+      <!-- ═══ SECTION: 항공 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">항공</div>
+        </div>
+      </div>
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="flightrec-0"></div>
+        <div class="dc" id="flightrec-1"></div>
+        <div class="dc" id="flightrec-2"></div>
+      </div>
+
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">필수 앱</div>
+        </div>
+      </div>
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="apps-0"></div>
+        <div class="dc" id="apps-1"></div>
+        <div class="dc" id="apps-2"></div>
+      </div>
+
+      <!-- ═══ SECTION: 추천 관광 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">추천 관광</div>
+        </div>
+      </div>
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="sights-0"></div>
+        <div class="dc" id="sights-1"></div>
+        <div class="dc" id="sights-2"></div>
+      </div>
+
+      <!-- ═══ SECTION: 음식 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">음식</div>
+        </div>
+      </div>
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="food-0"></div>
+        <div class="dc" id="food-1"></div>
+        <div class="dc" id="food-2"></div>
+      </div>
+
+      <!-- ═══ SECTION: 체험 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">체험</div>
+        </div>
+      </div>
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="exps-0"></div>
+        <div class="dc" id="exps-1"></div>
+        <div class="dc" id="exps-2"></div>
+      </div>
+
+      <!-- ═══ SECTION: 날씨 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">날씨</div>
+        </div>
+      </div>
+
+      <!-- 날씨 통합 표시 -->
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc sk" id="cur-temp-0">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main" style="color:var(--gray);">—</div>
+          <div class="v-sm sub">현재 기온 · 시즌 평균</div>
+        </div>
+        <div class="dc sk" id="cur-temp-1">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main" style="color:var(--gray);">—</div>
+          <div class="v-sm sub">현재 기온 · 시즌 평균</div>
+        </div>
+        <div class="dc sk" id="cur-temp-2">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main" style="color:var(--gray);">—</div>
+          <div class="v-sm sub">현재 기온 · 시즌 평균</div>
+        </div>
+      </div>
+
+      <!-- 주간 예보 -->
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc sk" id="weekly-forecast-0">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main" style="color:var(--gray);">—</div>
+          <div class="v-sm sub">이번 주 예보</div>
+        </div>
+        <div class="dc sk" id="weekly-forecast-1">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main" style="color:var(--gray);">—</div>
+          <div class="v-sm sub">이번 주 예보</div>
+        </div>
+        <div class="dc sk" id="weekly-forecast-2">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main" style="color:var(--gray);">—</div>
+          <div class="v-sm sub">이번 주 예보</div>
+        </div>
       </div>
 
       <!-- ═══ SECTION: 안전 ═══ -->
@@ -1161,128 +1273,6 @@
         </div>
       </div>
 
-      <!-- ═══ SECTION: 날씨 ═══ -->
-      <div class="sec-hd">
-        <div class="sec-hd-inner">
-          <div class="sec-title">날씨</div>
-        </div>
-      </div>
-
-      <!-- 날씨 통합 표시 -->
-      <div class="data-row" style="margin-top: 44px;">
-        <div class="dc sk" id="cur-temp-0">
-          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
-          <div class="kicker">&nbsp;</div>
-          <div class="v-xl main" style="color:var(--gray);">—</div>
-          <div class="v-sm sub">현재 기온 · 시즌 평균</div>
-        </div>
-        <div class="dc sk" id="cur-temp-1">
-          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
-          <div class="kicker">&nbsp;</div>
-          <div class="v-xl main" style="color:var(--gray);">—</div>
-          <div class="v-sm sub">현재 기온 · 시즌 평균</div>
-        </div>
-        <div class="dc sk" id="cur-temp-2">
-          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
-          <div class="kicker">&nbsp;</div>
-          <div class="v-xl main" style="color:var(--gray);">—</div>
-          <div class="v-sm sub">현재 기온 · 시즌 평균</div>
-        </div>
-      </div>
-
-      <!-- 주간 예보 -->
-      <div class="data-row" style="margin-top: 44px;">
-        <div class="dc sk" id="weekly-forecast-0">
-          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
-          <div class="kicker">&nbsp;</div>
-          <div class="v-xl main" style="color:var(--gray);">—</div>
-          <div class="v-sm sub">이번 주 예보</div>
-        </div>
-        <div class="dc sk" id="weekly-forecast-1">
-          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
-          <div class="kicker">&nbsp;</div>
-          <div class="v-xl main" style="color:var(--gray);">—</div>
-          <div class="v-sm sub">이번 주 예보</div>
-        </div>
-        <div class="dc sk" id="weekly-forecast-2">
-          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
-          <div class="kicker">&nbsp;</div>
-          <div class="v-xl main" style="color:var(--gray);">—</div>
-          <div class="v-sm sub">이번 주 예보</div>
-        </div>
-      </div>
-
-      <!-- ═══ SECTION: 추천 관광 ═══ -->
-      <div class="sec-hd">
-        <div class="sec-hd-inner">
-          <div class="sec-title">추천 관광</div>
-        </div>
-      </div>
-      <div class="data-row" style="margin-top: 44px;">
-        <div class="dc" id="sights-0"></div>
-        <div class="dc" id="sights-1"></div>
-        <div class="dc" id="sights-2"></div>
-      </div>
-
-      <!-- ═══ SECTION: 체험 ═══ -->
-      <div class="sec-hd">
-        <div class="sec-hd-inner">
-          <div class="sec-title">체험</div>
-        </div>
-      </div>
-      <div class="data-row" style="margin-top: 44px;">
-        <div class="dc" id="exps-0"></div>
-        <div class="dc" id="exps-1"></div>
-        <div class="dc" id="exps-2"></div>
-      </div>
-
-      <!-- ═══ SECTION: 음식 ═══ -->
-      <div class="sec-hd">
-        <div class="sec-hd-inner">
-          <div class="sec-title">음식</div>
-        </div>
-      </div>
-      <div class="data-row" style="margin-top: 44px;">
-        <div class="dc" id="food-0"></div>
-        <div class="dc" id="food-1"></div>
-        <div class="dc" id="food-2"></div>
-      </div>
-
-      <!-- ═══ SECTION: 숙소 ═══ -->
-      <div class="sec-hd">
-        <div class="sec-hd-inner">
-          <div class="sec-title">숙소</div>
-        </div>
-      </div>
-      <div class="data-row" style="margin-top: 44px;">
-        <div class="dc" id="hotelrec-0"></div>
-        <div class="dc" id="hotelrec-1"></div>
-        <div class="dc" id="hotelrec-2"></div>
-      </div>
-
-      <!-- ═══ SECTION: 항공 ═══ -->
-      <div class="sec-hd">
-        <div class="sec-hd-inner">
-          <div class="sec-title">항공</div>
-        </div>
-      </div>
-      <div class="data-row" style="margin-top: 44px;">
-        <div class="dc" id="flightrec-0"></div>
-        <div class="dc" id="flightrec-1"></div>
-        <div class="dc" id="flightrec-2"></div>
-      </div>
-
-      <div class="sec-hd">
-        <div class="sec-hd-inner">
-          <div class="sec-title">필수 앱</div>
-        </div>
-      </div>
-      <div class="data-row" style="margin-top: 44px;">
-        <div class="dc" id="apps-0"></div>
-        <div class="dc" id="apps-1"></div>
-        <div class="dc" id="apps-2"></div>
-      </div>
-
       <!-- ═══ SECTION: 여행 정보 ═══ -->
       <div class="sec-hd">
         <div class="sec-hd-inner">
@@ -1305,6 +1295,20 @@
         <div class="dc" id="entry-1" style="text-align:left;"></div>
         <div class="dc" id="entry-2" style="text-align:left;"></div>
       </div>
+
+      <!-- ═══ SECTION: 환전 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">환전</div>
+        </div>
+      </div>
+      <!-- 환전 가이드 팁 (환율 + 상세 통합) -->
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="fxtip-0" style="padding-top:0;text-align:left;"></div>
+        <div class="dc" id="fxtip-1" style="padding-top:0;text-align:left;"></div>
+        <div class="dc" id="fxtip-2" style="padding-top:0;text-align:left;"></div>
+      </div>
+
       </div> <!-- END #comparison-body -->
 
       <div id="wiz-scroll-sentinel" style="height: 1px;"></div>
@@ -1325,7 +1329,7 @@
 
         </div>
         <!-- 면책 고지 -->
-        <p id="footer-date-note">항공권 가격은 최저가 기준이며 실시간 변동합니다. 안전도는 외교부 여행경보 기준이며, 현지 정보는 참고용입니다.<br>여행 전 반드시 <a href="https://www.0404.go.kr" target="_blank" rel="noopener" style="color:inherit;">외교부 해외안전여행</a>을 확인하세요.</p>
+        <p id="footer-date-note">항공권·숙박 가격은 예상 참고가이며 실제 예약 시 다를 수 있습니다. 안전도는 외교부 여행경보 기준이며, 현지 정보는 참고용입니다.<br>여행 전 반드시 <a href="https://www.0404.go.kr" target="_blank" rel="noopener" style="color:inherit;">외교부 해외안전여행</a>을 확인하세요.</p>
         <!-- 이메일 -->
         <p class="footer-email" style="margin-top:4px;">이메일: pieceof@kakao.com</p>
         <!-- 저작권 -->

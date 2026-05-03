@@ -1,54 +1,1346 @@
-// app.js — 앱 로직 (index.html 블록 3에서 자동 추출)
-// 주의: 직접 편집하지 마세요. extract_js.py로 재생성하세요.
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <script src="data.js"></script>
+<script data-noptimize="1" data-cfasync="false" data-wpfc-render="false">
+    (function () {
+        var script = document.createElement("script");
+        script.async = 1;
+        script.src = 'https://emrldco.com/NTEwMDM2.js?t=510036';
+        document.head.appendChild(script);
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>여행지 비교 — odiga</title>
+
+  <!-- ── SEO & Open Graph ── -->
+  <meta name="description" content="오사카, 방콕, 타이베이 등 인기 여행지의 항공·숙박·현지 비용을 한눈에 비교하세요. odiga가 최저가 기준으로 정리해드립니다.">
+  <meta name="keywords" content="여행지 비교, 항공권 최저가, 해외여행, 오사카 여행, 방콕 여행, 타이베이 여행, 여행 예산">
+  <meta name="author" content="odiga">
+
+  <!-- Open Graph (카카오, 페이스북, 슬랙 등) -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://odiga.kr/">
+  <meta property="og:title" content="오디가? 👀">
+  <meta property="og:description" content="항공·숙박은 기본, 날씨·환전·필수 앱·출입국 준비까지 — 여행지 비교의 모든 걸 한 번에">
+  <meta property="og:image" content="https://odiga.kr/og-image-v4.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:site_name" content="odiga">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="오디가? 👀">
+  <meta name="twitter:description" content="항공·숙박은 기본, 날씨·환전·필수 앱·출입국 준비까지 — 여행지 비교의 모든 걸 한 번에">
+  <meta name="twitter:image" content="https://odiga.kr/og-image-v4.png">
+  <!-- Logo Font: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Flatpickr (Calendar) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://unpkg.com/flatpickr/dist/l10n/ko.js"></script>
+  <link rel="stylesheet" href="style.css">
+  </head>
+
+<body>
 
 
+  <!-- HOME VIEW -->
+  <div id="home-view">
+    <nav class="home-nav">
+      <span class="nav-brand">odiga</span>
+      <button class="nav-share-btn" id="nav-share-btn" onclick="handleShare()" aria-label="공유하기">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10.4986 7.49586L12.7507 5.24378C14.4091 3.58541 17.0978 3.5854 18.7562 5.24378C20.4146 6.90216 20.4146 9.59093 18.7562 11.2493L16.5041 13.5014M6.5 11.5L5.24378 12.7507C3.58541 14.4091 3.5854 17.0978 5.24378 18.7562C6.90216 20.4146 9.59093 20.4146 11.2493 18.7562L12.5 17.5M9.5 14.5L14.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </nav>
+    <div class="top-banner" id="home-top-banner" style="position: relative; z-index: 99;">
+      <div class="banner-news-wrap" id="home-banner-wrap">
+        <span class="banner-news-text">여행 뉴스를 불러오는 중...</span>
+      </div>
+    </div>
+
+    <div class="home-content">
+      <h1 class="home-title">어디로 떠나시나요?</h1>
+
+      <div class="sb-wrap" id="home-sb-wrap">
+        <div class="sb" id="home-sb">
+          <!-- 1. 여행 지역 -->
+          <div class="sb-seg" id="region-seg" onclick="toggleSbPanel('region-panel',event,this)">
+            <div class="sb-label">여행 지역</div>
+            <div class="sb-val" id="region-display">전체 지역</div>
+          </div>
+          <div class="sb-div"></div>
+          <!-- 2. 날짜 -->
+          <div class="sb-seg sb-seg--wide" id="date-seg" onclick="toggleSbPanel('date-panel',event,this);if(!fpHome)initFlatpickr('home')">
+            <div class="sb-label">날짜</div>
+            <div class="sb-val" id="sb-date-display">날짜 선택</div>
+          </div>
+          <div class="sb-div"></div>
+          <!-- 3. 여행자 -->
+          <div class="sb-seg" id="traveler-seg" onclick="toggleSbPanel('traveler-panel',event,this)">
+            <div class="sb-label">여행자</div>
+            <div class="sb-val" id="sb-traveler-display">1명</div>
+          </div>
+          <div class="sb-div"></div>
+          <!-- 4. 예산 -->
+          <div class="sb-seg" id="budget-seg" onclick="toggleSbPanel('budget-panel',event,this)">
+            <div class="sb-label">예산</div>
+            <div class="sb-val" id="sb-budget-display">상관없음</div>
+          </div>
+          <button class="sb-btn" id="search-btn" onclick="startSearch()" type="button" aria-label="여행지 검색">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span class="sb-btn-text" style="display:none;font-size:14px;font-weight:600;margin-left:4px">여행지 비교하기</span>
+          </button>
+        </div>
+
+        <!-- PANEL 1: 여행 지역 -->
+        <div class="sb-panel" id="region-panel">
+          <div class="sb-region-opt active" data-val="" onclick="selectRegion(event,'')">
+            <div><div class="sb-region-title">🌏 전체 지역</div><div class="sb-region-sub">전체 지역 비교</div></div>
+            <span class="sb-region-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-region-opt" data-val="japan" onclick="selectRegion(event,'japan')">
+            <div><div class="sb-region-title">🇯🇵 일본</div><div class="sb-region-sub">도쿄 · 오사카 · 후쿠오카 등</div></div>
+            <span class="sb-region-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-region-opt" data-val="sea" onclick="selectRegion(event,'sea')">
+            <div><div class="sb-region-title">🌴 동남아시아</div><div class="sb-region-sub">발리 · 방콕 · 세부 등</div></div>
+            <span class="sb-region-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-region-opt" data-val="europe" onclick="selectRegion(event,'europe')">
+            <div><div class="sb-region-title">🇪🇺 유럽</div><div class="sb-region-sub">파리 · 로마 · 바르셀로나 등</div></div>
+            <span class="sb-region-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-region-opt" data-val="east_asia" onclick="selectRegion(event,'east_asia')">
+            <div><div class="sb-region-title">🏙️ 동아시아</div><div class="sb-region-sub">홍콩 · 싱가포르 · 마카오 · 베이징 등</div></div>
+            <span class="sb-region-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-region-opt" data-val="resort" onclick="selectRegion(event,'resort')">
+            <div><div class="sb-region-title">🏖️ 휴양지</div><div class="sb-region-sub">발리 · 몰디브 · 오키나와 등</div></div>
+            <span class="sb-region-check"></span>
+          </div>
+        </div>
+
+        <!-- PANEL 2: 날짜 (flatpickr inline) -->
+        <div class="sb-panel" id="date-panel">
+          <div class="sb-date-tabs">
+            <button class="sb-date-tab active" id="date-tab-specific" onclick="switchDateTab('specific',event)" type="button">날짜 지정</button>
+            <button class="sb-date-tab" id="date-tab-flexible" onclick="switchDateTab('flexible',event)" type="button">유연한 일정</button>
+          </div>
+          <div id="date-panel-specific">
+            <div id="dc-home-wrap">
+              <!-- JS가 2개월 달력을 렌더링 -->
+            </div>
+          </div>
+          <div id="date-panel-flexible" style="display:none">
+            <div class="sb-date-flexible">
+              날짜에 상관없이<br>최적의 여행지를 추천해드립니다.<br><span style="font-size:13px;color:#999">기본 5박 6일로 계산됩니다</span><br><span style="font-size:12px;color:#bbb">오늘 기준 최저가로 비교합니다</span>
+              <br>
+              <button class="sb-flex-confirm" onclick="confirmFlexibleDate(event)" type="button">언제든지 선택하기</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL 3: 여행자 -->
+        <div class="sb-panel" id="traveler-panel">
+          <div class="sb-guest-row">
+            <div>
+              <div class="sb-guest-title">성인</div>
+              <div class="sb-guest-sub">13세 이상</div>
+            </div>
+            <div class="sb-counter">
+              <button class="sb-counter-btn" id="btn-adults-minus" onclick="updateTravelers(event,'adults',-1)" type="button">－</button>
+              <span class="sb-counter-num" id="count-adults">1</span>
+              <button class="sb-counter-btn" onclick="updateTravelers(event,'adults',1)" type="button">＋</button>
+            </div>
+          </div>
+          <div class="sb-guest-hr"></div>
+          <div class="sb-guest-row">
+            <div>
+              <div class="sb-guest-title">어린이</div>
+              <div class="sb-guest-sub">2~12세</div>
+            </div>
+            <div class="sb-counter">
+              <button class="sb-counter-btn" id="btn-children-minus" onclick="updateTravelers(event,'children',-1)" type="button">－</button>
+              <span class="sb-counter-num" id="count-children">0</span>
+              <button class="sb-counter-btn" onclick="updateTravelers(event,'children',1)" type="button">＋</button>
+            </div>
+          </div>
+          <div class="sb-guest-hr"></div>
+          <div class="sb-guest-row">
+            <div>
+              <div class="sb-guest-title">유아</div>
+              <div class="sb-guest-sub">2세 미만</div>
+            </div>
+            <div class="sb-counter">
+              <button class="sb-counter-btn" id="btn-infants-minus" onclick="updateTravelers(event,'infants',-1)" type="button">－</button>
+              <span class="sb-counter-num" id="count-infants">0</span>
+              <button class="sb-counter-btn" onclick="updateTravelers(event,'infants',1)" type="button">＋</button>
+            </div>
+          </div>
+          <div class="sb-guest-hr"></div>
+          <div class="sb-guest-row">
+            <div>
+              <div class="sb-guest-title">반려동물</div>
+              <div class="sb-guest-sub" style="font-size:11px">보조동물을 동반하시나요?</div>
+            </div>
+            <div class="sb-counter">
+              <button class="sb-counter-btn" id="btn-pets-minus" onclick="updateTravelers(event,'pets',-1)" type="button">－</button>
+              <span class="sb-counter-num" id="count-pets">0</span>
+              <button class="sb-counter-btn" onclick="updateTravelers(event,'pets',1)" type="button">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL 4: 예산 -->
+        <div class="sb-panel" id="budget-panel">
+          <div class="sb-budget-header">1인당 예산 (항공+숙박 기준)</div>
+          <div class="sb-budget-opt active" data-val="unlimited" onclick="selectBudget('unlimited',event)">
+            <div><div class="sb-budget-title">상관없음</div><div class="sb-budget-sub">예산 제한 없이 비교</div></div>
+            <span class="sb-budget-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="300" onclick="selectBudget('300',event)">
+            <div><div class="sb-budget-title">VIP</div><div class="sb-budget-sub">좋은 곳으로 모십니다</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="200" onclick="selectBudget('200',event)">
+            <div><div class="sb-budget-title">200만원 이내</div><div class="sb-budget-sub">프리미엄 여행</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="150" onclick="selectBudget('150',event)">
+            <div><div class="sb-budget-title">150만원 이내</div><div class="sb-budget-sub">여유 있는 여행</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="100" onclick="selectBudget('100',event)">
+            <div><div class="sb-budget-title">100만원 이내</div><div class="sb-budget-sub">합리적 여행</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="cheapest" onclick="selectBudget('cheapest',event)">
+            <div><div class="sb-budget-title">최저가</div><div class="sb-budget-sub">가성비 여행</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Hidden compat values for JS -->
+      <input type="hidden" id="budget-input-home" value="unlimited">
+      <div id="home-date-value" style="display:none">날짜선택</div>
+      <div id="home-depart-value" style="display:none"></div>
+      <div id="home-return-value" style="display:none"></div>
+      <div id="home-budget-value" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- COMPARE VIEW -->
+  <div id="compare-view">
+    <!-- NAV -->
+    <nav class="nav">
+      <span class="nav-brand">odiga</span>
+      <div style="display:flex;align-items:center;gap:4px;">
+        <!-- 모바일 전용 검색 아이콘: nav-actions 밖에 배치 -->
+        <button id="cv-search-icon" onclick="openCvSearchSheet()" type="button" aria-label="검색 조건 수정">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <button class="nav-share-btn" id="nav-save-btn" onclick="handleSaveImage()" aria-label="이미지로 저장">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3V17M12 17L6 11M12 17L18 11M3 21H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="nav-share-btn" onclick="handleShare()" aria-label="공유하기">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.4986 7.49586L12.7507 5.24378C14.4091 3.58541 17.0978 3.5854 18.7562 5.24378C20.4146 6.90216 20.4146 9.59093 18.7562 11.2493L16.5041 13.5014M6.5 11.5L5.24378 12.7507C3.58541 14.4091 3.5854 17.0978 5.24378 18.7562C6.90216 20.4146 9.59093 20.4146 11.2493 18.7562L12.5 17.5M9.5 14.5L14.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="nav-actions">
+          <a class="nav-link" href="#">개요</a>
+          <a class="nav-link" href="#" onclick="goHome(); return false;">내 조건 수정</a>
+          <a class="btn-nav" href="#">예약하기</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="top-banner" id="compare-top-banner" style="position: relative; z-index: 99;">
+      <div class="banner-news-wrap" id="compare-banner-wrap">
+        <span class="banner-news-text">여행 뉴스를 불러오는 중...</span>
+      </div>
+    </div>
+
+    <!-- 모바일 검색 조건 탭 시트 -->
+    <div id="cv-search-sheet">
+      <!-- 헤더: 타이틀 + X 버튼 -->
+      <div class="cv-sheet-top">
+        <span class="cv-sheet-top-title">여행 검색</span>
+        <button class="cv-sheet-top-close" onclick="closeCvSearchSheet()" type="button" aria-label="닫기">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- 탭 바 (라벨만) -->
+      <div class="cv-tabs">
+        <button class="cv-tab active" id="cv-tab-region" onclick="switchCvTab('region')" type="button">지역</button>
+        <button class="cv-tab" id="cv-tab-date"     onclick="switchCvTab('date')"     type="button">날짜</button>
+        <button class="cv-tab" id="cv-tab-traveler"  onclick="switchCvTab('traveler')" type="button">여행자</button>
+        <button class="cv-tab" id="cv-tab-budget"    onclick="switchCvTab('budget')"   type="button">예산</button>
+      </div>
+
+      <!-- 지역 콘텐츠 -->
+      <div class="cv-tab-content" id="cv-content-region">
+        <div class="cv-row" data-val="" onclick="cvSelectRegion('')">
+          <div>
+            <div class="cv-row-title">🌏 전체 지역</div>
+            <div class="cv-row-sub">전체 지역 비교</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="japan" onclick="cvSelectRegion('japan')">
+          <div>
+            <div class="cv-row-title">🇯🇵 일본</div>
+            <div class="cv-row-sub">도쿄 · 오사카 · 후쿠오카 등</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="sea" onclick="cvSelectRegion('sea')">
+          <div>
+            <div class="cv-row-title">🌴 동남아시아</div>
+            <div class="cv-row-sub">발리 · 방콕 · 세부 등</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="europe" onclick="cvSelectRegion('europe')">
+          <div>
+            <div class="cv-row-title">🇪🇺 유럽</div>
+            <div class="cv-row-sub">파리 · 로마 · 바르셀로나 등</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="east_asia" onclick="cvSelectRegion('east_asia')">
+          <div>
+            <div class="cv-row-title">🏙️ 동아시아</div>
+            <div class="cv-row-sub">홍콩 · 싱가포르 · 마카오 · 베이징 등</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="resort" onclick="cvSelectRegion('resort')">
+          <div>
+            <div class="cv-row-title">🏖️ 휴양지</div>
+            <div class="cv-row-sub">괌 · 사이판 · 하와이 · 몰디브 등</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+      </div>
+
+      <!-- 날짜 콘텐츠 -->
+      <div class="cv-tab-content" id="cv-content-date" style="display:none">
+        <div class="cv-date-tabs">
+          <button class="cv-date-tab active" id="cvdt-specific" onclick="switchCvDateTab('specific')" type="button">날짜 지정</button>
+          <button class="cv-date-tab" id="cvdt-flexible" onclick="switchCvDateTab('flexible')" type="button">유연한 일정</button>
+        </div>
+        <div id="cv-date-specific"><div id="cv-cal"></div></div>
+        <div id="cv-date-flexible" style="display:none">
+          <!-- 숙박 기간 선택 -->
+          <div class="cv-flex-duration">
+            <div class="cv-flex-section-title">숙박 기간을 선택하세요.</div>
+            <div class="cv-flex-duration-list">
+              <button class="cv-flex-dur-btn" data-dur="weekend" onclick="cvSetDuration(this,'weekend')" type="button">주말</button>
+              <button class="cv-flex-dur-btn" data-dur="week" onclick="cvSetDuration(this,'week')" type="button">1주일</button>
+              <button class="cv-flex-dur-btn" data-dur="month" onclick="cvSetDuration(this,'month')" type="button">한 달</button>
+            </div>
+          </div>
+          <!-- 월 선택 카드 -->
+          <div class="cv-flex-months">
+            <div class="cv-flex-section-title">여행 날짜를 선택하세요.</div>
+            <button class="cv-flex-month-arrow" id="cv-flex-month-arrow-left" onclick="cvScrollMonths('left')" type="button" aria-label="이전 달 보기">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="cv-flex-month-scroll" id="cv-flex-month-list"></div>
+            <button class="cv-flex-month-arrow" id="cv-flex-month-arrow-right" onclick="cvScrollMonths('right')" type="button" aria-label="다음 달 보기">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+          <!-- 요약 텍스트 -->
+          <div class="cv-flex-summary" id="cv-flex-summary"></div>
+        </div>
+      </div>
+
+      <!-- 여행자 콘텐츠 -->
+      <div class="cv-tab-content" id="cv-content-traveler" style="display:none">
+        <div class="cv-guest-row">
+          <div><div class="cv-guest-title">성인</div><div class="cv-guest-sub">13세 이상</div></div>
+          <div class="cv-counter">
+            <button class="cv-counter-btn" id="cv-adults-minus" onclick="cvUpdateTravelers('adults',-1)" type="button">－</button>
+            <span class="cv-counter-num" id="cv-count-adults">1</span>
+            <button class="cv-counter-btn" onclick="cvUpdateTravelers('adults',1)" type="button">＋</button>
+          </div>
+        </div>
+        <div class="cv-guest-hr"></div>
+        <div class="cv-guest-row">
+          <div><div class="cv-guest-title">어린이</div><div class="cv-guest-sub">2~12세</div></div>
+          <div class="cv-counter">
+            <button class="cv-counter-btn" id="cv-children-minus" onclick="cvUpdateTravelers('children',-1)" type="button">－</button>
+            <span class="cv-counter-num" id="cv-count-children">0</span>
+            <button class="cv-counter-btn" onclick="cvUpdateTravelers('children',1)" type="button">＋</button>
+          </div>
+        </div>
+        <div class="cv-guest-hr"></div>
+        <div class="cv-guest-row">
+          <div><div class="cv-guest-title">유아</div><div class="cv-guest-sub">2세 미만</div></div>
+          <div class="cv-counter">
+            <button class="cv-counter-btn" id="cv-infants-minus" onclick="cvUpdateTravelers('infants',-1)" type="button">－</button>
+            <span class="cv-counter-num" id="cv-count-infants">0</span>
+            <button class="cv-counter-btn" onclick="cvUpdateTravelers('infants',1)" type="button">＋</button>
+          </div>
+        </div>
+        <div class="cv-guest-hr"></div>
+        <div class="cv-guest-row">
+          <div><div class="cv-guest-title">반려동물</div><div class="cv-guest-sub" style="font-size:11px">보조동물을 동반하시나요?</div></div>
+          <div class="cv-counter">
+            <button class="cv-counter-btn" id="cv-pets-minus" onclick="cvUpdateTravelers('pets',-1)" type="button">－</button>
+            <span class="cv-counter-num" id="cv-count-pets">0</span>
+            <button class="cv-counter-btn" onclick="cvUpdateTravelers('pets',1)" type="button">＋</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 예산 콘텐츠 -->
+      <div class="cv-tab-content" id="cv-content-budget" style="display:none">
+        <div class="cv-budget-header">1인당 예산 (항공+숙박 기준)</div>
+        <div class="cv-row" data-val="unlimited" onclick="cvSelectBudget('unlimited')">
+          <div>
+            <div class="cv-row-title">상관없음</div>
+            <div class="cv-row-sub">예산 제한 없이 비교</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="300" onclick="cvSelectBudget('300')">
+          <div>
+            <div class="cv-row-title">VIP</div>
+            <div class="cv-row-sub">좋은 곳으로 모십니다</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="200" onclick="cvSelectBudget('200')">
+          <div>
+            <div class="cv-row-title">200만원 이내</div>
+            <div class="cv-row-sub">프리미엄 여행</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="150" onclick="cvSelectBudget('150')">
+          <div>
+            <div class="cv-row-title">150만원 이내</div>
+            <div class="cv-row-sub">여유 있는 여행</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="100" onclick="cvSelectBudget('100')">
+          <div>
+            <div class="cv-row-title">100만원 이내</div>
+            <div class="cv-row-sub">합리적 여행</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+        <div class="cv-row-hr"></div>
+        <div class="cv-row" data-val="cheapest" onclick="cvSelectBudget('cheapest')">
+          <div>
+            <div class="cv-row-title">최저가</div>
+            <div class="cv-row-sub">가성비 여행</div>
+          </div>
+          <span class="cv-row-check"></span>
+        </div>
+      </div>
+
+      <!-- 하단 검색 버튼 -->
+      <div class="cv-sheet-footer">
+        <button class="cv-sheet-search-btn" onclick="startSearch(); closeCvSearchSheet();" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          검색
+        </button>
+      </div>
+    </div>
+
+    <!-- FIXED CLONED HEADER -->
+    <div id="fixed-header-clone" class="fixed-header">
+      <div class="sel-grid">
+        <div class="sel-card">
+          <div class="dest-dd" id="dd0-fixed">
+            <div class="dest-dd-trigger" onclick="toggleDestDd(0)">
+              <span class="dest-dd-val">여행지 선택</span>
+              <svg class="dest-dd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="dest-dd-menu" id="dd0-fixed-menu"></div>
+          </div>
+          <select id="sel0-fixed" class="dest-select" style="display:none" onchange="changeDest(0, this.value)">
+            <option value="0">포르투갈 · 리스본</option>
+            <option value="1">베트남 · 다낭</option>
+            <option value="2">제주도 (국내)</option>
+            <option value="3">대만 · 타이베이</option>
+            <option value="4">일본 · 오사카</option>
+            <option value="5">일본 · 도쿄</option>
+            <option value="6">태국 · 방콕</option>
+            <option value="7">인도네시아 · 발리</option>
+            <option value="8">태국 · 치앙마이</option>
+            <option value="9">싱가포르</option>
+            <option value="10">필리핀 · 세부</option>
+            <option value="11">베트남 · 나트랑</option>
+            <option value="12">일본 · 후쿠오카</option>
+            <option value="13">일본 · 삿포로</option>
+            <option value="14">일본 · 오키나와</option>
+            <option value="15">일본 · 교토</option>
+            <option value="16">일본 · 미야코지마</option>
+            <option value="17">베트남 · 푸꾸옥</option>
+            <option value="18">베트남 · 호치민</option>
+            <option value="19">베트남 · 하노이</option>
+            <option value="20">필리핀 · 보라카이</option>
+            <option value="21">태국 · 푸켓</option>
+            <option value="22">홍콩</option>
+            <option value="23">미국령 · 괌</option>
+            <option value="24">미국 · 하와이</option>
+            <option value="25">프랑스 · 파리</option>
+            <option value="26">말레이시아 · 쿠알라룸푸르</option>
+            <option value="27">몰디브</option>
+            <option value="28">호주 · 시드니</option>
+            <option value="29">중국 · 상하이</option>
+            <option value="30">스페인 · 바르셀로나</option>
+          </select>
+        </div>
+        <div class="sel-card">
+          <div class="dest-dd" id="dd1-fixed">
+            <div class="dest-dd-trigger" onclick="toggleDestDd(1)">
+              <span class="dest-dd-val">여행지 선택</span>
+              <svg class="dest-dd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="dest-dd-menu" id="dd1-fixed-menu"></div>
+          </div>
+          <select id="sel1-fixed" class="dest-select" style="display:none" onchange="changeDest(1, this.value)">
+            <option value="0">포르투갈 · 리스본</option>
+            <option value="1">베트남 · 다낭</option>
+            <option value="2">제주도 (국내)</option>
+            <option value="3">대만 · 타이베이</option>
+            <option value="4">일본 · 오사카</option>
+            <option value="5">일본 · 도쿄</option>
+            <option value="6">태국 · 방콕</option>
+            <option value="7">인도네시아 · 발리</option>
+            <option value="8">태국 · 치앙마이</option>
+            <option value="9">싱가포르</option>
+            <option value="10">필리핀 · 세부</option>
+            <option value="11">베트남 · 나트랑</option>
+            <option value="12">일본 · 후쿠오카</option>
+            <option value="13">일본 · 삿포로</option>
+            <option value="14">일본 · 오키나와</option>
+            <option value="15">일본 · 교토</option>
+            <option value="16">일본 · 미야코지마</option>
+            <option value="17">베트남 · 푸꾸옥</option>
+            <option value="18">베트남 · 호치민</option>
+            <option value="19">베트남 · 하노이</option>
+            <option value="20">필리핀 · 보라카이</option>
+            <option value="21">태국 · 푸켓</option>
+            <option value="22">홍콩</option>
+            <option value="23">미국령 · 괌</option>
+            <option value="24">미국 · 하와이</option>
+            <option value="25">프랑스 · 파리</option>
+            <option value="26">말레이시아 · 쿠알라룸푸르</option>
+            <option value="27">몰디브</option>
+            <option value="28">호주 · 시드니</option>
+            <option value="29">중국 · 상하이</option>
+            <option value="30">스페인 · 바르셀로나</option>
+          </select>
+        </div>
+        <div class="sel-card">
+          <div class="dest-dd" id="dd2-fixed">
+            <div class="dest-dd-trigger" onclick="toggleDestDd(2)">
+              <span class="dest-dd-val">여행지 선택</span>
+              <svg class="dest-dd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="dest-dd-menu" id="dd2-fixed-menu"></div>
+          </div>
+          <select id="sel2-fixed" class="dest-select" style="display:none" onchange="changeDest(2, this.value)">
+            <option value="0">포르투갈 · 리스본</option>
+            <option value="1">베트남 · 다낭</option>
+            <option value="2">제주도 (국내)</option>
+            <option value="3">대만 · 타이베이</option>
+            <option value="4">일본 · 오사카</option>
+            <option value="5">일본 · 도쿄</option>
+            <option value="6">태국 · 방콕</option>
+            <option value="7">인도네시아 · 발리</option>
+            <option value="8">태국 · 치앙마이</option>
+            <option value="9">싱가포르</option>
+            <option value="10">필리핀 · 세부</option>
+            <option value="11">베트남 · 나트랑</option>
+            <option value="12">일본 · 후쿠오카</option>
+            <option value="13">일본 · 삿포로</option>
+            <option value="14">일본 · 오키나와</option>
+            <option value="15">일본 · 교토</option>
+            <option value="16">일본 · 미야코지마</option>
+            <option value="17">베트남 · 푸꾸옥</option>
+            <option value="18">베트남 · 호치민</option>
+            <option value="19">베트남 · 하노이</option>
+            <option value="20">필리핀 · 보라카이</option>
+            <option value="21">태국 · 푸켓</option>
+            <option value="22">홍콩</option>
+            <option value="23">미국령 · 괌</option>
+            <option value="24">미국 · 하와이</option>
+            <option value="25">프랑스 · 파리</option>
+            <option value="26">말레이시아 · 쿠알라룸푸르</option>
+            <option value="27">몰디브</option>
+            <option value="28">호주 · 시드니</option>
+            <option value="29">중국 · 상하이</option>
+            <option value="30">스페인 · 바르셀로나</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; overflow: visible;">
+      <div class="sb-wrap" id="compare-sb-wrap" style="margin: 80px auto 40px;">
+        <div class="sb" id="compare-sb">
+          <!-- 1. 여행 지역 -->
+          <div class="sb-seg" id="region-seg-c" onclick="toggleSbPanel('region-panel-c',event,this)">
+            <div class="sb-label">여행 지역</div>
+            <div class="sb-val" id="region-display-c">전체 지역</div>
+          </div>
+          <div class="sb-div"></div>
+          <!-- 2. 날짜 -->
+          <div class="sb-seg sb-seg--wide" id="date-seg-c" onclick="toggleSbPanel('date-panel-c',event,this)">
+            <div class="sb-label">날짜</div>
+            <div class="sb-val" id="sb-date-display-c">날짜 선택</div>
+          </div>
+          <div class="sb-div"></div>
+          <!-- 3. 여행자 -->
+          <div class="sb-seg" id="traveler-seg-c" onclick="toggleSbPanel('traveler-panel-c',event,this)">
+            <div class="sb-label">여행자</div>
+            <div class="sb-val" id="sb-traveler-display-c">1명</div>
+          </div>
+          <div class="sb-div"></div>
+          <!-- 4. 예산 -->
+          <div class="sb-seg" id="budget-seg-c" onclick="toggleSbPanel('budget-panel-c',event,this)">
+            <div class="sb-label">예산</div>
+            <div class="sb-val" id="sb-budget-display-c">상관없음</div>
+          </div>
+          <button class="sb-btn" id="compare-search-btn" onclick="updateResultsByFilters()" type="button" aria-label="여행지 검색">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span class="sb-btn-text" style="display:none;font-size:14px;font-weight:600;margin-left:4px">여행지 비교하기</span>
+          </button>
+        </div>
+
+        <!-- PANEL 1: 여행 지역 -->
+        <div class="sb-panel" id="region-panel-c">
+          <div class="sb-region-opt active" data-val="" onclick="selectRegion(event,'')">
+            <div><div class="sb-region-title">🌏 전체 지역</div><div class="sb-region-sub">전체 지역 비교</div></div>
+            <span class="sb-region-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-region-opt" data-val="japan" onclick="selectRegion(event,'japan')">
+            <div><div class="sb-region-title">🇯🇵 일본</div><div class="sb-region-sub">도쿄 · 오사카 · 후쿠오카 등</div></div>
+            <span class="sb-region-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-region-opt" data-val="sea" onclick="selectRegion(event,'sea')">
+            <div><div class="sb-region-title">🌴 동남아시아</div><div class="sb-region-sub">발리 · 방콕 · 세부 등</div></div>
+            <span class="sb-region-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-region-opt" data-val="europe" onclick="selectRegion(event,'europe')">
+            <div><div class="sb-region-title">🇪🇺 유럽</div><div class="sb-region-sub">파리 · 로마 · 바르셀로나 등</div></div>
+            <span class="sb-region-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-region-opt" data-val="east_asia" onclick="selectRegion(event,'east_asia')">
+            <div><div class="sb-region-title">🏙️ 동아시아</div><div class="sb-region-sub">홍콩 · 싱가포르 · 마카오 · 베이징 등</div></div>
+            <span class="sb-region-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-region-opt" data-val="resort" onclick="selectRegion(event,'resort')">
+            <div><div class="sb-region-title">🏖️ 휴양지</div><div class="sb-region-sub">발리 · 몰디브 · 오키나와 등</div></div>
+            <span class="sb-region-check"></span>
+          </div>
+        </div>
+
+        <!-- PANEL 2: 날짜 (flatpickr inline) -->
+        <div class="sb-panel" id="date-panel-c">
+          <div class="sb-date-tabs">
+            <button class="sb-date-tab active" id="date-tab-specific-c" onclick="switchDateTab('specific-c',event)" type="button">날짜 지정</button>
+            <button class="sb-date-tab" id="date-tab-flexible-c" onclick="switchDateTab('flexible-c',event)" type="button">유연한 일정</button>
+          </div>
+          <div id="date-panel-specific-c">
+            <div id="dc-compare-wrap">
+              <!-- JS가 2개월 달력을 렌더링 -->
+            </div>
+          </div>
+          <div id="date-panel-flexible-c" style="display:none">
+            <!-- 숙박 기간 선택 -->
+            <div class="cv-flex-duration">
+              <div class="cv-flex-section-title">숙박 기간을 선택하세요.</div>
+              <div class="cv-flex-duration-list">
+                <button class="cv-flex-dur-btn" data-dur="weekend" onclick="cvSetDuration(this,'weekend')" type="button">주말</button>
+                <button class="cv-flex-dur-btn" data-dur="week" onclick="cvSetDuration(this,'week')" type="button">1주일</button>
+                <button class="cv-flex-dur-btn" data-dur="month" onclick="cvSetDuration(this,'month')" type="button">한 달</button>
+              </div>
+            </div>
+            <!-- 월 선택 카드 -->
+            <div class="cv-flex-months">
+              <div class="cv-flex-section-title">여행 날짜를 선택하세요.</div>
+              <button class="cv-flex-month-arrow" id="sb-flex-month-arrow-left-c" onclick="sbScrollMonths('left')" type="button" aria-label="이전 달 보기" style="display:none">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <div class="cv-flex-month-scroll" id="sb-flex-month-list-c"></div>
+              <button class="cv-flex-month-arrow" id="sb-flex-month-arrow-right-c" onclick="sbScrollMonths('right')" type="button" aria-label="다음 달 보기">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+            <!-- 요약 텍스트 -->
+            <div class="cv-flex-summary" id="sb-flex-summary-c"></div>
+          </div>
+        </div>
+
+        <!-- PANEL 3: 여행자 -->
+        <div class="sb-panel" id="traveler-panel-c">
+          <div class="sb-guest-row">
+            <div>
+              <div class="sb-guest-title">성인</div>
+              <div class="sb-guest-sub">13세 이상</div>
+            </div>
+            <div class="sb-counter">
+              <button class="sb-counter-btn" id="btn-adults-minus-c" onclick="updateTravelers(event,'adults',-1)" type="button">－</button>
+              <span class="sb-counter-num" id="count-adults-c">1</span>
+              <button class="sb-counter-btn" onclick="updateTravelers(event,'adults',1)" type="button">＋</button>
+            </div>
+          </div>
+          <div class="sb-guest-hr"></div>
+          <div class="sb-guest-row">
+            <div>
+              <div class="sb-guest-title">어린이</div>
+              <div class="sb-guest-sub">2~12세</div>
+            </div>
+            <div class="sb-counter">
+              <button class="sb-counter-btn" id="btn-children-minus-c" onclick="updateTravelers(event,'children',-1)" type="button">－</button>
+              <span class="sb-counter-num" id="count-children-c">0</span>
+              <button class="sb-counter-btn" onclick="updateTravelers(event,'children',1)" type="button">＋</button>
+            </div>
+          </div>
+          <div class="sb-guest-hr"></div>
+          <div class="sb-guest-row">
+            <div>
+              <div class="sb-guest-title">유아</div>
+              <div class="sb-guest-sub">2세 미만</div>
+            </div>
+            <div class="sb-counter">
+              <button class="sb-counter-btn" id="btn-infants-minus-c" onclick="updateTravelers(event,'infants',-1)" type="button">－</button>
+              <span class="sb-counter-num" id="count-infants-c">0</span>
+              <button class="sb-counter-btn" onclick="updateTravelers(event,'infants',1)" type="button">＋</button>
+            </div>
+          </div>
+          <div class="sb-guest-hr"></div>
+          <div class="sb-guest-row">
+            <div>
+              <div class="sb-guest-title">반려동물</div>
+              <div class="sb-guest-sub" style="font-size:11px">보조동물을 동반하시나요?</div>
+            </div>
+            <div class="sb-counter">
+              <button class="sb-counter-btn" id="btn-pets-minus-c" onclick="updateTravelers(event,'pets',-1)" type="button">－</button>
+              <span class="sb-counter-num" id="count-pets-c">0</span>
+              <button class="sb-counter-btn" onclick="updateTravelers(event,'pets',1)" type="button">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL 4: 예산 -->
+        <div class="sb-panel" id="budget-panel-c">
+          <div class="sb-budget-header">1인당 예산 (항공+숙박 기준)</div>
+          <div class="sb-budget-opt active" data-val="unlimited" onclick="selectBudget('unlimited',event)">
+            <div><div class="sb-budget-title">상관없음</div><div class="sb-budget-sub">예산 제한 없이 비교</div></div>
+            <span class="sb-budget-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="300" onclick="selectBudget('300',event)">
+            <div><div class="sb-budget-title">VIP</div><div class="sb-budget-sub">좋은 곳으로 모십니다</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="200" onclick="selectBudget('200',event)">
+            <div><div class="sb-budget-title">200만원 이내</div><div class="sb-budget-sub">프리미엄 여행</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="150" onclick="selectBudget('150',event)">
+            <div><div class="sb-budget-title">150만원 이내</div><div class="sb-budget-sub">여유 있는 여행</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="100" onclick="selectBudget('100',event)">
+            <div><div class="sb-budget-title">100만원 이내</div><div class="sb-budget-sub">합리적 여행</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+          <div class="sb-region-hr"></div>
+          <div class="sb-budget-opt" data-val="cheapest" onclick="selectBudget('cheapest',event)">
+            <div><div class="sb-budget-title">최저가</div><div class="sb-budget-sub">가성비 여행</div></div>
+            <span class="sb-budget-check"></span>
+          </div>
+        </div>
+
+        <!-- Hidden compat values -->
+        <input type="hidden" id="budget-input-compare" value="unlimited">
+        <div id="compare-budget-value" style="display:none"></div>
+      </div>
+    </div>
+
+    <div id="compare-content-wrapper">
+    <div class="sticky-sel">
+        <div class="sel-grid">
+          <div class="sel-card">
+            <div class="dest-dd" id="dd0">
+              <div class="dest-dd-trigger" onclick="toggleDestDd(0)">
+                <span class="dest-dd-val">여행지 선택</span>
+                <svg class="dest-dd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="dest-dd-menu" id="dd0-menu"></div>
+            </div>
+            <select id="sel0" class="dest-select" style="display:none" onchange="changeDest(0, this.value)">
+              <option value="0">포르투갈 · 리스본</option>
+              <option value="1">베트남 · 다낭</option>
+              <option value="2">제주도 (국내)</option>
+              <option value="3">대만 · 타이베이</option>
+              <option value="4">일본 · 오사카</option>
+              <option value="5">일본 · 도쿄</option>
+              <option value="6">태국 · 방콕</option>
+              <option value="7">인도네시아 · 발리</option>
+              <option value="8">태국 · 치앙마이</option>
+              <option value="9">싱가포르</option>
+              <option value="10">필리핀 · 세부</option>
+              <option value="11">베트남 · 나트랑</option>
+              <option value="12">일본 · 후쿠오카</option>
+              <option value="13">일본 · 삿포로</option>
+              <option value="14">일본 · 오키나와</option>
+              <option value="15">일본 · 교토</option>
+              <option value="16">일본 · 미야코지마</option>
+            <option value="17">베트남 · 푸꾸옥</option>
+              <option value="18">베트남 · 호치민</option>
+              <option value="19">베트남 · 하노이</option>
+              <option value="20">필리핀 · 보라카이</option>
+              <option value="21">태국 · 푸켓</option>
+              <option value="22">홍콩</option>
+              <option value="23">미국령 · 괌</option>
+              <option value="24">미국 · 하와이</option>
+              <option value="25">프랑스 · 파리</option>
+              <option value="26">말레이시아 · 쿠알라룸푸르</option>
+              <option value="27">몰디브</option>
+              <option value="28">호주 · 시드니</option>
+              <option value="29">중국 · 상하이</option>
+              <option value="30">스페인 · 바르셀로나</option>
+            </select>
+          </div>
+          <div class="sel-card">
+            <div class="dest-dd" id="dd1">
+              <div class="dest-dd-trigger" onclick="toggleDestDd(1)">
+                <span class="dest-dd-val">여행지 선택</span>
+                <svg class="dest-dd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="dest-dd-menu" id="dd1-menu"></div>
+            </div>
+            <select id="sel1" class="dest-select" style="display:none" onchange="changeDest(1, this.value)">
+              <option value="0">포르투갈 · 리스본</option>
+              <option value="1">베트남 · 다낭</option>
+              <option value="2">제주도 (국내)</option>
+              <option value="3">대만 · 타이베이</option>
+              <option value="4">일본 · 오사카</option>
+              <option value="5">일본 · 도쿄</option>
+              <option value="6">태국 · 방콕</option>
+              <option value="7">인도네시아 · 발리</option>
+              <option value="8">태국 · 치앙마이</option>
+              <option value="9">싱가포르</option>
+              <option value="10">필리핀 · 세부</option>
+              <option value="11">베트남 · 나트랑</option>
+              <option value="12">일본 · 후쿠오카</option>
+              <option value="13">일본 · 삿포로</option>
+              <option value="14">일본 · 오키나와</option>
+              <option value="15">일본 · 교토</option>
+              <option value="16">일본 · 미야코지마</option>
+            <option value="17">베트남 · 푸꾸옥</option>
+              <option value="18">베트남 · 호치민</option>
+              <option value="19">베트남 · 하노이</option>
+              <option value="20">필리핀 · 보라카이</option>
+              <option value="21">태국 · 푸켓</option>
+              <option value="22">홍콩</option>
+              <option value="23">미국령 · 괌</option>
+              <option value="24">미국 · 하와이</option>
+              <option value="25">프랑스 · 파리</option>
+              <option value="26">말레이시아 · 쿠알라룸푸르</option>
+              <option value="27">몰디브</option>
+              <option value="28">호주 · 시드니</option>
+              <option value="29">중국 · 상하이</option>
+              <option value="30">스페인 · 바르셀로나</option>
+            </select>
+          </div>
+          <div class="sel-card">
+            <div class="dest-dd" id="dd2">
+              <div class="dest-dd-trigger" onclick="toggleDestDd(2)">
+                <span class="dest-dd-val">여행지 선택</span>
+                <svg class="dest-dd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="dest-dd-menu" id="dd2-menu"></div>
+            </div>
+            <select id="sel2" class="dest-select" style="display:none" onchange="changeDest(2, this.value)">
+              <option value="0">포르투갈 · 리스본</option>
+              <option value="1">베트남 · 다낭</option>
+              <option value="2">제주도 (국내)</option>
+              <option value="3">대만 · 타이베이</option>
+              <option value="4">일본 · 오사카</option>
+              <option value="5">일본 · 도쿄</option>
+              <option value="6">태국 · 방콕</option>
+              <option value="7">인도네시아 · 발리</option>
+              <option value="8">태국 · 치앙마이</option>
+              <option value="9">싱가포르</option>
+              <option value="10">필리핀 · 세부</option>
+              <option value="11">베트남 · 나트랑</option>
+              <option value="12">일본 · 후쿠오카</option>
+              <option value="13">일본 · 삿포로</option>
+              <option value="14">일본 · 오키나와</option>
+              <option value="15">일본 · 교토</option>
+              <option value="16">일본 · 미야코지마</option>
+              <option value="17">베트남 · 푸꾸옥</option>
+              <option value="18">베트남 · 호치민</option>
+              <option value="19">베트남 · 하노이</option>
+              <option value="20">필리핀 · 보라카이</option>
+              <option value="21">태국 · 푸켓</option>
+              <option value="22">홍콩</option>
+              <option value="23">미국령 · 괌</option>
+              <option value="24">미국 · 하와이</option>
+              <option value="25">프랑스 · 파리</option>
+              <option value="26">말레이시아 · 쿠알라룸푸르</option>
+              <option value="27">몰디브</option>
+              <option value="28">호주 · 시드니</option>
+              <option value="29">중국 · 상하이</option>
+              <option value="30">스페인 · 바르셀로나</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+    <div id="no-results-cnt" style="display: none; padding: 60px 20px; text-align: center;">
+      <div style="max-width: 500px; margin: 0 auto; background: #f5f5f7; padding: 40px; border-radius: 20px;">
+        <div style="font-size: 40px; margin-bottom: 20px;">🔍</div>
+        <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 12px; color: #1d1d1f;">추천할 수 있는 여행지가 없습니다</h3>
+        <p style="font-size: 15px; color: #86868b; line-height: 1.5;">선택하신 예산과 기간으로는 현실적으로 여행이 어려울 수 있습니다. 예산을 늘리거나
+          기간을
+          조금 줄여서 다시 검색해 보세요.</p>
+      </div>
+    </div>
+
+    <div id="comparison-body" style="display: none;">
+
+
+      <!-- Destination photos -->
+      <div class="dest-images" id="dest-images-row">
+        <!-- COLUMN HEADER 1 -->
+        <div class="dest-col" id="col-0">
+          <div class="col-badges" style="margin-bottom:8px;justify-content:center;">
+            <span class="best-badge" id="best-badge-0">추천</span>
+            <span class="low-badge" id="low-badge-0">최저가</span>
+          </div>
+          <div class="dest-name" id="dname0"></div>
+          <div class="dest-sub" id="dsub0"></div>
+          <p class="dest-narrative" id="dnarr0"></p>
+        </div>
+
+        <!-- COLUMN HEADER 2 -->
+        <div class="dest-col" id="col-1">
+          <div class="col-badges" style="margin-bottom:8px;justify-content:center;">
+            <span class="best-badge" id="best-badge-1">추천</span>
+            <span class="low-badge" id="low-badge-1">최저가</span>
+          </div>
+          <div class="dest-name" id="dname1"></div>
+          <div class="dest-sub" id="dsub1"></div>
+          <p class="dest-narrative" id="dnarr1"></p>
+        </div>
+
+        <!-- COLUMN HEADER 3 -->
+        <div class="dest-col" id="col-2">
+          <div class="col-badges" style="margin-bottom:8px;justify-content:center;">
+            <span class="best-badge" id="best-badge-2">추천</span>
+            <span class="low-badge" id="low-badge-2">최저가</span>
+          </div>
+          <div class="dest-name" id="dname2"></div>
+          <div class="dest-sub" id="dsub2"></div>
+          <p class="dest-narrative" id="dnarr2"></p>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION: 가격 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">가격</div>
+        </div>
+      </div>
+
+      <!-- 총 예상 비용 -->
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc sk" id="total-0">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main">-</div>
+          <div class="v-sm sub">총 예상 비용 (항공+숙박+현지)</div>
+        </div>
+        <div class="dc sk" id="total-1">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main">-</div>
+          <div class="v-sm sub">총 예상 비용 (항공+숙박+현지)</div>
+        </div>
+        <div class="dc sk" id="total-2">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main">-</div>
+          <div class="v-sm sub">총 예상 비용 (항공+숙박+현지)</div>
+        </div>
+      </div>
+
+      <!-- 항공권 -->
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc sk" id="air-0">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">이코노미 · 인천 출발</div>
+          <div class="v-xl main">41만원</div>
+          <div class="v-sm sub">왕복 항공권</div>
+        </div>
+        <div class="dc sk" id="air-1">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">이코노미 · 인천 출발</div>
+          <div class="v-xl main">28만원</div>
+          <div class="v-sm sub">왕복 항공권</div>
+        </div>
+        <div class="dc sk" id="air-2">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">이코노미 · 김포 출발</div>
+          <div class="v-xl main">9만원</div>
+          <div class="v-sm sub">왕복 항공권</div>
+        </div>
+      </div>
+
+      <!-- 호텔 -->
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc sk" id="hotel-0">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">1박 평균 9.6만원</div>
+          <div class="v-xl main">48만원</div>
+          <div class="v-sm sub">3성급 호텔 (1인)</div>
+        </div>
+        <div class="dc sk" id="hotel-1">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">1박 평균 6.8만원</div>
+          <div class="v-xl main">34만원</div>
+          <div class="v-sm sub">3성급 호텔 (1인)</div>
+        </div>
+        <div class="dc sk" id="hotel-2">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">1박 평균 7.8만원</div>
+          <div class="v-xl main">39만원</div>
+          <div class="v-sm sub">3성급 호텔 (1인)</div>
+        </div>
+      </div>
+
+      <!-- 현지 하루 -->
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="daily-0">
+          <div class="kicker">유럽 최저 수준</div>
+          <div class="v-xl main">9만원</div>
+          <div class="v-sm sub">하루 지출 (식사+교통+관광)</div>
+        </div>
+        <div class="dc" id="daily-1">
+          <div class="kicker">동남아 최강 가성비</div>
+          <div class="v-xl main">3.5만원</div>
+          <div class="v-sm sub">하루 지출 (식사+교통+관광)</div>
+        </div>
+        <div class="dc" id="daily-2">
+          <div class="kicker">국내 물가 기준</div>
+          <div class="v-xl main">8만원</div>
+          <div class="v-sm sub">하루 지출 (식사+교통+관광)</div>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION: 환전 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">환전</div>
+        </div>
+      </div>
+      <!-- 환전 가이드 팁 (환율 + 상세 통합) -->
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="fxtip-0" style="padding-top:0;text-align:left;"></div>
+        <div class="dc" id="fxtip-1" style="padding-top:0;text-align:left;"></div>
+        <div class="dc" id="fxtip-2" style="padding-top:0;text-align:left;"></div>
+      </div>
+
+      <!-- ═══ SECTION: 안전 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">안전</div>
+          <p style="font-size:13px;color:var(--gray);margin-bottom:8px;">외교부 여행경보 기준. 자세한 내용은 <a href="https://www.0404.go.kr" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none;">외교부 해외안전여행(0404.go.kr)</a>에서 확인하세요.</p>
+        </div>
+      </div>
+
+      <!-- 외교부 여행경보 -->
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="alert-0">
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main">-</div>
+          <div class="v-sm sub">외교부 여행경보</div>
+        </div>
+        <div class="dc" id="alert-1">
+          <div class="kicker">여행유의</div>
+          <div class="v-xl main">1단계</div>
+          <div class="v-sm sub">외교부 여행경보</div>
+        </div>
+        <div class="dc" id="alert-2">
+          <div class="kicker">안전 지역</div>
+          <div class="v-xl main">-</div>
+          <div class="v-sm sub">외교부 여행경보</div>
+        </div>
+      </div>
+
+      <!-- 최근 이슈 -->
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="news-0">
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main">-</div>
+          <div class="v-sm sub">최근 현지 이슈</div>
+        </div>
+        <div class="dc" id="news-1">
+          <div class="kicker">더위 주의</div>
+          <div class="v-xl main">우기 시작</div>
+          <div class="v-sm sub">최근 현지 이슈</div>
+        </div>
+        <div class="dc" id="news-2">
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main">-</div>
+          <div class="v-sm sub">최근 현지 이슈</div>
+        </div>
+      </div>
+
+      <!-- 자연재해 -->
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="disaster-0">
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main">낮음</div>
+          <div class="v-sm sub">자연재해 리스크</div>
+        </div>
+        <div class="dc" id="disaster-1">
+          <div class="kicker">우기 홍수 위험</div>
+          <div class="v-xl main">중간</div>
+          <div class="v-sm sub">자연재해 리스크</div>
+        </div>
+        <div class="dc" id="disaster-2">
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main">낮음</div>
+          <div class="v-sm sub">자연재해 리스크</div>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION: 날씨 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">날씨</div>
+        </div>
+      </div>
+
+      <!-- 날씨 통합 표시 -->
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc sk" id="cur-temp-0">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main" style="color:var(--gray);">—</div>
+          <div class="v-sm sub">현재 기온 · 시즌 평균</div>
+        </div>
+        <div class="dc sk" id="cur-temp-1">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main" style="color:var(--gray);">—</div>
+          <div class="v-sm sub">현재 기온 · 시즌 평균</div>
+        </div>
+        <div class="dc sk" id="cur-temp-2">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main" style="color:var(--gray);">—</div>
+          <div class="v-sm sub">현재 기온 · 시즌 평균</div>
+        </div>
+      </div>
+
+      <!-- 주간 예보 -->
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc sk" id="weekly-forecast-0">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main" style="color:var(--gray);">—</div>
+          <div class="v-sm sub">이번 주 예보</div>
+        </div>
+        <div class="dc sk" id="weekly-forecast-1">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main" style="color:var(--gray);">—</div>
+          <div class="v-sm sub">이번 주 예보</div>
+        </div>
+        <div class="dc sk" id="weekly-forecast-2">
+          <div class="sk-kicker"></div><div class="sk-main"></div><div class="sk-sub"></div>
+          <div class="kicker">&nbsp;</div>
+          <div class="v-xl main" style="color:var(--gray);">—</div>
+          <div class="v-sm sub">이번 주 예보</div>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION: 추천 관광 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">추천 관광</div>
+        </div>
+      </div>
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="sights-0"></div>
+        <div class="dc" id="sights-1"></div>
+        <div class="dc" id="sights-2"></div>
+      </div>
+
+      <!-- ═══ SECTION: 체험 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">체험</div>
+        </div>
+      </div>
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="exps-0"></div>
+        <div class="dc" id="exps-1"></div>
+        <div class="dc" id="exps-2"></div>
+      </div>
+
+      <!-- ═══ SECTION: 음식 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">음식</div>
+        </div>
+      </div>
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="food-0"></div>
+        <div class="dc" id="food-1"></div>
+        <div class="dc" id="food-2"></div>
+      </div>
+
+      <!-- ═══ SECTION: 숙소 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">숙소</div>
+        </div>
+      </div>
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="hotelrec-0"></div>
+        <div class="dc" id="hotelrec-1"></div>
+        <div class="dc" id="hotelrec-2"></div>
+      </div>
+
+      <!-- ═══ SECTION: 항공 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">항공</div>
+        </div>
+      </div>
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="flightrec-0"></div>
+        <div class="dc" id="flightrec-1"></div>
+        <div class="dc" id="flightrec-2"></div>
+      </div>
+
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">필수 앱</div>
+        </div>
+      </div>
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="apps-0"></div>
+        <div class="dc" id="apps-1"></div>
+        <div class="dc" id="apps-2"></div>
+      </div>
+
+      <!-- ═══ SECTION: 여행 정보 ═══ -->
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">여행 정보</div>
+        </div>
+      </div>
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="travelinfo-0" style="text-align:left;align-items:flex-start;"></div>
+        <div class="dc" id="travelinfo-1" style="text-align:left;align-items:flex-start;"></div>
+        <div class="dc" id="travelinfo-2" style="text-align:left;align-items:flex-start;"></div>
+      </div>
+
+      <div class="sec-hd">
+        <div class="sec-hd-inner">
+          <div class="sec-title">출입국 준비</div>
+        </div>
+      </div>
+      <div class="data-row" style="margin-top: 44px;">
+        <div class="dc" id="entry-0" style="text-align:left;"></div>
+        <div class="dc" id="entry-1" style="text-align:left;"></div>
+        <div class="dc" id="entry-2" style="text-align:left;"></div>
+      </div>
+      </div> <!-- END #comparison-body -->
+
+      <div id="wiz-scroll-sentinel" style="height: 1px;"></div>
+
+    </div>
+    <!-- /compare-content-wrapper -->
+
+    </div>
+    <!-- /compare -->
+
+    <footer>
+      <div class="footer-inner">
+        <!-- 링크 모음 -->
+        <div class="footer-links">
+          <button class="footer-link-btn" onclick="document.getElementById('modal-terms').classList.add('open')">이용약관</button>
+          <span class="footer-link-sep">|</span>
+          <button class="footer-link-btn" onclick="document.getElementById('modal-privacy').classList.add('open')">개인정보처리방침</button>
+
+        </div>
+        <!-- 면책 고지 -->
+        <p id="footer-date-note">항공권 가격은 최저가 기준이며 실시간 변동합니다. 안전도는 외교부 여행경보 기준이며, 현지 정보는 참고용입니다.<br>여행 전 반드시 <a href="https://www.0404.go.kr" target="_blank" rel="noopener" style="color:inherit;">외교부 해외안전여행</a>을 확인하세요.</p>
+        <!-- 이메일 -->
+        <p class="footer-email" style="margin-top:4px;">이메일: pieceof@kakao.com</p>
+        <!-- 저작권 -->
+        <p class="footer-copyright" id="footer-copyright">© 2026 odiga · All rights reserved.</p>
+        <script>
+          (function() {
+            const now = new Date();
+            document.getElementById('footer-copyright').textContent = '© ' + now.getFullYear() + ' odiga · All rights reserved.';
+          })();
+        </script>
+      </div>
+    </footer>
+
+    <script>
       localStorage.clear(); // Clear any old state
-
-      // ── 공통: 사용자 선택 날짜 파싱 ──
-      // 반환: { start: Date, end: Date, skyStart: 'YYYY-MM-DD', skyEnd: 'YYYY-MM-DD', fmtShort: fn(Date)→'YYMMDD' }
-      function _getSearchDates() {
-        var today = new Date();
-        var _toSkyFmt = function(dt) {
-          return dt.getFullYear() + '-' +
-            String(dt.getMonth() + 1).padStart(2, '0') + '-' +
-            String(dt.getDate()).padStart(2, '0');
-        };
-        var _toShortFmt = function(dt) {
-          return String(dt.getFullYear()).slice(2) +
-            String(dt.getMonth() + 1).padStart(2, '0') +
-            String(dt.getDate()).padStart(2, '0');
-        };
-        var start, end;
-
-        // 사용자가 직접 선택한 날짜가 있으면 그것을 사용
-        if (window._isAutoDate === false && window.selectedDates && window.selectedDates.length >= 2) {
-          start = window.selectedDates[0];
-          end   = window.selectedDates[1];
-        }
-
-        if (!start || isNaN(start.getTime())) {
-          // 날짜 미선택: +14일 출발, +21일 귀국 (7박 — 모든 목적지 동일 기간 비교)
-          start = new Date(today); start.setDate(today.getDate() + 14);
-          end   = new Date(today); end.setDate(today.getDate() + 21);
-        }
-
-        return {
-          start: start, end: end,
-          skyStart: _toSkyFmt(start), skyEnd: _toSkyFmt(end),
-          shortStart: _toShortFmt(start), shortEnd: _toShortFmt(end)
-        };
-      }
-
-
-      // ── 공통: 현재 예산값 읽기 ──
-      function _getCurrentBudget() {
-        var b1 = document.getElementById('budget-input-home');
-        var b2 = document.getElementById('budget-input-compare');
-        var raw = (b2 && b2.value) ? b2.value : (b1 ? b1.value : '150');
-        if (raw === 'unlimited') return 9999;
-        if (raw === 'cheapest') return 40;
-        return parseInt(raw) || 150;
-      }
       var fpHome = null, fpCompare = null;
 
       function openDatePicker(which) {
@@ -109,13 +1401,10 @@
             updateResultsByFilters();
           }
         }, 250);
-        // 사용자 직접 날짜 선택 → auto 플래그 해제 + globalDates 저장
+        // 사용자 직접 날짜 선택 → auto 플래그 해제
         window._isAutoDate = false;
-        window.selectedDates = [dep, ret]; // 링크 클릭 시 참조용
         refreshButtonStates();
         if (typeof updateSearchBadge === 'function') updateSearchBadge();
-        // 선택 날짜 월 기준으로 항공 가격 재조회
-        if (typeof window._fetchFlightPrices === 'function') window._fetchFlightPrices();
       }
 
       function initFlatpickr(which) {
@@ -359,8 +1648,7 @@
             setTimeout(function(col, dest) {
               // 항공 오버라이드 — VIP: 비즈니스 클래스 실시간, 일반: 이코노미 최저가
               var _airPrice = _isVipBudget ? (dest._vipAirfare || dest.airfare) : dest.airfare;
-              var _airSub = _isVipBudget ? '비즈니스 왕복' : '왕복 항공권';
-              // 항공 가격 숫자는 표시하지 않음 (API 정확도 한계)
+              var _airSub = _isVipBudget ? '실시간 비즈니스 (왕복)' : '실시간 최저가 (왕복)';
               var _airKicker = _isVipBudget ? '비즈니스 · 인천 출발' : '이코노미 · 인천 출발';
               if (dest && _airPrice && dest._tpLink) {
                 var airEl = document.getElementById('air-' + col);
@@ -368,7 +1656,7 @@
                   var mEl = airEl.querySelector('.main');
                   var sEl = airEl.querySelector('.sub');
                   var kEl = airEl.querySelector('.kicker');
-                  if (mEl) mEl.textContent = '최저가 검색';
+                  if (mEl) mEl.textContent = _airPrice;
                   if (sEl) sEl.textContent = _airSub;
                   if (kEl) kEl.textContent = _airKicker;
                   airEl.classList.remove('sk');
@@ -377,7 +1665,7 @@
               // 숙박 오버라이드 — VIP: 5성급 프리미엄, 일반: 최저가
               var _htlPrice = _isVipBudget ? (dest._vipHotelPrice || dest._hotelPrice) : dest._hotelPrice;
               var _htlLink = _isVipBudget ? (dest._vipHotelLink || dest._hotelLink) : dest._hotelLink;
-              var _htlSub = _isVipBudget ? '프리미엄 1박 기준' : '1박 기준';
+              var _htlSub = _isVipBudget ? '실시간 프리미엄 (1박)' : '실시간 최저가 (1박)';
               var _htlName = _isVipBudget && dest._vipHotelName ? dest._vipHotelName : '';
               var _htlKicker = _htlName ? (_htlName + ' · ' + (dest._vipHotelStars || 5) + '성급') : (_isVipBudget ? '5성급 리조트' : 'Hotellook 기준');
               if (dest && _htlPrice && _htlLink) {
@@ -578,7 +1866,7 @@
 
         const dailySpend = Math.round(daily * dailyMultiplier * 10) / 10;
         const dailyTotal = Math.round(dailySpend * days);
-        const grandTotalRaw = hotelPrice + dailyTotal;  // 항공 제외 (API 정확도 한계)
+        const grandTotalRaw = airPrice + hotelPrice + dailyTotal;
         // 예산 선택 시 총 예상비용이 예산을 초과하지 않도록 캡 처리
         const grandTotal = (!isUnlimited && budget < 9000 && budget !== 40 && grandTotalRaw > budget)
           ? budget
@@ -894,15 +2182,15 @@
         const dscoreEl = document.getElementById('dscore' + col);
         if (dscoreEl) dscoreEl.textContent = adjustedScore;
         const dpriceEl = document.getElementById('dprice' + col);
-        if (dpriceEl) dpriceEl.textContent = grandTotal + '만원~ (항공 별도)';
+        if (dpriceEl) dpriceEl.textContent = grandTotal + '만원~';
 
         // 4. TOTAL COST ROW
-        setCell('total-' + col, grandTotal + '만원~', '숙박+현지 비용 (항공 별도)', `${days - 1}박 ${days}일 기준`);
+        setCell('total-' + col, grandTotal + '만원~', '총 예상 비용 (항공+숙박+현지)', `${days}일 기준`);
 
         // 5. DETAIL CARDS
         // Fix: pass correct (main, static-sub, dynamic-kicker) to setCell
         const mainAirline = d.cheapFlights && d.cheapFlights[0] ? d.cheapFlights[0].label.split('(')[0].trim() : '';
-        setCell('air-' + col, '최저가 검색', '왕복 항공권', mainAirline ? mainAirline + ' · ' + airType : airType);
+        setCell('air-' + col, airPrice + '만원', '왕복 항공권', mainAirline ? mainAirline + ' · ' + airType : airType);
         setCell('hotel-' + col, hotelPrice + '만원', `${hotelType} (${days - 1}박)`, `1박 평균 ${hotelPerNight}만원`);
         setCell('daily-' + col, dailySpend + '만원', '하루 지출 (식사+교통+관광)', d.dailySub);
         var alertSafe = (d.alert === '경보 없음' || d.alert === '-');
@@ -1038,12 +2326,6 @@
           if (!el) return;
           el.innerHTML = '';
           el.style.alignItems = 'flex-start';
-
-          // 날짜 취득 — 숙박 링크에 체크인/체크아웃 반영
-          var _hDates = _getSearchDates();
-          var _checkin  = _hDates.skyStart;  // YYYY-MM-DD
-          var _checkout = _hDates.skyEnd;    // YYYY-MM-DD
-
           (hotels || []).forEach(h => {
             const card = document.createElement('div');
             card.className = 'hotel-card';
@@ -1070,38 +2352,12 @@
               const priceEl = document.createElement('span');
               priceEl.className = 'hotel-card-price';
               priceEl.textContent = h.priceRange;
-              priceEl.style.display = 'none';  // 가격 정확도 한계로 비표시
               footer.appendChild(priceEl);
               if (h.link) {
                 const linkEl = document.createElement('a');
-                var _hLink = h.link;
-                if (_hLink.includes('booking.com') || _hLink.includes('agoda.com')) {
-                  var _baseLink = _hLink.split('?')[0];
-                  var _existingParams = _hLink.includes('?') ? _hLink.split('?')[1] : '';
-                  _existingParams = _existingParams
-                    .split('&')
-                    .filter(function(p) { return !p.match(/^check(in|out|In|Out)/i); })
-                    .join('&');
-                  linkEl.dataset.hotelBase = _baseLink;
-                  linkEl.dataset.hotelParams = _existingParams;
-                  linkEl.dataset.hotelType = _hLink.includes('agoda') ? 'agoda' : 'booking';
-                  linkEl.href = '#';
-                  linkEl.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    var hd = _getSearchDates();
-                    var base = this.dataset.hotelBase;
-                    var params = this.dataset.hotelParams;
-                    var sep = params ? '&' : '';
-                    var dateParam = this.dataset.hotelType === 'agoda'
-                      ? 'checkIn=' + hd.skyStart + '&checkOut=' + hd.skyEnd
-                      : 'checkin=' + hd.skyStart + '&checkout=' + hd.skyEnd;
-                    window.open(base + '?' + params + sep + dateParam, '_blank', 'noopener');
-                  });
-                } else {
-                  linkEl.href = _hLink;
-                  linkEl.target = '_blank';
-                  linkEl.rel = 'noopener';
-                }
+                linkEl.href = h.link;
+                linkEl.target = '_blank';
+                linkEl.rel = 'noopener';
                 linkEl.className = 'hotel-card-link';
                 linkEl.textContent = '더 알아보기 ›';
                 footer.appendChild(linkEl);
@@ -1136,13 +2392,6 @@
           if (!el) return;
           el.innerHTML = '';
           el.style.alignItems = 'flex-start';
-
-          // 현재 날짜/예산 취득 — 링크에 동적 파라미터 반영
-          var _dates = _getSearchDates();
-          var _budget  = _getCurrentBudget();
-          var _isVipBudget = _budget >= 300;
-          var _cabinParam = _isVipBudget ? '&cabinclass=business' : '';
-
           (flights || []).forEach((f, fi) => {
             const card = document.createElement('div');
             card.className = 'flight-card';
@@ -1154,40 +2403,30 @@
 
             const descEl = document.createElement('div');
             descEl.className = 'flight-card-desc';
-            // 서브텍스트: 시간만 표시 (가격은 비표시)
+            // 서브텍스트: 'N시간 · 왕복 N만원대' 형식으로 통일
             var _desc = f.desc || '';
             var _parts = [];
             // 시간 추출 (약 N시간, N.N시간, 비행 N시간 등)
             var _time = _desc.match(/(?:비행\s+)?(?:약\s*)?(\d+(?:\.\d+)?)\s*시간/);
             if (_time) _parts.push(_time[1] + '시간');
-            // 직항/경유 정보 추출
-            if (_desc.indexOf('직항') !== -1) _parts.push('직항');
-            else if (_desc.indexOf('경유') !== -1) _parts.push('경유');
-            else if (f.label && f.label.indexOf('직항') !== -1) _parts.push('직항');
-            else if (f.label && f.label.indexOf('경유') !== -1) _parts.push('경유');
+            // 가격 추출 (왕복/편도 포함 여부 관계없이 숫자+만원 추출)
+            var _priceRaw = _desc.match(/([\d,\-]+)\s*만원[대~]*/);
+            if (_priceRaw) {
+              // 범위(35-45) 가격이면 앞 숫자만 사용하여 'N만원대' 형식
+              var _priceNum = _priceRaw[1].split('-')[0].replace(/,/g, '');
+              _parts.push('왕복 ' + _priceNum + '만원대');
+            } else if (destAirfare) {
+              // 여행지 기본 airfare fallback
+              var _af = destAirfare.replace(/[~만원대]+$/, '').replace(/,/g, '');
+              _parts.push('왕복 ' + _af + '만원대');
+            }
             descEl.textContent = _parts.join(' · ');
             card.appendChild(descEl);
             if (f.link) {
               const linkEl = document.createElement('a');
-              var _href = f.link;
-              // Skyscanner URL: 경로(출발-도착)만 data 속성에 저장 → 클릭 시 실시간 날짜+예산 반영
-              if (_href.includes('skyscanner')) {
-                var _basePath = _href.split('?')[0].replace(/\/\d{6}.*$/, '').replace(/\/$/, '');
-                linkEl.dataset.skyRoute = _basePath;  // ex: /transport/flights/icn/lis
-                linkEl.href = '#';
-                linkEl.addEventListener('click', function(e) {
-                  e.preventDefault();
-                  var d = _getSearchDates();
-                  var b = _getCurrentBudget();
-                  var c = b >= 300 ? '&cabinclass=business' : '&cabinclass=economy';
-                  var url = this.dataset.skyRoute + '/' + d.shortStart + '/' + d.shortEnd + '/?adultsv2=1&currency=KRW' + c;
-                  window.open(url, '_blank', 'noopener');
-                });
-              } else {
-                linkEl.href = _href;
-                linkEl.target = '_blank';
-                linkEl.rel = 'noopener';
-              }
+              linkEl.href = f.link;
+              linkEl.target = '_blank';
+              linkEl.rel = 'noopener';
               linkEl.className = 'flight-card-link';
               linkEl.textContent = isVip ? '비즈니스석 검색 ›' : '더 알아보기 ›';
               card.appendChild(linkEl);
@@ -1278,53 +2517,41 @@
         renderFxTips('fxtip-' + col, d.id, d.fx, d.fxSub);
         renderTravelInfo('travelinfo-' + col, d.id);
 
-        // 6. EXTERNAL LINKS (Skyscanner — YYMMDD 포맷 사용)
-        const _dates = _getSearchDates();
-        const _skyStart = _dates.shortStart;  // YYMMDD (ex: 260516)
-        const _skyEnd   = _dates.shortEnd;
-        const codes = { 'lisbon': 'lis', 'danang': 'dad', 'jeju': 'cju', 'taipei': 'tpe', 'osaka': 'kix', 'tokyo': 'nrt', 'bangkok': 'bkk', 'bali': 'dps', 'chiangmai': 'cnx', 'singapore': 'sin', 'cebu': 'ceb', 'nhatrang': 'cxr', 'fukuoka': 'fuk', 'sapporo': 'cts', 'okinawa': 'oka', 'kyoto': 'kix', 'miyakojima': 'mmj', 'phuquoc': 'pqc', 'hochiminh': 'sgn', 'hanoi': 'han', 'boracay': 'mph', 'phuket': 'hkt', 'hongkong': 'hkg', 'guam': 'gum', 'hawaii': 'hnl', 'paris': 'cdg', 'kualalumpur': 'kul', 'maldives': 'mle', 'sydney': 'syd', 'shanghai': 'pvg', 'barcelona': 'bcn', 'sanya': 'syx', 'saipan': 'spn', 'palawan': 'pps' };
-        const _skyCode = codes[d.id] || 'any';
-        const _fromCode = (window.DEPARTURE_AIRPORT || 'ICN').toLowerCase();
-        const _skyBase = 'https://www.skyscanner.co.kr/transport/flights';
-        const _cabinSuffix = isVIP ? '&cabinclass=business' : '&cabinclass=economy';
-        const _skyParams = 'adultsv2=1&currency=KRW' + _cabinSuffix;
-        const link = d.id === 'jeju'
-          ? (window.DEPARTURE_AIRPORT === 'CJU'
-              ? `${_skyBase}/cju/gmp/${_skyStart}/${_skyEnd}/?${_skyParams}`
-              : `${_skyBase}/gmp/cju/${_skyStart}/${_skyEnd}/?${_skyParams}`)
-          : `${_skyBase}/${_fromCode}/${_skyCode}/${_skyStart}/${_skyEnd}/?${_skyParams}`;
+        // 6. EXTERNAL LINKS (Naver Flights)
+        const dateVal = document.getElementById('home-date-value').textContent;
+        const year = new Date().getFullYear();
+        let start = `${year}0410`, end = `${year}0414`;
+        if (dateVal.includes(' – ')) {
+          try {
+            const parts = dateVal.split(' – ');
+            const d1 = parts[0].split('월 ');
+            const d2 = parts[1].split('월 ');
+            const fm1 = parseInt(d1[0]) - 1, fm2 = parseInt(d2[0]) - 1;
+            const startYear = year;
+            const endYear = fm2 < fm1 ? year + 1 : year;
+            start = `${startYear}${d1[0].padStart(2, '0')}${d1[1].replace('일', '').padStart(2, '0')}`;
+            end = `${endYear}${d2[0].padStart(2, '0')}${d2[1].replace('일', '').padStart(2, '0')}`;
+          } catch (e) {}
+        }
+        const codes = { 'lisbon': 'LIS', 'danang': 'DAD', 'jeju': 'CJU', 'taipei': 'TPE', 'osaka': 'KIX', 'tokyo': 'NRT', 'bangkok': 'BKK', 'bali': 'DPS', 'chiangmai': 'CNX', 'singapore': 'SIN', 'cebu': 'CEB', 'nhatrang': 'CXR', 'fukuoka': 'FUK', 'sapporo': 'CTS', 'okinawa': 'OKA', 'kyoto': 'KIX', 'miyakojima': 'SHI', 'phuquoc': 'PQC', 'hochiminh': 'SGN', 'hanoi': 'HAN', 'boracay': 'MPH', 'phuket': 'HKT', 'hongkong': 'HKG', 'guam': 'GUM', 'hawaii': 'HNL', 'paris': 'CDG', 'kualalumpur': 'KUL', 'maldives': 'MLE', 'sydney': 'SYD', 'shanghai': 'PVG', 'barcelona': 'BCN', 'sanya': 'SYX', 'saipan': 'SPN', 'palawan': 'PPS' };
+        const code = codes[d.id] || 'ANY';
+        const isInternational = d.id !== 'jeju';
+        const link = isInternational
+          ? `https://m-flight.naver.com/flights/international/${window.DEPARTURE_AIRPORT||'ICN'}-${code}-${start}/${end}?adult=1&isDirect=true`
+          : d.id === 'jeju'
+            ? (window.DEPARTURE_AIRPORT === 'CJU'
+                ? `https://m-flight.naver.com/flights/domestic/CJU-GMP-${start}/${end}?adult=1`
+                : `https://m-flight.naver.com/flights/domestic/GMP-CJU-${start}/${end}?adult=1`)
+            : `https://m-flight.naver.com/flights/domestic/${window.DEPARTURE_AIRPORT||'GMP'}-CJU-${start}/${end}?adult=1`;
 
+        // Fix: colEl is now defined at top of this function
         if (colEl) {
           const btnGhost = colEl.querySelector('.btn-ghost');
           if (btnGhost) {
-            // 클릭 시 실시간 날짜+예산 반영 — 경로 정보를 data 속성에 저장
-            var _routeKey = d.id === 'jeju' ? '__jeju__' : `${_fromCode}/${_skyCode}`;
-            btnGhost.dataset.skyRoute = _routeKey;
-            btnGhost.dataset.isVip = isVIP ? '1' : '0';
-            btnGhost.href = '#';
-            // 기존 리스너 제거 후 재등록 (중복 방지)
-            var _newBtn = btnGhost.cloneNode(true);
-            btnGhost.parentNode.replaceChild(_newBtn, btnGhost);
-            _newBtn.addEventListener('click', function(e) {
-              e.preventDefault();
-              var d2 = _getSearchDates();
-              var b2 = _getCurrentBudget();
-              var vip = this.dataset.isVip === '1' || b2 >= 300;
-              var c2 = vip ? '&cabinclass=business' : '&cabinclass=economy';
-              var route = this.dataset.skyRoute;
-              var dep = (window.DEPARTURE_AIRPORT || 'ICN').toLowerCase();
-              var base = 'https://www.skyscanner.co.kr/transport/flights';
-              var url;
-              if (route === '__jeju__') {
-                url = dep === 'cju'
-                  ? base+'/cju/gmp/'+d2.shortStart+'/'+d2.shortEnd+'/?adultsv2=1&currency=KRW'+c2
-                  : base+'/gmp/cju/'+d2.shortStart+'/'+d2.shortEnd+'/?adultsv2=1&currency=KRW'+c2;
-              } else {
-                url = base+'/'+route+'/'+d2.shortStart+'/'+d2.shortEnd+'/?adultsv2=1&currency=KRW'+c2;
-              }
-              window.open(url, '_blank', 'noopener');
-            });
-            _newBtn.textContent = isVIP
+            // VIP 시 비즈니스 클래스 파라미터 포함
+            const vipLink = isVIP ? link.replace('isDirect=true', 'isDirect=true&cabin=business') + (link.includes('?') ? '&cabin=business' : '?cabin=business') : link;
+            btnGhost.href = isVIP ? link + (link.includes('?') ? '&cabin=business' : '?cabin=business') : link;
+            btnGhost.textContent = isVIP
               ? `${d.name.split(' · ')[1] || d.name} 비즈니스석 보기 ›`
               : `${d.name.split(' · ')[1] || d.name} 항공권 보기 ›`;
           }
@@ -1816,13 +3043,13 @@
         // VIP: 비즈니스 클래스 실시간 데이터, 일반: 이코노미 최저가
         var _isVipInChange = budget >= 300 && budget < 9000;
         var _cdAirPrice = _isVipInChange ? (d._vipAirfare || d.airfare) : d.airfare;
-        var _cdAirSub = _isVipInChange ? '비즈니스 왕복' : '왕복 항공권';
+        var _cdAirSub = _isVipInChange ? '실시간 비즈니스 (왕복)' : '실시간 최저가 (왕복)';
         if (d && d._tpLink && _cdAirPrice) {
           const airEl = document.getElementById('air-' + col);
           if (airEl) {
             const mEl = airEl.querySelector('.main');
             const sEl = airEl.querySelector('.sub');
-            if (mEl) mEl.textContent = '최저가 검색';
+            if (mEl) mEl.textContent = _cdAirPrice;
             if (sEl) sEl.textContent = _cdAirSub;
             // 기존 버튼 제거
             const oldBtn = airEl.querySelector('.tp-book-btn');
@@ -1831,7 +3058,7 @@
         }
 
         // 여행지 변경 시 날씨 실시간 갱신 (디바운스로 중복 호출 방지)
-        _addWeatherSk(); if (typeof fetchWeatherDebounced === 'function') fetchWeatherDebounced();
+        if (typeof fetchWeatherDebounced === 'function') fetchWeatherDebounced();
       }
 
       function goHome() {
@@ -1918,7 +3145,7 @@
         updateResultsByFilters();
         window.scrollTo(0, 0);
         // 비교뷰 표시 후 실시간 날씨 갱신 (디바운스로 중복 호출 방지)
-        _addWeatherSk(); if (typeof fetchWeatherDebounced === 'function') fetchWeatherDebounced();
+        if (typeof fetchWeatherDebounced === 'function') fetchWeatherDebounced();
         // 태블릿·모바일에서는 스크롤 자동 팝업 비활성화
         if (window.innerWidth > 1068) {
           _initWizardScrollTrigger();
@@ -2112,7 +3339,7 @@
           }
           if (typeof syncAllDestDdLabels === 'function') syncAllDestDdLabels();
           // 날씨 데이터 fetch
-          _addWeatherSk(); if (typeof fetchWeatherDebounced === 'function') fetchWeatherDebounced();
+          if (typeof fetchWeatherDebounced === 'function') fetchWeatherDebounced();
 
           // 스냅샷 가격 적용 (공유 시 캡처된 원본 가격)
           var snapParam = params.get('snap');
@@ -2129,7 +3356,7 @@
               if (parts[1]) {
                 var ae = document.getElementById('air-' + si);
                 if (ae) {
-                  var am = ae.querySelector('.main'); if (am) am.textContent = '최저가 검색';
+                  var am = ae.querySelector('.main'); if (am) am.textContent = parts[1];
                   if (parts[2]) { var ak = ae.querySelector('.kicker'); if (ak) ak.textContent = parts[2]; }
                   if (parts[3]) { var asb = ae.querySelector('.sub'); if (asb) asb.textContent = parts[3]; }
                 }
@@ -2198,7 +3425,7 @@
                 // 업데이트 알림 토스트
                 var toastEl = document.createElement('div');
                 toastEl.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:99999;background:#fff;color:#1d1d1f;padding:20px 24px;border-radius:16px;font-size:14px;display:flex;align-items:center;gap:16px;box-shadow:0 8px 32px rgba(0,0,0,.12);max-width:90vw;border:1px solid rgba(0,0,0,.06);';
-                toastEl.innerHTML = '<span style="font-weight:500;line-height:1.4">항공·숙박 가격이 업데이트되었습니다</span><button style="background:#000;color:#fff;border:none;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;letter-spacing:-0.2px">최신 가격 보기</button><button style="background:transparent;color:#aaa;border:none;padding:6px 8px;font-size:16px;cursor:pointer;line-height:1;flex-shrink:0">✕</button>';
+                toastEl.innerHTML = '<span style="font-weight:500;line-height:1.4">실시간 항공·숙박 가격이 업데이트되었습니다</span><button style="background:#000;color:#fff;border:none;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;letter-spacing:-0.2px">최신 가격 보기</button><button style="background:transparent;color:#aaa;border:none;padding:6px 8px;font-size:16px;cursor:pointer;line-height:1;flex-shrink:0">✕</button>';
                 document.body.appendChild(toastEl);
                 // 최신 가격 보기 버튼
                 toastEl.querySelectorAll('button')[0].onclick = function() {
@@ -2208,12 +3435,12 @@
                     var d = v1_0_9_DEST_DATA[idxArr[u]];
                     if (!d || !d._tpLink) continue;
                     var ap = _isVip ? (d._vipAirfare || d.airfare) : d.airfare;
-                    var asLabel = _isVip ? '비즈니스 왕복' : '왕복 항공권';
+                    var asLabel = _isVip ? '실시간 비즈니스 (왕복)' : '실시간 최저가 (왕복)';
                     var akLabel = _isVip ? '비즈니스 · 인천 출발' : '이코노미 · 인천 출발';
                     if (ap) {
                       var ael = document.getElementById('air-' + u);
                       if (ael) {
-                        var m = ael.querySelector('.main'); if (m) m.textContent = '최저가 검색';
+                        var m = ael.querySelector('.main'); if (m) m.textContent = ap;
                         var s = ael.querySelector('.sub'); if (s) s.textContent = asLabel;
                         var k = ael.querySelector('.kicker'); if (k) k.textContent = akLabel;
                       }
@@ -2224,7 +3451,7 @@
                       var hel = document.getElementById('hotel-' + u);
                       if (hel) {
                         var hm = hel.querySelector('.main'); if (hm) hm.textContent = hp;
-                        var hs = hel.querySelector('.sub'); if (hs) hs.textContent = _isVip ? '프리미엄 1박 기준' : '1박 기준';
+                        var hs = hel.querySelector('.sub'); if (hs) hs.textContent = _isVip ? '실시간 프리미엄 (1박)' : '실시간 최저가 (1박)';
                       }
                     }
                     updated = true;
@@ -3630,16 +4857,6 @@
       // ── 디바운스 래퍼: fetchWeather 중복 호출 방지 ──
       // updateColumn이 3개 컬럼에 대해 연속 호출될 때
       // fetchWeather가 3번 실행되어 9+개 API 요청이 발생하는 문제 해결
-      // 날씨 셀 sk 추가 헬퍼 (옵션/날짜 변경 시 스켈레톤 표시용)
-      function _addWeatherSk() {
-        [0,1,2].forEach(function(ci) {
-          ['cur-temp-','weekly-forecast-'].forEach(function(p) {
-            var e = document.getElementById(p + ci);
-            if (e) e.classList.add('sk');
-          });
-        });
-      }
-
       var _fetchWeatherTimer = null;
       function fetchWeatherDebounced() {
         if (_fetchWeatherTimer) clearTimeout(_fetchWeatherTimer);
@@ -3971,7 +5188,7 @@
                 var hsEl = hotelEl.querySelector('.sub');
                 var hkEl = hotelEl.querySelector('.kicker');
                 if (hmEl) hmEl.textContent = d._hotelPrice;
-                if (hsEl) hsEl.textContent = '1박 기준';
+                if (hsEl) hsEl.textContent = '실시간 최저가 (1박)';
                 if (hkEl) hkEl.textContent = 'Booking.com 기준';
                 if (d._hotelLink && !hotelEl.querySelector('.tp-hotel-btn')) {
                   var hBtn = document.createElement('a');
@@ -4085,31 +5302,33 @@
       };
 
       // ── Travelpayouts 실시간 항공 가격 연동 ──
-      window._fetchFlightPrices = function fetchTpFlightPrices() {
+      (function fetchTpFlightPrices() {
         // TP_TOKEN은 Cloudflare Worker에서 처리됩니다
         var TP_MARKER = '510036';
         var ORIGIN = window.DEPARTURE_AIRPORT || 'ICN';
 
-
         // 목적지별 IATA 도시코드 — 전역 공유 상수 참조
         var DEST_IATA = window.DEST_CITY_IATA;
 
-        // 제휴 예약 링크 생성 — 사용자 선택 날짜 + 예산 반영 (Skyscanner YYMMDD 포맷)
+        // 제휴 예약 링크 생성 — Skyscanner 검색 (한국어 UI)
         var makeBookingLink = function(iata) {
           var dep = window.DEPARTURE_AIRPORT || 'ICN';
-          var _dates = _getSearchDates();
-          var _budget = _getCurrentBudget();
-          var _cabin = _budget >= 300 ? '&cabinclass=business' : '&cabinclass=economy';
+          var today = new Date();
+          // 다음 달 15일 출발, 22일 귀국으로 기본 세팅
+          var d1 = new Date(today.getFullYear(), today.getMonth() + 1, 15);
+          var d2 = new Date(today.getFullYear(), today.getMonth() + 1, 22);
+          var fmt = function(d) {
+            return String(d.getFullYear()).slice(2) +
+              String(d.getMonth() + 1).padStart(2, '0') +
+              String(d.getDate()).padStart(2, '0');
+          };
           return 'https://www.skyscanner.co.kr/transport/flights/' +
             dep.toLowerCase() + '/' + iata.toLowerCase() + '/' +
-            _dates.shortStart + '/' + _dates.shortEnd + '/?adultsv2=1&currency=KRW' + _cabin;
+            fmt(d1) + '/' + fmt(d2) + '/?adults=1';
         };
 
-        // 최저가 API 호출 (Worker 프록시) — 선택 날짜 월 전달
-        var _fDates = _getSearchDates();
-        var _fDepart = _fDates.skyStart.slice(0, 7); // YYYY-MM
-        var _fReturn = _fDates.skyEnd.slice(0, 7);   // YYYY-MM
-        fetch('https://travel.le2jy.workers.dev/api/flights/all?depart=' + _fDepart + '&return=' + _fReturn)
+        // 최저가 API 호출 (Worker 프록시)
+        fetch('https://travel.le2jy.workers.dev/api/flights/all')
           .then(function(r) { return r.json(); })
           .then(function(data) {
             if (!data || !data.data) return;
@@ -4120,15 +5339,14 @@
               var entry = data.data[iata];
               if (!entry.priceLabel) return;
               dest.airfare = entry.priceLabel;
-              dest.airfareSub = '왕복 항공권';
+              dest.airfareSub = '실시간 최저가 (왕복)';
               dest._tpLink = makeBookingLink(iata);
-              // 실시간 가격 → cheapFlights desc 동적 반영 (비활성: 가격 비표시 정책)
-              // var _livePrice = (entry.priceLabel || '').replace(/[^0-9]/g, '');
-              // 가격 부분을 desc에서 제거
-              if (dest.cheapFlights) {
+              // ── 실시간 가격 → cheapFlights desc 동적 반영 ──
+              var _livePrice = (entry.priceLabel || '').replace(/[^0-9]/g, '');
+              if (_livePrice && dest.cheapFlights) {
                 dest.cheapFlights.forEach(function(f) {
                   if (f.desc) {
-                    f.desc = f.desc.replace(/[·\s]*왕복\s*[\d,\-]+만원[대~]*/g, '').trim();
+                    f.desc = f.desc.replace(/왕복\s*[\d,\-]+만원[대~]*/, '왕복 ' + _livePrice + '만원대');
                   }
                 });
               }
@@ -4149,8 +5367,8 @@
                   var mEl = airEl.querySelector('.main');
                   var sEl = airEl.querySelector('.sub');
                   var kEl = airEl.querySelector('.kicker');
-                  if (mEl) { mEl.textContent = '최저가 검색'; }
-                  if (sEl) { sEl.textContent = '왕복 항공권'; }
+                  if (mEl) { mEl.textContent = d.airfare; }
+                  if (sEl) { sEl.textContent = '실시간 최저가 (왕복)'; }
                   if (kEl) { kEl.textContent = '이코노미 · 인천 출발'; }
                 }
                 // flightrec-i 항공 카드 desc 실시간 업데이트
@@ -4161,10 +5379,7 @@
                    recEl.querySelector('.flight-card-link').textContent.indexOf('비즈니스') !== -1);
                 if (recEl && d.cheapFlights && !_isVipNow) {
                   recEl.querySelectorAll('.flight-card-desc').forEach(function(descEl, fi) {
-                    if (d.cheapFlights[fi]) {
-                      var _d = d.cheapFlights[fi].desc || '';
-                      descEl.textContent = _d.replace(/[·\s]*왕복\s*[\d,\-]+만원[대~]*/g, '').trim();
-                    }
+                    if (d.cheapFlights[fi]) descEl.textContent = d.cheapFlights[fi].desc;
                   });
                 }
               }
@@ -4173,7 +5388,7 @@
           .catch(function(e) { console.log('TP flight API error:', e); });
 
         // VIP용 비즈니스 클래스 항공 데이터도 미리 가져오기
-        fetch('https://travel.le2jy.workers.dev/api/flights/all?trip_class=1&depart=' + _fDepart + '&return=' + _fReturn)
+        fetch('https://travel.le2jy.workers.dev/api/flights/all?trip_class=1')
           .then(function(r) { return r.json(); })
           .then(function(data) {
             if (!data || !data.data) return;
@@ -4183,13 +5398,12 @@
               var entry = data.data[iata];
               if (!entry.priceLabel) return;
               dest._vipAirfare = entry.priceLabel;
-              dest._vipAirfareSub = '비즈니스 왕복';
+              dest._vipAirfareSub = '실시간 비즈니스 (왕복)';
             });
             console.log('[VIP] 비즈니스 항공 데이터 로드 완료');
           })
           .catch(function(e) { console.log('VIP flight API error:', e); });
-      }; // end _fetchFlightPrices
-      window._fetchFlightPrices(); // 초기 실행
+      })();
 
       // ── GitHub passport-index-dataset: 한국여권 비자 요건 연동 ──
       (function fetchVisaInfo() {
@@ -4675,7 +5889,7 @@
             if (wizSvg) wizSvg.innerHTML = '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>';
           }
           if (typeof updateSearchBadge === "function") updateSearchBadge();
-          _addWeatherSk(); if (typeof fetchWeatherDebounced === "function") fetchWeatherDebounced();
+          if (typeof fetchWeatherDebounced === "function") fetchWeatherDebounced();
         }, 100);
       }
 
@@ -5431,4 +6645,148 @@
         var src = document.getElementById('sb-date-display'); if(src) src.textContent = txt;
         switchCvTab('traveler');
       }
-    
+    </script>
+
+  <!-- TRAVEL SEARCH BUTTON (모바일/태블릿) -->
+  <button id="wiz-launcher" onclick="openCvSearchSheet()" aria-label="여행 검색">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <span class="wiz-launcher-label">여행 검색</span>
+    <span class="wiz-launcher-badge" id="wiz-launcher-badge"></span>
+  </button>
+
+  <!-- WIZARD PANEL (숨김) -->
+  <div id="wiz-panel" style="display:none">
+    <div class="wiz-header">
+      <div class="wiz-title">여행 취향 찾기</div>
+      <div class="wiz-header-right">
+        <span class="wiz-count" id="wiz-count">0 / 4</span>
+        <button class="wiz-close" onclick="closeWizard()">×</button>
+      </div>
+    </div>
+    <div class="wiz-progress-track"><div class="wiz-progress-fill" id="wiz-progress"></div></div>
+    <div class="wiz-list" id="wiz-list"></div>
+    <div class="wiz-footer">
+      <button class="wiz-footer-link" onclick="resetWizard()">다시 설정</button>
+    </div>
+  </div>
+
+<!-- 공유 모달 -->
+<div id="share-modal-overlay" onclick="if(event.target===this)closeShareModal()">
+  <div id="share-modal">
+    <div class="share-modal-header">
+      <span class="share-modal-title">공유하기</span>
+      <button class="share-modal-close" onclick="closeShareModal()">×</button>
+    </div>
+    <div class="share-modal-url-box" style="margin-bottom:20px">
+      <span class="share-modal-url-text" id="share-modal-url-text"></span>
+      <button class="share-modal-copy-btn" id="share-modal-copy-btn" onclick="copyShareUrl()">복사</button>
+    </div>
+  </div>
+</div>
+
+<!-- handleShare is now in the main script block -->
+
+
+
+    <script>
+      // ── 여행 검색 버튼: 푸터 30px 위에서 멈추기 (모바일/태블릿) ──
+      (function() {
+        function adjustWizLauncher() {
+          if (window.innerWidth > 1068) return;
+          var launcher = document.getElementById('wiz-launcher');
+          var footer = document.querySelector('footer');
+          if (!launcher || !footer) return;
+
+          var footerTop = footer.getBoundingClientRect().top;
+          var viewH = window.innerHeight;
+
+          if (footerTop > 0 && footerTop < viewH) {
+            // 푸터가 화면 안에 들어옴 → 푸터 상단 기준 30px 위
+            launcher.style.setProperty('bottom', (viewH - footerTop + 30) + 'px', 'important');
+          } else {
+            launcher.style.setProperty('bottom', '20px', 'important');
+          }
+        }
+
+        window.addEventListener('scroll', adjustWizLauncher, { passive: true });
+        window.addEventListener('resize', adjustWizLauncher, { passive: true });
+        // 초기 로드 시 레이아웃 완성 후 실행
+        setTimeout(adjustWizLauncher, 300);
+      })();
+    </script>
+
+    <!-- ── 이용약관 모달 ── -->
+    <div class="footer-modal-overlay" id="modal-terms" onclick="if(event.target===this)this.classList.remove('open')">
+      <div class="footer-modal">
+        <div class="footer-modal-handle"></div>
+        <button class="footer-modal-close" onclick="document.getElementById('modal-terms').classList.remove('open')">✕</button>
+        <h2>이용약관</h2>
+        <h3>제1조 (목적)</h3>
+        <p>본 약관은 odiga(이하 "서비스")가 제공하는 여행 정보 비교 서비스의 이용에 관한 조건 및 절차를 규정함을 목적으로 합니다.</p>
+        <h3>제2조 (정보의 정확성)</h3>
+        <ul>
+          <li>항공권·숙박 가격은 최저가 기준의 참고 정보이며, 실시간으로 변동될 수 있습니다.</li>
+          <li>제공되는 정보는 참고용으로, 실제 예약 시 해당 플랫폼에서 최종 가격을 확인하시기 바랍니다.</li>
+          <li>안전 정보는 외교부 여행경보 기준이며, 여행 전 반드시 최신 정보를 확인하세요.</li>
+        </ul>
+        <h3>제3조 (외부 링크)</h3>
+        <p>서비스 내 제휴 링크(Agoda 등) 클릭 후 이루어지는 예약 및 거래에 대해 odiga는 책임을 지지 않습니다. 해당 서비스의 이용약관을 별도로 확인하세요.</p>
+        <h3>제4조 (서비스 변경)</h3>
+        <p>서비스 내용은 사전 고지 없이 변경되거나 종료될 수 있습니다.</p>
+        <h3>제5조 (문의)</h3>
+        <p>서비스 이용 관련 문의: pieceof@kakao.com</p>
+      </div>
+    </div>
+
+    <!-- ── 개인정보처리방침 모달 ── -->
+    <div class="footer-modal-overlay" id="modal-privacy" onclick="if(event.target===this)this.classList.remove('open')">
+      <div class="footer-modal">
+        <div class="footer-modal-handle"></div>
+        <button class="footer-modal-close" onclick="document.getElementById('modal-privacy').classList.remove('open')">✕</button>
+        <h2>개인정보처리방침</h2>
+        <p>odiga는 사용자의 개인정보를 소중히 여기며, 다음과 같이 처리합니다.</p>
+        <h3>수집하는 정보</h3>
+        <ul>
+          <li><strong>위치 정보 (선택적)</strong>: 사용자 동의 시 현재 위치를 이용해 가장 가까운 출발 공항(인천/김포/김해 등)을 자동 선택합니다. 위치 정보는 서버에 전송되거나 저장되지 않으며, 기기 내에서만 일시적으로 처리됩니다.</li>
+          <li><strong>여행지 선택 기록 (자동)</strong>: 최근 선택한 여행지를 브라우저 localStorage에 저장합니다. 서버로 전송되지 않으며, 브라우저 설정에서 언제든 삭제 가능합니다.</li>
+        </ul>
+        <h3>수집하지 않는 정보</h3>
+        <p>odiga는 별도의 회원가입 없이 이용 가능하며, 이름·이메일·전화번호 등 식별 가능한 개인정보를 수집하지 않습니다.</p>
+        <h3>제3자 서비스</h3>
+        <p>외부 제휴 링크(Agoda 등) 클릭 시 해당 사이트의 개인정보처리방침이 적용됩니다.</p>
+        <h3>문의</h3>
+        <p>개인정보 관련 문의: pieceof@kakao.com</p>
+        <p style="margin-top:16px;font-size:11px;color:#aeaeb2;">최초 시행일: 2026년 1월 1일</p>
+      </div>
+    </div>
+</body>
+
+<script>
+  // ── Progressive Blur Header ──
+  (function() {
+    var MAX_SCROLL = 80;
+    var nav = document.querySelector('.nav');
+    if (!nav) return;
+
+    function updateProgressiveBlur() {
+      var p = Math.min(window.scrollY / MAX_SCROLL, 1);
+      var alpha   = p * 0.88;
+      var blur    = p * 20;
+      var sat     = 100 + p * 80;
+      var border  = p * 0.08;
+
+      nav.style.background            = 'rgba(255,255,255,' + alpha + ')';
+      nav.style.backdropFilter        = 'saturate(' + sat + '%) blur(' + blur + 'px)';
+      nav.style.webkitBackdropFilter  = 'saturate(' + sat + '%) blur(' + blur + 'px)';
+      nav.style.borderBottomColor     = 'rgba(0,0,0,' + border + ')';
+    }
+
+    window.addEventListener('scroll', updateProgressiveBlur, { passive: true });
+    updateProgressiveBlur(); // 초기 실행 (이미 스크롤된 상태 대응)
+  })();
+</script>
+
+</html>
