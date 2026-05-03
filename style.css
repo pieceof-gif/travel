@@ -1570,7 +1570,7 @@
     }
 
     /* Tablet: 2-column layout (Apple compare style) */
-    /* Mobile (≤540px): sel-grid 패딩/간격 소폭 조정 */
+    /* Mobile (≤540px): sel-grid/data-row 패딩/간격 소폭 조정 */
     @media (max-width: 540px) {
       .sel-grid {
         padding: 0 12px !important;
@@ -1727,9 +1727,9 @@
 
     /* ── COMPARE AREA ── */
     .compare {
-      max-width: 980px;
+      max-width: 1068px;
       margin: 0 auto;
-      padding: 0 0 80px;
+      padding: 0 24px 80px;
     }
 
     /* ── DESTINATION IMAGES ── */
@@ -1909,7 +1909,7 @@
 
     /* Data cell */
     .dc {
-      padding: 8px 20px 0;
+      padding: 8px 0 0;
       text-align: center;
       display: flex;
       flex-direction: column;
@@ -2126,7 +2126,7 @@
 
       /* Section headers */
       .sel-grid, .sec-hd { max-width: 100% !important; }
-      .sec-hd { margin: 60px 0 16px; padding: 0 20px; }
+      .sec-hd { margin: 60px 0 16px; padding: 0 16px; }
       footer { margin-top: 100px; }
 
 
@@ -2267,18 +2267,22 @@
         max-width: 100% !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
-        padding: 0 !important;
-        gap: 0 !important;
+        padding: 0 16px !important;
+        gap: 8px !important;
         transform: none !important;
         transition: none !important;
+        box-sizing: border-box !important;
       }
 
       .data-row .dc:nth-child(3) { display: none !important; }
       .data-row .dc {
         min-width: 0;
-        padding: 8px 16px 0;
+        padding: 8px 0 0;
         box-sizing: border-box;
         overflow: hidden;
+      }
+      .sec-hd {
+        padding: 0 16px !important;
       }
 
       /* 한국어 텍스트 단어 중간 잘림 방지 */
@@ -2325,6 +2329,17 @@
         transition: background 0.15s;
       }
       #cv-search-icon:hover { background: rgba(0,0,0,0.06); }
+    }
+
+    /* ≤540px 소형 모바일: sel-grid과 동일한 gap/padding (1068px 규칙 이후 선언하여 우선 적용) */
+    @media (max-width: 540px) {
+      .data-row {
+        padding: 0 12px !important;
+        gap: 10px !important;
+      }
+      .sec-hd {
+        padding: 0 12px !important;
+      }
     }
 
     /* ── 비교뷰 검색바: 홈과 완전히 동일한 디자인 ── */
@@ -3631,3 +3646,6 @@
         background: #f5f5f7 !important;
         color: #0071e3 !important;
       }
+
+      /* ── 지도 컬럼: 패딩 없이 edge-to-edge ── */
+      .map-dc { padding: 0 !important; }
