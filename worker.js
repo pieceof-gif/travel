@@ -50,16 +50,17 @@ export default {
         const data = await res.json();
 
         const results = {};
-        // v2 응답: { data: [ { destination, price, airline, actual, ... }, ... ] }
+        // v2 응답: { data: [ { destination, value, airline, actual, ... }, ... ] }
         if (data && Array.isArray(data.data)) {
           for (const item of data.data) {
             const iata = item.destination;
-            if (!iata || item.price <= 0) continue;
+            const price = item.value;
+            if (!iata || !price || price <= 0) continue;
             // 목적지별 최저가만 유지
-            if (!results[iata] || item.price < results[iata].priceKRW) {
+            if (!results[iata] || price < results[iata].priceKRW) {
               results[iata] = {
-                priceKRW: item.price,
-                priceLabel: Math.round(item.price / 10000) + '만원~',
+                priceKRW: price,
+                priceLabel: Math.round(price / 10000) + '만원~',
                 airline: item.airline,
               };
             }
