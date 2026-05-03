@@ -359,7 +359,7 @@
             setTimeout(function(col, dest) {
               // 항공 오버라이드 — VIP: 비즈니스 클래스 실시간, 일반: 이코노미 최저가
               var _airPrice = _isVipBudget ? (dest._vipAirfare || dest.airfare) : dest.airfare;
-              var _airSub = _isVipBudget ? '실시간 비즈니스 (왕복)' : '실시간 최저가 (왕복)';
+              var _airSub = _isVipBudget ? '참고가 비즈니스 (왕복)' : '참고가 (왕복)';
               var _airKicker = _isVipBudget ? '비즈니스 · 인천 출발' : '이코노미 · 인천 출발';
               if (dest && _airPrice && dest._tpLink) {
                 var airEl = document.getElementById('air-' + col);
@@ -376,7 +376,7 @@
               // 숙박 오버라이드 — VIP: 5성급 프리미엄, 일반: 최저가
               var _htlPrice = _isVipBudget ? (dest._vipHotelPrice || dest._hotelPrice) : dest._hotelPrice;
               var _htlLink = _isVipBudget ? (dest._vipHotelLink || dest._hotelLink) : dest._hotelLink;
-              var _htlSub = _isVipBudget ? '실시간 프리미엄 (1박)' : '실시간 최저가 (1박)';
+              var _htlSub = _isVipBudget ? '참고가 프리미엄 (1박)' : '참고가 (1박)';
               var _htlName = _isVipBudget && dest._vipHotelName ? dest._vipHotelName : '';
               var _htlKicker = _htlName ? (_htlName + ' · ' + (dest._vipHotelStars || 5) + '성급') : (_isVipBudget ? '5성급 리조트' : 'Hotellook 기준');
               if (dest && _htlPrice && _htlLink) {
@@ -1820,7 +1820,7 @@
         // VIP: 비즈니스 클래스 실시간 데이터, 일반: 이코노미 최저가
         var _isVipInChange = budget >= 300 && budget < 9000;
         var _cdAirPrice = _isVipInChange ? (d._vipAirfare || d.airfare) : d.airfare;
-        var _cdAirSub = _isVipInChange ? '실시간 비즈니스 (왕복)' : '실시간 최저가 (왕복)';
+        var _cdAirSub = _isVipInChange ? '참고가 비즈니스 (왕복)' : '참고가 (왕복)';
         if (d && d._tpLink && _cdAirPrice) {
           const airEl = document.getElementById('air-' + col);
           if (airEl) {
@@ -2202,7 +2202,7 @@
                 // 업데이트 알림 토스트
                 var toastEl = document.createElement('div');
                 toastEl.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:99999;background:#fff;color:#1d1d1f;padding:20px 24px;border-radius:16px;font-size:14px;display:flex;align-items:center;gap:16px;box-shadow:0 8px 32px rgba(0,0,0,.12);max-width:90vw;border:1px solid rgba(0,0,0,.06);';
-                toastEl.innerHTML = '<span style="font-weight:500;line-height:1.4">실시간 항공·숙박 가격이 업데이트되었습니다</span><button style="background:#000;color:#fff;border:none;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;letter-spacing:-0.2px">최신 가격 보기</button><button style="background:transparent;color:#aaa;border:none;padding:6px 8px;font-size:16px;cursor:pointer;line-height:1;flex-shrink:0">✕</button>';
+                toastEl.innerHTML = '<span style="font-weight:500;line-height:1.4">항공·숙박 참고가가 업데이트되었습니다</span><button style="background:#000;color:#fff;border:none;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;letter-spacing:-0.2px">최신 가격 보기</button><button style="background:transparent;color:#aaa;border:none;padding:6px 8px;font-size:16px;cursor:pointer;line-height:1;flex-shrink:0">✕</button>';
                 document.body.appendChild(toastEl);
                 // 최신 가격 보기 버튼
                 toastEl.querySelectorAll('button')[0].onclick = function() {
@@ -2212,7 +2212,7 @@
                     var d = v1_0_9_DEST_DATA[idxArr[u]];
                     if (!d || !d._tpLink) continue;
                     var ap = _isVip ? (d._vipAirfare || d.airfare) : d.airfare;
-                    var asLabel = _isVip ? '실시간 비즈니스 (왕복)' : '실시간 최저가 (왕복)';
+                    var asLabel = _isVip ? '참고가 비즈니스 (왕복)' : '참고가 (왕복)';
                     var akLabel = _isVip ? '비즈니스 · 인천 출발' : '이코노미 · 인천 출발';
                     if (ap) {
                       var ael = document.getElementById('air-' + u);
@@ -2228,7 +2228,7 @@
                       var hel = document.getElementById('hotel-' + u);
                       if (hel) {
                         var hm = hel.querySelector('.main'); if (hm) hm.textContent = hp;
-                        var hs = hel.querySelector('.sub'); if (hs) hs.textContent = _isVip ? '실시간 프리미엄 (1박)' : '실시간 최저가 (1박)';
+                        var hs = hel.querySelector('.sub'); if (hs) hs.textContent = _isVip ? '참고가 프리미엄 (1박)' : '참고가 (1박)';
                       }
                     }
                     updated = true;
@@ -3975,7 +3975,7 @@
                 var hsEl = hotelEl.querySelector('.sub');
                 var hkEl = hotelEl.querySelector('.kicker');
                 if (hmEl) hmEl.textContent = d._hotelPrice;
-                if (hsEl) hsEl.textContent = '실시간 최저가 (1박)';
+                if (hsEl) hsEl.textContent = '참고가 (1박)';
                 if (hkEl) hkEl.textContent = 'Booking.com 기준';
                 if (d._hotelLink && !hotelEl.querySelector('.tp-hotel-btn')) {
                   var hBtn = document.createElement('a');
@@ -4124,7 +4124,7 @@
               var entry = data.data[iata];
               if (!entry.priceLabel) return;
               dest.airfare = entry.priceLabel;
-              dest.airfareSub = '실시간 최저가 (왕복)';
+              dest.airfareSub = '참고가 (왕복, 실제 가격과 다를 수 있음)';
               dest._tpLink = makeBookingLink(iata);
               // ── 실시간 가격 → cheapFlights desc 동적 반영 ──
               var _livePrice = (entry.priceLabel || '').replace(/[^0-9]/g, '');
@@ -4153,7 +4153,7 @@
                   var sEl = airEl.querySelector('.sub');
                   var kEl = airEl.querySelector('.kicker');
                   if (mEl) { mEl.textContent = d.airfare; }
-                  if (sEl) { sEl.textContent = '실시간 최저가 (왕복)'; }
+                  if (sEl) { sEl.textContent = '참고가 (왕복)'; }
                   if (kEl) { kEl.textContent = '이코노미 · 인천 출발'; }
                 }
                 // flightrec-i 항공 카드 desc 실시간 업데이트
@@ -4183,7 +4183,7 @@
               var entry = data.data[iata];
               if (!entry.priceLabel) return;
               dest._vipAirfare = entry.priceLabel;
-              dest._vipAirfareSub = '실시간 비즈니스 (왕복)';
+              dest._vipAirfareSub = '참고가 비즈니스 (왕복)';
             });
             console.log('[VIP] 비즈니스 항공 데이터 로드 완료');
           })
