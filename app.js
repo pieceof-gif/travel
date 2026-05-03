@@ -20,30 +20,13 @@
         };
         var start, end;
 
-        // window._isAutoDate: true = 앱이 자동 세팅 (사용자 미선택), false = 사용자 직접 선택
-        var _userSelected = (window._isAutoDate === false);
-        var dateEl = document.getElementById('home-date-value');
-        var dateVal = dateEl ? dateEl.textContent : '';
-
-        if (_userSelected && dateVal && dateVal.includes(' – ')) {
-          // 사용자가 직접 선택한 날짜 파싱
-          try {
-            var _year = today.getFullYear();
-            var parts = dateVal.split(' – ');
-            var d1 = parts[0].split('월 ');
-            var d2 = parts[1].split('월 ');
-            var fm1 = parseInt(d1[0]) - 1, fm2 = parseInt(d2[0]) - 1;
-            var day1 = parseInt(d1[1].replace('일', ''));
-            var day2 = parseInt(d2[1].replace('일', ''));
-            var _endYear = fm2 < fm1 ? _year + 1 : _year;
-            start = new Date(_year, fm1, day1);
-            end   = new Date(_endYear, fm2, day2);
-          } catch(e) {
-            start = null;
-          }
+        // 사용자가 직접 선택한 날짜가 있으면 그것을 사용
+        if (window._isAutoDate === false && window.selectedDates && window.selectedDates.length >= 2) {
+          start = window.selectedDates[0];
+          end   = window.selectedDates[1];
         }
 
-        if (!start) {
+        if (!start || isNaN(start.getTime())) {
           // 날짜 미선택: +14일 출발, +21일 귀국 (7박 — 모든 목적지 동일 기간 비교)
           start = new Date(today); start.setDate(today.getDate() + 14);
           end   = new Date(today); end.setDate(today.getDate() + 21);
@@ -55,6 +38,7 @@
           shortStart: _toShortFmt(start), shortEnd: _toShortFmt(end)
         };
       }
+
 
       // ── 공통: 현재 예산값 읽기 ──
       function _getCurrentBudget() {
