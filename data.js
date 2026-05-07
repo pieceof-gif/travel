@@ -580,7 +580,7 @@ var v1_0_9_DEST_DATA = [
           ]
         },
         {
-          id:'bali', name:'인도네시아 · 발리', sub:'신들의 섬 · 힐링 리조트',
+          id:'bali', name:'인도네시아 · 발리', sub:'신들의 섬 · 힐링',
           score: 80, isTop: false, photo:'',
           airfare:'50만원', hotel:'50만원', hotelSub:'1박 평균 10만원',
           daily:'4만원', dailySub:'루피아 약세 · 초가성비',
@@ -662,7 +662,7 @@ var v1_0_9_DEST_DATA = [
           ]
         },
         {
-          id:'chiangmai', name:'태국 · 치앙마이', sub:'코끼리·자연·북태국 문화',
+          id:'chiangmai', name:'태국 · 치앙마이', sub:'태국 · 북태국 문화',
           score: 75, isTop: false, photo:'',
           airfare:'45만원', hotel:'30만원', hotelSub:'1박 평균 6만원',
           daily:'3만원', dailySub:'북태국 물가 매우 저렴',
@@ -744,7 +744,7 @@ var v1_0_9_DEST_DATA = [
           ]
         },
         {
-          id:'singapore', name:'싱가포르', sub:'아시아 허브 · 미식 파라다이스',
+          id:'singapore', name:'싱가포르', sub:'아시아 · 미식 허브',
           score: 65, isTop: false, photo:'',
           airfare:'55만원', hotel:'90만원', hotelSub:'1박 평균 18만원',
           daily:'10만원', dailySub:'호커센터 활용 시 식비 절감',
@@ -908,7 +908,7 @@ var v1_0_9_DEST_DATA = [
           ]
         },
         {
-          id:'nhatrang', name:'베트남 · 나트랑', sub:'맑은 바다와 초가성비 해변',
+          id:'nhatrang', name:'베트남 · 나트랑', sub:'베트남 · 가성비 해변',
           score: 77, isTop: false, photo:'',
           airfare:'40만원', hotel:'35만원', hotelSub:'1박 평균 7만원',
           daily:'3만원', dailySub:'베트남 물가 매우 저렴',
@@ -990,7 +990,7 @@ var v1_0_9_DEST_DATA = [
           ]
         },
       {
-        id:'fukuoka', name:'후쿠오카', sub:'일본 규슈 · 가장 가까운 일본', score: 88, isTop: true,
+        id:'fukuoka', name:'후쿠오카', sub:'규슈 · 가까운 일본', score: 88, isTop: true,
         photo:'https://images.unsplash.com/photo-1576769562804-455f110e3c0d?w=800&q=80',
         airfare:'18만원~', hotel:'호텔 합리적', hotelSub:'3성급 5-8만원대', daily:'소비 적음', dailySub:'1일 5-8만원',
         alert:'경보 없음', alertSub:'안전한 여행지', news:'엔저 지속', newsSub:'환율 유리', disaster:'없음', disasterSub:'',
@@ -1070,7 +1070,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 1.5시간 · 일본 최단거리 도시','LCC 왕복 15-20만원 특가 자주 발생','부산 출발 시 페리도 옵션 (3.5시간)','후쿠오카+벳푸+유후인 3박4일 코스 인기']
       },
       {
-        id:'sapporo', name:'삿포로', sub:'일본 홋카이도 · 설경과 맥주의 도시', score: 82, isTop: false,
+        id:'sapporo', name:'삿포로', sub:'홋카이도 · 눈과 맥주', score: 82, isTop: false,
         photo:'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=800&q=80',
         airfare:'25만원~', hotel:'호텔 합리적', hotelSub:'3성급 6-10만원대', daily:'소비 적음', dailySub:'1일 6-9만원',
         alert:'경보 없음', alertSub:'안전한 여행지', news:'엔저 지속', newsSub:'환율 유리', disaster:'폭설', disasterSub:'결빙 주의',
@@ -1150,7 +1150,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 2.5시간 · 인천·부산 출발','2월 눈축제 시즌 항공권 2-3개월 전 예약','여름(7-8월) 항공권 저렴하고 날씨 쾌적','삿포로+오타루+후라노 4박5일 코스 추천']
       },
       {
-        id:'okinawa', name:'오키나와', sub:'일본 남서부 · 산호초 청록 바다', score: 85, isTop: true,
+        id:'okinawa', name:'오키나와', sub:'일본 · 청록빛 바다', score: 85, isTop: true,
         photo:'https://images.unsplash.com/photo-1590559899731-a382839e5549?w=800&q=80',
         airfare:'22만원~', hotel:'호텔 합리적', hotelSub:'3성급 7-12만원대', daily:'소비 보통', dailySub:'1일 6-10만원',
         alert:'경보 없음', alertSub:'안전한 여행지', news:'엔저 지속', newsSub:'환율 유리', disaster:'태풍', disasterSub:'9-10월 주의',
@@ -1230,7 +1230,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 2시간 · LCC 왕복 20-25만원대','봄(4-5월) 항공권 + 해변 최적 시즌','태풍 시즌 항공권 저렴하지만 리스크 있음','오키나와 본섬+이시가키 섬 분리 여행 추천']
       },
       {
-        id:'kyoto', name:'교토', sub:'일본 전통 문화 · 사찰과 기모노', score: 87, isTop: true,
+        id:'kyoto', name:'교토', sub:'일본 · 사찰과 기모노', score: 87, isTop: true,
         photo:'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&q=80',
         airfare:'22만원~', hotel:'호텔 보통', hotelSub:'3성급 8-15만원대', daily:'소비 보통', dailySub:'1일 7-11만원',
         alert:'경보 없음', alertSub:'안전한 여행지', news:'엔저 지속', newsSub:'환율 유리', disaster:'없음', disasterSub:'',
@@ -1310,7 +1310,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['오사카(간사이 공항) 도착 후 교토 JR 75분','직항 1.5시간 + 이동 · 실질 3시간 내','오사카+교토+나라 3박4일 패키지 효율적','벚꽃(3-4월) 항공권 최소 2개월 전 예약']
       },
       {
-        id:'miyakojima', name:'미야코지마', sub:'오키나와 남쪽 · 산호초 에메랄드빛 바다', score: 83, isTop: false,
+        id:'miyakojima', name:'미야코지마', sub:'오키나와 · 산호 바다', score: 83, isTop: false,
         photo:'https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=800&q=80',
         airfare:'30만원~', hotel:'호텔 합리적', hotelSub:'3성급 7-13만원대', daily:'소비 보통', dailySub:'1일 5-9만원',
         alert:'경보 없음', alertSub:'안전한 여행지', news:'엔저 지속', newsSub:'환율 유리', disaster:'태풍', disasterSub:'8-9월 주의',
@@ -1390,7 +1390,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['시모지시마(SHI) 공항 도착 = 미야코지마 직결','인천 직항 2.5시간 · 진에어 운항','3-5월 항공권 저렴 + 날씨 최적 시즌','렌터카 공항에서 바로 픽업 추천']
       },
       {
-        id:'phuquoc', name:'푸꾸옥', sub:'베트남 섬 · 에메랄드 바다', score: 79, isTop: false,
+        id:'phuquoc', name:'푸꾸옥', sub:'베트남 · 에메랄드 섬', score: 79, isTop: false,
         photo:'https://images.unsplash.com/photo-1586861203927-800a5acdcc4d?w=800&q=80',
         airfare:'22만원~', hotel:'호텔 저렴', hotelSub:'3성급 4-8만원대', daily:'소비 매우 적음', dailySub:'1일 4-7만원',
         alert:'경보 없음', alertSub:'안전한 여행지', news:'물가 안정', newsSub:'물가 저렴', disaster:'우기', disasterSub:'7-10월 주의',
@@ -1470,7 +1470,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 5시간 · 인천 출발 LCC 다수','왕복 25-35만원 특가 자주 발생','푸꾸옥+호치민 경유 조합 가능','건기(11-4월) 항공권 성수기 요금 주의']
       },
       {
-        id:'hochiminh', name:'호치민', sub:'베트남 남부 · 역동적인 도시 여행', score: 74, isTop: false,
+        id:'hochiminh', name:'호치민', sub:'베트남 · 활기찬 도시', score: 74, isTop: false,
         photo:'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=800&q=80',
         airfare:'20만원~', hotel:'호텔 저렴', hotelSub:'3성급 4-7만원대', daily:'소비 매우 적음', dailySub:'1일 4-7만원',
         alert:'여행유의', alertSub:'날치기 주의', news:'물가 안정', newsSub:'물가 저렴', disaster:'없음', disasterSub:'',
@@ -1550,7 +1550,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 5시간 · LCC 왕복 20-30만원','호치민+푸꾸옥 연계 5박6일 추천','건기(12-4월)가 여행하기 최적','비행 직후 시차 없어 피로도 낮음']
       },
       {
-        id:'hanoi', name:'하노이', sub:'베트남 수도 · 역사와 문화의 도시', score: 74, isTop: false,
+        id:'hanoi', name:'하노이', sub:'베트남 · 역사와 문화', score: 74, isTop: false,
         photo:'https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?w=800&q=80',
         airfare:'22만원~', hotel:'호텔 저렴', hotelSub:'3성급 4-7만원대', daily:'소비 매우 적음', dailySub:'1일 4-7만원',
         alert:'여행유의', alertSub:'오토바이 주의', news:'물가 안정', newsSub:'물가 저렴', disaster:'없음', disasterSub:'',
@@ -1630,7 +1630,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 5시간 · LCC 왕복 20-30만원','하노이+하롱베이 4박5일 코스 인기','봄(3-4월)·가을(10-11월) 최적 날씨','하노이+다낭 국내선 연결 가능']
       },
       {
-        id:'boracay', name:'보라카이', sub:'필리핀 · 세계 최고 화이트 비치', score: 78, isTop: false,
+        id:'boracay', name:'보라카이', sub:'필리핀 · 화이트 비치', score: 78, isTop: false,
         photo:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
         airfare:'25만원~', hotel:'호텔 저렴', hotelSub:'3성급 5-9만원대', daily:'소비 적음', dailySub:'1일 5-8만원',
         alert:'경보 없음', alertSub:'안전한 여행지', news:'물가 안정', newsSub:'물가 저렴', disaster:'태풍', disasterSub:'겨울 주의',
@@ -1710,7 +1710,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['칼리보(KLO) 공항이 저렴 · 이리오일로(ILO)도 가능','직항 4.5시간 · LCC 왕복 25-35만원','마닐라 경유 시 이동 복잡 추천','건기 성수기(12-3월) 항공권 2개월 전 예약']
       },
       {
-        id:'phuket', name:'푸켓', sub:'태국 남부 · 에메랄드 해변과 나이트라이프', score: 81, isTop: false,
+        id:'phuket', name:'푸켓', sub:'태국 · 에메랄드 해변', score: 81, isTop: false,
         photo:'https://images.unsplash.com/photo-1589394815349-30b3a6e3a9de?w=800&q=80',
         airfare:'22만원~', hotel:'호텔 보통', hotelSub:'3성급 6-12만원대', daily:'소비 적음', dailySub:'1일 5-9만원',
         alert:'경보 없음', alertSub:'안전한 여행지', news:'물가 안정', newsSub:'물가 저렴', disaster:'우기', disasterSub:'해변 주의',
@@ -1790,7 +1790,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 6시간 · LCC 왕복 25-35만원','방콕+푸켓 조합 7박8일 추천','건기 성수기(12-3월) 항공권 2개월 전 예약','피피섬은 당일치기 또는 숙박 가능']
       },
       {
-        id:'hongkong', name:'홍콩', sub:'동서양의 교차점 · 쇼핑과 야경', score: 70, isTop: false,
+        id:'hongkong', name:'홍콩', sub:'동서양 · 쇼핑과 야경', score: 70, isTop: false,
         photo:'https://images.unsplash.com/photo-1506970845246-18f21d533b20?w=800&q=80',
         airfare:'28만원~', hotel:'호텔 비쌈', hotelSub:'3성급 12-20만원대', daily:'소비 보통', dailySub:'1일 8-14만원',
         alert:'경보 없음', alertSub:'안전한 여행지', news:'HKD 강세', newsSub:'물가 상승 추세', disaster:'없음', disasterSub:'',
@@ -1870,7 +1870,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 3.5시간 · LCC 왕복 15-20만원','홍콩+마카오 3박4일 조합 인기','옥토퍼스 카드(교통카드) 공항에서 즉시 구입','마카오는 페리 1시간 · 별도 비자 불필요']
       },
       {
-        id:'guam', name:'괌', sub:'미국령 · 가까운 미국, 청록 바다', score: 73, isTop: false,
+        id:'guam', name:'괌', sub:'미국령 · 청록빛 바다', score: 73, isTop: false,
         photo:'https://images.unsplash.com/photo-1559827291-72ee739d0d9a?w=800&q=80',
         airfare:'30만원~', hotel:'호텔 보통', hotelSub:'3성급 10-16만원대', daily:'소비 보통', dailySub:'1일 7-12만원',
         alert:'경보 없음', alertSub:'안전한 여행지', news:'달러 강세', newsSub:'환율 불리', disaster:'태풍', disasterSub:'7-11월 주의',
@@ -2030,7 +2030,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 9.5시간 · 왕복 80-120만원','성수기(6-8월) 항공권 3-4개월 전 예약','이웃 섬(마우이·빅아일랜드) 국내선 추가','ESTA 사전 신청 · 왕복 항공+호텔 패키지 유리']
       },
       {
-        id:'paris', name:'파리', sub:'프랑스 · 예술과 낭만의 도시', score: 58, isTop: false,
+        id:'paris', name:'파리', sub:'프랑스 · 예술과 낭만', score: 58, isTop: false,
         photo:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80',
         airfare:'80만원~', hotel:'호텔 비쌈', hotelSub:'3성급 18-30만원대', daily:'소비 많음', dailySub:'1일 15-25만원',
         alert:'여행유의', alertSub:'소매치기 주의', news:'유로 강세', newsSub:'물가 높음', disaster:'없음', disasterSub:'',
@@ -2109,7 +2109,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 12시간 · 왕복 90-130만원','경유 항공 이용 시 60-80만원대 가능','파리+런던+암스테르담 유럽 루트 인기','쉥겐 비자 무필요 (90일 이내 무비자)']
       },
       {
-        id:'kualalumpur', name:'쿠알라룸푸르', sub:'말레이시아 수도 · 다문화와 쇼핑 천국', score: 66, isTop: false,
+        id:'kualalumpur', name:'쿠알라룸푸르', sub:'말레이시아 · 수도', score: 66, isTop: false,
         photo:'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=800&q=80',
         airfare:'25만원~', hotel:'호텔 저렴', hotelSub:'3성급 5-10만원대', daily:'소비 적음', dailySub:'1일 5-9만원',
         alert:'경보 없음', alertSub:'안전한 여행지', news:'물가 안정', newsSub:'물가 저렴', disaster:'없음', disasterSub:'',
@@ -2189,7 +2189,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 6.5시간 · 에어아시아 저가 강점','LCC 왕복 20-30만원대 특가 자주 발생','KL+랑카위 또는 KL+페낭 조합 추천','에어아시아 수화물 추가 비용 확인 필수']
       },
       {
-        id:'maldives', name:'몰디브', sub:'인도양 · 세상 끝의 수상 빌라', score: 68, isTop: false,
+        id:'maldives', name:'몰디브', sub:'인도양 · 수상 빌라', score: 68, isTop: false,
         photo:'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=800&q=80',
         airfare:'55만원~', hotel:'호텔 매우 비쌈', hotelSub:'수상 빌라 30-80만원대', daily:'소비 많음', dailySub:'1일 20-40만원',
         alert:'경보 없음', alertSub:'안전한 여행지', news:'수요 증가', newsSub:'럭셔리 트렌드', disaster:'없음', disasterSub:'',
@@ -2269,7 +2269,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 없음 12-16시간','왕복 항공 60-100만원 + 리조트 이동 별도','스피드보트 or 세플레인 이동 예약 필수','허니문 패키지 이용 시 항공+리조트 묶음 유리']
       },
       {
-        id:'sydney', name:'시드니', sub:'호주 · 오페라하우스와 황금 해변', score: 62, isTop: false,
+        id:'sydney', name:'시드니', sub:'호주 · 오페라하우스', score: 62, isTop: false,
         photo:'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800&q=80',
         airfare:'70만원~', hotel:'호텔 비쌈', hotelSub:'3성급 18-28만원대', daily:'소비 많음', dailySub:'1일 15-22만원',
         alert:'경보 없음', alertSub:'안전한 여행지', news:'AUD 변동', newsSub:'환율 모니터링', disaster:'산불', disasterSub:'12-2월 주의',
@@ -2349,7 +2349,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 10시간 · 왕복 90-130만원','경유(싱가포르·쿠알라룸푸르) 시 50-70만원대','시드니+멜버른 이동 국내선 추가','입국 시 식품·동물성 물품 반입 금지 엄격']
       },
       {
-        id:'shanghai', name:'상하이', sub:'중국 경제 수도 · 동서양이 공존하는 도시', score: 65, isTop: false,
+        id:'shanghai', name:'상하이', sub:'중국 · 와이탄 야경', score: 65, isTop: false,
         photo:'https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=800&q=80',
         airfare:'18만원~', hotel:'호텔 저렴', hotelSub:'3성급 6-12만원대', daily:'소비 적음', dailySub:'1일 6-10만원',
         alert:'경보 없음', alertSub:'전반적으로 안전', news:'위안화 안정', newsSub:'환율 변동 적음', disaster:'없음', disasterSub:'',
@@ -2429,7 +2429,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 2시간 · 일본 다음으로 가까운 국제선','LCC 왕복 12-18만원 특가 빈번','비자 면제 협정 (30일 이내 무비자)','VPN 앱 미리 설치 · 현지 스마트폰 이용 필수']
       },
       {
-        id:'barcelona', name:'바르셀로나', sub:'스페인 · 가우디와 지중해 해변', score: 55, isTop: false,
+        id:'barcelona', name:'바르셀로나', sub:'스페인 · 가우디 도시', score: 55, isTop: false,
         photo:'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&q=80',
         airfare:'85만원~', hotel:'호텔 비쌈', hotelSub:'3성급 18-30만원대', daily:'소비 많음', dailySub:'1일 14-22만원',
         alert:'여행유의', alertSub:'소매치기 주의', news:'유로 강세', newsSub:'물가 높음', disaster:'없음', disasterSub:'',
@@ -2509,7 +2509,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 없음 14-16시간','왕복 70-110만원 (경유)','파리+바르셀로나 조합 유럽 2개국 인기','쉥겐 비자 무필요 (90일 이내 무비자)']
       },
       {
-        id:'nagoya', name:'나고야', sub:'일본 중부 · 지브리파크와 레고랜드', score: 80, isTop: false,
+        id:'nagoya', name:'나고야', sub:'일본 · 지브리파크', score: 80, isTop: false,
         photo:'https://images.unsplash.com/photo-1590559899731-a382839e5549?w=800&q=80',
         airfare:'30만원~', hotel:'호텔 저렴', hotelSub:'3성급 7-12만원대', daily:'소비 적음', dailySub:'1일 6-10만원',
         alert:'경보 없음', alertSub:'치안 매우 좋음', news:'엔저 지속', newsSub:'쇼핑 유리', disaster:'없음', disasterSub:'',
@@ -2590,7 +2590,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 2시간','왕복 20-40만원','직항 다수','중부국제공항 나고야역 뮤스카이 28분']
       },
       {
-        id:'siemreap', name:'씨엠립', sub:'캄보디아 · 앙코르와트의 도시', score: 76, isTop: false,
+        id:'siemreap', name:'씨엠립', sub:'캄보디아 · 앙코르와트', score: 76, isTop: false,
         photo:'https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?w=800&q=80',
         airfare:'35만원~', hotel:'호텔 매우 저렴', hotelSub:'3성급 3-6만원대', daily:'소비 매우 적음', dailySub:'1일 3-5만원',
         alert:'여행유의', alertSub:'취업사기 주의', news:'취업 사기 주의', newsSub:'구인사기 주의', disaster:'우기', disasterSub:'6-10월 스콜',
@@ -2671,7 +2671,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 없음 6-10시간','왕복 25-50만원','방콕·호치민 경유가 저렴','비자: 도착 비자 $30 또는 E-Visa']
       },
       {
-        id:'rome', name:'로마', sub:'이탈리아 · 콜로세움과 바티칸', score: 60, isTop: false,
+        id:'rome', name:'로마', sub:'이탈리아 · 유산 도시', score: 60, isTop: false,
         photo:'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&q=80',
         airfare:'80만원~', hotel:'호텔 비쌈', hotelSub:'3성급 15-25만원대', daily:'소비 많음', dailySub:'1일 12-20만원',
         alert:'여행유의', alertSub:'소매치기 주의', news:'유로 강세', newsSub:'물가 높음', disaster:'없음', disasterSub:'',
@@ -2752,7 +2752,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 12시간 (대한항공)','왕복 80-130만원','경유편 60만원대~','쉥겐 비자 무필요 (90일 무비자)']
       },
       {
-        id:'london', name:'런던', sub:'영국 · 대영박물관과 뮤지컬', score: 57, isTop: false,
+        id:'london', name:'런던', sub:'영국 · 뮤지컬과 문화', score: 57, isTop: false,
         photo:'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80',
         airfare:'85만원~', hotel:'호텔 매우 비쌈', hotelSub:'3성급 20-35만원대', daily:'소비 매우 많음', dailySub:'1일 15-25만원',
         alert:'경보 없음', alertSub:'소매치기 주의', news:'파운드 강세', newsSub:'물가 높음', disaster:'없음', disasterSub:'',
@@ -2833,7 +2833,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 12시간 (대한항공·아시아나)','왕복 90-140만원','경유편 70만원대~','영국 비자 무필요 (6개월 무비자)']
       },
       {
-        id:'kotakinabalu', name:'코타키나발루', sub:'말레이시아 · 세계 3대 선셋', score: 75, isTop: false,
+        id:'kotakinabalu', name:'코타키나발루', sub:'말레이시아 · 선셋', score: 75, isTop: false,
         photo:'https://images.unsplash.com/photo-1600000862694-2cafae59f8de?w=800&q=80',
         airfare:'35만원~', hotel:'호텔 저렴', hotelSub:'4성급 5-10만원대', daily:'소비 적음', dailySub:'1일 5-8만원',
         alert:'경보 없음', alertSub:'치안 좋음', news:'링깃 약세', newsSub:'환율 유리', disaster:'없음', disasterSub:'',
@@ -2914,7 +2914,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 5시간','왕복 25-45만원','에어아시아 특가 주목','시차 -1시간']
       },
       {
-        id:'luangprabang', name:'루앙프라방', sub:'라오스 · 탁발승과 메콩강의 도시', score: 71, isTop: false,
+        id:'luangprabang', name:'루앙프라방', sub:'라오스 · 메콩강', score: 71, isTop: false,
         photo:'https://images.unsplash.com/photo-1583531172268-3acab063a6b0?w=800&q=80',
         airfare:'30만원~', hotel:'호텔 매우 저렴', hotelSub:'3성급 3-6만원대', daily:'소비 매우 적음', dailySub:'1일 3-5만원',
         alert:'경보 없음', alertSub:'치안 매우 좋음', news:'관광 성장', newsSub:'유네스코 유산', disaster:'우기', disasterSub:'6-10월 스콜',
@@ -2995,7 +2995,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 없음 7-12시간','왕복 25-50만원','방콕·하노이 경유 일반적','비자: 도착 비자 무료 (15일)']
       },
       {
-        id:'madrid', name:'마드리드', sub:'스페인 · 프라도 미술관과 축구', score: 56, isTop: false,
+        id:'madrid', name:'마드리드', sub:'스페인 · 미술관 도시', score: 56, isTop: false,
         photo:'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&q=80',
         airfare:'80만원~', hotel:'호텔 비쌈', hotelSub:'3성급 12-22만원대', daily:'소비 많음', dailySub:'1일 12-18만원',
         alert:'여행유의', alertSub:'소매치기 주의', news:'유로 강세', newsSub:'비교적 저렴', disaster:'없음', disasterSub:'',
@@ -3076,7 +3076,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 없음 14-18시간','왕복 70-120만원','바르셀로나 경유 콤보 추천','쉥겐 비자 무필요 (90일 무비자)']
       },
       {
-        id:'kohsamui', name:'코사무이', sub:'태국 · 허니문 해변의 섬', score: 77, isTop: false,
+        id:'kohsamui', name:'코사무이', sub:'태국 · 허니문 해변', score: 77, isTop: false,
         photo:'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=800&q=80',
         airfare:'35만원~', hotel:'호텔 저렴', hotelSub:'4성급 5-12만원대', daily:'소비 적음', dailySub:'1일 5-8만원',
         alert:'경보 없음', alertSub:'관광지 안전', news:'바트 약세', newsSub:'환율 유리', disaster:'우기', disasterSub:'폭우 주의',
@@ -3157,7 +3157,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['직항 없음 · 방콕 경유 7-9시간','왕복 35-60만원','방콕항공 사무이 독점','페리+버스 저가 옵션도 가능']
       },
       {
-        id:'interlaken', name:'인터라켄', sub:'스위스 · 융프라우와 알프스', score: 54, isTop: false,
+        id:'interlaken', name:'인터라켄', sub:'스위스 · 알프스 관문', score: 54, isTop: false,
         photo:'https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?w=800&q=80',
         airfare:'90만원~', hotel:'호텔 매우 비쌈', hotelSub:'3성급 20-35만원대', daily:'소비 매우 많음', dailySub:'1일 15-25만원',
         alert:'경보 없음', alertSub:'치안 매우 좋음', news:'프랑 강세', newsSub:'최고 물가', disaster:'눈길', disasterSub:'겨울 결빙 주의',
@@ -3238,7 +3238,7 @@ var v1_0_9_DEST_DATA = [
         flightTips: ['취리히/제네바 공항 → 기차 2시간','왕복 90-140만원','경유편 70만원대~','쉥겐 비자 무필요 (90일 무비자)']
       },
       {
-        id:'dubrovnik', name:'두브로브니크', sub:'크로아티아 · 아드리아해의 진주', score: 53, isTop: false,
+        id:'dubrovnik', name:'두브로브니크', sub:'크로아티아 · 진주', score: 53, isTop: false,
         photo:'https://images.unsplash.com/photo-1555990538-1e15c83f9551?w=800&q=80',
         airfare:'85만원~', hotel:'호텔 비쌈', hotelSub:'3성급 12-22만원대', daily:'소비 많음', dailySub:'1일 10-18만원',
         alert:'경보 없음', alertSub:'치안 매우 좋음', news:'유로 도입', newsSub:'유로 전환 완료', disaster:'없음', disasterSub:'',
@@ -3400,7 +3400,7 @@ var v1_0_9_DEST_DATA = [
       },
       // ── 마카오 (2nd) ──
       {
-        id:'macau', name:'마카오', sub:'동양의 라스베가스 · 카지노와 세계유산', score: 70, isTop: false,
+        id:'macau', name:'마카오', sub:'동양의 라스베가스', score: 70, isTop: false,
         photo:'https://images.unsplash.com/photo-1555277458-842b1ae67cf3?w=800&q=80',
         airfare:'25만원~', hotel:'호텔 다양', hotelSub:'3성급 8-15만원대', daily:'소비 보통', dailySub:'1일 8-15만원',
         alert:'경보 없음', alertSub:'전반적으로 안전', news:'파타카 안정', newsSub:'HKD 병용', disaster:'없음', disasterSub:'',
@@ -3481,7 +3481,7 @@ var v1_0_9_DEST_DATA = [
       },
       // ── 베이징 ──
       {
-        id:'beijing', name:'베이징', sub:'중국 수도 · 만리장성과 자금성의 도시', score: 65, isTop: false,
+        id:'beijing', name:'베이징', sub:'중국 · 만리장성', score: 65, isTop: false,
         photo:'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=800&q=80',
         airfare:'20만원~', hotel:'호텔 저렴', hotelSub:'3성급 5-10만원대', daily:'소비 적음', dailySub:'1일 5-10만원',
         alert:'경보 없음', alertSub:'전반적으로 안전', news:'위안화 안정', newsSub:'환율 변동 적음', disaster:'없음', disasterSub:'',
@@ -3562,7 +3562,7 @@ var v1_0_9_DEST_DATA = [
       },
       // ── 칭다오 ──
       {
-        id:'qingdao', name:'칭다오', sub:'중국 독일풍 해변도시 · 맥주의 도시', score: 60, isTop: false,
+        id:'qingdao', name:'칭다오', sub:'중국 · 해변과 맥주', score: 60, isTop: false,
         photo:'https://images.unsplash.com/photo-1567001988898-15b41cddc77a?w=800&q=80',
         airfare:'15만원~', hotel:'호텔 저렴', hotelSub:'3성급 4-8만원대', daily:'소비 매우 적음', dailySub:'1일 4-8만원',
         alert:'경보 없음', alertSub:'전반적으로 안전', news:'위안화 안정', newsSub:'환율 변동 적음', disaster:'없음', disasterSub:'',
@@ -3643,7 +3643,7 @@ var v1_0_9_DEST_DATA = [
       },
       // ── 사이판 ──
       {
-        id:'saipan', name:'사이판', sub:'태평양의 보석 · 에메랄드빛 휴양 천국', score: 78, isTop: false,
+        id:'saipan', name:'사이판', sub:'태평양 · 청록 바다', score: 78, isTop: false,
         photo:'https://images.unsplash.com/photo-1589308078055-1ede9b789e20?w=800&q=80',
         airfare:'35만원~', hotel:'리조트 중심', hotelSub:'3성급 10-20만원대', daily:'소비 보통', dailySub:'1일 8-15만원',
         alert:'경보 없음', alertSub:'전반적으로 안전', news:'USD 사용', newsSub:'달러 사용', disaster:'없음', disasterSub:'',
@@ -3722,7 +3722,7 @@ var v1_0_9_DEST_DATA = [
       },
       // ── 팔라완 ──
       {
-        id:'palawan', name:'팔라완', sub:'최후의 비경 · 필리핀 숨겨진 천국', score: 75, isTop: false,
+        id:'palawan', name:'팔라완', sub:'필리핀 · 숨겨진 천국', score: 75, isTop: false,
         photo:'https://images.unsplash.com/photo-1573790387438-4da905039392?w=800&q=80',
         airfare:'20만원~', hotel:'리조트·게스트하우스', hotelSub:'3성급 5-12만원대', daily:'소비 적음', dailySub:'1일 5-10만원',
         alert:'경보 없음', alertSub:'전반적으로 안전', news:'페소 안정', newsSub:'원화 유리', disaster:'없음', disasterSub:'',
@@ -3801,7 +3801,7 @@ var v1_0_9_DEST_DATA = [
       },
       // ── 삼아 (하이난) ──
       {
-        id:'sanya', name:'삼아', sub:'중국의 하와이 · 열대 해변 리조트', score: 68, isTop: false,
+        id:'sanya', name:'삼아', sub:'중국 · 열대 해변', score: 68, isTop: false,
         photo:'https://images.unsplash.com/photo-1582553624828-51e6e0ca1e3d?w=800&q=80',
         airfare:'20만원~', hotel:'리조트 중심', hotelSub:'4성급 8-15만원대', daily:'소비 보통', dailySub:'1일 8-12만원',
         alert:'경보 없음', alertSub:'전반적으로 안전', news:'위안 약세', newsSub:'환율 유리', disaster:'없음', disasterSub:'',

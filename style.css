@@ -1832,6 +1832,9 @@
       text-align: left;
       font-weight: 400;
       letter-spacing: -0.022em;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      padding-right: 10px;
     }
 
     .dest-price-sub {
@@ -2142,6 +2145,9 @@
       .sec-hd { margin: 60px 0 16px; padding: 0 16px; }
       footer { margin-top: 100px; }
 
+      /* 태블릿: narrative 줄바꿈 */
+      .dest-narrative { word-break: normal; padding-right: 0; }
+
 
       /* 모바일/태블릿: wiz-launcher → 여행 검색 버튼 (좌측 하단 고정) */
       #wiz-launcher { 
@@ -2316,7 +2322,7 @@
       /* Typography 축소 */
       .dest-name { font-size: 16px; margin-bottom: 3px; }
       .dest-sub { font-size: 11px; min-height: auto; margin-bottom: 6px; }
-      .dest-narrative { font-size: 14px; line-height: 1.6; margin: 6px 0 10px; }
+      .dest-narrative { font-size: 14px; line-height: 1.6; margin: 16px 0 10px; word-break: normal; padding-right: 0; }
       .dest-photo-wrap { height: 90px; border-radius: 10px; margin-bottom: 8px; }
 
       /* sel-card: 모바일에서 overflow 보장 (중복 규칙 제거) */
@@ -3060,7 +3066,7 @@
       .v-lg { font-size: 20px; }
       .v-md { font-size: 15px; }
       .dest-name { font-size: 18px; }
-      .dest-narrative { font-size: 14px; margin: 12px 0; }
+      .dest-narrative { font-size: 14px; margin: 12px 0; word-break: normal; padding-right: 0; }
       .dest-sub { font-size: 11px; min-height: auto; }
       .sec-title { font-size: 20px; margin-bottom: 12px; padding-bottom: 10px; }
 
@@ -3662,3 +3668,15 @@
 
       /* ── 지도 컬럼: 패딩 없이 edge-to-edge ── */
       .map-dc { padding: 0 !important; }
+
+      /* 지도 스켈레톤: iframe 로드 전 shimmer */
+      .map-dc [id^="dest-map-"] {
+        position: relative;
+        background: linear-gradient(90deg, #ebebeb 20%, #d6d6d6 50%, #ebebeb 80%);
+        background-size: 800px 100%;
+        animation: _skelShimmer 1.4s linear infinite;
+      }
+      .map-dc [id^="dest-map-"].loaded {
+        background: none;
+        animation: none;
+      }
