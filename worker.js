@@ -50,21 +50,25 @@ export default {
         const data = await res.json();
 
         const results = {};
+        const priceMap = {}; // 목적지별 가격 수집 (평균 계산용)
         // v2 응답: { data: [ { destination, value, airline, actual, ... }, ... ] }
         if (data && Array.isArray(data.data)) {
           for (const item of data.data) {
             const iata = item.destination;
             const price = item.value;
             if (!iata || !price || price <= 0) continue;
-            // 목적지별 최저가만 유지
-            if (!results[iata] || price < results[iata].priceKRW) {
-              results[iata] = {
-                priceKRW: price,
-                priceLabel: Math.round(price / 10000) + '만원~',
-                airline: item.airline,
-              };
-            }
+            if (!priceMap[iata]) priceMap[iata] = { prices: [], airline: item.airline };
+            priceMap[iata].prices.push(price);
           }
+        }
+        // 평균 계산
+        for (const [iata, info] of Object.entries(priceMap)) {
+          const avg = Math.round(info.prices.reduce((a, b) => a + b, 0) / info.prices.length);
+          results[iata] = {
+            priceKRW: avg,
+            priceLabel: Math.round(avg / 10000) + '만원',
+            airline: info.airline,
+          };
         }
 
         // v2에서 결과가 부족하면 v1/prices/cheap fallback
@@ -78,12 +82,13 @@ export default {
             if (fbData && fbData.data) {
               for (const [iata, entries] of Object.entries(fbData.data)) {
                 if (results[iata]) continue; // v2 데이터 우선
-                const sorted = Object.values(entries).sort((a, b) => a.price - b.price);
-                if (sorted.length > 0 && sorted[0].price > 0) {
+                const prices = Object.values(entries).map(e => e.price).filter(p => p > 0);
+                if (prices.length > 0) {
+                  const avg = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
                   results[iata] = {
-                    priceKRW: sorted[0].price,
-                    priceLabel: Math.round(sorted[0].price / 10000) + '만원~',
-                    airline: sorted[0].airline,
+                    priceKRW: avg,
+                    priceLabel: Math.round(avg / 10000) + '만원',
+                    airline: Object.values(entries)[0].airline,
                   };
                 }
               }
@@ -129,8 +134,20 @@ export default {
 
             // Step 2: get hotel prices for this city (limit 늘려서 고급 호텔도 포함)
             const minStars = parseInt(url.searchParams.get('stars') || '0');
+            const checkin = url.searchParams.get('checkin') || '';
+            const nights = parseInt(url.searchParams.get('nights')) || 7;
             const fetchLimit = minStars >= 4 ? 30 : 3; // 고급 필터 시 더 많이 가져와서 필터링
-            const priceUrl = `https://engine.hotellook.com/api/v2/cache.json?location=${locationId}&currency=krw&token=${env.TP_TOKEN}&period=7&adults=1&limit=${fetchLimit}`;
+            let priceUrl = `https://engine.hotellook.com/api/v2/cache.json?location=${locationId}&currency=krw&token=${env.TP_TOKEN}&adults=1&limit=${fetchLimit}`;
+            if (checkin) {
+              priceUrl += `&checkIn=${checkin}&checkOut=`;
+              // checkOut 계산
+              const ciDate = new Date(checkin);
+              ciDate.setDate(ciDate.getDate() + nights);
+              const coStr = ciDate.toISOString().slice(0, 10);
+              priceUrl += coStr;
+            } else {
+              priceUrl += `&period=${nights}`;
+            }
             const priceRes = await fetch(priceUrl);
             if (!priceRes.ok) return;
             const priceData = await priceRes.json();

@@ -1270,6 +1270,19 @@
       margin-bottom: 8px;
     }
 
+    .flight-card-price {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0071e3;
+      margin-bottom: 8px;
+    }
+
+    .hotel-card-price {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0071e3;
+    }
+
     .flight-card-link {
       font-size: 13px;
       color: var(--blue);
