@@ -944,26 +944,18 @@ function updateColumn(col, destIdx, budgetLimit, duration) {
   if (dpriceEl) dpriceEl.textContent = grandTotal + '만원~';
 
   // 4. TOTAL COST ROW
-  setCell('total-' + col, grandTotal + '만원~', '숙박 + 현지 비용 + 항공', '총 비용');
+  setCell('total-' + col, grandTotal + '만원~', '숙박+현지 비용+항공', '총 비용');
 
   // 5. DETAIL CARDS
   // Fix: pass correct (main, static-sub, dynamic-kicker) to setCell
   const mainAirline = d.cheapFlights && d.cheapFlights[0] ? d.cheapFlights[0].label.split('(')[0].trim() : '';
   setCell('air-' + col, d.airfare || (airPrice + '만원~'), '왕복 항공권', airType);
   setCell('hotel-' + col, hotelPrice + '만원', hotelType, `1박 평균 ${hotelPerNight}만원`);
-  setCell('daily-' + col, dailySpend + '만원', '하루 지출 (식사+교통+관광)', '1일 평균 ' + Math.round(dailySpend) + '만원');
+  setCell('daily-' + col, dailySpend + '만원', '식사+교통+관광', '1일 평균 ' + Math.round(dailySpend) + '만원');
   var alertSafe = (d.alert === '경보 없음' || d.alert === '-');
-  setCell('alert-' + col, alertSafe ? '안전' : d.alert, '외교부 여행경보', alertSafe ? '안전한 여행지' : (d.alertSub || '\u00a0'));
-  // 외교부 여행경보 sub → 클릭 링크 처리
-  (function (colIdx) {
-    var _aEl = document.getElementById('alert-' + colIdx);
-    if (_aEl) {
-      var _aSub = _aEl.querySelector('.sub');
-      if (_aSub) _aSub.innerHTML = '<a href="https://www.0404.go.kr" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:3px;cursor:pointer;">외교부 여행정보 <span style="opacity:0.6;font-size:1em;">›</span></a>';
-    }
-  })(col);
-  setCell('news-' + col, (d.news === '-' ? '안정적' : d.news), '최근 현지 이슈', (d.news === '-' ? '' : d.newsSub) || '\u00a0');
-  setCell('disaster-' + col, (d.disaster === '없음' || d.disaster === '-' ? '낮음' : d.disaster), '자연재해 리스크', (d.disaster === '없음' || d.disaster === '-' ? '' : d.disasterSub) || '\u00a0');
+  setCell('alert-' + col, alertSafe ? '안전' : d.alert, '\u00a0', '여행경보');
+  setCell('news-' + col, (d.news === '-' ? '안정적' : d.news), '\u00a0', '현지 이슈');
+  setCell('disaster-' + col, (d.disaster === '없음' || d.disaster === '-' ? '낮음' : d.disaster), '\u00a0', '재해 리스크');
   // Weather — API 데이터만 사용 (하드코딩 제거)
   var ctEl = document.getElementById('cur-temp-' + col);
   if (ctEl) {
