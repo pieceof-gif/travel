@@ -1162,7 +1162,7 @@ function updateColumn(col, destIdx, budgetLimit, duration) {
       details.className = 'tip-details';
       const summary = document.createElement('summary');
       summary.className = 'tip-summary';
-      summary.innerHTML = '숙소 절약 팁 <span class="tip-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0071e3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>';
+      summary.innerHTML = '숙소 팁 <span class="tip-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0071e3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>';
       details.appendChild(summary);
       const content = document.createElement('div');
       content.className = 'tip-content';
@@ -1247,7 +1247,7 @@ function updateColumn(col, destIdx, budgetLimit, duration) {
       details.className = 'tip-details';
       const summary = document.createElement('summary');
       summary.className = 'tip-summary';
-      summary.innerHTML = (isVip ? '💍 VIP 항공 추천 팁' : '항공권 절약 팁') + ' <span class="tip-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0071e3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>';
+      summary.innerHTML = '항공 팁' + ' <span class="tip-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0071e3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>';
       details.appendChild(summary);
       const content = document.createElement('div');
       content.className = 'tip-content';
