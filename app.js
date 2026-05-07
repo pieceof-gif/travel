@@ -4401,7 +4401,7 @@ window._fetchFlightPrices = function fetchTpFlightPrices() {
     var _d1 = _fDates.start.getDate();
     var _m2 = _fDates.end.getMonth() + 1;
     var _d2 = _fDates.end.getDate();
-    var _dateStr = _m1 + '월 ' + _d1 + '일 ~ ' + _m2 + '월 ' + _d2 + '일';
+    var _dateStr = (_m1 === _m2) ? _m1 + '월 ' + _d1 + '일~' + _d2 + '일' : _m1 + '월 ' + _d1 + '일~' + _m2 + '월 ' + _d2 + '일';
     var _userPickedDate = (window.selectedDates && window.selectedDates.length >= 2 && window._isAutoDate !== true);
     // 선택 월과 현재 월이 다르면 계절 보정 적용됨을 안내
     var _travelMonth = _fDates.start.getMonth();
@@ -4409,12 +4409,12 @@ window._fetchFlightPrices = function fetchTpFlightPrices() {
     var _isSeasonal = (_travelMonth !== _curMonth);
     if (_userPickedDate) {
       if (_isSeasonal) {
-        _priceDesc.textContent = _dateStr + ' 기준 예상 가격입니다. (현재 시세 + 계절 변동 반영)';
+        _priceDesc.textContent = _dateStr + ' 기준으로 표시됩니다.';
       } else {
-        _priceDesc.textContent = _dateStr + ' 기준 최근 48시간 평균가입니다.';
+        _priceDesc.textContent = _dateStr + ' 기준으로 표시됩니다.';
       }
     } else {
-      _priceDesc.textContent = '날짜를 선택하지 않아 ' + _dateStr + ' 기준으로 보여드립니다. 최근 48시간 평균가입니다.';
+      _priceDesc.textContent = _dateStr + ' 기준으로 표시됩니다.';
     }
   }
 
@@ -4616,12 +4616,12 @@ window._recalcPriceCards = function () {
     var _d1 = _dateInfo.start.getDate();
     var _m2 = _dateInfo.end.getMonth() + 1;
     var _d2 = _dateInfo.end.getDate();
-    var _dateStr = _m1 + '월 ' + _d1 + '일 ~ ' + _m2 + '월 ' + _d2 + '일';
+    var _dateStr = (_m1 === _m2) ? _m1 + '월 ' + _d1 + '일~' + _d2 + '일' : _m1 + '월 ' + _d1 + '일~' + _m2 + '월 ' + _d2 + '일';
     var _userPickedDate = (window.selectedDates && window.selectedDates.length >= 2 && window._isAutoDate !== true);
     if (_userPickedDate) {
-      _priceDesc.textContent = _dateStr + ' 기준 예상가입니다. 최근 시세에 계절 변동을 반영한 참고 가격입니다.';
+      _priceDesc.textContent = _dateStr + ' 기준으로 표시됩니다.';
     } else {
-      _priceDesc.textContent = '날짜를 선택하지 않아 ' + _dateStr + ' 기준으로 보여드립니다. 최근 시세에 계절 변동을 반영한 참고 가격입니다.';
+      _priceDesc.textContent = _dateStr + ' 기준으로 표시됩니다.';
     }
   }
 };
