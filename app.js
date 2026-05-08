@@ -1737,6 +1737,8 @@ function changeDest(col, idx) {
 
   // 여행지 변경 시 날씨 실시간 갱신 (디바운스로 중복 호출 방지)
   _addWeatherSk(); if (typeof fetchWeatherDebounced === 'function') fetchWeatherDebounced();
+  // SEO: URL 및 메타 태그 자동 동기화
+  if (typeof updateSeoUrlDebounced === 'function') updateSeoUrlDebounced();
 }
 
 function goHome() {
@@ -1844,6 +1846,8 @@ function startSearch() {
       badge.style.display = 'inline-block';
     }
   }
+  // SEO: URL 및 메타 태그 자동 동기화
+  if (typeof updateSeoUrlDebounced === 'function') updateSeoUrlDebounced();
 }
 
 // ── MOBILE: Apple-style compare column shift (CSS transform) ──
@@ -2022,6 +2026,8 @@ var _sharedLoaded = false;
     if (typeof syncAllDestDdLabels === 'function') syncAllDestDdLabels();
     // 날씨 데이터 fetch
     _addWeatherSk(); if (typeof fetchWeatherDebounced === 'function') fetchWeatherDebounced();
+    // SEO: 공유 링크 진입 시 메타 태그 설정
+    if (typeof _updateSeoUrl === 'function') _updateSeoUrl();
 
     // 스냅샷 가격 적용 (공유 시 캡처된 원본 가격)
     var snapParam = params.get('snap');
@@ -2152,6 +2158,117 @@ var _sharedLoaded = false;
 })();
 
 // Do NOT call updateResultsByFilters() on page load — only run it after user clicks Search
+
+// ── SEO: URL ↔ 상태 동기화 + 동적 메타 태그 ──
+// 비교 뷰에서 여행지가 바뀔 때마다 URL과 title/meta를 자동 업데이트
+// → 구글/네이버가 "오사카 vs 방콕 여행 비교" 등의 키워드로 색인 가능
+var _seoDebounceTimer = null;
+var _currentDestIdx = _currentDestIdx || []; // 글로벌 여행지 인덱스 배열
+
+function _updateSeoUrl() {
+  // 비교 뷰가 표시 중인지 확인
+  var cv = document.getElementById('compare-view');
+  if (!cv || cv.style.display === 'none') return;
+
+  // 현재 표시 중인 여행지 ID 수집
+  var ids = [];
+  var names = [];
+  for (var i = 0; i < 3; i++) {
+    var sel = document.getElementById('sel' + i);
+    if (!sel) continue;
+    var idx = parseInt(sel.value);
+    var col = document.getElementById('col-' + i);
+    if (col && col.style.display === 'none') continue;
+    if (!isNaN(idx) && v1_0_9_DEST_DATA[idx]) {
+      ids.push(v1_0_9_DEST_DATA[idx].id);
+      // 순수 도시명 추출
+      var name = v1_0_9_DEST_DATA[idx].name;
+      var city = name.includes(' · ') ? name.split(' · ')[1].trim() : name.replace(/\s*\([^)]+\)\s*$/, '').trim();
+      names.push(city);
+    }
+  }
+  if (ids.length === 0) return;
+
+  // URL 파라미터 구성
+  var params = new URLSearchParams();
+  params.set('d', ids.join(','));
+
+  // 예산 (기본값 아닐 때만)
+  var b1 = document.getElementById('budget-input-home');
+  var b2 = document.getElementById('budget-input-compare');
+  var budgetVal = (b2 && b2.value) ? b2.value : (b1 ? b1.value : '');
+  if (budgetVal && budgetVal !== 'unlimited') {
+    params.set('budget', budgetVal);
+  }
+
+  // 날짜 (사용자가 직접 선택한 경우만)
+  if (!window._isAutoDate) {
+    var dateEl = document.getElementById('home-date-value');
+    var dateVal = dateEl ? dateEl.textContent : '';
+    if (dateVal && dateVal !== '날짜선택' && dateVal.includes(' – ')) {
+      params.set('dates', dateVal);
+    }
+  }
+
+  // 지역
+  var regionEl = document.getElementById('region-display');
+  if (regionEl && regionEl.textContent && regionEl.textContent !== '전체 지역') {
+    params.set('region', regionEl.textContent);
+  }
+
+  // URL 업데이트 (replaceState — 히스토리 쌓지 않음)
+  var newUrl = location.pathname + '?' + params.toString();
+  if (location.search !== '?' + params.toString()) {
+    history.replaceState(null, '', newUrl);
+  }
+
+  // ── 동적 SEO 메타 태그 업데이트 ──
+  var titleText, descText;
+
+  if (names.length === 1) {
+    titleText = names[0] + ' 여행 정보 — odiga';
+    descText = names[0] + '의 항공·숙박·날씨·안전 정보를 한눈에 확인하세요.';
+  } else if (names.length === 2) {
+    titleText = names[0] + ' vs ' + names[1] + ' 여행 비교 — odiga';
+    descText = names[0] + '과(와) ' + names[1] + '의 항공·숙박·현지 비용을 비교해보세요.';
+  } else {
+    titleText = names.join(' vs ') + ' 여행 비교 — odiga';
+    descText = names.join(', ') + ' 여행지의 항공·숙박·날씨·안전을 한눈에 비교하세요.';
+  }
+
+  // 예산 라벨 추가
+  var budgetLabels = { 'cheapest': '최저가', '120': '120만원', '200': '200만원', '300': '250만원+' };
+  if (budgetVal && budgetLabels[budgetVal]) {
+    descText += ' 예산 ' + budgetLabels[budgetVal] + ' 기준.';
+  }
+
+  // title 업데이트
+  document.title = titleText;
+
+  // meta description
+  var metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.setAttribute('content', descText);
+
+  // OG tags
+  var ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) ogTitle.setAttribute('content', titleText);
+  var ogDesc = document.querySelector('meta[property="og:description"]');
+  if (ogDesc) ogDesc.setAttribute('content', descText);
+  var ogUrl = document.querySelector('meta[property="og:url"]');
+  if (ogUrl) ogUrl.setAttribute('content', 'https://odiga.kr/' + '?' + params.toString());
+
+  // Twitter tags
+  var twTitle = document.querySelector('meta[name="twitter:title"]');
+  if (twTitle) twTitle.setAttribute('content', titleText);
+  var twDesc = document.querySelector('meta[name="twitter:description"]');
+  if (twDesc) twDesc.setAttribute('content', descText);
+}
+
+// 디바운스 래퍼 — 드롭다운 빠른 연타 시 URL 과부하 방지
+function updateSeoUrlDebounced() {
+  clearTimeout(_seoDebounceTimer);
+  _seoDebounceTimer = setTimeout(_updateSeoUrl, 300);
+}
 
 // ── 지역 필터 & 국가 다양성 데이터 ──
 // ── 휴양지 (cross-cutting: 기존 지역 분류와 중복 허용) ──
