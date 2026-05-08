@@ -953,30 +953,31 @@
     .sb-counter {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
     }
     .sb-counter-btn {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       border: 1px solid #b0b0b8;
       background: transparent;
-      font-size: 18px;
+      font-size: 20px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: border-color 0.12s, color 0.12s;
+      transition: border-color 0.15s, color 0.15s, background 0.15s, transform 0.1s;
       color: #6e6e73;
       line-height: 1;
       font-family: inherit;
     }
     .sb-counter-btn:hover:not(:disabled) { border-color: #1d1d1f; color: #1d1d1f; }
+    .sb-counter-btn:active:not(:disabled) { transform: scale(0.92); background: rgba(0,0,0,0.04); }
     .sb-counter-btn:disabled { opacity: 0.25; cursor: default; }
     .sb-counter-num {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 500;
-      min-width: 20px;
+      min-width: 24px;
       text-align: center;
       color: #1d1d1f;
     }
@@ -2617,17 +2618,19 @@
     .cv-guest-hr { height: 1px; background: #f2f2f7; }
     .cv-counter { display: flex; align-items: center; gap: 14px; }
     .cv-counter-btn {
-      width: 32px; height: 32px;
+      width: 44px; height: 44px;
       border: 1.5px solid #d2d2d7;
       border-radius: 50%;
       background: none;
-      font-size: 18px;
+      font-size: 20px;
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       color: #1d1d1f;
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
     }
+    .cv-counter-btn:active:not(:disabled) { transform: scale(0.92); background: rgba(0,0,0,0.04); }
     .cv-counter-btn:disabled { opacity: 0.3; cursor: default; }
-    .cv-counter-num { font-size: 16px; font-weight: 500; min-width: 20px; text-align: center; }
+    .cv-counter-num { font-size: 16px; font-weight: 500; min-width: 24px; text-align: center; }
 
     /* 예산 pills */
     .cv-budget-title { font-size: 13px; color: #86868b; margin-bottom: 12px; }
@@ -3612,6 +3615,12 @@
         100% { background-position:  400px 0; }
       }
 
+      /* 스켈레톤 → 콘텐츠 전환 시 페이드인 */
+      @keyframes _skelFadeIn {
+        from { opacity: 0; transform: translateY(4px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
       /* 스켈레톤 전용 요소 — 기본 숨김 */
       .sk-kicker, .sk-main, .sk-sub { display: none; }
 
@@ -3620,7 +3629,14 @@
       .dc.sk > .main,
       .dc.sk > .sub { display: none !important; }
 
-      /* sk 활성화: 스켈레톤 블록 표시 */
+      /* sk 해제 시: 실제 콘텐츠 페이드인 */
+      .dc:not(.sk) > .kicker,
+      .dc:not(.sk) > .main,
+      .dc:not(.sk) > .sub {
+        animation: _skelFadeIn 0.4s ease-out;
+      }
+
+      /* sk 활성화: 스켈레톤 블록 표시 — 강화된 대비 */
       .dc.sk .sk-kicker,
       .dc.sk .sk-main,
       .dc.sk .sk-sub {
@@ -3628,18 +3644,18 @@
         border-radius: 8px;
         background: linear-gradient(
           90deg,
-          #ebebeb 20%,
-          #d6d6d6 50%,
-          #ebebeb 80%
+          #e8e8ed 25%,
+          #d1d1d6 50%,
+          #e8e8ed 75%
         );
         background-size: 800px 100%;
-        animation: _skelShimmer 1.4s linear infinite;
+        animation: _skelShimmer 1.6s ease-in-out infinite;
       }
 
       /* 각 블록 크기 */
-      .dc.sk .sk-kicker { height: 13px; width: 52%; margin-bottom: 10px; }
-      .dc.sk .sk-main   { height: 40px; width: 68%; margin-bottom: 10px; }
-      .dc.sk .sk-sub    { height: 13px; width: 78%; }
+      .dc.sk .sk-kicker { height: 13px; width: 52%; margin-bottom: 10px; border-radius: 6px; }
+      .dc.sk .sk-main   { height: 40px; width: 68%; margin-bottom: 10px; border-radius: 10px; }
+      .dc.sk .sk-sub    { height: 13px; width: 78%; border-radius: 6px; }
 
       /* ── Leaflet 지도 커스텀 ── */
       .leaflet-control-zoom {
