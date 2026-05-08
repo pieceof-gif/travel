@@ -6,8 +6,8 @@ const ORIGIN_IATA = 'ICN';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Content-Type': 'application/json; charset=utf-8',
 };
 
@@ -394,6 +394,173 @@ export default {
       } catch (e) {
         return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: CORS_HEADERS });
       }
+    }
+
+    // ── /api/agoda-hotels — Agoda Affiliate Lite API 숙박 가격 ──
+    if (url.pathname === '/api/agoda-hotels') {
+      const checkin = url.searchParams.get('checkin') || '';
+      const checkout = url.searchParams.get('checkout') || '';
+      const currency = url.searchParams.get('currency') || 'KRW';
+
+      if (!checkin || !checkout) {
+        return new Response(JSON.stringify({ error: 'checkin, checkout required' }), {
+          status: 400, headers: CORS_HEADERS
+        });
+      }
+
+      const agodaCid = env.AGODA_CID || '1962732';
+      const agodaKey = env.AGODA_API_KEY || '';
+      if (!agodaKey) {
+        return new Response(JSON.stringify({ error: 'AGODA_API_KEY not configured' }), {
+          status: 500, headers: CORS_HEADERS
+        });
+      }
+
+      // 34개 도시별 대표 4성급 호텔 Agoda propertyId
+      const DEST_AGODA_PROPERTIES = {
+        // ── 일본 ──
+        OSA: [62022, 77643, 285498],    // 오사카
+        TYO: [45498, 39498, 118050],    // 도쿄
+        FUK: [154975, 217398, 281936],  // 후쿠오카
+        SPK: [67395, 217399, 281937],   // 삿포로
+        OKA: [286521, 316710, 452831],  // 오키나와
+        // ── 동남아 ──
+        BKK: [77960, 29554, 36446],     // 방콕
+        DPS: [183719, 15800, 23998],    // 발리
+        CNX: [77963, 231490, 37074],    // 치앙마이
+        HKT: [209058, 183724, 109978],  // 푸켓
+        SIN: [25182, 71643, 43417],     // 싱가포르
+        CEB: [81170, 120024, 176766],   // 세부
+        MPH: [169583, 129898, 352483],  // 보라카이
+        PPS: [455498, 648521, 1128370], // 팔라완(푸에르토프린세사)
+        KUL: [16907, 48952, 85993],     // 쿠알라룸푸르
+        // ── 베트남 ──
+        DAD: [520965, 587261, 844849],  // 다낭
+        SGN: [284747, 141952, 66697],   // 호치민
+        HAN: [88898, 165227, 284748],   // 하노이
+        PQC: [1039774, 1510381, 6525561], // 푸꾸옥
+        NHA: [77034, 237584, 386498],   // 나트랑
+        // ── 중화권 ──
+        HKG: [25133, 15285, 56272],     // 홍콩
+        TPE: [33769, 26551, 181097],    // 타이베이
+        MFM: [73198, 50096, 113486],    // 마카오
+        SHA: [56089, 95048, 140024],    // 상하이
+        PEK: [75562, 229564, 108689],   // 베이징
+        TAO: [449498, 1103265, 1652478], // 칭다오
+        SYX: [227498, 685421, 1243876], // 산야(하이난)
+        // ── 태평양 ──
+        GUM: [77655, 105028, 276833],   // 괌
+        SPN: [47820, 124589, 276012],   // 사이판
+        HNL: [34471, 35879, 120893],    // 하와이
+        // ── 유럽 ──
+        PAR: [17413, 10666, 251413],    // 파리
+        LIS: [17558, 247476, 85070],    // 리스본
+        BCN: [27085, 10449, 46775],     // 바르셀로나
+        // ── 기타 ──
+        MLE: [104499, 1074068, 289483], // 몰디브
+        SYD: [12044, 19927, 47685],     // 시드니
+        CJU: [89721, 289047, 649821],   // 제주
+      };
+
+      const results = {};
+      const entries = Object.entries(DEST_AGODA_PROPERTIES);
+
+      // 병렬 처리 (8개씩 청크)
+      const chunks = [];
+      for (let i = 0; i < entries.length; i += 8) {
+        chunks.push(entries.slice(i, i + 8));
+      }
+
+      for (const chunk of chunks) {
+        await Promise.all(chunk.map(async ([iata, propertyIds]) => {
+          try {
+            const body = JSON.stringify({
+              criteria: {
+                propertyIds: propertyIds,
+                checkIn: checkin,
+                checkOut: checkout,
+                rooms: 1,
+                adults: 2,
+                children: 0,
+                childrenAges: [],
+                language: 'ko-kr',
+                currency: currency,
+                userCountry: 'KR',
+              },
+              features: {
+                ratesPerProperty: 1,
+                extra: ['rateDetail'],
+              },
+            });
+
+            const agodaRes = await fetch('https://affiliateapi7643.agoda.com/affiliateservice/lt_v1', {
+              method: 'POST',
+              headers: {
+                'Authorization': `${agodaCid}:${agodaKey}`,
+                'Content-Type': 'application/json',
+                'Accept-Encoding': 'gzip,deflate',
+              },
+              body: body,
+            });
+
+            if (!agodaRes.ok) return;
+            const agodaData = await agodaRes.json();
+
+            // 응답에서 최저가 추출
+            if (agodaData && agodaData.results && Array.isArray(agodaData.results)) {
+              const validRates = [];
+              for (const hotel of agodaData.results) {
+                if (hotel.dailyRate && hotel.dailyRate > 0) {
+                  validRates.push({
+                    price: hotel.dailyRate,
+                    name: hotel.hotelName || '',
+                    stars: hotel.starRating || 0,
+                    propertyId: hotel.propertyId,
+                  });
+                } else if (hotel.rates && hotel.rates.length > 0) {
+                  for (const rate of hotel.rates) {
+                    if (rate.dailyRate > 0 || rate.totalPayment > 0) {
+                      const nights = Math.max(1, Math.round(
+                        (new Date(checkout) - new Date(checkin)) / (86400000)
+                      ));
+                      const daily = rate.dailyRate > 0 ? rate.dailyRate : Math.round(rate.totalPayment / nights);
+                      validRates.push({
+                        price: daily,
+                        name: hotel.hotelName || '',
+                        stars: hotel.starRating || 0,
+                        propertyId: hotel.propertyId,
+                      });
+                    }
+                  }
+                }
+              }
+
+              if (validRates.length > 0) {
+                // 4성급 필터 후 최저가
+                const fourStar = validRates.filter(r => r.stars >= 4);
+                const best = (fourStar.length > 0 ? fourStar : validRates)
+                  .sort((a, b) => a.price - b.price)[0];
+
+                results[iata] = {
+                  priceKRW: Math.round(best.price),
+                  priceLabel: Math.round(best.price / 10000) + '만원~/박',
+                  hotelName: best.name,
+                  stars: best.stars,
+                  source: 'agoda',
+                };
+              }
+            }
+          } catch (_) {}
+        }));
+      }
+
+      return new Response(JSON.stringify({
+        data: results,
+        checkin, checkout, currency,
+        updated: new Date().toISOString(),
+      }), {
+        headers: { ...CORS_HEADERS, 'Cache-Control': 'public, max-age=3600' }
+      });
     }
 
     return new Response(JSON.stringify({ status: 'ok', service: '최고의 여행 API Proxy' }), {

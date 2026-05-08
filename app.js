@@ -79,10 +79,10 @@ function _getSearchDates() {
 function _getCurrentBudget() {
   var b1 = document.getElementById('budget-input-home');
   var b2 = document.getElementById('budget-input-compare');
-  var raw = (b2 && b2.value) ? b2.value : (b1 ? b1.value : '150');
+  var raw = (b2 && b2.value) ? b2.value : (b1 ? b1.value : '120');
   if (raw === 'unlimited') return 9999;
   if (raw === 'cheapest') return 40;
-  return parseInt(raw) || 150;
+  return parseInt(raw) || 120;
 }
 var fpHome = null, fpCompare = null;
 
@@ -250,7 +250,7 @@ function updateResultsByFilters() {
   const b2 = document.getElementById('budget-input-compare');
   const budgetRaw = (b2 && b2.value) ? b2.value : b1.value;
   const isCheapest = budgetRaw === 'cheapest';
-  const budgetNum = budgetRaw === 'unlimited' ? 9999 : isCheapest ? 40 : (parseInt(budgetRaw) || 150);
+  const budgetNum = budgetRaw === 'unlimited' ? 9999 : isCheapest ? 40 : (parseInt(budgetRaw) || 120);
   const filterBudget = isCheapest ? 9999 : budgetNum;
   const noResults = document.getElementById('no-results-cnt');
   const body = document.getElementById('comparison-body');
@@ -414,12 +414,37 @@ function updateResultsByFilters() {
             airEl.classList.remove('sk');
           }
         }
-        // 숙박 오버라이드 — VIP: 5성급 프리미엄, 일반: 최저가
-        var _htlPrice = _isVipBudget ? (dest._vipHotelPrice || dest._hotelPrice) : dest._hotelPrice;
-        var _htlLink = _isVipBudget ? (dest._vipHotelLink || dest._hotelLink) : dest._hotelLink;
-        var _htlSub = _isVipBudget ? '프리미엄 1박 기준' : '1박 기준';
-        var _htlName = _isVipBudget && dest._vipHotelName ? dest._vipHotelName : '';
-        var _htlKicker = _htlName ? (_htlName + ' · ' + (dest._vipHotelStars || 5) + '성급') : (_isVipBudget ? '5성급 리조트' : 'Hotellook 기준');
+        // 숙박 오버라이드 — 예산별 링크/라벨 분기
+        var _htlPrice, _htlLink, _htlSub, _htlKicker;
+        var _isUnlimitedBudget = budgetNum >= 9000;
+        if (_isVipBudget) {
+          _htlPrice = dest._vipHotelPrice || dest._hotelPrice;
+          _htlLink = dest._vipHotelLink || dest._hotelLink;
+          _htlSub = '프리미엄 1박 기준';
+          var _htlName = dest._vipHotelName || '';
+          _htlKicker = _htlName ? (_htlName + ' · ' + (dest._vipHotelStars || 5) + '성급') : '5성급 호텔 기준';
+        } else if (_isUnlimitedBudget) {
+          // 상관없음: 3-4성급 기본
+          _htlPrice = dest._hotelPrice;
+          _htlLink = window._makeBookingComLink ? window._makeBookingComLink(dest.id, 3) : (dest._hotelLink || '#');
+          _htlSub = '3성급+ 참고가격';
+          _htlKicker = '예약 시 3-4성급 필터 적용';
+        } else if (budgetNum >= 200) {
+          _htlPrice = dest._hotelPrice;
+          _htlLink = window._makeBookingComLink ? window._makeBookingComLink(dest.id, 4) : (dest._hotelLink || '#');
+          _htlSub = '3성급+ 참고가격';
+          _htlKicker = '예약 시 4성급 필터 적용';
+        } else if (budgetNum >= 120) {
+          _htlPrice = dest._hotelPrice;
+          _htlLink = window._makeBookingComLink ? window._makeBookingComLink(dest.id, 3) : (dest._hotelLink || '#');
+          _htlSub = '3성급+ 참고가격';
+          _htlKicker = '예약 시 3-4성급 필터 적용';
+        } else {
+          _htlPrice = dest._hotelPrice;
+          _htlLink = window._makeBookingComLink ? window._makeBookingComLink(dest.id, 0) : (dest._hotelLink || '#');
+          _htlSub = '3성급+ 참고가격';
+          _htlKicker = '예약 시 최저가순 정렬';
+        }
         if (dest && _htlPrice && _htlLink) {
           var hotelEl = document.getElementById('hotel-' + col);
           if (hotelEl) {
@@ -558,7 +583,7 @@ function updateColumn(col, destIdx, budgetLimit, duration) {
   // 지도 업데이트
   if (typeof updateDestMap === 'function') updateDestMap(col, d.id);
   const colEl = document.getElementById('col-' + col); // Fix: colEl must be defined here, not from outer scope
-  const budget = budgetLimit || 150;
+  const budget = budgetLimit || 120;
   const days = duration || 5;
 
   // 1. DYNAMIC PRICING ENGINE (budget-tiered)
@@ -593,9 +618,9 @@ function updateColumn(col, destIdx, budgetLimit, duration) {
     dailyMultiplier = 1.8; scoreBonus = 10;
   } else if (budget >= 80 && totalMid <= budget) {
     tier = 'mid';
-    airType = '이코노미 직항'; hotelType = budget >= 130 ? '4성급 호텔' : '3성급 호텔';
+    airType = '이코노미 직항'; hotelType = budget >= 120 ? '3-4성급 호텔' : '3성급 호텔';
     airPrice = Math.round(d.baseAir * 1.1);
-    hotelPrice = Math.round(d.baseHotel * (days - 1) * (budget >= 130 ? 1.5 : 1.0));
+    hotelPrice = Math.round(d.baseHotel * (days - 1) * (budget >= 120 ? 1.5 : 1.0));
     dailyMultiplier = 1.0; scoreBonus = 5;
   } else {
     tier = 'low';
@@ -984,7 +1009,7 @@ function updateColumn(col, destIdx, budgetLimit, duration) {
     // 현재 날짜/예산 취득 — 링크에 동적 파라미터 반영
     var _dates = _getSearchDates();
     var _budget = _getCurrentBudget();
-    var _isVipBudget = _budget >= 300;
+    var _isVipBudget = _budget >= 300 && _budget < 9000;
     var _cabinParam = _isVipBudget ? '&cabinclass=business' : '';
 
     (flights || []).forEach((f, fi) => {
@@ -1024,7 +1049,7 @@ function updateColumn(col, destIdx, budgetLimit, duration) {
             e.preventDefault();
             var d = _getSearchDates();
             var b = _getCurrentBudget();
-            var c = b >= 300 ? '&cabinclass=business' : '&cabinclass=economy';
+            var c = (b >= 300 && b < 9000) ? '&cabinclass=business' : '&cabinclass=economy';
             var url = this.dataset.skyRoute + '/' + d.shortStart + '/' + d.shortEnd + '/?adultsv2=1&currency=KRW' + c;
             window.open(url, '_blank', 'noopener');
           });
@@ -1154,7 +1179,7 @@ function updateColumn(col, destIdx, budgetLimit, duration) {
         e.preventDefault();
         var d2 = _getSearchDates();
         var b2 = _getCurrentBudget();
-        var vip = this.dataset.isVip === '1' || b2 >= 300;
+        var vip = this.dataset.isVip === '1' || (b2 >= 300 && b2 < 9000);
         var c2 = vip ? '&cabinclass=business' : '&cabinclass=economy';
         var route = this.dataset.skyRoute;
         var dep = (window.DEPARTURE_AIRPORT || 'ICN').toLowerCase();
@@ -1211,7 +1236,7 @@ function updateComparison() {
   const b1 = document.getElementById('budget-input-home');
   const b2 = document.getElementById('budget-input-compare');
   const budgetRaw = (b2 && b2.value) ? b2.value : b1.value;
-  const budgetNum = budgetRaw === 'unlimited' ? 9999 : budgetRaw === 'cheapest' ? 80 : (parseInt(budgetRaw) || 150);
+  const budgetNum = budgetRaw === 'unlimited' ? 9999 : budgetRaw === 'cheapest' ? 40 : (parseInt(budgetRaw) || 120);
 
   setTimeout(() => {
     var _filterKeyBefore = window._lastFilterKey || '';
@@ -1563,7 +1588,7 @@ function changeDest(col, idx) {
   const b2 = document.getElementById('budget-input-compare');
   const budgetRaw = (b2 && b2.value) ? b2.value : b1.value;
   const isCheapestMode = budgetRaw === 'cheapest';
-  const budget = budgetRaw === 'unlimited' ? 9999 : isCheapestMode ? 40 : (parseInt(budgetRaw) || 150);
+  const budget = budgetRaw === 'unlimited' ? 9999 : isCheapestMode ? 40 : (parseInt(budgetRaw) || 120);
 
   const dateVal = document.getElementById('home-date-value').textContent;
   let duration = 5;
@@ -1585,7 +1610,7 @@ function changeDest(col, idx) {
   // unlimited(상관없음)일 때는 예산 초과 경고 불필요
   var _isUnlimitedBudget = budgetRaw === 'unlimited';
   if (adjMin > budget && !isCheapestMode && !_isUnlimitedBudget) {
-    var _budgetLabel = { '100': '100만원', '150': '150만원', '200': '200만원', '300': 'VIP' }[budgetRaw] || (budget + '만원');
+    var _budgetLabel = { '120': '120만원', '200': '200만원', '300': '250만원+' }[budgetRaw] || (budget + '만원');
     showToast(`${d.name}은(는) 현재 예산(${_budgetLabel})을 초과합니다.`);
   }
 
@@ -1660,6 +1685,7 @@ function changeDest(col, idx) {
   // ── Travelpayouts 예약 링크 갱신 (드롭다운 변경 시) ──
   // VIP: 비즈니스 클래스 실시간 데이터, 일반: 이코노미 최저가
   var _isVipInChange = budget >= 300 && budget < 9000;
+  var _isUnlimitedInChange = budget >= 9000;
   var _cdAirPrice = _isVipInChange ? (d._vipAirfare || d.airfare) : d.airfare;
   var _cdAirSub = _isVipInChange ? '비즈니스 왕복' : '왕복 항공권';
   if (d && d._tpLink && _cdAirPrice) {
@@ -1672,6 +1698,40 @@ function changeDest(col, idx) {
       // 기존 버튼 제거
       const oldBtn = airEl.querySelector('.tp-book-btn');
       if (oldBtn) oldBtn.remove();
+    }
+  }
+
+  // ── 숙소 예산별 오버라이드 (드롭다운 변경 시) ──
+  if (d && d._hotelPrice) {
+    var hotelEl = document.getElementById('hotel-' + col);
+    if (hotelEl) {
+      var _hmEl = hotelEl.querySelector('.main');
+      var _hsEl = hotelEl.querySelector('.sub');
+      var _hkEl = hotelEl.querySelector('.kicker');
+      if (_hmEl && d._hotelPriceKRW) _hmEl.textContent = Math.round(d._hotelPriceKRW / 10000) + '만원~/박';
+      if (_isVipInChange) {
+        if (_hsEl) _hsEl.textContent = '프리미엄 1박 기준';
+        if (_hkEl) _hkEl.textContent = '5성급 호텔 기준';
+      } else if (_isUnlimitedInChange || budget >= 120) {
+        var _cdStars = budget >= 200 ? 4 : 3;
+        if (_hsEl) _hsEl.textContent = '3성급+ 참고가격';
+        if (_hkEl) _hkEl.textContent = budget >= 200 ? '예약 시 4성급 필터 적용' : '예약 시 3-4성급 필터 적용';
+      } else {
+        if (_hsEl) _hsEl.textContent = '3성급+ 참고가격';
+        if (_hkEl) _hkEl.textContent = '예약 시 최저가순 정렬';
+      }
+      // 기존 호텔 버튼 제거 후 예산별 링크로 재생성
+      var _oldHBtn = hotelEl.querySelector('.tp-hotel-btn');
+      if (_oldHBtn) _oldHBtn.remove();
+      var _cdStarsLink = _isVipInChange ? 5 : (_isUnlimitedInChange || budget >= 120) ? 3 : 0;
+      if (!_isVipInChange && budget >= 200) _cdStarsLink = 4;
+      var _newHBtn = document.createElement('a');
+      _newHBtn.href = window._makeBookingComLink ? window._makeBookingComLink(d.id, _cdStarsLink) : (d._hotelLink || '#');
+      _newHBtn.target = '_blank';
+      _newHBtn.rel = 'noopener noreferrer';
+      _newHBtn.className = 'tp-book-btn tp-hotel-btn';
+      _newHBtn.textContent = '숙소 예약하기 ›';
+      hotelEl.appendChild(_newHBtn);
     }
   }
 
@@ -1759,7 +1819,7 @@ function startSearch() {
   // Sync compare budget display
   var cBudgetDisplay = document.getElementById('sb-budget-display-c');
   if (cBudgetDisplay) {
-    var labels = { 'cheapest': '최저가', '100': '100만원 이내', '150': '150만원 이내', '200': '200만원 이내', '300': 'VIP', 'unlimited': '상관없음' };
+    var labels = { 'cheapest': '최저가', '120': '120만원 이내', '200': '200만원 이내', '300': '250만원 이상', 'unlimited': '상관없음' };
     var bLabel = labels[budgetVal] || '상관없음';
     cBudgetDisplay.textContent = bLabel;
     cBudgetDisplay.classList.add('filled');
@@ -1923,7 +1983,7 @@ var _sharedLoaded = false;
       var b2 = document.getElementById('budget-input-compare');
       if (b1) b1.value = budgetParam;
       if (b2) b2.value = budgetParam;
-      var budgetLabels = { '100': '100만원 이내', '150': '150만원 이내', '200': '200만원 이내', '300': 'VIP', 'cheapest': '최저가' };
+      var budgetLabels = { '120': '120만원 이내', '200': '200만원 이내', '300': '250만원 이상', 'cheapest': '최저가' };
       var bl = budgetLabels[budgetParam] || budgetParam + '만원 이내';
       var bd = document.getElementById('sb-budget-display');
       var bdc = document.getElementById('sb-budget-display-c');
@@ -1932,7 +1992,7 @@ var _sharedLoaded = false;
     }
 
     // 여행지 적용
-    var budget = budgetParam ? (budgetParam === 'unlimited' ? 9999 : budgetParam === 'cheapest' ? 40 : (parseInt(budgetParam) || 150)) : 150;
+    var budget = budgetParam ? (budgetParam === 'unlimited' ? 9999 : budgetParam === 'cheapest' ? 40 : (parseInt(budgetParam) || 120)) : 120;
     var days = 5;
     if (datesParam && datesParam.includes(' – ')) {
       try {
@@ -3319,7 +3379,7 @@ function selectBudget(val, e) {
   if (hiddenHome) hiddenHome.value = val;
   if (hiddenComp) hiddenComp.value = val;
   window._userHasChangedFilters = true;
-  var labels = { 'cheapest': '최저가', '100': '100만원 이내', '150': '150만원 이내', '200': '200만원 이내', '300': 'VIP', 'unlimited': '상관없음' };
+  var labels = { 'cheapest': '최저가', '120': '120만원 이내', '200': '200만원 이내', '300': '250만원 이상', 'unlimited': '상관없음' };
   var labelText = labels[val] || '예산 선택';
   var bdisp = document.getElementById('sb-budget-display');
   var bdispc = document.getElementById('sb-budget-display-c');
@@ -3764,8 +3824,12 @@ window._fetchHotelPrices = function fetchTpHotelPrices() {
     sydney: 'Sydney', shanghai: 'Shanghai', barcelona: 'Barcelona',
     saipan: 'Saipan', palawan: 'Puerto+Princesa', sanya: 'Sanya'
   };
-  var _makeBookingComLink = function (destId) {
-    var city = BOOKING_CITY[destId] || '';
+  // BOOKING_CITY와 _makeBookingComLink를 글로벌로 노출 (updateResultsByFilters, changeDest에서 접근)
+  if (!window.BOOKING_CITY) {
+    window.BOOKING_CITY = BOOKING_CITY;
+  }
+  var _makeBookingComLink = function (destId, stars) {
+    var city = (window.BOOKING_CITY || BOOKING_CITY)[destId] || '';
     var _hDates = _getSearchDates();
     var ci = _hDates.start;
     var co = _hDates.end;
@@ -3774,10 +3838,17 @@ window._fetchHotelPrices = function fetchTpHotelPrices() {
         String(d.getMonth() + 1).padStart(2, '0') + '-' +
         String(d.getDate()).padStart(2, '0');
     };
-    return 'https://www.booking.com/searchresults.ko.html?ss=' + city +
+    var url = 'https://www.booking.com/searchresults.ko.html?ss=' + city +
       '&checkin=' + fmt(ci) + '&checkout=' + fmt(co) +
       '&group_adults=2&no_rooms=1&lang=ko';
+    // 예산별 성급 필터 추가
+    if (stars === 5) url += '&nflt=class%3D5';
+    else if (stars === 4) url += '&nflt=class%3D4%3Bclass%3D5';
+    else if (stars === 3) url += '&nflt=class%3D3%3Bclass%3D4';
+    else if (stars === 0) url += '&order=price'; // 최저가 정렬
+    return url;
   };
+  window._makeBookingComLink = _makeBookingComLink;
 
   var HOTEL_IATA = {
     lisbon: 'LIS', danang: 'DAD', taipei: 'TPE',
@@ -3795,7 +3866,7 @@ window._fetchHotelPrices = function fetchTpHotelPrices() {
   var _hDatesForApi = _getSearchDates();
   var _hotelCheckin = _hDatesForApi.skyStart;
   var _hotelNights = Math.max(1, Math.ceil((_hDatesForApi.end - _hDatesForApi.start) / (1000 * 60 * 60 * 24)));
-  fetch('https://travel.le2jy.workers.dev/api/hotels/all?checkin=' + _hotelCheckin + '&nights=' + _hotelNights)
+  fetch('https://travel.le2jy.workers.dev/api/hotels/all?stars=3&checkin=' + _hotelCheckin + '&nights=' + _hotelNights)
     .then(function (r) { return r.json(); })
     .then(function (data) {
       if (!data || !data.data) return;
@@ -3808,11 +3879,14 @@ window._fetchHotelPrices = function fetchTpHotelPrices() {
         dest._hotelPrice = _hkrw.toLocaleString() + '원';
         dest._hotelPriceKRW = _hkrw;
         dest._hotelLink = entry.bookingLink ||
-          _makeBookingComLink(dest.id);
+          _makeBookingComLink(dest.id, 3);
       });
       // 비교화면이 이미 열려있으면 즉시 업데이트
       if (document.getElementById('compare-view') &&
         document.getElementById('compare-view').style.display === 'block') {
+        var _curBudget = _getCurrentBudget();
+        var _isApiVip = _curBudget >= 300 && _curBudget < 9000;
+        var _isApiUnlimited = _curBudget >= 9000;
         for (var i = 0; i < 3; i++) {
           var sel = document.getElementById('sel' + i);
           if (!sel) continue;
@@ -3822,14 +3896,14 @@ window._fetchHotelPrices = function fetchTpHotelPrices() {
           var hotelEl = document.getElementById('hotel-' + i);
           if (!hotelEl) continue;
           var hmEl = hotelEl.querySelector('.main');
-          var hsEl = hotelEl.querySelector('.sub');
-          var hkEl = hotelEl.querySelector('.kicker');
+          // 가격만 업데이트 — sub/kicker는 오버라이드에서 이미 예산별로 설정됨
           if (hmEl && d._hotelPriceKRW) hmEl.textContent = Math.round(d._hotelPriceKRW / 10000) + '만원~/박';
-          if (hsEl) hsEl.textContent = '1박 기준';
-          if (hkEl) hkEl.textContent = 'Booking.com 기준';
-          if (d._hotelLink && !hotelEl.querySelector('.tp-hotel-btn')) {
+          // 예약 버튼: 예산별 올바른 stars 링크
+          if (!hotelEl.querySelector('.tp-hotel-btn')) {
+            var _apiStars = _isApiVip ? 5 : (_isApiUnlimited || _curBudget >= 120) ? 3 : 0;
+            if (!_isApiVip && _curBudget >= 200) _apiStars = 4;
             var hBtn = document.createElement('a');
-            hBtn.href = d._hotelLink; hBtn.target = '_blank';
+            hBtn.href = _makeBookingComLink(d.id, _apiStars); hBtn.target = '_blank';
             hBtn.rel = 'noopener noreferrer';
             hBtn.className = 'tp-book-btn tp-hotel-btn';
             hBtn.textContent = '숙소 예약하기 ›';
@@ -4383,10 +4457,12 @@ window._fetchFlightPrices = function fetchTpFlightPrices() {
     var dep = window.DEPARTURE_AIRPORT || 'ICN';
     var _dates = _getSearchDates();
     var _budget = _getCurrentBudget();
-    var _cabin = _budget >= 300 ? '&cabinclass=business' : '&cabinclass=economy';
+    var _isVip = _budget >= 300 && _budget < 9000;
+    var _cabin = _isVip ? '&cabinclass=business' : '&cabinclass=economy';
+    var _sort = (_budget > 0 && _budget < 80) ? '&preferdirects=false&sort=cheapest_first' : '';
     return 'https://www.skyscanner.co.kr/transport/flights/' +
       dep.toLowerCase() + '/' + iata.toLowerCase() + '/' +
-      _dates.shortStart + '/' + _dates.shortEnd + '/?adultsv2=1&currency=KRW' + _cabin;
+      _dates.shortStart + '/' + _dates.shortEnd + '/?adultsv2=1&currency=KRW' + _cabin + _sort;
   };
 
   // 최저가 API 호출 (Worker 프록시) — 선택 날짜 월 전달
@@ -4551,9 +4627,10 @@ window._recalcPriceCards = function () {
       hotelKRW = adjustedPerNight * _nights;
       if (hotelEl) {
         var hmEl = hotelEl.querySelector('.main');
-        var hkEl = hotelEl.querySelector('.kicker');
+        var hsEl = hotelEl.querySelector('.sub');
         if (hmEl) hmEl.textContent = Math.round(hotelKRW / 10000) + '만원';
-        if (hkEl) hkEl.textContent = '1박 평균 ' + Math.round(adjustedPerNight / 10000) + '만원';
+        if (hsEl) hsEl.textContent = '1박 평균 ' + Math.round(adjustedPerNight / 10000) + '만원';
+        // kicker는 예산별 필터 안내가 이미 설정되어 있으므로 건드리지 않음
       }
     } else {
       // API 없으면 정적 데이터(만원) × 계절 보정 × 박수 → KRW
@@ -4562,9 +4639,10 @@ window._recalcPriceCards = function () {
       // DOM에도 보정된 가격 반영
       if (hotelEl && _isSeasonal) {
         var _hmFb = hotelEl.querySelector('.main');
-        var _hkFb = hotelEl.querySelector('.kicker');
+        var _hsFb = hotelEl.querySelector('.sub');
         if (_hmFb) _hmFb.textContent = Math.round(hotelKRW / 10000) + '만원';
-        if (_hkFb) _hkFb.textContent = '1박 평균 ' + Math.round(_basePerNight / 10000) + '만원';
+        if (_hsFb) _hsFb.textContent = '1박 평균 ' + Math.round(_basePerNight / 10000) + '만원';
+        // kicker는 예산별 필터 안내가 이미 설정되어 있으므로 건드리지 않음
       }
     }
 
@@ -5070,9 +5148,9 @@ function _initMobileCompare() {
   });
   setTimeout(function () {
     var bInput = document.getElementById("budget-input-home");
-    if (bInput && !bInput.value) bInput.value = "150";
+    if (bInput && !bInput.value) bInput.value = "unlimited";
     var bInputC = document.getElementById("budget-input-compare");
-    if (bInputC && !bInputC.value) bInputC.value = "150";
+    if (bInputC && !bInputC.value) bInputC.value = "unlimited";
     window._isAutoBudget = true; // 자동 세팅
     var now = new Date();
     var dep = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
@@ -5463,6 +5541,16 @@ function syncCvTabValues() {
   var budgetSrc = document.getElementById('sb-budget-display');
   el = document.getElementById('cvt-budget-val');
   if (el) el.textContent = (budgetSrc ? budgetSrc.textContent.trim() : '') || '상관없음';
+  // 예산 탭 체크마크 동기화
+  var bInput = document.getElementById('budget-input-home');
+  var curBudgetVal = bInput ? bInput.value : 'unlimited';
+  var checkSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  document.querySelectorAll('#cv-content-budget .cv-row').forEach(function (row) {
+    var isActive = row.getAttribute('data-val') === curBudgetVal;
+    row.classList.toggle('active', isActive);
+    var chk = row.querySelector('.cv-row-check');
+    if (chk) chk.innerHTML = isActive ? checkSvg : '';
+  });
   cvUpdateCounterBtns();
 }
 
@@ -5487,7 +5575,7 @@ function openCvSearchSheet() {
       hv.style.display = 'none';
       cv.style.display = 'block';
       // 기본 여행지: 타이베이(3), 오사카(4) — v1_0_9_DEST_DATA 인덱스
-      var defaultBudget = 150, defaultDays = 5;
+      var defaultBudget = 120, defaultDays = 5;
       updateColumn(0, 3, defaultBudget, defaultDays);
       updateColumn(1, 4, defaultBudget, defaultDays);
       var s0 = document.getElementById('sel0'), s1 = document.getElementById('sel1');
@@ -5511,9 +5599,9 @@ function closeCvSearchSheet() {
     var body = document.getElementById('comparison-body');
     if (body && body.style.display === 'none') {
       var bInput = document.getElementById('budget-input-home');
-      if (bInput) bInput.value = '150';
+      if (bInput) bInput.value = 'unlimited';
       var bInputC = document.getElementById('budget-input-compare');
-      if (bInputC) bInputC.value = '150';
+      if (bInputC) bInputC.value = 'unlimited';
       window._isAutoBudget = true; // 사용자 미선택 자동 예산
       var now = new Date();
       var dep = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
@@ -5588,6 +5676,11 @@ function cvUpdateCounterBtns() {
 
 function cvSelectBudget(val) {
   cvBudget = val;
+  // hidden input 동기화 — 이 값이 _getCurrentBudget, updateResultsByFilters 등에서 참조됨
+  var hiddenHome = document.getElementById('budget-input-home');
+  var hiddenComp = document.getElementById('budget-input-compare');
+  if (hiddenHome) hiddenHome.value = val;
+  if (hiddenComp) hiddenComp.value = val;
   var checkSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
   document.querySelectorAll('#cv-content-budget .cv-row').forEach(function (el) {
     var isActive = el.getAttribute('data-val') === val;
@@ -5595,14 +5688,22 @@ function cvSelectBudget(val) {
     var check = el.querySelector('.cv-row-check');
     if (check) check.innerHTML = isActive ? checkSvg : '';
   });
-  var labels = { 'cheapest': '최저가', '100': '100만원 이내', '150': '150만원 이내', '200': '200만원 이내', '300': 'VIP', 'unlimited': '상관없음' };
+  var labels = { 'cheapest': '최저가', '120': '120만원 이내', '200': '200만원 이내', '300': '250만원 이상', 'unlimited': '상관없음' };
   var txt = labels[val] || '상관없음';
   var el = document.getElementById('cvt-budget-val'); if (el) el.textContent = txt;
-  var srcEl = document.getElementById('sb-budget-display'); if (srcEl) srcEl.textContent = txt;
+  var srcEl = document.getElementById('sb-budget-display'); if (srcEl) { srcEl.textContent = txt; srcEl.classList.add('filled'); }
+  var srcElC = document.getElementById('sb-budget-display-c'); if (srcElC) { srcElC.textContent = txt; srcElC.classList.add('filled'); }
   window.selectedBudget = val === 'unlimited' ? null : val;
   window._isAutoBudget = false; // 사용자 직접 선택
   document.querySelectorAll('.budget-pill').forEach(function (o) {
     o.classList.toggle('active', o.getAttribute('data-val') === val);
+  });
+  // 데스크톱 패널 체크마크도 동기화
+  document.querySelectorAll('.sb-budget-opt').forEach(function (p) {
+    var isActive = p.dataset.val === val;
+    p.classList.toggle('active', isActive);
+    var chk = p.querySelector('.sb-budget-check');
+    if (chk) chk.innerHTML = isActive ? checkSvg : '';
   });
   if (typeof updateSearchBadge === 'function') updateSearchBadge();
 }

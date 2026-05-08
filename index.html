@@ -88,9 +88,9 @@
             <div class="sb-label">여행자</div>
             <div class="sb-val" id="sb-traveler-display">1명</div>
           </div>
-          <div class="sb-div" style="display:none"></div>
-          <!-- 4. 예산 (비표시) -->
-          <div class="sb-seg" id="budget-seg" onclick="toggleSbPanel('budget-panel',event,this)" style="display:none">
+          <div class="sb-div"></div>
+          <!-- 4. 예산 -->
+          <div class="sb-seg" id="budget-seg" onclick="toggleSbPanel('budget-panel',event,this)">
             <div class="sb-label">예산</div>
             <div class="sb-val" id="sb-budget-display">상관없음</div>
           </div>
@@ -213,27 +213,22 @@
           </div>
           <div class="sb-region-hr"></div>
           <div class="sb-budget-opt" data-val="300" onclick="selectBudget('300',event)">
-            <div><div class="sb-budget-title">VIP</div><div class="sb-budget-sub">좋은 곳으로 모십니다</div></div>
+            <div><div class="sb-budget-title">250만원 이상</div><div class="sb-budget-sub">비즈니스석 · 5성급 호텔</div></div>
             <span class="sb-budget-check"></span>
           </div>
           <div class="sb-region-hr"></div>
           <div class="sb-budget-opt" data-val="200" onclick="selectBudget('200',event)">
-            <div><div class="sb-budget-title">200만원 이내</div><div class="sb-budget-sub">프리미엄 여행</div></div>
+            <div><div class="sb-budget-title">200만원 이내</div><div class="sb-budget-sub">직항 · 4성급 호텔</div></div>
             <span class="sb-budget-check"></span>
           </div>
           <div class="sb-region-hr"></div>
-          <div class="sb-budget-opt" data-val="150" onclick="selectBudget('150',event)">
-            <div><div class="sb-budget-title">150만원 이내</div><div class="sb-budget-sub">여유 있는 여행</div></div>
-            <span class="sb-budget-check"></span>
-          </div>
-          <div class="sb-region-hr"></div>
-          <div class="sb-budget-opt" data-val="100" onclick="selectBudget('100',event)">
-            <div><div class="sb-budget-title">100만원 이내</div><div class="sb-budget-sub">합리적 여행</div></div>
+          <div class="sb-budget-opt" data-val="120" onclick="selectBudget('120',event)">
+            <div><div class="sb-budget-title">120만원 이내</div><div class="sb-budget-sub">직항 · 3-4성급 호텔</div></div>
             <span class="sb-budget-check"></span>
           </div>
           <div class="sb-region-hr"></div>
           <div class="sb-budget-opt" data-val="cheapest" onclick="selectBudget('cheapest',event)">
-            <div><div class="sb-budget-title">최저가</div><div class="sb-budget-sub">가성비 여행</div></div>
+            <div><div class="sb-budget-title">최저가</div><div class="sb-budget-sub">각 여행지 최저가 비교</div></div>
             <span class="sb-budget-check"></span>
           </div>
         </div>
@@ -298,7 +293,7 @@
         <button class="cv-tab active" id="cv-tab-region" onclick="switchCvTab('region')" type="button">지역</button>
         <button class="cv-tab" id="cv-tab-date"     onclick="switchCvTab('date')"     type="button">날짜</button>
         <button class="cv-tab" id="cv-tab-traveler"  onclick="switchCvTab('traveler')" type="button">여행자</button>
-        <button class="cv-tab" id="cv-tab-budget"    onclick="switchCvTab('budget')"   type="button" style="display:none">예산</button>
+        <button class="cv-tab" id="cv-tab-budget"    onclick="switchCvTab('budget')"   type="button">예산</button>
       </div>
 
       <!-- 지역 콘텐츠 -->
@@ -437,8 +432,8 @@
         <div class="cv-row-hr"></div>
         <div class="cv-row" data-val="300" onclick="cvSelectBudget('300')">
           <div>
-            <div class="cv-row-title">VIP</div>
-            <div class="cv-row-sub">좋은 곳으로 모십니다</div>
+            <div class="cv-row-title">250만원 이상</div>
+            <div class="cv-row-sub">비즈니스석 · 5성급 호텔</div>
           </div>
           <span class="cv-row-check"></span>
         </div>
@@ -446,23 +441,15 @@
         <div class="cv-row" data-val="200" onclick="cvSelectBudget('200')">
           <div>
             <div class="cv-row-title">200만원 이내</div>
-            <div class="cv-row-sub">프리미엄 여행</div>
+            <div class="cv-row-sub">직항 · 4성급 호텔</div>
           </div>
           <span class="cv-row-check"></span>
         </div>
         <div class="cv-row-hr"></div>
-        <div class="cv-row" data-val="150" onclick="cvSelectBudget('150')">
+        <div class="cv-row" data-val="120" onclick="cvSelectBudget('120')">
           <div>
-            <div class="cv-row-title">150만원 이내</div>
-            <div class="cv-row-sub">여유 있는 여행</div>
-          </div>
-          <span class="cv-row-check"></span>
-        </div>
-        <div class="cv-row-hr"></div>
-        <div class="cv-row" data-val="100" onclick="cvSelectBudget('100')">
-          <div>
-            <div class="cv-row-title">100만원 이내</div>
-            <div class="cv-row-sub">합리적 여행</div>
+            <div class="cv-row-title">120만원 이내</div>
+            <div class="cv-row-sub">직항 · 3-4성급 호텔</div>
           </div>
           <span class="cv-row-check"></span>
         </div>
@@ -470,7 +457,7 @@
         <div class="cv-row" data-val="cheapest" onclick="cvSelectBudget('cheapest')">
           <div>
             <div class="cv-row-title">최저가</div>
-            <div class="cv-row-sub">가성비 여행</div>
+            <div class="cv-row-sub">각 여행지 최저가 비교</div>
           </div>
           <span class="cv-row-check"></span>
         </div>
@@ -637,9 +624,9 @@
             <div class="sb-label">여행자</div>
             <div class="sb-val" id="sb-traveler-display-c">1명</div>
           </div>
-          <div class="sb-div" style="display:none"></div>
-          <!-- 4. 예산 (비표시) -->
-          <div class="sb-seg" id="budget-seg-c" onclick="toggleSbPanel('budget-panel-c',event,this)" style="display:none">
+          <div class="sb-div"></div>
+          <!-- 4. 예산 -->
+          <div class="sb-seg" id="budget-seg-c" onclick="toggleSbPanel('budget-panel-c',event,this)">
             <div class="sb-label">예산</div>
             <div class="sb-val" id="sb-budget-display-c">상관없음</div>
           </div>
@@ -779,27 +766,22 @@
           </div>
           <div class="sb-region-hr"></div>
           <div class="sb-budget-opt" data-val="300" onclick="selectBudget('300',event)">
-            <div><div class="sb-budget-title">VIP</div><div class="sb-budget-sub">좋은 곳으로 모십니다</div></div>
+            <div><div class="sb-budget-title">250만원 이상</div><div class="sb-budget-sub">비즈니스석 · 5성급 호텔</div></div>
             <span class="sb-budget-check"></span>
           </div>
           <div class="sb-region-hr"></div>
           <div class="sb-budget-opt" data-val="200" onclick="selectBudget('200',event)">
-            <div><div class="sb-budget-title">200만원 이내</div><div class="sb-budget-sub">프리미엄 여행</div></div>
+            <div><div class="sb-budget-title">200만원 이내</div><div class="sb-budget-sub">직항 · 4성급 호텔</div></div>
             <span class="sb-budget-check"></span>
           </div>
           <div class="sb-region-hr"></div>
-          <div class="sb-budget-opt" data-val="150" onclick="selectBudget('150',event)">
-            <div><div class="sb-budget-title">150만원 이내</div><div class="sb-budget-sub">여유 있는 여행</div></div>
-            <span class="sb-budget-check"></span>
-          </div>
-          <div class="sb-region-hr"></div>
-          <div class="sb-budget-opt" data-val="100" onclick="selectBudget('100',event)">
-            <div><div class="sb-budget-title">100만원 이내</div><div class="sb-budget-sub">합리적 여행</div></div>
+          <div class="sb-budget-opt" data-val="120" onclick="selectBudget('120',event)">
+            <div><div class="sb-budget-title">120만원 이내</div><div class="sb-budget-sub">직항 · 3-4성급 호텔</div></div>
             <span class="sb-budget-check"></span>
           </div>
           <div class="sb-region-hr"></div>
           <div class="sb-budget-opt" data-val="cheapest" onclick="selectBudget('cheapest',event)">
-            <div><div class="sb-budget-title">최저가</div><div class="sb-budget-sub">가성비 여행</div></div>
+            <div><div class="sb-budget-title">최저가</div><div class="sb-budget-sub">각 여행지 최저가 비교</div></div>
             <span class="sb-budget-check"></span>
           </div>
         </div>
