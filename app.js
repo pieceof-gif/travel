@@ -18,7 +18,9 @@ var DEST_COORDS = {
   luangprabang: [19.8563, 102.1350], madrid: [40.4168, -3.7038], kohsamui: [9.5120, 100.0136],
   interlaken: [46.6863, 7.8632], dubrovnik: [42.6507, 18.0944], istanbul: [41.0082, 28.9784],
   macau: [22.1987, 113.5439], beijing: [39.9042, 116.4074], qingdao: [36.0671, 120.3826],
-  saipan: [15.1850, 145.7504], palawan: [9.8349, 118.7384], sanya: [18.2528, 109.5119]
+  saipan: [15.1850, 145.7504], palawan: [9.8349, 118.7384], sanya: [18.2528, 109.5119],
+  pattaya: [12.9236, 100.8825], manila: [14.5995, 120.9842], halong: [20.9101, 107.1839],
+  hiroshima: [34.3853, 132.4553]
 };
 
 // ── 지도 관리 (Google Maps Embed — 무료, 한글 지원) ──
@@ -596,10 +598,10 @@ function updateColumn(col, destIdx, budgetLimit, duration) {
   const d = v1_0_9_DEST_DATA[destIdx];
   if (!d) return;
   // ── 스켈레톤: 여행지 변경 시 모든 비동기 셀 로딩 표시 ──
-  var _skIds = ['air-', 'hotel-', 'total-', 'cur-temp-', 'weekly-forecast-'];
+  var _skIds = ['air-', 'hotel-', 'total-', 'daily-', 'cur-temp-', 'weekly-forecast-'];
   _skIds.forEach(function (p) { var e = document.getElementById(p + col); if (e) e.classList.add('sk'); });
-  // 5초 후 강제 제거 (날씨 API 느릴 때 대비)
-  setTimeout(function () { _skIds.forEach(function (p) { var e = document.getElementById(p + col); if (e) e.classList.remove('sk'); }); }, 5000);
+  // 12초 후 강제 제거 (날씨 API 타임아웃 10초보다 여유있게)
+  setTimeout(function () { _skIds.forEach(function (p) { var e = document.getElementById(p + col); if (e) e.classList.remove('sk'); }); }, 12000);
   // 현재 컬럼에 표시 중인 destIdx 저장 (날씨 API에서 참조)
   if (typeof _currentDestIdx !== 'undefined') _currentDestIdx[col] = destIdx;
   // 지도 업데이트
@@ -729,7 +731,11 @@ function updateColumn(col, destIdx, budgetLimit, duration) {
  'qingdao': `칭다오는 중국 속 이국적인 해변 도시입니다. 독일 조차지 시절의 유럽풍 건물과 잔교 해변의 시원한 바다가 어우러진 곳. 한국에서 1시간 30분이면 도착하는 맥주 한 잔과 함께하는 가까운 해외 여행입니다.`,
  'saipan': `사이판은 시간이 멈춘 듯한 태평양의 낙원입니다. 마나가하섬의 투명한 산호초 바다, 그로토 동굴의 신비로운 블루홀까지 직항 4시간 30분이면 만나는 에메랄드빛 바다에서 완벽한 휴식을 즐기세요.`,
  'palawan': `팔라완은 세계가 인정한 최후의 비경입니다. 엘니도의 석회암 절벽 사이로 펼쳐지는 비현실적인 에메랄드빛 라군은 직접 눈으로 봐야 믿을 수 있는 아름다움. 자연 속 깊은 힐링 여행을 경험하세요.`,
- 'sanya': `삼아는 중국 최남단의 열대 낙원입니다. 야롱만의 투명한 에메랄드 해변, 난산사의 거대한 해수관음상, 천아해각의 기암까지 5성급 리조트에서의 여유로운 하루와 열대 과일의 달콤함으로 일상을 잊어보세요.`
+ 'sanya': `삼아는 중국 최남단의 열대 낙원입니다. 야롱만의 투명한 에메랄드 해변, 난산사의 거대한 해수관음상, 천아해각의 기암까지 5성급 리조트에서의 여유로운 하루와 열대 과일의 달콤함으로 일상을 잊어보세요.`,
+ 'pattaya': `파타야는 태국 동부 해안의 자유분방한 해변 도시입니다. 산호섬의 투명한 바다, 농눅 빌리지의 열대 정원, 워킹 스트리트의 화려한 야경까지 타이 마사지 한 번과 함께 해변의 낭만적인 에너지를 즐겨보세요.`,
+ 'manila': `마닐라는 400년 역사와 현재가 공존하는 도시입니다. 인트라무로스의 스페인 식민지 성벽, 리살 공원의 독립 역사, BGC의 세련된 야경까지 조이알라지 치킨과 함께 필리핀의 역동적인 에너지를 느껴보세요.`,
+ 'halong': `하롱베이는 1,600개 석회암 섬이 만드는 비현실적인 풍경입니다. 크루즈 위 새벽 안개, 숭솟 동굴의 신비로운 석주, 에메랄드빛 카약 투어까지 선상 일출과 함께 세계자연유산의 경이로움을 온몸으로 느껴보세요.`,
+ 'hiroshima': `히로시마는 역사의 무게와 자연이 공존하는 도시입니다. 평화 기념 공원의 숙연한 침묵, 미야지마 붉은 도리이의 절경, 세토내해의 신선한 굴까지 오코노미야키 한 장과 함께 일본의 또 다른 깊이를 만나보세요.`
  };
 
  // ── narrative 누락 검증 (개발 시 경고) ──
@@ -3688,6 +3694,21 @@ function _addWeatherSk() {
   });
 }
 
+// ── 날씨 sessionStorage 캐시 (TTL 30분) ──
+var _WEATHER_CACHE_TTL = 30 * 60 * 1000;
+function _saveWeatherCache(destId, d) {
+  try { sessionStorage.setItem('wx_' + destId, JSON.stringify({ t: Date.now(), d: d })); } catch(e) {}
+}
+function _loadWeatherCache(destId) {
+  try {
+    var raw = sessionStorage.getItem('wx_' + destId);
+    if (!raw) return null;
+    var obj = JSON.parse(raw);
+    if (Date.now() - obj.t > _WEATHER_CACHE_TTL) { sessionStorage.removeItem('wx_' + destId); return null; }
+    return obj.d;
+  } catch(e) { return null; }
+}
+
 var _fetchWeatherTimer = null;
 function fetchWeatherDebounced() {
   if (_fetchWeatherTimer) clearTimeout(_fetchWeatherTimer);
@@ -3718,8 +3739,20 @@ function _fetchWeatherForCol(colIdx, retryCount, forcedDestIdx) {
   if (isNaN(idx) || !v1_0_9_DEST_DATA[idx]) return;
   var dest = v1_0_9_DEST_DATA[idx];
 
-  // 이미 로드된 경우 스킵 — 단, 이전에 실패했으면 재시도 허용
+  // 1순위: 메모리 캐시 (같은 페이지 세션 내)
   if (typeof dest._todayMax === 'number' && !dest._weatherFailed) {
+    _updateWeatherCell(colIdx, dest);
+    _updateForecastCell(colIdx, dest);
+    return;
+  }
+  // 2순위: sessionStorage 캐시 (탭 내 페이지 재방문 시)
+  var _wxCached = _loadWeatherCache(dest.id);
+  if (_wxCached) {
+    dest._currentTemp = _wxCached.temp; dest._todayMax = _wxCached.max;
+    dest._todayMin = _wxCached.min; dest._weatherCode = _wxCached.code;
+    dest._weatherText = _wxCached.text; dest._todayRainProb = _wxCached.rainProb;
+    dest._weatherFailed = false;
+    console.log('[Weather] col' + colIdx + ' ' + dest.id + ': sessionStorage 캐시 hit');
     _updateWeatherCell(colIdx, dest);
     _updateForecastCell(colIdx, dest);
     return;
@@ -3808,11 +3841,13 @@ function _fetchWeatherForCol(colIdx, retryCount, forcedDestIdx) {
         }
         dest._todayRainProb = rainProbs.length > 1 ? Math.round(rainProbs[1]) : 0;
       } else {
-        // daily 데이터 없는 경우 현재 기온으로 대체
-        dest._todayMax = t;
-        dest._todayMin = t;
-        dest._todayRainProb = 0;
+        dest._todayMax = t; dest._todayMin = t; dest._todayRainProb = 0;
       }
+      // sessionStorage에 저장 (30분 캐시)
+      _saveWeatherCache(dest.id, {
+        temp: dest._currentTemp, max: dest._todayMax, min: dest._todayMin,
+        code: dest._weatherCode, text: dest._weatherText, rainProb: dest._todayRainProb
+      });
       console.log('[Weather] col' + colIdx + ' ' + dest.id + ': max=' + dest._todayMax + '° min=' + dest._todayMin + '° code=' + wc + ' (' + dest._weatherText + ')');
       _updateWeatherCell(colIdx, dest);
       _updateForecastCell(colIdx, dest);
@@ -4154,7 +4189,8 @@ window.DEST_CITY_IATA = {
   sydney: 'SYD', shanghai: 'SHA', barcelona: 'BCN',
   macau: 'MFM', beijing: 'PEK', qingdao: 'TAO',
   saipan: 'SPN', palawan: 'PPS', sanya: 'SYX',
-  istanbul: 'IST', madrid: 'MAD', london: 'LON'
+  istanbul: 'IST', madrid: 'MAD', london: 'LON',
+  pattaya: 'BKK', manila: 'MNL', halong: 'HAN', hiroshima: 'HIJ'
 };
 
 // ── 여행지별 월간 계절 보정 계수 (항공f / 숙박h) ──

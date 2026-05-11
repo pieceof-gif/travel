@@ -3878,6 +3878,326 @@ var v1_0_9_DEST_DATA = [
         ],
         flightTips: ['직항 4시간','왕복 20-35만원','무비자 30일 (하이난 특별 정책)','VPN 필수 — 출국 전 설치']
       },
+        {
+          id:'pattaya', name:'태국 · 파타야', sub:'방콕 근교 해변 휴양',
+          score: 72, isTop: false, photo:'',
+          airfare:'35만원', hotel:'21만원', hotelSub:'1박 평균 7만원',
+          daily:'소비 보통', dailySub:'저렴한 물가',
+          alert:'-', news:'성수기 혼잡', newsSub:'5~8월 해변 붐빔', disaster:'낮음', disasterSub:'열대성 폭풍 주의',
+          temp:'28–34°C', tempSub:'연중 더운 열대 기후', fx:'THB 안정적', fxSub:'환전 권장',
+          baseAir: 35, baseHotel: 7, baseHotelLow: 4, baseHotelHigh: 22, minDays: 3, minBudget: 60,
+          sights: {
+            low: [
+              { name:'파타야 비치 산책', price:'무료', link:'https://maps.google.com/?q=Pattaya+Beach' },
+              { name:'왓 프라야이 대형 불상', price:'무료', link:'https://maps.google.com/?q=Wat+Phra+Yai+Pattaya' },
+              { name:'나클루아 야시장 구경', price:'무료', link:'https://maps.google.com/?q=Naklua+Night+Market+Pattaya' }
+            ],
+            mid: [
+              { name:'산호섬 스노클링 투어', price:'약 3만원', link:'https://www.klook.com/ko/search/?query=coral+island+pattaya' },
+              { name:'농눅 빌리지 문화 공연', price:'약 2만원', link:'https://www.klook.com/ko/search/?query=nong+nooch+village+pattaya' },
+              { name:'파타야 수상 액티비티', price:'약 2만원', link:'https://www.klook.com/ko/search/?query=pattaya+water+sports' }
+            ],
+            high: [
+              { name:'산호섬 프라이빗 보트', price:'약 15만원', link:'https://www.getyourguide.com/s/?q=pattaya+private+boat+coral+island' },
+              { name:'골프 라운딩 (18홀)', price:'약 12만원', link:'https://www.getyourguide.com/s/?q=pattaya+golf+course' },
+              { name:'럭셔리 스파 & 마사지', price:'약 8만원', link:'https://www.klook.com/ko/search/?query=pattaya+luxury+spa' }
+            ]
+          },
+          exps: {
+            low: [
+              { name:'워킹 스트리트 야경 구경', price:'무료', link:'https://maps.google.com/?q=Walking+Street+Pattaya' },
+              { name:'파타야 비치 선셋 감상', price:'무료', link:'https://maps.google.com/?q=Pattaya+Beach' },
+              { name:'로컬 타이 마사지', price:'약 1만원', link:'https://maps.google.com/?q=Pattaya+Thai+Massage' }
+            ],
+            mid: [
+              { name:'산호섬 당일 스노클링', price:'약 3만원', link:'https://www.klook.com/ko/search/?query=coral+island+snorkeling+pattaya' },
+              { name:'태국 요리 쿠킹 클래스', price:'약 3만원', link:'https://www.airbnb.co.kr/s/Pattaya--Thailand/experiences?query=cooking+class' },
+              { name:'파타야 시티 투어', price:'약 2만원', link:'https://www.klook.com/ko/search/?query=pattaya+city+tour' }
+            ],
+            high: [
+              { name:'프라이빗 요트 선셋 크루즈', price:'약 20만원', link:'https://www.getyourguide.com/s/?q=pattaya+private+yacht+sunset' },
+              { name:'골프 VIP 라운딩', price:'약 15만원', link:'https://www.getyourguide.com/s/?q=pattaya+golf+vip' },
+              { name:'럭셔리 스파 풀데이', price:'약 10만원', link:'https://www.getyourguide.com/s/?q=pattaya+luxury+spa+full+day' }
+            ]
+          },
+          food: {
+            low: [
+              { name:'파타야 야시장 로컬 푸드', desc:'팟타이·볶음밥 30~50바트', link:'https://maps.google.com/?q=Pattaya+Night+Market' },
+              { name:'세컨드 로드 로컬 식당', desc:'현지인 식당 · 50~80바트', link:'https://maps.google.com/?q=Second+Road+Pattaya' },
+              { name:'나클루아 시장 해산물', desc:'신선한 해산물 저렴하게', link:'https://maps.google.com/?q=Naklua+Market+Pattaya' }
+            ],
+            mid: [
+              { name:'Nang Nual Seafood', desc:'파타야 유명 씨푸드 레스토랑', link:'https://maps.google.com/?q=Nang+Nual+Seafood+Pattaya' },
+              { name:'Mantra Restaurant', desc:'해변 오션뷰 · 다양한 요리', link:'https://maps.google.com/?q=Mantra+Restaurant+Pattaya' },
+              { name:'파타야 비치 씨푸드', desc:'비치 뷰 신선한 해산물', link:'https://maps.google.com/?q=Pattaya+Beach+Seafood' }
+            ],
+            high: [
+              { name:'Horizon Rooftop Restaurant', desc:'루프탑 오션뷰 파인다이닝', link:'https://maps.google.com/?q=Horizon+Rooftop+Pattaya' },
+              { name:'Lobster Pot', desc:'랍스터·씨푸드 전문', link:'https://maps.google.com/?q=Lobster+Pot+Pattaya' },
+              { name:'Mövenpick 레스토랑', desc:'5성급 호텔 다이닝', link:'https://maps.google.com/?q=Movenpick+Pattaya+Restaurant' }
+            ]
+          },
+          hotels: {
+            low: [
+              { name:'Lub d Pattaya', stars: 2, desc:'배낭여행자 인기 호스텔', priceRange:'약 2-3만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Lub+d+Pattaya&dest_type=city' },
+              { name:'Sleep Box Pattaya', stars: 2, desc:'저렴한 캡슐호텔', priceRange:'약 2-3만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Sleep+Box+Pattaya&dest_type=city' }
+            ],
+            mid: [
+              { name:'Amari Pattaya', stars: 4, desc:'비치 전망 · 수영장 좋음', priceRange:'약 9-15만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Amari+Pattaya&dest_type=city' },
+              { name:'Dusit Thani Pattaya', stars: 4, desc:'해변 인근 · 풀장 포함', priceRange:'약 8-14만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Dusit+Thani+Pattaya&dest_type=city' }
+            ],
+            high: [
+              { name:'Royal Cliff Beach Hotel', stars: 5, desc:'파타야 최고급 · 절벽 오션뷰', priceRange:'약 20-45만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Royal+Cliff+Beach+Pattaya&dest_type=city' },
+              { name:'Mövenpick Siam Hotel', stars: 5, desc:'나클루아 5성 · 풀빌라 포함', priceRange:'약 18-35만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Movenpick+Siam+Pattaya&dest_type=city' }
+            ]
+          },
+          hotelTips: ['조용한 나클루아·좀티엔 지역 추천','풀장 포함 리조트 선택 시 만족도 높음','Agoda 파타야 할인 행사 자주 있음'],
+          cheapFlights: [
+            { label:'타이항공 (방콕 경유)', desc:'약 5시간', link:'https://www.skyscanner.co.kr/transport/flights/icn/bkk/' },
+            { label:'에어아시아 (방콕 경유)', desc:'약 5시간', link:'https://www.skyscanner.co.kr/transport/flights/icn/bkk/' }
+          ],
+          flightTips: ['방콕(BKK) 도착 후 파타야까지 버스 2시간','직항 없음 · 방콕 환승 필수','왕복 35-55만원이 평균 범위','얼리버드 2개월 전 예약 추천']
+        },
+        {
+          id:'manila', name:'필리핀 · 마닐라', sub:'동남아 허브 도시 여행',
+          score: 68, isTop: false, photo:'',
+          airfare:'30만원', hotel:'18만원', hotelSub:'1박 평균 6만원',
+          daily:'소비 적음', dailySub:'저렴한 물가',
+          alert:'-', news:'BGC 개발 활발', newsSub:'', disaster:'없음', disasterSub:'',
+          temp:'28–34°C', tempSub:'연중 더운 열대 기후', fx:'PHP 안정적', fxSub:'달러 환전 후 현지 환전 권장',
+          baseAir: 30, baseHotel: 6, baseHotelLow: 3, baseHotelHigh: 20, minDays: 3, minBudget: 50,
+          sights: {
+            low: [
+              { name:'인트라무로스 성벽 도시', price:'무료', link:'https://maps.google.com/?q=Intramuros+Manila' },
+              { name:'리살 공원 산책', price:'무료', link:'https://maps.google.com/?q=Rizal+Park+Manila' },
+              { name:'차이나타운 빈온도 구경', price:'무료', link:'https://maps.google.com/?q=Binondo+Manila+Chinatown' }
+            ],
+            mid: [
+              { name:'인트라무로스 투어', price:'약 2만원', link:'https://www.klook.com/ko/search/?query=intramuros+tour+manila' },
+              { name:'마닐라 베이 크루즈', price:'약 2만원', link:'https://www.klook.com/ko/search/?query=manila+bay+cruise' },
+              { name:'BGC 아트 센터 투어', price:'약 1만원', link:'https://maps.google.com/?q=BGC+Arts+Center+Manila' }
+            ],
+            high: [
+              { name:'타가이타이 화산 투어', price:'약 8만원', link:'https://www.getyourguide.com/s/?q=tagaytay+volcano+tour+manila' },
+              { name:'팔라완 당일 투어', price:'약 15만원', link:'https://www.getyourguide.com/s/?q=palawan+day+tour+from+manila' },
+              { name:'프라이빗 마닐라 시티 투어', price:'약 10만원', link:'https://www.getyourguide.com/s/?q=manila+private+city+tour' }
+            ]
+          },
+          exps: {
+            low: [
+              { name:'빈온도 차이나타운 딤섬 탐방', price:'약 1만원', link:'https://maps.google.com/?q=Binondo+Chinatown+Manila' },
+              { name:'마닐라 베이 선셋 감상', price:'무료', link:'https://maps.google.com/?q=Manila+Bay+Sunset' },
+              { name:'SM 몰 쇼핑 구경', price:'무료', link:'https://maps.google.com/?q=SM+Mall+of+Asia+Manila' }
+            ],
+            mid: [
+              { name:'인트라무로스 역사 투어', price:'약 2만원', link:'https://www.klook.com/ko/search/?query=intramuros+historical+tour' },
+              { name:'마닐라 야시장 & 스트리트 푸드', price:'약 2만원', link:'https://www.airbnb.co.kr/s/Manila--Philippines/experiences?query=street+food' },
+              { name:'BGC 아트 & 카페 투어', price:'약 2만원', link:'https://www.airbnb.co.kr/s/Taguig--Philippines/experiences?query=bgc+tour' }
+            ],
+            high: [
+              { name:'타가이타이 프라이빗 화산 투어', price:'약 12만원', link:'https://www.getyourguide.com/s/?q=tagaytay+private+tour' },
+              { name:'마닐라 럭셔리 다이닝', price:'약 8만원', link:'https://www.getyourguide.com/s/?q=manila+fine+dining' },
+              { name:'마닐라 베이 요트', price:'약 15만원', link:'https://www.getyourguide.com/s/?q=manila+bay+yacht' }
+            ]
+          },
+          food: {
+            low: [
+              { name:'조이알라지 (Jollibee)', desc:'필리핀 국민 패스트푸드 · 치킨조이 필수', link:'https://maps.google.com/?q=Jollibee+Manila' },
+              { name:'빈온도 딤섬 거리', desc:'차이나타운 저렴한 딤섬 · 1만원 이하', link:'https://maps.google.com/?q=Binondo+Dimsum+Manila' },
+              { name:'SM 몰 푸드코트', desc:'다양한 현지 음식 저렴하게', link:'https://maps.google.com/?q=SM+Mall+of+Asia+Food+Court' }
+            ],
+            mid: [
+              { name:'Aristocrat Restaurant', desc:'마닐라 전통 필리핀 요리 · 70년 역사', link:'https://maps.google.com/?q=Aristocrat+Restaurant+Manila' },
+              { name:'Manam Comfort Filipino', desc:'현대적인 필리핀 요리 · BGC 인기 맛집', link:'https://maps.google.com/?q=Manam+BGC+Manila' },
+              { name:'Vikings Buffet', desc:'필리핀 최대 뷔페 · 해산물 무제한', link:'https://maps.google.com/?q=Vikings+Buffet+Manila' }
+            ],
+            high: [
+              { name:'Blackbird Restaurant', desc:'BGC 루프탑 · 모던 유러피안', link:'https://maps.google.com/?q=Blackbird+Restaurant+BGC+Manila' },
+              { name:'Gallery by Chele', desc:'마닐라 미슐랭 수준 파인다이닝', link:'https://maps.google.com/?q=Gallery+by+Chele+Manila' },
+              { name:'Helm Restaurant', desc:'마닐라 베이 오션뷰 파인다이닝', link:'https://maps.google.com/?q=Helm+Restaurant+Manila' }
+            ]
+          },
+          hotels: {
+            low: [
+              { name:'Z Hostel Manila', stars: 2, desc:'BGC 루프탑 바 포함 · 배낭여행자 1위', priceRange:'약 2-4만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Z+Hostel+Manila&dest_type=city' },
+              { name:'Wanderers Guest House', stars: 2, desc:'말라떼 지구 저렴한 숙소', priceRange:'약 2-3만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Manila+hostel&dest_type=city' }
+            ],
+            mid: [
+              { name:'City Garden Grand Hotel', stars: 4, desc:'마카티 중심 · 가성비 최고', priceRange:'약 7-12만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=City+Garden+Grand+Hotel+Manila&dest_type=city' },
+              { name:'Seda BGC', stars: 4, desc:'BGC 비즈니스 구역 · 깔끔하고 현대적', priceRange:'약 9-15만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Seda+BGC+Manila&dest_type=city' }
+            ],
+            high: [
+              { name:'Raffles Makati', stars: 5, desc:'마카티 최고급 · 버틀러 서비스 포함', priceRange:'약 35-70만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Raffles+Makati+Manila&dest_type=city' },
+              { name:'The Peninsula Manila', stars: 5, desc:'마카티 상징적 5성 · 클래식 럭셔리', priceRange:'약 25-55만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Peninsula+Manila&dest_type=city' }
+            ]
+          },
+          hotelTips: ['BGC(보니파시오 글로벌 시티) 또는 마카티 지역 추천','SM 몰 오브 아시아 인근은 베이뷰 숙소 多','에어비앤비 BGC 아파트 가성비 좋음'],
+          cheapFlights: [
+            { label:'필리핀항공 (직항)', desc:'4시간', link:'https://www.skyscanner.co.kr/transport/flights/icn/mnl/' },
+            { label:'세부퍼시픽 (직항)', desc:'4시간', link:'https://www.skyscanner.co.kr/transport/flights/icn/mnl/' }
+          ],
+          flightTips: ['직항 4시간 · 왕복 25-45만원','세부퍼시픽·필리핀항공·제주항공 비교 필수','마닐라보다 세부 경유 팔라완 일정 고려 가능','얼리버드 2개월 전 예약 추천']
+        },
+        {
+          id:'halong', name:'베트남 · 하롱베이', sub:'세계유산 석회암 절경',
+          score: 80, isTop: false, photo:'',
+          airfare:'25만원', hotel:'18만원', hotelSub:'1박 평균 6만원 (크루즈 포함)',
+          daily:'소비 적음', dailySub:'매우 저렴한 물가',
+          alert:'-', news:'크루즈 인기', newsSub:'예약 조기 마감', disaster:'낮음', disasterSub:'태풍 시즌 주의',
+          temp:'20–28°C', tempSub:'봄·가을 최적', fx:'VND 안정적', fxSub:'달러 환전 후 현지 환전',
+          baseAir: 22, baseHotel: 6, baseHotelLow: 4, baseHotelHigh: 18, minDays: 3, minBudget: 45,
+          sights: {
+            low: [
+              { name:'하롱베이 선착장 전망', price:'무료', link:'https://maps.google.com/?q=Ha+Long+Bay+Vietnam' },
+              { name:'바이차이 해변 산책', price:'무료', link:'https://maps.google.com/?q=Bai+Chay+Beach+Ha+Long' },
+              { name:'하롱 야시장', price:'무료', link:'https://maps.google.com/?q=Ha+Long+Night+Market' }
+            ],
+            mid: [
+              { name:'하롱베이 당일 보트 투어', price:'약 5만원', link:'https://www.klook.com/ko/search/?query=ha+long+bay+day+cruise' },
+              { name:'티톱섬 스노클링', price:'약 3만원', link:'https://www.klook.com/ko/search/?query=ti+top+island+ha+long+bay' },
+              { name:'동굴 탐험 (숭솟 동굴)', price:'약 1만원', link:'https://www.klook.com/ko/search/?query=sung+sot+cave+ha+long' }
+            ],
+            high: [
+              { name:'하롱베이 럭셔리 크루즈 (1박)', price:'약 30만원', link:'https://www.klook.com/ko/search/?query=ha+long+bay+luxury+cruise' },
+              { name:'카약 & 스노클링 투어', price:'약 8만원', link:'https://www.getyourguide.com/s/?q=ha+long+bay+kayaking+snorkeling' },
+              { name:'선셋 크루즈 디너', price:'약 12만원', link:'https://www.getyourguide.com/s/?q=ha+long+bay+sunset+dinner+cruise' }
+            ]
+          },
+          exps: {
+            low: [
+              { name:'하롱 야시장 해산물 탐방', price:'약 1만원', link:'https://maps.google.com/?q=Ha+Long+Night+Market' },
+              { name:'선착장 일출 감상', price:'무료', link:'https://maps.google.com/?q=Ha+Long+Bay+Vietnam' },
+              { name:'현지 쌀국수 체험', price:'약 0.5만원', link:'https://maps.google.com/?q=Ha+Long+Local+Restaurant' }
+            ],
+            mid: [
+              { name:'하롱베이 1박 크루즈', price:'약 15만원', link:'https://www.klook.com/ko/search/?query=ha+long+bay+overnight+cruise' },
+              { name:'카약 동굴 탐험', price:'약 5만원', link:'https://www.klook.com/ko/search/?query=ha+long+bay+kayaking+cave' },
+              { name:'바이차이 해변 선셋', price:'약 1만원', link:'https://maps.google.com/?q=Bai+Chay+Beach+Ha+Long' }
+            ],
+            high: [
+              { name:'럭셔리 크루즈 2박 패키지', price:'약 50만원', link:'https://www.getyourguide.com/s/?q=ha+long+bay+luxury+2+day+cruise' },
+              { name:'프라이빗 요트 투어', price:'약 30만원', link:'https://www.getyourguide.com/s/?q=ha+long+bay+private+yacht' },
+              { name:'수상 빌라 스테이', price:'약 20만원', link:'https://www.getyourguide.com/s/?q=ha+long+bay+floating+villa' }
+            ]
+          },
+          food: {
+            low: [
+              { name:'분보남보 (Bún Bò Nam Bộ)', desc:'하롱 현지 비빔국수 · 1만원 이하', link:'https://maps.google.com/?q=Ha+Long+Local+Noodle' },
+              { name:'하롱 야시장 해산물 구이', desc:'신선한 해산물 저렴하게', link:'https://maps.google.com/?q=Ha+Long+Night+Market' },
+              { name:'현지 쌀국수 (퍼)', desc:'0.5만원부터 · 현지인 식당', link:'https://maps.google.com/?q=Pho+Restaurant+Ha+Long' }
+            ],
+            mid: [
+              { name:'크루즈 선상 씨푸드 뷔페', desc:'신선한 해산물 무제한 · 크루즈 포함', link:'https://www.klook.com/ko/search/?query=ha+long+bay+cruise+seafood' },
+              { name:'하롱 씨푸드 레스토랑', desc:'왕새우·가리비 · 시장가격', link:'https://maps.google.com/?q=Ha+Long+Seafood+Restaurant' },
+              { name:'바이차이 오션뷰 레스토랑', desc:'바다 전망 · 현지 요리', link:'https://maps.google.com/?q=Bai+Chay+Restaurant+Ha+Long' }
+            ],
+            high: [
+              { name:'Indochina Sails 선상 파인다이닝', desc:'럭셔리 크루즈 고급 요리', link:'https://maps.google.com/?q=Indochina+Sails+Ha+Long' },
+              { name:'Paradise Luxury 크루즈 디너', desc:'5성급 크루즈 고급 씨푸드', link:'https://maps.google.com/?q=Paradise+Luxury+Cruise+Ha+Long' },
+              { name:'하롱 오션뷰 파인다이닝', desc:'절경 감상하며 고급 식사', link:'https://www.getyourguide.com/s/?q=ha+long+bay+fine+dining' }
+            ]
+          },
+          hotels: {
+            low: [
+              { name:'Halong Bay Hostel', stars: 2, desc:'배낭여행자 인기 · 크루즈 픽업 서비스', priceRange:'약 2-3만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Ha+Long+Bay+hostel&dest_type=city' },
+              { name:'Bai Chay Budget Hotel', stars: 2, desc:'바이차이 지역 저렴한 숙소', priceRange:'약 3-5만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Bai+Chay+Hotel+Ha+Long&dest_type=city' }
+            ],
+            mid: [
+              { name:'Muong Thanh Grand Ha Long', stars: 4, desc:'하롱 최대 4성 · 만 전망', priceRange:'약 8-14만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Muong+Thanh+Grand+Ha+Long&dest_type=city' },
+              { name:'Wyndham Legend Halong', stars: 5, desc:'하롱 5성 · 베이뷰 수영장', priceRange:'약 12-22만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Wyndham+Legend+Halong&dest_type=city' }
+            ],
+            high: [
+              { name:'Paradise Luxury Cruise', stars: 5, desc:'하롱베이 1박 럭셔리 크루즈', priceRange:'약 25-50만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Paradise+Luxury+Cruise+Ha+Long&dest_type=city' },
+              { name:'Indochine Cruise', stars: 5, desc:'프리미엄 크루즈 스테이', priceRange:'약 20-40만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Indochine+Cruise+Ha+Long&dest_type=city' }
+            ]
+          },
+          hotelTips: ['하롱베이 핵심은 크루즈 숙박 — 육지 호텔보다 선상 1박 추천','Paradise·Indochine·Bhaya 크루즈 3대장 비교 필수','2박 이상 크루즈로 빙고동굴·란하베이까지 확장 가능'],
+          cheapFlights: [
+            { label:'비엣젯항공 (하노이 경유)', desc:'하노이→하롱 버스 3.5시간', link:'https://www.skyscanner.co.kr/transport/flights/icn/han/' },
+            { label:'대한항공 (하노이 직항)', desc:'하노이→하롱 버스 3.5시간', link:'https://www.skyscanner.co.kr/transport/flights/icn/han/' }
+          ],
+          flightTips: ['하노이(HAN) 도착 후 버스·투어버스로 3.5시간','서울→하노이 직항 왕복 25-40만원','크루즈 패키지 예약 시 하노이 픽업 포함 여부 확인','얼리버드 3개월 전 크루즈+항공 패키지 추천']
+        },
+        {
+          id:'hiroshima', name:'일본 · 히로시마', sub:'역사와 자연의 도시',
+          score: 76, isTop: false, photo:'',
+          airfare:'22만원', hotel:'18만원', hotelSub:'1박 평균 6만원',
+          daily:'소비 보통', dailySub:'일본 평균 수준',
+          alert:'-', news:'관광객 급증', newsSub:'미야지마 혼잡', disaster:'없음', disasterSub:'',
+          temp:'15–25°C', tempSub:'봄·가을 최적', fx:'JPY 약세', fxSub:'엔화 환전 유리',
+          baseAir: 20, baseHotel: 6, baseHotelLow: 4, baseHotelHigh: 18, minDays: 3, minBudget: 45,
+          sights: {
+            low: [
+              { name:'평화 기념 공원', price:'무료', link:'https://maps.google.com/?q=Hiroshima+Peace+Memorial+Park' },
+              { name:'원폭 돔 외관', price:'무료', link:'https://maps.google.com/?q=Atomic+Bomb+Dome+Hiroshima' },
+              { name:'혼도리 상점가 산책', price:'무료', link:'https://maps.google.com/?q=Hondori+Shopping+Hiroshima' }
+            ],
+            mid: [
+              { name:'평화 기념 박물관', price:'약 0.2만원', link:'https://www.klook.com/ko/search/?query=hiroshima+peace+memorial+museum' },
+              { name:'미야지마 도리이 (페리 포함)', price:'약 0.5만원', link:'https://www.klook.com/ko/search/?query=miyajima+island+hiroshima' },
+              { name:'히로시마 성', price:'약 0.5만원', link:'https://maps.google.com/?q=Hiroshima+Castle' }
+            ],
+            high: [
+              { name:'미야지마 프라이빗 투어', price:'약 12만원', link:'https://www.getyourguide.com/s/?q=miyajima+private+tour' },
+              { name:'히로시마·미야지마 가이드 투어', price:'약 8만원', link:'https://www.getyourguide.com/s/?q=hiroshima+miyajima+guided+tour' },
+              { name:'료칸 숙박 (미야지마)', price:'약 25만원', link:'https://www.getyourguide.com/s/?q=miyajima+ryokan+hiroshima' }
+            ]
+          },
+          exps: {
+            low: [
+              { name:'평화 공원 야간 산책', price:'무료', link:'https://maps.google.com/?q=Hiroshima+Peace+Memorial+Park' },
+              { name:'오코노미야키 거리 탐방', price:'약 1만원', link:'https://maps.google.com/?q=Okonomi-mura+Hiroshima' },
+              { name:'원폭 돔 황혼 감상', price:'무료', link:'https://maps.google.com/?q=Atomic+Bomb+Dome+Hiroshima' }
+            ],
+            mid: [
+              { name:'미야지마섬 하이킹', price:'약 1만원', link:'https://www.klook.com/ko/search/?query=miyajima+hiking+hiroshima' },
+              { name:'히로시마 오코노미야키 쿠킹 클래스', price:'약 4만원', link:'https://www.airbnb.co.kr/s/Hiroshima--Japan/experiences?query=okonomiyaki+cooking' },
+              { name:'원폭 돔·평화 박물관 가이드 투어', price:'약 3만원', link:'https://www.klook.com/ko/search/?query=hiroshima+peace+tour' }
+            ],
+            high: [
+              { name:'미야지마 료칸 숙박 & 가이세키', price:'약 30만원', link:'https://www.getyourguide.com/s/?q=miyajima+ryokan+kaiseki' },
+              { name:'프라이빗 역사 투어', price:'약 15만원', link:'https://www.getyourguide.com/s/?q=hiroshima+private+history+tour' },
+              { name:'세토내해 크루즈', price:'약 8만원', link:'https://www.getyourguide.com/s/?q=seto+inland+sea+cruise+hiroshima' }
+            ]
+          },
+          food: {
+            low: [
+              { name:'오코노미무라 (오코노미야키 빌딩)', desc:'히로시마식 오코노미야키 · 1만원대', link:'https://maps.google.com/?q=Okonomi-mura+Hiroshima' },
+              { name:'라멘 타이로쿠', desc:'현지인 인기 라멘집 · 1만원대', link:'https://maps.google.com/?q=Ramen+Hiroshima' },
+              { name:'혼도리 상점가 길거리 음식', desc:'다양한 간식 저렴하게', link:'https://maps.google.com/?q=Hondori+Hiroshima' }
+            ],
+            mid: [
+              { name:'히로시마 오코노미야키', desc:'소바 들어간 히로시마 스타일 필수', link:'https://maps.google.com/?q=Hiroshima+Okonomiyaki' },
+              { name:'미야지마 굴 요리', desc:'세계 최고 굴 생산지 · 구이·튀김·솥밥', link:'https://maps.google.com/?q=Miyajima+Oyster+Restaurant' },
+              { name:'카키 (굴) 전문점', desc:'히로시마 굴 명물 · 시즌 메뉴', link:'https://maps.google.com/?q=Oyster+Restaurant+Hiroshima' }
+            ],
+            high: [
+              { name:'미야지마 료칸 가이세키', desc:'세토내해 제철 식재료 코스 요리', link:'https://maps.google.com/?q=Miyajima+Ryokan+Kaiseki' },
+              { name:'히로시마 고급 일본 요리', desc:'제철 해산물 코스 · 예약 필수', link:'https://maps.google.com/?q=Hiroshima+Japanese+Fine+Dining' },
+              { name:'미야지마 씨뷰 레스토랑', desc:'도리이 뷰 · 가이세키 런치', link:'https://maps.google.com/?q=Miyajima+View+Restaurant' }
+            ]
+          },
+          hotels: {
+            low: [
+              { name:'Khaosan Hiroshima Guesthouse', stars: 2, desc:'배낭여행자 1위 · 평화공원 도보', priceRange:'약 2-4만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Hiroshima+hostel&dest_type=city' },
+              { name:'Piece Hostel Hiroshima', stars: 2, desc:'깔끔한 도심 호스텔', priceRange:'약 3-5만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Piece+Hostel+Hiroshima&dest_type=city' }
+            ],
+            mid: [
+              { name:'Apa Hotel Hiroshima', stars: 3, desc:'도심 비즈니스 호텔 · 가성비', priceRange:'약 6-10만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Apa+Hotel+Hiroshima&dest_type=city' },
+              { name:'Sheraton Grand Hiroshima', stars: 5, desc:'히로시마역 연결 · 최고 위치', priceRange:'약 15-25만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Sheraton+Grand+Hiroshima&dest_type=city' }
+            ],
+            high: [
+              { name:'Miyajima Coral Hotel', stars: 5, desc:'미야지마섬 내 · 도리이 뷰', priceRange:'약 25-50만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Miyajima+Hotel+Hiroshima&dest_type=city' },
+              { name:'Iwaso Ryokan', stars: 5, desc:'미야지마 전통 료칸 · 1868년 역사', priceRange:'약 30-60만원/박', link:'https://www.booking.com/searchresults.ko.html?ss=Iwaso+Ryokan+Miyajima&dest_type=city' }
+            ]
+          },
+          hotelTips: ['평화 공원 인근 또는 히로시마역 주변 추천','미야지마섬 내 숙박 시 조조 도리이 감상 가능','신칸센 이용 시 역 주변 숙소가 동선 최적'],
+          cheapFlights: [
+            { label:'아시아나 (직항·오사카 경유)', desc:'약 1.5-2시간', link:'https://www.skyscanner.co.kr/transport/flights/icn/hij/' },
+            { label:'피치항공 (오사카 경유)', desc:'오사카→히로시마 신칸센 1.5시간', link:'https://www.skyscanner.co.kr/transport/flights/icn/kix/' }
+          ],
+          flightTips: ['히로시마 직항 편수 적음 · 오사카 경유 + 신칸센 추천','오사카(KIX)→히로시마 신칸센 약 1.5시간','왕복 20-35만원이 평균 범위','히로시마+교토 조합 일정 추천']
+        },
       ];
 
 // ── var DEST_ENTRY ──
@@ -3896,9 +4216,9 @@ var DEST_ENTRY = {
           visa:'무비자 90일', visaType:'free',
           docs: [
             { icon:'✅', text:'<strong>여권</strong>', sub:'' },
-            { icon:'📱', text:'Visit Japan Web 등록 강력 권장', sub:'공식 웹사이트(vjw-lp.digital.go.jp) — 앱 아님 주의' },
+            { icon:'📱', text:'Visit Japan Web 등록 강력 권장', sub:'공식 웹사이트(vjw-lp.digital.go.jp) — 앱 아님 주의, QR 스크린샷 저장' },
           ],
-          tips: ['면세한도: 20만엔 / 주류 3병 / 담배 200개비 (2026년 11월부터 선결제 후 환급 방식으로 변경 예정)','현금 문화 — 엔화 환전 필수','Visit Japan Web 등록 시 입국 심사·세관 시간 대폭 단축'],
+          tips: ['면세한도: 20만엔 (2026년 11월부터 선결제 후 출국 시 환급 방식으로 변경 예정)','출국세: 2026년 7월부터 1,000엔→3,000엔으로 인상 예정','현금 문화 — 엔화 환전 필수 / Visit Japan Web 미리 등록 시 입국 심사 시간 단축'],
         },
         // ── 대만 ──
         taiwan: {
@@ -3923,20 +4243,20 @@ var DEST_ENTRY = {
           visa:'무비자 90일 (한-태 협정)', visaType:'free',
           docs: [
             { icon:'✅', text:'<strong>여권</strong>', sub:'' },
-            { icon:'‼️', text:'TDAC 온라인 사전 제출 필수', sub:'태국 디지털 도착 카드 — 무료, 입국 전 등록' },
+            { icon:'‼️', text:'TDAC 입국 3일 이내 사전 제출 필수', sub:'tdac.immigration.go.th — 무료, 가짜 사이트 주의' },
           ],
-          tips: ['한국인 한-태 사증면제협정으로 90일 무비자','TDAC(Thailand Digital Arrival Card) 입국 전 온라인 사전 등록 필수','태국 바트(THB) 현금 환전 권장 / 면세한도: 주류 1L, 담배 200개비'],
+          tips: ['한국인 한-태 협정으로 90일 무비자 (입국 심사 시 90일 스탬프 확인 필수)','TDAC 작성 후 이메일 확인서 저장 → 입국 심사관 제시','태국 바트(THB) 현금 환전 권장 / 면세한도: 주류 1L, 담배 200개비'],
         },
         // ── 인도네시아 ──
         indonesia: {
           visa:'도착비자(VOA) 30일', visaType:'eta',
           docs: [
             { icon:'✅', text:'<strong>여권</strong>', sub:'' },
-            { icon:'‼️', text:'QR코드 사전 발급 필수', sub:'allindonesia.imigrasi.go.id — 온라인 무료 등록' },
-            { icon:'💰', text:'도착비자 수수료 IDR 500,000', sub:'약 4만원, 현금(USD) 또는 카드' },
-            { icon:'🏝️', text:'발리 관광세 IDR 150,000', sub:'약 1만3천원 — lovebali.baliprov.go.id 사전 납부' },
+            { icon:'‼️', text:'All Indonesia Arrival Card 사전 등록', sub:'arrivals.imigrasi.go.id — 입국 48시간 전부터 가능, QR 저장' },
+            { icon:'💰', text:'도착비자(e-VoA) 수수료 IDR 500,000', sub:'약 4만원 / 공항 현장 또는 e-VoA 사전 신청' },
+            { icon:'🏝️', text:'발리 관광세 IDR 150,000', sub:'약 1만5천원 — lovebali.baliprov.go.id 사전 납부 후 QR 저장' },
           ],
-          tips: ['입국 전 allindonesia.imigrasi.go.id에서 QR코드 사전 발급 필수','발리 방문 시 관광세 IDR 150,000 별도 사전 납부','도착비자(VOA) 공항 현장 발급 또는 e-VoA 사전 신청 가능 / 1회 연장 최대 60일'],
+          tips: ['arrivals.imigrasi.go.id에서 입국 전 Arrival Card 등록 (입국 48시간 전~)','발리 방문 시 관광세 별도 사전 납부 필수 (미납 시 공항에서 확인)','e-VoA 사전 신청으로 공항 대기 시간 단축 가능 / 1회 연장 최대 60일'],
         },
         // ── 싱가포르 ──
         singapore: {
@@ -4035,12 +4355,12 @@ var DEST_ENTRY = {
         },
         // ── 영국 ──
         uk: {
-          visa:'ETA 필수 (2026.2~)', visaType:'eta',
+          visa:'ETA 필수', visaType:'eta',
           docs: [
             { icon:'✅', text:'<strong>여권</strong>', sub:'' },
-            { icon:'‼️', text:'ETA 전자여행허가 사전 신청', sub:'gov.uk에서 온라인 발급 (£10)' },
+            { icon:'‼️', text:'ETA 전자여행허가 사전 신청', sub:'UK ETA 앱 또는 gov.uk — £16, 2년간 유효·다회입국' },
           ],
-          tips: ['2026.2.25부터 ETA 필수 — 미소지 시 탑승 불가','영국은 쉥겐 비적용 — 별도 입국 심사','파운드(GBP) 환전, 카드 결제 광범위'],
+          tips: ['ETA 미소지 시 탑승 불가 — 여행 최소 3일 전 신청 권장','영국은 쉥겐 비적용 — 별도 입국 심사 (1회 최대 6개월 체류)','파운드(GBP) 환전, 카드 결제 광범위'],
         },
         // ── 말레이시아 ──
         malaysia: {
@@ -4073,31 +4393,30 @@ var DEST_ENTRY = {
         },
         // ── 중국 ──
         china: {
-          visa:'무비자 15일 (한중 상호)', visaType:'free',
+          visa:'무비자 30일 (2026.12.31까지)', visaType:'free',
           docs: [
             { icon:'✅', text:'<strong>여권</strong>', sub:'' },
             { icon:'‼️', text:'WeChat Pay / Alipay 사전 설정', sub:'현지 결제 필수 — 현금 거부 사례 많음' },
           ],
-          tips: ['구글·카카오·인스타 차단 — VPN 앱 출국 전 설치 필수','WeChat Pay 설정: 해외 카드 연동 필요','위안화(CNY) 현금도 일부 병행'],
+          tips: ['구글·카카오·인스타 차단 — VPN 앱 출국 전 설치 필수 (중국 내 다운로드 불가)','WeChat Pay / Alipay: 해외 카드 연동 필요 (사전 설정 권장)','무비자 30일 정책은 2026년 12월 31일까지 연장 시행 중'],
         },
         // ── 캄보디아 ──
         cambodia: {
           visa:'E-Visa 필수', visaType:'eta',
           docs: [
-            { icon:'‼️', text:'E-Visa 사전 발급 필수', sub:'evisa.gov.kh에서 신청 ($36)' },
+            { icon:'‼️', text:'E-Visa 사전 발급 필수', sub:'evisa.gov.kh에서 신청 ($30, 2025년 인하)' },
             { icon:'✅', text:'<strong>여권</strong>', sub:'' },
-            { icon:'📷', text:'여권 사진 1매', sub:'E-Visa 신청 시 필요' },
+            { icon:'📷', text:'여권 사진 1매', sub:'E-Visa 신청 시 업로드' },
           ],
-          tips: ['E-Visa 승인 3일 소요, 출발 최소 1주일 전 신청','도착비자도 가능 ($30, 대기 있음)','달러(USD) 현금 필수, 리엘은 거스름돈용'],
+          tips: ['E-Visa 승인 보통 3일 소요 — 출발 최소 1주일 전 신청 권장','도착비자(VOA)도 가능 ($30, 공항 대기 있음)','달러(USD) 현금 필수, 리엘(KHR)은 거스름돈용'],
         },
         // ── 라오스 ──
         laos: {
-          visa:'도착비자 무료 15일', visaType:'free',
+          visa:'무비자 30일', visaType:'free',
           docs: [
             { icon:'✅', text:'<strong>여권</strong>', sub:'' },
-            { icon:'📷', text:'여권 사진 1매 (도착비자용)', sub:'공항 도착 시 제출' },
           ],
-          tips: ['한국 여권 15일 무료 도착비자','달러(USD) 또는 태국 바트(THB) 현금 소지 권장','WiFi 제한적 — 오프라인 지도 사전 다운로드 필수'],
+          tips: ['한국 여권으로 30일 무비자 입국 가능 (여권 유효기간 6개월 이상 필요)','달러(USD) 또는 태국 바트(THB) 현금 소지 권장','WiFi 제한적 — 오프라인 지도 사전 다운로드 필수'],
         },
         // ── 튀르키예 ──
         turkey: {
@@ -4122,6 +4441,8 @@ var DEST_ENTRY = {
 // ── var DEST_COUNTRY ──
 var DEST_COUNTRY = {
         lisbon:'portugal', danang:'vietnam', jeju:'korea', taipei:'taiwan', osaka:'japan', tokyo:'japan',
+        pattaya:'thailand', manila:'philippines', halong:'vietnam',
+        hiroshima:'japan',
         bangkok:'thailand', bali:'indonesia', chiangmai:'thailand', singapore:'singapore', cebu:'philippines',
         nhatrang:'vietnam', fukuoka:'japan', sapporo:'japan', okinawa:'japan', kyoto:'japan', miyakojima:'japan',
         phuquoc:'vietnam', hochiminh:'vietnam', hanoi:'vietnam', boracay:'philippines', phuket:'thailand',
@@ -4136,6 +4457,8 @@ var DEST_COUNTRY = {
 // ── var DEST_REGION ──
 var DEST_REGION = {
         lisbon:'europe', danang:'sea', jeju:'domestic', taipei:'east_asia', osaka:'japan', tokyo:'japan',
+        pattaya:'sea', manila:'sea', halong:'sea',
+        hiroshima:'japan',
         bangkok:'sea', bali:'sea', chiangmai:'sea', singapore:'east_asia', cebu:'sea', nhatrang:'sea',
         fukuoka:'japan', sapporo:'japan', okinawa:'japan', kyoto:'japan', miyakojima:'japan', phuquoc:'sea', hochiminh:'sea',
         hanoi:'sea', boracay:'sea', phuket:'sea', hongkong:'east_asia', guam:'pacific', hawaii:'pacific',
@@ -4150,6 +4473,8 @@ var DEST_REGION = {
 // ── var DEST_COORDS ──
 var DEST_COORDS = {
         lisbon:[38.72,-9.14], danang:[16.07,108.22], jeju:[33.49,126.53], taipei:[25.04,121.51],
+        pattaya:[12.93,100.88], manila:[14.60,120.98], halong:[20.91,107.18],
+        hiroshima:[34.39,132.45],
         osaka:[34.69,135.50], tokyo:[35.69,139.69], bangkok:[13.75,100.52], bali:[-8.34,115.09],
         chiangmai:[18.79,98.98], singapore:[1.35,103.82], cebu:[10.32,123.89], nhatrang:[12.24,109.20],
         fukuoka:[33.59,130.40], sapporo:[43.06,141.35], okinawa:[26.21,127.68], kyoto:[35.01,135.76], miyakojima:[24.80,125.28],
@@ -4164,3 +4489,5 @@ var DEST_COORDS = {
         saipan:[15.19,145.75], palawan:[9.74,118.74], sanya:[18.25,109.50]
       };
 
+
+// 신규 여행지 추가 예정
