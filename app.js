@@ -4809,8 +4809,19 @@ window._recalcPriceCards = function () {
       hotelKRW = Math.round(hotelKRW * _resortExtra);
     }
 
-    // 총 비용은 updateColumn이 예산 티어에 맞게 계산한 값을 그대로 유지
-    // (여기서 덮어쓰면 예산 무시한 API 가격으로 오염됨)
+    // 총 비용 = DOM에 표시된 항공 + 숙박 + 현지비용 합산 (항상 정확한 합계)
+    var totalEl = document.getElementById('total-' + i);
+    if (totalEl) {
+      var tmEl = totalEl.querySelector('.main');
+      var _airMain = airEl ? airEl.querySelector('.main') : null;
+      var _htlMain = hotelEl ? hotelEl.querySelector('.main') : null;
+      var _airVal = _airMain ? parseFloat((_airMain.textContent || '').replace(/[^0-9.]/g, '')) || 0 : 0;
+      var _htlVal = _htlMain ? parseFloat((_htlMain.textContent || '').replace(/[^0-9.]/g, '')) || 0 : 0;
+      // 현지비용: _recalcPriceCards에서 직접 계산한 dailyKRW 사용
+      var _dayVal = Math.round(dailyKRW / 10000);
+      var _sumTotal = _airVal + _htlVal + _dayVal;
+      if (tmEl && _sumTotal > 0) tmEl.textContent = Math.round(_sumTotal) + '만원~';
+    }
   }
 
   // 안내 문구 업데이트 — 실제 HTML 요소(#price-section-wrap .sec-hd-inner p) 참조
