@@ -10,7 +10,7 @@ var v1_0_9_DEST_DATA = [
           daily:'7만원', dailySub:'서유럽 대비 저렴',
           alert:'-', news:'노마드 증가', newsSub:'물가 소폭 상승', disaster:'없음', disasterSub:'',
           temp:'18–24°C', tempSub:'쾌적한 봄 날씨', fx:'EUR 강세', fxSub:'환전 타이밍 주의',
-          baseAir: 110, baseHotel: 18, baseHotelLow: 12, baseHotelHigh: 30, minDays: 5, minBudget: 180,
+          baseAir: 110, baseHotel: 12, baseHotelLow: 8, baseHotelHigh: 30, minDays: 5, minBudget: 180,
           sights: {
             low: [
               { name:'알파마 지구 골목 산책', price:'무료', link:'https://maps.google.com/?q=Alfama+Lisbon' },
@@ -93,7 +93,7 @@ var v1_0_9_DEST_DATA = [
           alert:'여행유의', alertSub:'외교부 1단계', news:'우기 시작', newsSub:'더위 주의', disaster:'우기', disasterSub:'홍수 위험',
           temp:'28–33°C', tempSub:'덥고 습함 · 우기 직전',
           fx:'VND 안정적', fxSub:'변동 거의 없음',
-          baseAir: 30, baseHotel: 8, baseHotelLow: 5, baseHotelHigh: 15, minDays: 3, minBudget: 55,
+          baseAir: 30, baseHotel: 4, baseHotelLow: 3, baseHotelHigh: 15, minDays: 3, minBudget: 55,
           sights: {
             low: [
               { name:'미케 비치 해안 절경', price:'무료', link:'https://maps.google.com/?q=My+Khe+Beach+Da+Nang' },
@@ -340,7 +340,7 @@ var v1_0_9_DEST_DATA = [
           daily:'10만원', dailySub:'엔저 효과',
           alert:'-', news:'엔저 지속', newsSub:'', disaster:'없음', disasterSub:'',
           temp:'13–19°C', tempSub:'온화한 봄', fx:'JPY 역대 최저', fxSub:'환전 추천',
-          baseAir: 18, baseHotel: 18, baseHotelLow: 12.5, baseHotelHigh: 36, minDays: 2, minBudget: 38,
+          baseAir: 18, baseHotel: 10, baseHotelLow: 6.5, baseHotelHigh: 36, minDays: 2, minBudget: 38,
           sights: {
             low: [
               { name:'도톤보리 글리코상 야경', price:'무료', link:'https://maps.google.com/?q=Dotonbori+Glico+Sign+Osaka' },
@@ -422,7 +422,7 @@ var v1_0_9_DEST_DATA = [
           daily:'8만원', dailySub:'엔저로 체감 물가 낮음',
           alert:'-', news:'엔저 지속', newsSub:'물가 절감', disaster:'없음', disasterSub:'',
           temp:'12–20°C', tempSub:'봄꽃 시즌 · 쾌적', fx:'JPY 역대 약세', fxSub:'환전 최적기',
-          baseAir: 20, baseHotel: 18, baseHotelLow: 12, baseHotelHigh: 36, minDays: 3, minBudget: 60,
+          baseAir: 20, baseHotel: 12, baseHotelLow: 7, baseHotelHigh: 36, minDays: 3, minBudget: 60,
           sights: {
             low: [
               { name:'시부야 스크램블 교차로', price:'무료', link:'https://maps.google.com/?q=Shibuya+Scramble+Crossing+Tokyo' },
@@ -504,7 +504,7 @@ var v1_0_9_DEST_DATA = [
           daily:'4만원', dailySub:'바트화 안정 · 매우 저렴',
           alert:'여행유의', alertSub:'외교부 1단계', news:'관광 호황', newsSub:'항공 경쟁', disaster:'우기', disasterSub:'홍수 주의',
           temp:'32–36°C', tempSub:'덥고 건조한 건기', fx:'THB 안정적', fxSub:'바트화 변동 낮음',
-          baseAir: 35, baseHotel: 10, baseHotelLow: 6, baseHotelHigh: 25, minDays: 3, minBudget: 55,
+          baseAir: 35, baseHotel: 5, baseHotelLow: 3, baseHotelHigh: 25, minDays: 3, minBudget: 55,
           sights: {
             low: [
               { name:'카오산 로드 야경 산책', price:'무료', link:'https://maps.google.com/?q=Khao+San+Road+Bangkok' },
@@ -586,7 +586,7 @@ var v1_0_9_DEST_DATA = [
           daily:'4만원', dailySub:'루피아 약세 · 초가성비',
           alert:'-', news:'관광 급증', newsSub:'비자 무료', disaster:'없음', disasterSub:'',
           temp:'28–32°C', tempSub:'열대 건기 · 맑고 쾌적', fx:'IDR 약세', fxSub:'루피아 약세 · 여행 비용 절감',
-          baseAir: 42, baseHotel: 12, baseHotelLow: 7.5, baseHotelHigh: 30, minDays: 4, minBudget: 70,
+          baseAir: 42, baseHotel: 8, baseHotelLow: 5.5, baseHotelHigh: 30, minDays: 4, minBudget: 70,
           sights: {
             low: [
               { name:'우붓 왕궁 (Puri Saren)', price:'무료', link:'https://maps.google.com/?q=Ubud+Palace+Bali' },
@@ -668,7 +668,7 @@ var v1_0_9_DEST_DATA = [
           daily:'3만원', dailySub:'북태국 물가 매우 저렴',
           alert:'-', news:'스모그 주의', newsSub:'연기 시즌', disaster:'없음', disasterSub:'',
           temp:'28–35°C', tempSub:'방콕보다 선선 · 건기 쾌적', fx:'THB 안정적', fxSub:'바트화 변동 낮음',
-          baseAir: 38, baseHotel: 6, baseHotelLow: 3.8, baseHotelHigh: 15, minDays: 3, minBudget: 55,
+          baseAir: 38, baseHotel: 5, baseHotelLow: 3.8, baseHotelHigh: 15, minDays: 3, minBudget: 55,
           sights: {
             low: [
               { name:'선데이 나이트 바자르 산책', price:'무료', link:'https://maps.google.com/?q=Sunday+Walking+Street+Chiang+Mai' },
@@ -750,7 +750,7 @@ var v1_0_9_DEST_DATA = [
           daily:'10만원', dailySub:'호커센터 활용 시 식비 절감',
           alert:'-', news:'허브 성장', newsSub:'항공편 최다', disaster:'없음', disasterSub:'',
           temp:'28–33°C', tempSub:'연중 덥고 습함', fx:'SGD 강세', fxSub:'싱가포르 달러 강세 유지',
-          baseAir: 45, baseHotel: 17, baseHotelLow: 12, baseHotelHigh: 24, minDays: 3, minBudget: 120,
+          baseAir: 45, baseHotel: 13, baseHotelLow: 10, baseHotelHigh: 24, minDays: 3, minBudget: 136,
           sights: {
             low: [
               { name:'마리나베이 야경 (무료 뷰포인트)', price:'무료', link:'https://maps.google.com/?q=Marina+Bay+Singapore+Viewpoint' },
@@ -832,7 +832,7 @@ var v1_0_9_DEST_DATA = [
           daily:'3.5만원', dailySub:'필리핀 물가 저렴',
           alert:'여행유의', alertSub:'외교부 1단계', news:'다이빙 성수기', newsSub:'건기 최적', disaster:'태풍', disasterSub:'시즌 주의',
           temp:'28–33°C', tempSub:'열대 건기 · 맑은 해변', fx:'PHP 안정적', fxSub:'페소 안정적',
-          baseAir: 38, baseHotel: 10, baseHotelLow: 5.5, baseHotelHigh: 22, minDays: 3, minBudget: 60,
+          baseAir: 38, baseHotel: 5, baseHotelLow: 4.5, baseHotelHigh: 22, minDays: 3, minBudget: 60,
           sights: {
             low: [
               { name:'마젤란 십자가 & 산토니뇨 성당', price:'무료', link:'https://maps.google.com/?q=Magellan+Cross+Cebu' },
@@ -914,7 +914,7 @@ var v1_0_9_DEST_DATA = [
           daily:'3만원', dailySub:'베트남 물가 매우 저렴',
           alert:'여행유의', alertSub:'외교부 1단계', news:'관광 급증', newsSub:'물가 상승세', disaster:'우기', disasterSub:'태풍 주의',
           temp:'27–33°C', tempSub:'맑은 건기 · 해변 최적', fx:'VND 안정적', fxSub:'동화 약세 유지 · 가성비 UP',
-          baseAir: 32, baseHotel: 5, baseHotelLow: 3, baseHotelHigh: 10, minDays: 3, minBudget: 45,
+          baseAir: 32, baseHotel: 5, baseHotelLow: 4, baseHotelHigh: 10, minDays: 3, minBudget: 45,
           sights: {
             low: [
               { name:'나트랑 해변 (Nha Trang Beach)', price:'무료', link:'https://maps.google.com/?q=Nha+Trang+Beach+Vietnam' },
@@ -1876,7 +1876,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'안전한 여행지', news:'달러 강세', newsSub:'환율 불리', disaster:'태풍', disasterSub:'7-11월 주의',
         temp:'열대 해양성', tempSub:'연중 온난 · 12-5월 건기 추천',
         fx:'미국 달러', fxSub:'달러 결제 · 환율 변동 체크',
-        baseAir: 30, baseHotel: 18, baseHotelLow: 14, baseHotelHigh: 29, minDays: 4, minBudget: 90,
+        baseAir: 30, baseHotel: 18, baseHotelLow: 14, baseHotelHigh: 29, minDays: 4, minBudget: 128,
         sights: {
           low: [
             { name:'투몬 비치 산책', price:'무료', link:'https://maps.google.com/?q=Tumon+Beach+Guam' },

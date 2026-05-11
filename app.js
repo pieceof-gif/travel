@@ -292,24 +292,32 @@ function updateResultsByFilters() {
   const RANDOM_EXCLUDE = new Set(['siemreap']);
   const allCandidates = [...v1_0_9_DEST_DATA].filter(d => {
     if (RANDOM_EXCLUDE.has(d.id)) return false;
-    const baseMin = d.minBudget || 40;
-    // unlimited/cheapest 예산일 때는 duration 페널티 없이 모든 여행지 노출
-    const adjustedMin = (filterBudget >= 9000)
-      ? baseMin
-      : baseMin + (duration > 5 ? (duration - 5) * 6 : 0);
-    if (adjustedMin > filterBudget) return false;
 
-    // ── 실제 비용 기반 필터: 예산 초과 여행지 제외 ──
+    // ── updateColumn과 동일한 로직으로 실제 비용 추정 ──
     if (filterBudget < 9000 && !isCheapest) {
       const _dailyMap = { '소비 매우 적음': 4, '소비 적음': 6, '소비 보통': 9, '소비 많음': 14, '소비 매우 많음': 20 };
       const _daily = parseFloat((d.daily || '').replace('만원', '')) || _dailyMap[d.daily] || Math.round((d.baseHotel || 7) * 0.5) || 7;
-      // baseHotelLow(최저가 1박) 기준으로 최소 비용 추정
-      const _estAir = d.baseAir || 20;
-      const _perNight = d.baseHotelLow || Math.round((d.baseHotel || 10) * 0.6);
-      const _estHotel = _perNight * (duration - 1);
-      const _estDaily = _daily * 0.6 * duration;
-      const _estTotal = _estAir + _estHotel + _estDaily;
-      if (_estTotal > filterBudget) return false; // 여유 없이 엄격하게 필터링
+      const _baseHL = d.baseHotelLow || Math.round(d.baseHotel * 0.25);
+      const _baseHH = d.baseHotelHigh || Math.round(d.baseHotel * 3);
+      const _days = duration;
+      const _calcGrand = (aM, hBase, dM) =>
+        Math.round((d.baseAir || 20) * aM) + Math.round(hBase * (_days - 1)) + Math.round(_daily * dM * _days);
+      const _midHotelBase = (d.baseHotel || 10) * (filterBudget >= 120 ? 1.5 : 1.0);
+      const _totalMid = _calcGrand(1.1, _midHotelBase, 1.0);
+      const _totalHigh = _calcGrand(1.3, _baseHH, 1.8);
+      // updateColumn과 동일한 tier 판단 → 실제 total 계산
+      let _estTotal;
+      if (filterBudget >= 300) { // VIP
+        _estTotal = Math.round((d.baseAir || 20) * 1.8) + Math.round(_baseHH * (_days - 1) * 1.5) + Math.round(_daily * 2.5 * _days);
+      } else if (filterBudget >= 200 && _totalHigh <= filterBudget) {
+        _estTotal = _totalHigh;
+      } else if (filterBudget >= 80 && _totalMid <= filterBudget) {
+        _estTotal = _totalMid;
+      } else {
+        // low tier
+        _estTotal = (d.baseAir || 20) + Math.round(_baseHL * (_days - 1)) + Math.round(_daily * 0.5 * _days);
+      }
+      if (_estTotal > filterBudget) return false;
     }
 
     // Region filter (휴양지는 cross-cutting 필터로 별도 처리)
@@ -4714,6 +4722,11 @@ window._recalcPriceCards = function () {
   if (!document.getElementById('compare-view') ||
     document.getElementById('compare-view').style.display !== 'block') return;
 
+  // 현재 예산 값 읽기 (예산 초과 시 DOM 업데이트 차단에 사용)
+  var _budgetEl = document.getElementById('budget-input-home') || document.getElementById('budget-input-compare');
+  var _budgetVal = _budgetEl ? _budgetEl.value : 'unlimited';
+  var _budgetLimit = (_budgetVal === 'unlimited' || _budgetVal === 'cheapest') ? 9999 : (+_budgetVal || 9999);
+
   var _dateInfo = _getSearchDates();
   var _nights = Math.max(1, Math.ceil((_dateInfo.end - _dateInfo.start) / (1000 * 60 * 60 * 24)));
   var _targetMonth = _dateInfo.start.getMonth(); // 0-indexed
@@ -4728,99 +4741,65 @@ window._recalcPriceCards = function () {
 
     // 계절 보정 비율 계산
     var _sm = _getSeasonalMultiplier(d.id, _targetMonth, _dateInfo.start);
-    var _curMonth = new Date().getMonth();
-    var _isSeasonal = (_targetMonth !== _curMonth);
+    var _isSeasonal = (_targetMonth !== new Date().getMonth());
 
-    // 항공: API 가격 × 계절 보정, 없으면 정적 데이터 × 계절 보정
-    var airEl = document.getElementById('air-' + i);
-    var airKRW = 0;
-    if (d._airfareKRW) {
-      airKRW = Math.round(d._airfareKRW * _sm.flight);
-      if (airEl) {
-        var mEl = airEl.querySelector('.main');
-        if (mEl) mEl.textContent = Math.round(airKRW / 10000) + '만원~';
-      }
-    } else {
-      // API 없으면 정적 데이터(만원) × 계절 보정 → KRW 변환
-      airKRW = Math.round((d.baseAir || 0) * 10000 * _sm.flight);
-      // DOM에도 보정된 가격 반영
-      if (airEl && _isSeasonal) {
-        var _amEl = airEl.querySelector('.main');
-        if (_amEl) _amEl.textContent = Math.round(airKRW / 10000) + '만원~';
-      }
-    }
-
-    // 호텔: API 1박 가격 × 계절 보정 × 박수, 없으면 정적 데이터 × 계절 보정
+    // ── 1단계: 값만 계산 (DOM 업데이트 없음) ──
+    var airEl   = document.getElementById('air-'   + i);
     var hotelEl = document.getElementById('hotel-' + i);
+
+    // 항공
+    var airKRW = d._airfareKRW
+      ? Math.round(d._airfareKRW * _sm.flight)
+      : Math.round((d.baseAir || 0) * 10000 * _sm.flight);
+
+    // 호텔
     var hotelKRW = 0;
+    var _adjustedPerNight = 0;
     if (d._hotelPriceKRW) {
-      var adjustedPerNight = Math.round(d._hotelPriceKRW * _sm.hotel);
-      hotelKRW = adjustedPerNight * _nights;
-      if (hotelEl) {
-        var hmEl = hotelEl.querySelector('.main');
-        var hsEl = hotelEl.querySelector('.sub');
-        if (hmEl) hmEl.textContent = Math.round(hotelKRW / 10000) + '만원';
-        if (hsEl) hsEl.textContent = '1박 평균 ' + Math.round(adjustedPerNight / 10000) + '만원';
-        // kicker는 예산별 필터 안내가 이미 설정되어 있으므로 건드리지 않음
-      }
+      _adjustedPerNight = Math.round(d._hotelPriceKRW * _sm.hotel);
+      hotelKRW = _adjustedPerNight * _nights;
     } else {
-      // API 없으면 정적 데이터(만원) × 계절 보정 × 박수 → KRW
-      var _basePerNight = Math.round((d.baseHotel || 0) * 10000 * _sm.hotel);
-      hotelKRW = _basePerNight * _nights;
-      // DOM에도 보정된 가격 반영
-      if (hotelEl && _isSeasonal) {
-        var _hmFb = hotelEl.querySelector('.main');
-        var _hsFb = hotelEl.querySelector('.sub');
-        if (_hmFb) _hmFb.textContent = Math.round(hotelKRW / 10000) + '만원';
-        if (_hsFb) _hsFb.textContent = '1박 평균 ' + Math.round(_basePerNight / 10000) + '만원';
-        // kicker는 예산별 필터 안내가 이미 설정되어 있으므로 건드리지 않음
-      }
+      _adjustedPerNight = Math.round((d.baseHotel || 0) * 10000 * _sm.hotel);
+      hotelKRW = _adjustedPerNight * _nights;
     }
 
-    // 현지비용: 정적 데이터에서 계산 (현지 물가는 계절 무관)
-    var dailyKRW = 0;
+    // 현지비용
     var _dailyMap = { '소비 매우 적음': 4, '소비 적음': 6, '소비 보통': 9, '소비 많음': 14, '소비 매우 많음': 20 };
     var _dailyVal = parseFloat((d.daily || '').replace('만원', '')) || _dailyMap[d.daily] || Math.round((d.baseHotel || 7) * 0.5) || 7;
-    dailyKRW = _dailyVal * 10000 * (_nights + 1); // 만원 → KRW × 일수(박+1)
+    var dailyKRW = _dailyVal * 10000 * (_nights + 1);
 
-    // 교통비 보정: 여행지별 필수 고정 교통비 (렌터카, 스피드보트 등)
+    // 교통비
     var _transportCost = 0;
-    var _TRANSPORT_SURCHARGE = {
-      jeju: 6,       // 렌터카 1일 6만 × 일수
-      maldives: 10,  // 공항→리조트 스피드보트 왕복 10만
-      bali: 3,       // 그랩/카풀 1일 3만 × 일수
-      hawaii: 8,     // 렌터카 1일 8만 × 일수
-      guam: 5,       // 렌터카 1일 5만 × 일수
-      saipan: 5,     // 렌터카 1일 5만 × 일수
-      sydney: 4      // 교통패스 1일 4만 × 일수
-    };
+    var _TRANSPORT_SURCHARGE = { jeju:6, maldives:10, bali:3, hawaii:8, guam:5, saipan:5, sydney:4 };
     var _tpDay = _TRANSPORT_SURCHARGE[d.id] || 0;
-    if (d.id === 'maldives') {
-      _transportCost = _tpDay * 10000; // 몰디브는 1회성 왕복 비용
-    } else {
-      _transportCost = _tpDay * 10000 * (_nights + 1); // 일수 비례
-    }
+    _transportCost = (d.id === 'maldives') ? _tpDay * 10000 : _tpDay * 10000 * (_nights + 1);
 
-    // 리조트 여행지 성수기 호텔 추가 프리미엄 (공급 제한으로 가격 탄력성 높음)
+    // 리조트 성수기 프리미엄
     var _resortDests = ['bali','maldives','hawaii','guam','boracay','phuket','miyakojima','saipan','palawan'];
     if (_resortDests.indexOf(d.id) >= 0 && _sm.hotel > 1.15) {
-      // 성수기 호텔이 1.15 이상이면 추가 프리미엄 (리조트 가격 급등 반영)
-      var _resortExtra = ((_sm.hotel - 1.15) * 0.35 + 1); // 1.15→×1.0, 1.45→×1.105
-      hotelKRW = Math.round(hotelKRW * _resortExtra);
+      hotelKRW = Math.round(hotelKRW * ((_sm.hotel - 1.15) * 0.35 + 1));
+      _adjustedPerNight = Math.round(_adjustedPerNight * ((_sm.hotel - 1.15) * 0.35 + 1));
     }
 
-    // 총 비용 = DOM에 표시된 항공 + 숙박 + 현지비용 합산 (항상 정확한 합계)
+    // ── 2단계: 총합 계산 & 예산 체크 ──
+    var _newTotalMan = Math.round((airKRW + hotelKRW + dailyKRW + _transportCost) / 10000);
+    if (_newTotalMan > _budgetLimit) continue; // 예산 초과 → DOM 그대로 (updateColumn 값 유지)
+
+    // ── 3단계: 예산 이내 → 일괄 DOM 업데이트 ──
+    if (airEl && (d._airfareKRW || _isSeasonal)) {
+      var _am = airEl.querySelector('.main');
+      if (_am) _am.textContent = Math.round(airKRW / 10000) + '만원~';
+    }
+    if (hotelEl && (d._hotelPriceKRW || _isSeasonal)) {
+      var _hm = hotelEl.querySelector('.main');
+      var _hs = hotelEl.querySelector('.sub');
+      if (_hm) _hm.textContent = Math.round(hotelKRW / 10000) + '만원';
+      if (_hs) _hs.textContent = '1박 평균 ' + Math.round(_adjustedPerNight / 10000) + '만원';
+    }
     var totalEl = document.getElementById('total-' + i);
     if (totalEl) {
       var tmEl = totalEl.querySelector('.main');
-      var _airMain = airEl ? airEl.querySelector('.main') : null;
-      var _htlMain = hotelEl ? hotelEl.querySelector('.main') : null;
-      var _airVal = _airMain ? parseFloat((_airMain.textContent || '').replace(/[^0-9.]/g, '')) || 0 : 0;
-      var _htlVal = _htlMain ? parseFloat((_htlMain.textContent || '').replace(/[^0-9.]/g, '')) || 0 : 0;
-      // 현지비용: _recalcPriceCards에서 직접 계산한 dailyKRW 사용
-      var _dayVal = Math.round(dailyKRW / 10000);
-      var _sumTotal = _airVal + _htlVal + _dayVal;
-      if (tmEl && _sumTotal > 0) tmEl.textContent = Math.round(_sumTotal) + '만원~';
+      if (tmEl) tmEl.textContent = _newTotalMan + '만원~';
     }
   }
 
