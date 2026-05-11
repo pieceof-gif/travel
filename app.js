@@ -610,7 +610,9 @@ function updateColumn(col, destIdx, budgetLimit, duration) {
   const calcGrand = (aM, hBase, dM) =>
     Math.round(d.baseAir * aM) + Math.round(hBase * (days - 1)) + Math.round(daily * dM * days);
   const totalHigh = calcGrand(1.3, baseHH, 1.8);
-  const totalMid = calcGrand(1.1, d.baseHotel, 1.0);
+  // totalMid: budget >= 120이면 실제와 동일하게 1.5배 반영
+  const _midHotelBase = d.baseHotel * (budget >= 120 ? 1.5 : 1.0);
+  const totalMid = calcGrand(1.1, _midHotelBase, 1.0);
 
   let tier, airType, hotelType, scoreBonus = 0;
   let airPrice, hotelPrice, dailyMultiplier;
@@ -634,7 +636,7 @@ function updateColumn(col, destIdx, budgetLimit, duration) {
     tier = 'mid';
     airType = '이코노미 직항'; hotelType = budget >= 120 ? '3-4성급 호텔' : '3성급 호텔';
     airPrice = Math.round(d.baseAir * 1.1);
-    hotelPrice = Math.round(d.baseHotel * (days - 1) * (budget >= 120 ? 1.5 : 1.0));
+    hotelPrice = Math.round(d.baseHotel * (days - 1) * (budget >= 120 ? 1.5 : 1.0)); // totalMid와 동일 배율
     dailyMultiplier = 1.0; scoreBonus = 5;
   } else {
     tier = 'low';
