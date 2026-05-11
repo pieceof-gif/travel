@@ -10,7 +10,7 @@ var v1_0_9_DEST_DATA = [
           daily:'7만원', dailySub:'서유럽 대비 저렴',
           alert:'-', news:'노마드 증가', newsSub:'물가 소폭 상승', disaster:'없음', disasterSub:'',
           temp:'18–24°C', tempSub:'쾌적한 봄 날씨', fx:'EUR 강세', fxSub:'환전 타이밍 주의',
-          baseAir: 110, baseHotel: 18, baseHotelLow: 12, baseHotelHigh: 30, minDays: 5, minBudget: 140,
+          baseAir: 110, baseHotel: 18, baseHotelLow: 12, baseHotelHigh: 30, minDays: 5, minBudget: 180,
           sights: {
             low: [
               { name:'알파마 지구 골목 산책', price:'무료', link:'https://maps.google.com/?q=Alfama+Lisbon' },
@@ -93,7 +93,7 @@ var v1_0_9_DEST_DATA = [
           alert:'여행유의', alertSub:'외교부 1단계', news:'우기 시작', newsSub:'더위 주의', disaster:'우기', disasterSub:'홍수 위험',
           temp:'28–33°C', tempSub:'덥고 습함 · 우기 직전',
           fx:'VND 안정적', fxSub:'변동 거의 없음',
-          baseAir: 30, baseHotel: 8, baseHotelLow: 5, baseHotelHigh: 15, minDays: 3, minBudget: 40,
+          baseAir: 30, baseHotel: 8, baseHotelLow: 5, baseHotelHigh: 15, minDays: 3, minBudget: 55,
           sights: {
             low: [
               { name:'미케 비치 해안 절경', price:'무료', link:'https://maps.google.com/?q=My+Khe+Beach+Da+Nang' },
@@ -996,7 +996,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'안전한 여행지', news:'엔저 지속', newsSub:'환율 유리', disaster:'없음', disasterSub:'',
         temp:'봄·가을 최적', tempSub:'3-5월 / 9-11월 여행 추천',
         fx:'엔화', fxSub:'엔저로 환율 유리 지속',
-        baseAir: 18, baseHotel: 14, baseHotelLow: 10, baseHotelHigh: 29, minDays: 3, minBudget: 30,
+        baseAir: 18, baseHotel: 14, baseHotelLow: 10, baseHotelHigh: 29, minDays: 3, minBudget: 55,
         sights: {
           low: [
             { name:'오호리 공원', price:'무료', link:'https://maps.google.com/?q=Ohori+Park+Fukuoka' },
@@ -1076,7 +1076,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'안전한 여행지', news:'엔저 지속', newsSub:'환율 유리', disaster:'폭설', disasterSub:'결빙 주의',
         temp:'겨울 설경', tempSub:'2월 눈축제 · 여름도 선선',
         fx:'엔화', fxSub:'엔저로 환율 유리 지속',
-        baseAir: 25, baseHotel: 13, baseHotelLow: 10, baseHotelHigh: 27, minDays: 4, minBudget: 40,
+        baseAir: 25, baseHotel: 13, baseHotelLow: 10, baseHotelHigh: 27, minDays: 4, minBudget: 75,
         sights: {
           low: [
             { name:'오도리 공원', price:'무료', link:'https://maps.google.com/?q=Odori+Park+Sapporo' },
@@ -1156,7 +1156,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'안전한 여행지', news:'엔저 지속', newsSub:'환율 유리', disaster:'태풍', disasterSub:'9-10월 주의',
         temp:'열대 해양성', tempSub:'연중 온난 · 4-6월 바다 최적',
         fx:'엔화', fxSub:'엔저로 환율 유리 지속',
-        baseAir: 22, baseHotel: 12, baseHotelLow: 9, baseHotelHigh: 25, minDays: 4, minBudget: 40,
+        baseAir: 22, baseHotel: 12, baseHotelLow: 9, baseHotelHigh: 25, minDays: 4, minBudget: 70,
         sights: {
           low: [
             { name:'나하 공설시장', price:'무료', link:'https://maps.google.com/?q=Naha+Public+Market+Okinawa' },
@@ -1236,7 +1236,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'안전한 여행지', news:'엔저 지속', newsSub:'환율 유리', disaster:'없음', disasterSub:'',
         temp:'봄·가을 최적', tempSub:'3-5월 벚꽃 / 10-11월 단풍',
         fx:'엔화', fxSub:'엔저로 환율 유리 지속',
-        baseAir: 22, baseHotel: 16, baseHotelLow: 12, baseHotelHigh: 32, minDays: 3, minBudget: 40,
+        baseAir: 22, baseHotel: 16, baseHotelLow: 12, baseHotelHigh: 32, minDays: 3, minBudget: 60,
         sights: {
           low: [
             { name:'후시미이나리 타이샤', price:'무료', link:'https://maps.google.com/?q=Fushimi+Inari+Shrine+Kyoto' },
@@ -1316,7 +1316,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'안전한 여행지', news:'엔저 지속', newsSub:'환율 유리', disaster:'태풍', disasterSub:'8-9월 주의',
         temp:'', tempSub:'',
         fx:'엔화', fxSub:'엔저로 환율 유리 지속',
-        baseAir: 30, baseHotel: 35, baseHotelLow: 20, baseHotelHigh: 70, minDays: 4, minBudget: 50,
+        baseAir: 30, baseHotel: 35, baseHotelLow: 20, baseHotelHigh: 70, minDays: 4, minBudget: 130,
         sights: {
           low: [
             { name:'요나하마에하마 해변', price:'무료', link:'https://maps.google.com/?q=Yonaha+Maehama+Beach+Miyakojima' },
@@ -1396,7 +1396,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'안전한 여행지', news:'물가 안정', newsSub:'물가 저렴', disaster:'우기', disasterSub:'7-10월 주의',
         temp:'열대 해양성', tempSub:'11-4월 건기 · 맑고 선명한 바다',
         fx:'베트남 동', fxSub:'원화 강세 · 현지 물가 매우 저렴',
-        baseAir: 22, baseHotel: 8, baseHotelLow: 5, baseHotelHigh: 14, minDays: 4, minBudget: 35,
+        baseAir: 22, baseHotel: 8, baseHotelLow: 5, baseHotelHigh: 14, minDays: 4, minBudget: 55,
         sights: {
           low: [
             { name:'사오 해변 산책', price:'무료', link:'https://maps.google.com/?q=Sao+Beach+Phu+Quoc' },
@@ -1476,7 +1476,7 @@ var v1_0_9_DEST_DATA = [
         alert:'여행유의', alertSub:'날치기 주의', news:'물가 안정', newsSub:'물가 저렴', disaster:'없음', disasterSub:'',
         temp:'열대 계절풍', tempSub:'건기(12-4월) 방문 추천',
         fx:'베트남 동', fxSub:'원화 강세 · 현지 물가 매우 저렴',
-        baseAir: 20, baseHotel: 7, baseHotelLow: 5, baseHotelHigh: 12, minDays: 4, minBudget: 30,
+        baseAir: 20, baseHotel: 7, baseHotelLow: 5, baseHotelHigh: 12, minDays: 4, minBudget: 55,
         sights: {
           low: [
             { name:'벤탄 시장', price:'무료', link:'https://maps.google.com/?q=Ben+Thanh+Market+Ho+Chi+Minh' },
@@ -1556,7 +1556,7 @@ var v1_0_9_DEST_DATA = [
         alert:'여행유의', alertSub:'오토바이 주의', news:'물가 안정', newsSub:'물가 저렴', disaster:'없음', disasterSub:'',
         temp:'아열대', tempSub:'봄(3-4월)·가을(10-11월) 최적',
         fx:'베트남 동', fxSub:'원화 강세 · 현지 물가 매우 저렴',
-        baseAir: 22, baseHotel: 7, baseHotelLow: 5, baseHotelHigh: 12, minDays: 4, minBudget: 30,
+        baseAir: 22, baseHotel: 7, baseHotelLow: 5, baseHotelHigh: 12, minDays: 4, minBudget: 55,
         sights: {
           low: [
             { name:'호안끼엠 호수 산책', price:'무료', link:'https://maps.google.com/?q=Hoan+Kiem+Lake+Hanoi' },
@@ -1636,7 +1636,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'안전한 여행지', news:'물가 안정', newsSub:'물가 저렴', disaster:'태풍', disasterSub:'겨울 주의',
         temp:'열대 해양성', tempSub:'건기(11-4월) 화이트비치 최적',
         fx:'필리핀 페소', fxSub:'원화 강세 · 현지 물가 저렴',
-        baseAir: 25, baseHotel: 10, baseHotelLow: 6, baseHotelHigh: 17, minDays: 4, minBudget: 40,
+        baseAir: 25, baseHotel: 10, baseHotelLow: 6, baseHotelHigh: 17, minDays: 4, minBudget: 65,
         sights: {
           low: [
             { name:'화이트비치 산책', price:'무료', link:'https://maps.google.com/?q=White+Beach+Boracay' },
@@ -1716,7 +1716,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'안전한 여행지', news:'물가 안정', newsSub:'물가 저렴', disaster:'우기', disasterSub:'해변 주의',
         temp:'열대 해양성', tempSub:'건기(11-4월) 해변 최적 시즌',
         fx:'태국 바트', fxSub:'원화 강세 · 현지 물가 저렴',
-        baseAir: 22, baseHotel: 12, baseHotelLow: 6, baseHotelHigh: 30, minDays: 4, minBudget: 40,
+        baseAir: 22, baseHotel: 12, baseHotelLow: 6, baseHotelHigh: 30, minDays: 4, minBudget: 60,
         sights: {
           low: [
             { name:'빠똥 해변 산책', price:'무료', link:'https://maps.google.com/?q=Patong+Beach+Phuket' },
@@ -1876,7 +1876,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'안전한 여행지', news:'달러 강세', newsSub:'환율 불리', disaster:'태풍', disasterSub:'7-11월 주의',
         temp:'열대 해양성', tempSub:'연중 온난 · 12-5월 건기 추천',
         fx:'미국 달러', fxSub:'달러 결제 · 환율 변동 체크',
-        baseAir: 30, baseHotel: 18, baseHotelLow: 14, baseHotelHigh: 29, minDays: 4, minBudget: 55,
+        baseAir: 30, baseHotel: 18, baseHotelLow: 14, baseHotelHigh: 29, minDays: 4, minBudget: 90,
         sights: {
           low: [
             { name:'투몬 비치 산책', price:'무료', link:'https://maps.google.com/?q=Tumon+Beach+Guam' },
@@ -1956,7 +1956,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'안전한 여행지', news:'달러 강세', newsSub:'환율 불리', disaster:'화산', disasterSub:'화산 주의',
         temp:'열대 해양성', tempSub:'연중 쾌적 · 4-9월 서핑 최적',
         fx:'미국 달러', fxSub:'달러 결제 · 환율 변동 체크',
-        baseAir: 65, baseHotel: 35, baseHotelLow: 28, baseHotelHigh: 54, minDays: 7, minBudget: 150,
+        baseAir: 65, baseHotel: 35, baseHotelLow: 28, baseHotelHigh: 54, minDays: 7, minBudget: 260,
         sights: {
           low: [
             { name:'와이키키 비치', price:'무료', link:'https://maps.google.com/?q=Waikiki+Beach+Hawaii' },
@@ -2036,7 +2036,7 @@ var v1_0_9_DEST_DATA = [
         alert:'여행유의', alertSub:'소매치기 주의', news:'유로 강세', newsSub:'물가 높음', disaster:'없음', disasterSub:'',
         temp:'서유럽 대륙성', tempSub:'봄(4-5월)·가을(9-10월) 최적',
         fx:'유로', fxSub:'유로 강세 · 고물가 도시',
-        baseAir: 80, baseHotel: 28, baseHotelLow: 20, baseHotelHigh: 46, minDays: 7, minBudget: 180,
+        baseAir: 80, baseHotel: 28, baseHotelLow: 20, baseHotelHigh: 46, minDays: 7, minBudget: 230,
         sights: {
           low: [
             { name:'에펠탑 외관', price:'무료', link:'https://maps.google.com/?q=Eiffel+Tower+Paris' },
@@ -2115,7 +2115,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'안전한 여행지', news:'물가 안정', newsSub:'물가 저렴', disaster:'없음', disasterSub:'',
         temp:'열대 우림', tempSub:'연중 고온다습 · 실내 냉방 쾌적',
         fx:'말레이시아 링깃', fxSub:'원화 강세 · 현지 물가 저렴',
-        baseAir: 25, baseHotel: 8, baseHotelLow: 4, baseHotelHigh: 19, minDays: 4, minBudget: 40,
+        baseAir: 25, baseHotel: 8, baseHotelLow: 4, baseHotelHigh: 19, minDays: 4, minBudget: 55,
         sights: {
           low: [
             { name:'페트로나스 트윈타워 외관', price:'무료', link:'https://maps.google.com/?q=Petronas+Twin+Towers+Kuala+Lumpur' },
@@ -2355,7 +2355,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'전반적으로 안전', news:'위안화 안정', newsSub:'환율 변동 적음', disaster:'없음', disasterSub:'',
         temp:'아열대 몬순', tempSub:'봄(4-5월)·가을(9-10월) 최적',
         fx:'중국 위안', fxSub:'알리페이·위챗페이 필수',
-        baseAir: 18, baseHotel: 10, baseHotelLow: 6, baseHotelHigh: 21, minDays: 4, minBudget: 40,
+        baseAir: 18, baseHotel: 10, baseHotelLow: 6, baseHotelHigh: 21, minDays: 4, minBudget: 55,
         sights: {
           low: [
             { name:'와이탄 야경 산책', price:'무료', link:'https://maps.google.com/?q=The+Bund+Shanghai+China' },
@@ -2435,7 +2435,7 @@ var v1_0_9_DEST_DATA = [
         alert:'여행유의', alertSub:'소매치기 주의', news:'유로 강세', newsSub:'물가 높음', disaster:'없음', disasterSub:'',
         temp:'지중해성', tempSub:'봄(4-5월)·가을(9-10월) 최적',
         fx:'유로', fxSub:'유로 강세 · 고물가 도시',
-        baseAir: 85, baseHotel: 25, baseHotelLow: 18, baseHotelHigh: 37, minDays: 7, minBudget: 180,
+        baseAir: 85, baseHotel: 25, baseHotelLow: 18, baseHotelHigh: 37, minDays: 7, minBudget: 225,
         sights: {
           low: [
             { name:'바르셀로네타 해변', price:'무료', link:'https://maps.google.com/?q=Barceloneta+Beach+Spain' },
@@ -2596,7 +2596,7 @@ var v1_0_9_DEST_DATA = [
         alert:'여행유의', alertSub:'취업사기 주의', news:'취업 사기 주의', newsSub:'구인사기 주의', disaster:'우기', disasterSub:'6-10월 스콜',
         temp:'열대', tempSub:'건기(11-3월) 최적',
         fx:'달러(USD)', fxSub:'미국 달러 통용 · 환전 편리',
-        baseAir: 35, baseHotel: 6, baseHotelLow: 3, baseHotelHigh: 14, minDays: 4, minBudget: 50,
+        baseAir: 35, baseHotel: 6, baseHotelLow: 3, baseHotelHigh: 14, minDays: 4, minBudget: 65,
         desc:'씨엠립은 세계 7대 불가사의 앙코르와트의 도시입니다.\n새벽 일출 속 앙코르와트의 실루엣,\n바이욘 사원의 신비로운 미소,\n타프롬의 자연이 삼킨 사원까지\n인류 최대 석조 건축의 경이를 만나세요.\n밤에는 펍 스트리트에서 캄보디아의 활기를 느껴보세요.',
         sights: {
           low: [
@@ -2920,7 +2920,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'치안 매우 좋음', news:'관광 성장', newsSub:'유네스코 유산', disaster:'우기', disasterSub:'6-10월 스콜',
         temp:'열대', tempSub:'건기(11-3월) 최적',
         fx:'킵(LAK)', fxSub:'미국 달러·태국 바트 통용',
-        baseAir: 30, baseHotel: 6, baseHotelLow: 3, baseHotelHigh: 14, minDays: 4, minBudget: 45,
+        baseAir: 30, baseHotel: 6, baseHotelLow: 3, baseHotelHigh: 14, minDays: 4, minBudget: 60,
         desc:'루앙프라방은 시간이 멈춘 도시입니다.\n새벽 5시 수백 명 승려의 탁발 행렬,\n메콩강 위 황금빛 일몰,\n쿠앙시 폭포의 에메랄드 물빛까지\n유네스코가 인정한 도시 전체가 문화유산입니다.\n동남아의 마지막 힐링 성지를 만나세요.',
         sights: {
           low: [
@@ -3082,7 +3082,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'관광지 안전', news:'바트 약세', newsSub:'환율 유리', disaster:'우기', disasterSub:'폭우 주의',
         temp:'열대', tempSub:'건기(1-4월) 최적',
         fx:'바트(THB)', fxSub:'바트 약세 · 가성비 좋음',
-        baseAir: 35, baseHotel: 20, baseHotelLow: 10, baseHotelHigh: 40, minDays: 4, minBudget: 60,
+        baseAir: 35, baseHotel: 20, baseHotelLow: 10, baseHotelHigh: 40, minDays: 4, minBudget: 85,
         desc:'코사무이는 태국 만의 보석 섬입니다.\n차웽 해변의 부드러운 백사장,\n앙통 해양공원의 숨겨진 에메랄드 라군,\n열대 정글 속 폭포 트레킹,\n풀빌라에서 즐기는 타이 마사지까지\n허니문과 커플 여행의 성지입니다.',
         sights: {
           low: [
@@ -3487,7 +3487,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'전반적으로 안전', news:'위안화 안정', newsSub:'환율 변동 적음', disaster:'없음', disasterSub:'',
         temp:'대륙성 기후', tempSub:'봄(4-5월)·가을(9-10월) 최적',
         fx:'중국 위안', fxSub:'알리페이·위챗페이 필수',
-        baseAir: 20, baseHotel: 9, baseHotelLow: 6, baseHotelHigh: 15, minDays: 4, minBudget: 40,
+        baseAir: 20, baseHotel: 9, baseHotelLow: 6, baseHotelHigh: 15, minDays: 4, minBudget: 60,
         sights: {
           low: [
             { name:'천안문 광장', price:'무료', link:'https://maps.google.com/?q=Tiananmen+Square+Beijing' },
@@ -3568,7 +3568,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'전반적으로 안전', news:'위안화 안정', newsSub:'환율 변동 적음', disaster:'없음', disasterSub:'',
         temp:'온대 해양성', tempSub:'여름(6-9월) 해변·맥주 축제 최적',
         fx:'중국 위안', fxSub:'알리페이·위챗페이 필수',
-        baseAir: 15, baseHotel: 7, baseHotelLow: 5, baseHotelHigh: 12, minDays: 3, minBudget: 30,
+        baseAir: 15, baseHotel: 7, baseHotelLow: 5, baseHotelHigh: 12, minDays: 3, minBudget: 40,
         sights: {
           low: [
             { name:'잔교 해변 산책', price:'무료', link:'https://maps.google.com/?q=Zhanqiao+Pier+Qingdao' },
@@ -3728,7 +3728,7 @@ var v1_0_9_DEST_DATA = [
         alert:'경보 없음', alertSub:'전반적으로 안전', news:'페소 안정', newsSub:'원화 유리', disaster:'없음', disasterSub:'',
         temp:'열대', tempSub:'건기(12-5월) 최적 · 우기(6-11월) 비 많음',
         fx:'필리핀 페소 (PHP)', fxSub:'현지 ATM 출금 or 달러 환전',
-        baseAir: 20, baseHotel: 12, baseHotelLow: 7, baseHotelHigh: 30, minDays: 4, minBudget: 40,
+        baseAir: 20, baseHotel: 12, baseHotelLow: 7, baseHotelHigh: 30, minDays: 4, minBudget: 60,
         sights: {
           low: [
             { name:'혼다베이 아일랜드 호핑', price:'약 3만원', link:'https://www.klook.com/ko/search/?query=honda+bay+island+hopping+palawan' },

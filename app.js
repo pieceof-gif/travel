@@ -298,6 +298,20 @@ function updateResultsByFilters() {
       ? baseMin
       : baseMin + (duration > 5 ? (duration - 5) * 6 : 0);
     if (adjustedMin > filterBudget) return false;
+
+    // ── 실제 비용 기반 필터: 예산 초과 여행지 제외 ──
+    if (filterBudget < 9000 && !isCheapest) {
+      const _dailyMap = { '소비 매우 적음': 4, '소비 적음': 6, '소비 보통': 9, '소비 많음': 14, '소비 매우 많음': 20 };
+      const _daily = parseFloat((d.daily || '').replace('만원', '')) || _dailyMap[d.daily] || Math.round((d.baseHotel || 7) * 0.5) || 7;
+      // baseHotelLow(최저가 1박) 기준으로 최소 비용 추정
+      const _estAir = d.baseAir || 20;
+      const _perNight = d.baseHotelLow || Math.round((d.baseHotel || 10) * 0.6);
+      const _estHotel = _perNight * (duration - 1);
+      const _estDaily = _daily * 0.6 * duration;
+      const _estTotal = _estAir + _estHotel + _estDaily;
+      if (_estTotal > filterBudget) return false; // 여유 없이 엄격하게 필터링
+    }
+
     // Region filter (휴양지는 cross-cutting 필터로 별도 처리)
     if (_selRegion) {
       if (_selRegion === 'resort') {
@@ -651,10 +665,8 @@ function updateColumn(col, destIdx, budgetLimit, duration) {
   const dailySpend = Math.round(daily * dailyMultiplier * 10) / 10;
   const dailyTotal = Math.round(dailySpend * days);
   const grandTotalRaw = hotelPrice + dailyTotal + airPrice;  // 숙박+현지+항공 포함
-  // 예산 선택 시 총 예상비용이 예산을 초과하지 않도록 캡 처리
-  const grandTotal = (!isUnlimited && budget < 9000 && budget !== 40 && grandTotalRaw > budget)
-    ? budget
-    : grandTotalRaw;
+  // 실제 추정 비용 그대로 표시 (캡 없음 — 정확한 정보 제공)
+  const grandTotal = grandTotalRaw;
   const adjustedScore = Math.min(99, d.score + scoreBonus);
   const hotelPerNight = (days > 1) ? Math.round(hotelPrice / (days - 1)) : hotelPrice;
 
@@ -4795,13 +4807,8 @@ window._recalcPriceCards = function () {
       hotelKRW = Math.round(hotelKRW * _resortExtra);
     }
 
-    // 총 비용 재계산: 항공 + 호텔 + 현지비용 + 교통비
-    var totalEl = document.getElementById('total-' + i);
-    if (totalEl) {
-      var tmEl = totalEl.querySelector('.main');
-      var newTotal = airKRW + hotelKRW + dailyKRW + _transportCost;
-      if (tmEl && newTotal > 0) tmEl.textContent = Math.round(newTotal / 10000) + '만원~';
-    }
+    // 총 비용은 updateColumn이 예산 티어에 맞게 계산한 값을 그대로 유지
+    // (여기서 덮어쓰면 예산 무시한 API 가격으로 오염됨)
   }
 
   // 안내 문구 업데이트 — 실제 HTML 요소(#price-section-wrap .sec-hd-inner p) 참조
