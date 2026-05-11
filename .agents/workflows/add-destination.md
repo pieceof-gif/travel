@@ -19,6 +19,9 @@ description: 여행지 추가 체크리스트 및 검증 절차
   id: 'pattaya',             // 고유 ID (영문 소문자, 언더스코어 없이)
   name: '태국 · 파타야',     // 한국어 이름 (드롭다운 표시용)
   sub: '방콕 근교 해변 휴양', // 한 줄 부제목
+  score: 72,                 // 추천 점수 (0~100, 기존 여행지 평균 참고)
+  isTop: false,              // 메인 TOP 여행지 여부 (보통 false)
+  photo: '',                 // 사진 URL (없으면 빈 문자열)
   baseAir: 35,               // 기준 항공요금 (만원, 편도×2 기준)
   baseHotel: 7,              // 3-4성급 기준 숙박 (만원/1박) ← 목표표시가 ÷ 1.5 역산
   baseHotelLow: 4,           // 저가 티어 숙박 (만원/1박, 게스트하우스/호스텔)
@@ -26,10 +29,12 @@ description: 여행지 추가 체크리스트 및 검증 절차
   minDays: 3,                // 최소 권장 일수
   minBudget: 55,             // 최소 예산 티어 (만원, cheapest 기준 계산값)
   daily: '소비 보통',        // 현지 소비 수준
+  dailySub: '저렴한 물가',   // 소비 수준 부제목
   alert:'-', news:'성수기 혼잡', newsSub:'5~8월 해변 붐빔',
   disaster:'낮음', disasterSub:'열대성 폭풍 주의',
   temp:'28–34°C', tempSub:'연중 더운 열대 기후',
   fx:'THB 안정적', fxSub:'환전 권장',
+  airfare:'35만원', hotel:'21만원', hotelSub:'1박 평균 7만원',
   // sights, exps, food, hotels, hotelTips, cheapFlights, flightTips ...
 }
 ```
@@ -40,10 +45,47 @@ description: 여행지 추가 체크리스트 및 검증 절차
 예: 방콕 표시가 목표 8만원 → baseHotel = 8 ÷ 1.5 ≈ 5
 ```
 
+### ⚠️ minBudget 계산 공식
+```
+cheapest 티어 기준 최소 총비용:
+baseAir + baseHotelLow × (minDays - 1) + daily_cost × minDays
+
+daily_cost 기준:
+  소비 매우 적음 = 4만  소비 적음 = 6만  소비 보통 = 9만
+  소비 많음 = 14만      소비 매우 많음 = 20만
+
+예: 파타야 cheapest = 35 + 4×(3-1) + 9×3 = 35+8+27 = 70 → minBudget ≈ 70
+```
+
 ### ⚠️ news 필드 작성 기준
 - **여행자 관점**의 현지 이슈만 작성 (공사/개발 같은 정보 ❌)
 - 예: `'성수기 혼잡'`, `'크루즈 인기'`, `'관광객 급증'`, `'우기 시작'`
 - 10자 이내로 짧게
+
+### ⚠️ 콘텐츠 필드 구조 (없으면 해당 섹션 빈칸)
+
+```javascript
+sights: [
+  { name: '산호섬', price: '무료', link: '' },
+  { name: '농눅 빌리지', price: '약 0.5만원', link: '' },
+],
+food: [
+  { name: '쏨땀', desc: '파파야 샐러드', price: '약 0.1만원' },
+],
+exps: [
+  { name: '파라세일링', price: '약 0.3만원', link: '' },
+],
+hotels: [
+  { name: '하드록 호텔 파타야', stars: 5, link: '' },
+],
+hotelTips: '시내 중심 워킹 스트리트 근처 추천',
+cheapFlights: [
+  { label: '에어아시아 · 직항', desc: '3시간 · 왕복 35만원~', link: '' },
+],
+flightTips: '방콕 경유편 이용 시 저렴, BKK→파타야 버스 2시간',
+```
+
+> ℹ️ 기존 여행지 데이터 참고해서 작성. 비워두면 섹션 자체는 숨겨지지 않고 빈칸으로 표시됨
 
 ---
 
@@ -153,10 +195,11 @@ const DEST_CITY = {
 
 ## 9단계: 검증 (반드시 통과해야 추가 완료)
 
-### 자동 매핑 감사 (필수)
+> ⚠️ **프로젝트 폴더에서 실행** (`/↘↘↘260318` 디렉토리)
+
 // turbo
 ```bash
-node -e "
+cd "/Users/leejiyun/Library/Mobile Documents/com~apple~CloudDocs/↘AI/↘TEST/↘↘↘260318" && node -e "
 const fs=require('fs');
 const d=fs.readFileSync('data.js','utf8');
 const a=fs.readFileSync('app.js','utf8');
@@ -166,17 +209,30 @@ while((m=re.exec(d))!==null) ids.add(m[1]);
 ['spain','europe'].forEach(x=>ids.delete(x));
 
 let fail=0;
+// 일반 매핑 체크 (id: 패턴)
 const check=(src,name)=>{
   const missing=[...ids].filter(id=>!src.includes(id+':'));
   if(missing.length){ console.log('❌ '+name+' 누락: '+missing.join(', ')); fail+=missing.length; }
   else console.log('✅ '+name+': '+ids.size+'개 전체 커버');
 };
+// 좌표 체크 (id: [ 패턴 — 배열값만 매칭)
+const chkCoords=(src,name)=>{
+  const missing=[...ids].filter(id=>!src.includes(id+':[') && !src.includes(id+': ['));
+  if(missing.length){ console.log('❌ '+name+' 누락: '+missing.join(', ')); fail+=missing.length; }
+  else console.log('✅ '+name+': '+ids.size+'개 전체 커버');
+};
+// narratives 체크 (backtick 패턴만 매칭 — '도시': \` 형태)
+const chkNarr=(src,name)=>{
+  const missing=[...ids].filter(id=>!src.includes(\"'\"+id+\"': \`\"));
+  if(missing.length){ console.log('❌ '+name+' 누락: '+missing.join(', ')); fail+=missing.length; }
+  else console.log('✅ '+name+': '+ids.size+'개 전체 커버');
+};
 check(d,'DEST_REGION');
 check(d,'DEST_COUNTRY');
-check(d,'DEST_COORDS (data.js)');
-check(a,'DEST_COORDS (app.js 상단)');
+chkCoords(d,'DEST_COORDS (data.js)');
+chkCoords(a,'DEST_COORDS (app.js 상단)');
 check(a,'DEST_CITY_IATA');
-check(a,'narratives');
+chkNarr(a,'narratives');
 console.log('');
 console.log(fail===0?'🎉 모든 매핑 완료 — 추가 안전':'❌ '+fail+'건 누락 — 추가 전 반드시 채울 것');
 "
@@ -202,6 +258,8 @@ console.log(fail===0?'🎉 모든 매핑 완료 — 추가 안전':'❌ '+fail+'
 ```bash
 git add data.js app.js worker.js && git commit -m "feat: 여행지 추가 — [여행지명] (IATA코드)"
 ```
+
+> ℹ️ `index.html`은 드롭다운이 동적 생성이므로 여행지 추가만으로는 수정 불필요
 
 ---
 
